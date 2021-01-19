@@ -160,7 +160,7 @@ public class PokEditor extends JDialog
 
         try
         {
-            URL latestRelease= new URL("https://api.github.com/repos/turtleisaac/PokEditor/releases/latest");
+            URL latestRelease= new URL("https://api.github.com/repos/turtleisaac/PokEditor-v2/releases/latest");
             BufferedReader reader= new BufferedReader(new InputStreamReader(latestRelease.openStream()));
             String line;
 

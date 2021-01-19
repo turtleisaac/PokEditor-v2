@@ -27,15 +27,17 @@ Double click on the JAR file to launch the program
 
 * Evolutions Editor
 
-* growth
-
 * Item Editor
 
 * Move Editor
 
 * Move Tutor Editor (moves taught and compatibility)
 
-* Baby Form Editor (what hatches from egg)
+* Baby Form Editor (what hatches from an egg)
+
+* Trainer Editor
+
+* Pokédex Editor
 
 # Other Editors/ Tools
 
@@ -44,6 +46,8 @@ Double click on the JAR file to launch the program
 * Intro Cutscene Editor
 
 * Opening Cinematic Cutscene Editor
+
+* Sprite Position Editor
 
 * Narc Packer/ Unpacker
 
