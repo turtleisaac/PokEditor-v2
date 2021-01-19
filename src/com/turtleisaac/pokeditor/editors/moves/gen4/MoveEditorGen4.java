@@ -220,12 +220,22 @@ public class MoveEditorGen4
             System.out.println("Additional Effect Chance: " + move.getAdditionalEffect());
 
             line[idx++]= targets[move.getRange()];
+//            short target= (short) move.getRange();
+//            for(int x= 0; x < 12; x++)
+//            {
+//                if(x == 0)
+//                    line[idx++]= Boolean.toString(((target >> x) & 0x1) == 1);
+//                else
+//                    line[idx++]= Boolean.toString((target & 0x1) == 1);
+//            }
+
             line[idx++]= "" + move.getPriority();
             byte flag= (byte)move.getFlag();
             for(int x= 0; x < 8; x++)
             {
                 line[idx++]= Boolean.toString(((flag >> x) & 0x1) == 1);
             }
+            System.out.println("Target(s): " + move.getRange());
             System.out.println("Target(s): " + targets[move.getRange()]);
 //            System.out.println("Priority: " + move.getPriority());
 //            System.out.println("Flag: " + move.getFlag());
@@ -240,7 +250,8 @@ public class MoveEditorGen4
         }
 
         ArrayProcessor processor= new ArrayProcessor();
-        processor.append("ID Number,Name,Additional Effect,Category,Power,Type,Accuracy,PP,Additional Effect Chance (%),Target(s),Priority,Contact Move,Blocked by Protect,Reflected by Magic Coat, Affected by Snatch,Affected by Mirror Move,Triggers Kings Rock,Hide HP Bars,Remove Target's Shadow,Contest Effect,Contest Type\n");
+//        processor.append("ID Number,Name,Additional Effect,Category,Power,Type,Accuracy,PP,Additional Effect Chance (%),Target: One opponent (1),Target: Automatic (1),Target: Random,Target: Both opponents,Target: Both opponents and ally,Target: User,Target: User's side of field,Target: Entire field,Target: Opponent's side of field,Target: Automatic (2),Target: User or ally,Target: One opponent (2),Priority,Contact Move,Blocked by Protect,Reflected by Magic Coat, Affected by Snatch,Affected by Mirror Move,Triggers Kings Rock,Hide HP Bars,Remove Target's Shadow,Contest Effect,Contest Type");
+        processor.append("ID Number,Name,Additional Effect,Category,Power,Type,Accuracy,PP,Additional Effect Chance (%),Target(s),Priority,Contact Move,Blocked by Protect,Reflected by Magic Coat, Affected by Snatch,Affected by Mirror Move,Triggers Kings Rock,Hide HP Bars,Remove Target's Shadow,Contest Effect,Contest Type");
         processor.newLine();
         String line;
         for(int row= 0; row < dataList.size(); row++)
@@ -258,70 +269,69 @@ public class MoveEditorGen4
     }
 
 
-//    public void csvToMoves(String moveCsv, String outputDir) throws IOException
-//    {
-//        String movePath= path + moveCsv;
-//        String outputPath;
-//
-//        if(outputDir.contains("Recompile"))
-//        {
-//            outputPath= path + "temp" + File.separator+ outputDir;
-//        }
-//        else
-//        {
-//            outputPath= path + File.separator + outputDir;
-//        }
-//
-//        if(!new File(outputPath).exists() && !new File(outputPath).mkdir())
-//        {
-//            throw new RuntimeException("Could not create output directory. Check write permissions");
-//        }
-//        outputPath+= File.separator;
-//
-//        CsvReader csvReader= new CsvReader(movePath);
-//        BinaryWriter writer;
-//        BitStream bitStream;
-//
-//        for(int i= 0; i < csvReader.length(); i++)
-//        {
-//            String[] arr= csvReader.next();
-//            initializeIndex(arr);
-//            writer= new BinaryWriter(outputPath + i + ".bin");
-//
-//            System.out.println("Move: " + i + ", " + Arrays.toString(arr));
-//            String effect= next();
-//            String category= next();
-//            writer.writeShort(getEffect(effect, category)); //additional effect
-//            writer.writeByte(getCategory(category)); //category (physical, special, status)
-//            writer.writeByte((byte)Short.parseShort(next())); //power
-//
-//            writer.writeByte(getType(next())); //type
-//            writer.writeByte((byte)Short.parseShort(next())); //accuracy
-//            writer.writeByte((byte)Short.parseShort(next())); //PP
-//            writer.writeByte((byte)Short.parseShort(next())); //additional effect chance (out of 100)
-//
-//            writer.writeShort(getTargets(next())); //targets
-//            writer.writeByte(Byte.parseByte(next())); //priority
-//
+    public void sheetToMoves(Object[][] moveSheet, String outputDir) throws IOException
+    {
+        String outputPath= dataPath + File.separator + outputDir;
+
+        if(!new File(outputPath).exists() && !new File(outputPath).mkdir())
+        {
+            throw new RuntimeException("Could not create output directory. Check write permissions");
+        }
+        outputPath+= File.separator;
+
+
+        moveSheet= ArrayModifier.trim(moveSheet,1,2);
+        BinaryWriter writer;
+        BitStream bitStream;
+
+        for(int i= 0; i < moveSheet.length; i++)
+        {
+            Object[] arr= moveSheet[i];
+            initializeIndex(arr);
+            writer= new BinaryWriter(outputPath + i + ".bin");
+
+            System.out.println("Move: " + i + ", " + Arrays.toString(arr));
+            String effect= next();
+            String category= next();
+            writer.writeShort(getEffect(effect)); //additional effect
+            writer.writeByte(getCategory(category)); //category (physical, special, status)
+            writer.writeByte((byte)Short.parseShort(next())); //power
+
+            writer.writeByte(getType(next())); //type
+            writer.writeByte((byte)Short.parseShort(next())); //accuracy
+            writer.writeByte((byte)Short.parseShort(next())); //PP
+            writer.writeByte((byte)Short.parseShort(next())); //additional effect chance (out of 100)
+
 //            bitStream= new BitStream();
-//            boolean flag;
-////            System.out.print(i + ": [");
-//            for(int x= 0; x < 8; x++)
+//            boolean target;
+//            for(int x= 0; x < 12; x++)
 //            {
-//                flag= Boolean.parseBoolean(next());
-////                System.out.print(flag + ", ");
-//                bitStream.append(flag);
+//                target= Boolean.parseBoolean(next());
+//                bitStream.append(target);
 //            }
-////            System.out.println("]");
-////            System.out.println("BitStream " + i + ": " + bitStream.toBytes()[0]);
-//            writer.writeByte(bitStream.toBytes()[0]); //flags
-//
-//            writer.writeByte((byte)Short.parseShort(next())); //contest effect (???)
-//            writer.writeByte((byte)Short.parseShort(next())); //contest type (???)
-//            writer.writeBytes(0,0);
-//        }
-//
-//    }
+//            writer.write(bitStream.toBytes()); //targets
+            writer.writeShort((short)getTargets(next()));
+            writer.writeByte(Byte.parseByte(next())); //priority
+
+            bitStream= new BitStream();
+            boolean flag;
+//            System.out.print(i + ": [");
+            for(int x= 0; x < 8; x++)
+            {
+                flag= Boolean.parseBoolean(next());
+//                System.out.print(flag + ", ");
+                bitStream.append(flag);
+            }
+//            System.out.println("]");
+//            System.out.println("BitStream " + i + ": " + bitStream.toBytes()[0]);
+            writer.writeByte(bitStream.toBytes()[0]); //flags
+
+            writer.writeByte((byte)Short.parseShort(next())); //contest effect (???)
+            writer.writeByte((byte)Short.parseShort(next())); //contest type (???)
+            writer.writeBytes(0,0);
+        }
+
+    }
 
 
 
@@ -338,9 +348,9 @@ public class MoveEditorGen4
     }
 
     private int arrIdx;
-    private String[] input;
+    private Object[] input;
 
-    private void initializeIndex(String[] arr)
+    private void initializeIndex(Object[] arr)
     {
         arrIdx= 0;
         input= arr;
@@ -350,7 +360,7 @@ public class MoveEditorGen4
     {
         try
         {
-            return input[arrIdx++];
+            return (String) input[arrIdx++];
         }
         catch (IndexOutOfBoundsException e)
         {
@@ -383,7 +393,7 @@ public class MoveEditorGen4
         throw new RuntimeException("Invalid move entered: " + move);
     }
 
-    private static short getEffect(String effect, String category)
+    private static short getEffect(String effect)
     {
         for(int i= 0; i < effects.length; i++)
         {
@@ -401,37 +411,6 @@ public class MoveEditorGen4
             {
                 return 103;
             }
-            else if((i >= 19 && i <= 25) || (i >= 69 && i <= 75))
-            {
-                boolean status= category.equalsIgnoreCase("status");
-
-                switch (effect.split(" ")[1].toLowerCase())
-                {
-                    case "atk":
-                        return status ? (short) 19 : (short) 69;
-
-                    case "def":
-                        return status ? (short) 20 : (short) 70;
-
-                    case "spd":
-                        return status ? (short) 21 : (short) 71;
-
-                    case "spatk":
-                        return status ? (short) 22 : (short) 72;
-
-                    case "spdef":
-                        return status ? (short) 23 : (short) 73;
-
-                    case "accuracy":
-                        return status ? (short) 24 : (short) 74;
-
-                    case "evasion":
-                        return status ? (short) 25 : (short) 75;
-
-                    default:
-                        throw new RuntimeException("Invalid move effect: " + effect);
-                }
-            }
         }
         throw new RuntimeException("Invalid effect entered: " + effect);
     }
@@ -448,13 +427,13 @@ public class MoveEditorGen4
         throw new RuntimeException("Invalid category entered: " + category);
     }
 
-    private static short getTargets(String target)
+    private static int getTargets(String target)
     {
         for(int i= 0; i < targets.length; i++)
         {
             if(target.equals(targets[i]))
             {
-                return (byte) i;
+                return i;
             }
         }
         throw new RuntimeException("Invalid target(s) entered: " + target);

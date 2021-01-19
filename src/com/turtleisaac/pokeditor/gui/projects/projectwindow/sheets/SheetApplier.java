@@ -18,6 +18,7 @@ import com.turtleisaac.pokeditor.editors.babies.BabyFormEditor;
 import com.turtleisaac.pokeditor.editors.encounters.johto.JohtoEncounterEditor;
 import com.turtleisaac.pokeditor.editors.evolutions.gen4.EvolutionEditor;
 import com.turtleisaac.pokeditor.editors.learnsets.LearnsetEditor;
+import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.gui.*;
@@ -130,14 +131,14 @@ public class SheetApplier extends JFrame
                         BabyFormEditor editor= new BabyFormEditor(dataPath);
                         editor.sheetToBabyForms(api.getSpecifiedSheetArr("Baby Forms"),"/poketool/personal/pms.narc");
                     }
-//
-//                    if(contains(selected,"Moves"))
-//                    {
-//                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
-//                        narctowl.unpack(dataPath + "/poketool/waza/waza_tbl.narc",dataPath + "/poketool/waza/waza_tbl");
-//                        toDelete.add(new File(dataPath + "/poketool/waza/waza_tbl"));
-//                        api.updateSheet("Moves",editor.movesToSheet("/poketool/waza/waza_tbl"));
-//                    }
+
+                    if(contains(selected,"Moves"))
+                    {
+                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
+                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),"/poketool/waza/waza_tbl");
+                        narctowl.pack(dataPath + "/poketool/waza/waza_tbl","",dataPath + "/poketool/waza/waza_tbl.narc");
+                        toDelete.add(new File(dataPath + "/poketool/waza/waza_tbl"));
+                    }
 //
 //                    if(contains(selected,"Encounters"))
 //                    {
@@ -205,14 +206,14 @@ public class SheetApplier extends JFrame
                         BabyFormEditor editor= new BabyFormEditor(dataPath);
                         editor.sheetToBabyForms(api.getSpecifiedSheetArr("Baby Forms"),"/poketool/personal/pms.narc");
                     }
-//
-//                    if(contains(selected,"Moves"))
-//                    {
-//                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
-//                        narctowl.unpack(dataPath + "/poketool/waza/pl_waza_tbl.narc",dataPath + "/poketool/waza/pl_waza_tbl");
-//                        toDelete.add(new File(dataPath + "/poketool/waza/pl_waza_tbl"));
-//                        api.updateSheet("Moves",editor.movesToSheet("/poketool/waza/pl_waza_tbl"));
-//                    }
+
+                    if(contains(selected,"Moves"))
+                    {
+                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
+                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),"/poketool/waza/pl_waza_tbl");
+                        narctowl.pack(dataPath + "/poketool/waza/pl_waza_tbl","",dataPath + "/poketool/waza/pl_waza_tbl.narc");
+                        toDelete.add(new File(dataPath + "/poketool/waza/pl_waza_tbl"));
+                    }
 //
 //                    Items
 //
