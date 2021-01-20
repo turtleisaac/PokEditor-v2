@@ -32,6 +32,8 @@ public class TrainerEditorGen4
         String entryPath = resourcePath + "EntryData.txt";
         String movePath = resourcePath + "MoveList.txt";
         String itemPath= resourcePath;
+        String classPath= resourcePath;
+        String trainerNamePath= resourcePath;
 
         BufferedReader reader = new BufferedReader(new FileReader(entryPath));
         ArrayList<String> nameList = new ArrayList<>();
@@ -56,10 +58,14 @@ public class TrainerEditorGen4
             case Diamond:
             case Pearl:
                 itemPath+= "ItemListDP.txt";
+                trainerNamePath+= "TrainerNamesDP.txt";
+                classPath+= "TrainerClassesDP.txt";
                 break;
 
             case Platinum:
                 itemPath+= "ItemListPt.txt";
+                trainerNamePath+= "TrainerNamesPt.txt";
+                classPath+= "TrainerClassesPt.txt";
                 break;
 
             case HeartGold:
@@ -75,6 +81,24 @@ public class TrainerEditorGen4
             itemList.add(line);
         }
         itemData = itemList.toArray(new String[0]);
+        reader.close();
+
+        reader = new BufferedReader(new FileReader(trainerNamePath));
+        ArrayList<String> trainerNameList = new ArrayList<>();
+
+        while ((line = reader.readLine()) != null) {
+            trainerNameList.add(line);
+        }
+        trainerNames= trainerNameList.toArray(new String[0]);
+        reader.close();
+
+        reader = new BufferedReader(new FileReader(classPath));
+        ArrayList<String> trainerClassList = new ArrayList<>();
+
+        while ((line = reader.readLine()) != null) {
+            trainerClassList.add(line);
+        }
+        trainerClassData= trainerClassList.toArray(new String[0]);
         reader.close();
     }
 
@@ -179,7 +203,7 @@ public class TrainerEditorGen4
                 }
             });
 
-            System.out.println("Trainer Class: " + trainerClass);
+//            System.out.println("Trainer Class: " + trainerClass);
             max= Math.max(trainerClass,max);
         }
         System.out.println("Highest trainer class value: " + max);
@@ -206,6 +230,7 @@ public class TrainerEditorGen4
             short numPokemon= trainerData.getNumPokemon();
 
 
+            System.out.println(trainerClassData[trainerData.getTrainerClass()] + " " + trainerNames[i]);
             System.out.println(numPokemon + " Pokemon, Flag: " + flag);
             if(flag == 0) //no defined moveset and no defined held items
             {
@@ -241,12 +266,12 @@ public class TrainerEditorGen4
                         }
 
 
-                        System.out.println(nameData[species] + ":");
-                        System.out.println("    Species Ability #: " + abilitySlot);
-                        System.out.println("    IVs: " + ivs);
-                        System.out.println("    Level: " + level);
-                        System.out.println("    Alternate Form #: " + altForm);
-                        System.out.println("    Ball Seal: " + ballSeal);
+//                        System.out.println(nameData[species] + ":");
+//                        System.out.println("    Species Ability #: " + abilitySlot);
+//                        System.out.println("    IVs: " + ivs);
+//                        System.out.println("    Level: " + level);
+//                        System.out.println("    Alternate Form #: " + altForm);
+//                        System.out.println("    Ball Seal: " + ballSeal);
 
                         short finalBallSeal = ballSeal;
                         thisTrainer.add(new TrainerPokemonData() {
@@ -354,13 +379,13 @@ public class TrainerEditorGen4
 
 
 
-                        System.out.println(nameData[species] + ":");
-                        System.out.println("    Species Ability #: " + abilitySlot);
-                        System.out.println("    IVs: " + ivs);
-                        System.out.println("    Level: " + level);
-                        System.out.println("    Alternate Form #: " + altForm);
-                        System.out.println("    Moves: " + moveData[move1] + ", " + moveData[move2] + ", " + moveData[move3] + ", " + moveData[move4]);
-                        System.out.println("    Ball Seal: " + ballSeal);
+//                        System.out.println(nameData[species] + ":");
+//                        System.out.println("    Species Ability #: " + abilitySlot);
+//                        System.out.println("    IVs: " + ivs);
+//                        System.out.println("    Level: " + level);
+//                        System.out.println("    Alternate Form #: " + altForm);
+//                        System.out.println("    Moves: " + moveData[move1] + ", " + moveData[move2] + ", " + moveData[move3] + ", " + moveData[move4]);
+//                        System.out.println("    Ball Seal: " + ballSeal);
 
                         short finalBallSeal = ballSeal;
                         thisTrainer.add(new TrainerPokemonData() {
@@ -459,13 +484,13 @@ public class TrainerEditorGen4
                                 break;
                         }
 
-                        System.out.println(nameData[species] + ":");
-                        System.out.println("    Species Ability #: " + abilitySlot);
-                        System.out.println("    IVs: " + ivs);
-                        System.out.println("    Level: " + level);
-                        System.out.println("    Alternate Form #: " + altForm);
-                        System.out.println("    Item: " + itemData[item]);
-                        System.out.println("    Ball Seal: " + ballSeal);
+//                        System.out.println(nameData[species] + ":");
+//                        System.out.println("    Species Ability #: " + abilitySlot);
+//                        System.out.println("    IVs: " + ivs);
+//                        System.out.println("    Level: " + level);
+//                        System.out.println("    Alternate Form #: " + altForm);
+//                        System.out.println("    Item: " + itemData[item]);
+//                        System.out.println("    Ball Seal: " + ballSeal);
 
                         short finalBallSeal = ballSeal;
                         thisTrainer.add(new TrainerPokemonData() {
@@ -573,14 +598,14 @@ public class TrainerEditorGen4
                                 break;
                         }
 
-                        System.out.println(nameData[species] + ":");
-                        System.out.println("    Species Ability #: " + abilitySlot);
-                        System.out.println("    IVs: " + ivs);
-                        System.out.println("    Level: " + level);
-                        System.out.println("    Alternate Form #: " + altForm);
-                        System.out.println("    Item: " + itemData[item]);
-                        System.out.println("    Moves: " + moveData[move1] + ", " + moveData[move2] + ", " + moveData[move3] + ", " + moveData[move4]);
-                        System.out.println("    Ball Seal:  " + ballSeal);
+//                        System.out.println(nameData[species] + ":");
+//                        System.out.println("    Species Ability #: " + abilitySlot);
+//                        System.out.println("    IVs: " + ivs);
+//                        System.out.println("    Level: " + level);
+//                        System.out.println("    Alternate Form #: " + altForm);
+//                        System.out.println("    Item: " + itemData[item]);
+//                        System.out.println("    Moves: " + moveData[move1] + ", " + moveData[move2] + ", " + moveData[move3] + ", " + moveData[move4]);
+//                        System.out.println("    Ball Seal:  " + ballSeal);
 
                         short finalBallSeal = ballSeal;
                         thisTrainer.add(new TrainerPokemonData() {
