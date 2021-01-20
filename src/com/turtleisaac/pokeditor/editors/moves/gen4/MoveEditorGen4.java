@@ -13,7 +13,7 @@ public class MoveEditorGen4
 //        moveEditor.movesToCsv("waza_tbl");
 //    }
 
-    private static String projectPath;
+    private String projectPath;
     private String dataPath;
     private static String resourcePath;
     private static final String[] typeArr= {"Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "???", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"};

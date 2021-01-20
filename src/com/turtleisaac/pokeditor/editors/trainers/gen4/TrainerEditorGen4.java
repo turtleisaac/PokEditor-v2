@@ -3,45 +3,35 @@ package com.turtleisaac.pokeditor.editors.trainers.gen4;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.framework.CsvReader;
+import com.turtleisaac.pokeditor.project.Game;
 
 import java.io.*;
 import java.util.*;
 
 public class TrainerEditorGen4
 {
-    public static void main(String[] args) throws IOException
-    {
-        TrainerEditorGen4 trainerEditor= new TrainerEditorGen4();
-        trainerEditor.trainersToCsv("trdata_pl","trpoke_pl");
-    }
-
-    private static String path = System.getProperty("user.dir") + File.separator; //creates a new String field containing user.dir and File.separator (/ on Unix systems, \ on Windows)
-    private String dataPath = path;
-    private static String resourcePath = path + "Program Files" + File.separator;
-    private static final String[] typeArr = {"Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", "Fairy"};
-    private static final String[] categories = {"Physical", "Special", "Status"};
-    private static final String[] statusArr = {"None", "Sleep", "Poison", "Burn", "Freeze", "Paralysis", "Confusion", "Infatuation"};
-    private static String game;
+    private String projectPath;
+    private String dataPath;
+    private static String resourcePath;
     private static String[] nameData;
     private static String[] moveData;
-    private static String[] effects;
-    private static String[] flags;
-    private static String[] targets;
-    private static String[] tmData;
     private static String[] itemData;
-    private static String[] abilityData;
-    private static String[] tmNameData;
+    private static String[] trainerNames;
+    private static String[] trainerClassData;
 
-    public TrainerEditorGen4() throws IOException
+    private Game baseRom;
+
+    public TrainerEditorGen4(String projectPath, Game baseRom) throws IOException
     {
-        Scanner scanner= new Scanner(System.in);
-        System.out.println("Diamond, Pearl, Platinum, HeartGold, or SoulSilver?");
-        game= scanner.nextLine().toLowerCase();
-
+        this.projectPath= projectPath;
+        this.baseRom= baseRom;
+        dataPath= projectPath;
+        resourcePath= projectPath.substring(0,projectPath.lastIndexOf("/"));
+        resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf("/")) + File.separator + "Program Files" + File.separator;
 
         String entryPath = resourcePath + "EntryData.txt";
         String movePath = resourcePath + "MoveList.txt";
-
+        String itemPath= resourcePath;
 
         BufferedReader reader = new BufferedReader(new FileReader(entryPath));
         ArrayList<String> nameList = new ArrayList<>();
@@ -61,30 +51,24 @@ public class TrainerEditorGen4
         moveData = moveList.toArray(new String[0]);
         reader.close();
 
-        reader = new BufferedReader(new FileReader(resourcePath + "Effects.txt"));
-        ArrayList<String> effectList = new ArrayList<>();
-        while ((line = reader.readLine()) != null) {
-            effectList.add(line);
+        switch(baseRom)
+        {
+            case Diamond:
+            case Pearl:
+                itemPath+= "ItemListDP.txt";
+                break;
+
+            case Platinum:
+                itemPath+= "ItemListPt.txt";
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                itemPath+= "ItemListJohto.txt";
+                break;
         }
-        effects = effectList.toArray(new String[0]);
-        reader.close();
 
-
-        flags = new String[500];
-        for (int i = 0; i < flags.length; i++) {
-            flags[i] = "" + i;
-        }
-
-        reader = new BufferedReader(new FileReader(resourcePath + "TmList.txt"));
-        ArrayList<String> tmList = new ArrayList<>();
-
-        while ((line = reader.readLine()) != null) {
-            tmList.add(line);
-        }
-        tmData = tmList.toArray(new String[0]);
-        reader.close();
-
-        reader = new BufferedReader(new FileReader(resourcePath + "ItemList.txt"));
+        reader = new BufferedReader(new FileReader(itemPath));
         ArrayList<String> itemList = new ArrayList<>();
 
         while ((line = reader.readLine()) != null) {
@@ -92,42 +76,14 @@ public class TrainerEditorGen4
         }
         itemData = itemList.toArray(new String[0]);
         reader.close();
-
-        reader = new BufferedReader(new FileReader(resourcePath + "AbilityList.txt"));
-        ArrayList<String> abilityList = new ArrayList<>();
-
-        while ((line = reader.readLine()) != null) {
-            abilityList.add(line);
-        }
-        abilityData = abilityList.toArray(new String[0]);
-        reader.close();
-
-        reader = new BufferedReader(new FileReader(resourcePath + "TmNameList.txt"));
-        ArrayList<String> tmNameList = new ArrayList<>();
-
-        while ((line = reader.readLine()) != null) {
-            tmNameList.add(line);
-        }
-        tmNameData = tmNameList.toArray(new String[0]);
-        reader.close();
-
-        targets = new String[0x81];
-        targets[0] = "One opponent";
-        targets[1] = "Automatic";
-        targets[2] = "Random";
-        targets[4] = "Both opponents";
-        targets[8] = "Both opponents and ally";
-        targets[16] = "User";
-        targets[32] = "User's side of field";
-        targets[64] = "Entire field";
-        targets[128] = "Opponent's side of field";
     }
 
-    public void trainersToCsv(String trainerDir, String trainerPokemonDir) throws IOException {
-        dataPath += trainerDir;
+    public void trainersToCsv(String trainerDataDir, String trainerPokemonDir) throws IOException
+    {
+        dataPath+= trainerDataDir;
 
         Buffer buffer;
-        ArrayList<TrainerDataGen4> dataList = new ArrayList<>();
+        ArrayList<TrainerDataGen4> trainerDataList = new ArrayList<>();
 
         List<File> fileList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dataPath).listFiles()))); //creates a List of File objects representing every file in specified parameter directory
         fileList.removeIf(File::isHidden); //removes all File objects from List that are hidden
@@ -135,6 +91,7 @@ public class TrainerEditorGen4
         File[] files = fileList.toArray(new File[0]); //creates an array of File objects using the contents of the modified List
         sort(files); //sorts files numerically (0.bin, 1.bin, 2.bin, etc...)
 
+        int max= Integer.MIN_VALUE;
         for (File file : files)
         {
             buffer = new Buffer(file.toString());
@@ -155,7 +112,7 @@ public class TrainerEditorGen4
             short unknown2= buffer.readUShortB();
             short unknown3= buffer.readUShortB();
 
-            dataList.add(new TrainerDataGen4() {
+            trainerDataList.add(new TrainerDataGen4() {
                 @Override
                 public short getFlag() {
                     return flag;
@@ -221,11 +178,15 @@ public class TrainerEditorGen4
                     return unknown3;
                 }
             });
+
+            System.out.println("Trainer Class: " + trainerClass);
+            max= Math.max(trainerClass,max);
         }
+        System.out.println("Highest trainer class value: " + max);
 
-        dataPath= path + trainerPokemonDir;
+        dataPath= projectPath + trainerPokemonDir;
 
-        ArrayList<ArrayList<TrainerPokemonData>> trainerPokemonData= new ArrayList<>();
+        ArrayList<ArrayList<TrainerPokemonData>> trainerPokemonList= new ArrayList<>();
 
         List<File> fileList2 = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dataPath).listFiles()))); //creates a List of File objects representing every file in specified parameter directory
         fileList2.removeIf(File::isHidden); //removes all File objects from List that are hidden
@@ -240,7 +201,7 @@ public class TrainerEditorGen4
             System.out.print(i + ": ");
             file= files2[i];
             buffer= new Buffer(file.toString());
-            TrainerDataGen4 trainerData= dataList.get(i);
+            TrainerDataGen4 trainerData= trainerDataList.get(i);
             short flag= trainerData.getFlag();
             short numPokemon= trainerData.getNumPokemon();
 
@@ -265,16 +226,16 @@ public class TrainerEditorGen4
 //                        {
 //                            ballSeal= (short)buffer.readByte();
 //                        }
-                        switch (game)
+                        switch (baseRom)
                         {
-                            case "platinum" :
-                            case "heartgold" :
-                            case "soulsilver" :
+                            case Platinum:
+                            case HeartGold:
+                            case SoulSilver:
                                 ballSeal= buffer.readShort();
                                 break;
 
-                            case "diamond" :
-                            case "pearl" :
+                            case Diamond:
+                            case Pearl:
                                 ballSeal= (short)buffer.readByte();
                                 break;
                         }
@@ -315,6 +276,36 @@ public class TrainerEditorGen4
                             }
 
                             @Override
+                            public int getItem()
+                            {
+                                return 0;
+                            }
+
+                            @Override
+                            public int getMove1()
+                            {
+                                return 0;
+                            }
+
+                            @Override
+                            public int getMove2()
+                            {
+                                return 0;
+                            }
+
+                            @Override
+                            public int getMove3()
+                            {
+                                return 0;
+                            }
+
+                            @Override
+                            public int getMove4()
+                            {
+                                return 0;
+                            }
+
+                            @Override
                             public short getBallCapsule() {
                                 return finalBallSeal;
                             }
@@ -347,16 +338,16 @@ public class TrainerEditorGen4
                         int move4= buffer.readUIntS();
 
                         short ballSeal= 0;
-                        switch (game)
+                        switch (baseRom)
                         {
-                            case "platinum" :
-                            case "heartgold" :
-                            case "soulsilver" :
+                            case Platinum:
+                            case HeartGold:
+                            case SoulSilver:
                                 ballSeal= buffer.readShort();
                                 break;
 
-                            case "diamond" :
-                            case "pearl" :
+                            case Diamond:
+                            case Pearl:
                                 ballSeal= (short)buffer.readByte();
                                 break;
                         }
@@ -372,7 +363,7 @@ public class TrainerEditorGen4
                         System.out.println("    Ball Seal: " + ballSeal);
 
                         short finalBallSeal = ballSeal;
-                        thisTrainer.add(new TrainerPokemonData.TrainerPokemonData1() {
+                        thisTrainer.add(new TrainerPokemonData() {
                             @Override
                             public short getIvs() {
                                 return ivs;
@@ -396,6 +387,12 @@ public class TrainerEditorGen4
                             @Override
                             public int getAltForm() {
                                 return altForm;
+                            }
+
+                            @Override
+                            public int getItem()
+                            {
+                                return 0;
                             }
 
                             @Override
@@ -448,16 +445,16 @@ public class TrainerEditorGen4
                         int item= buffer.readUIntS();
 
                         short ballSeal= 0;
-                        switch (game)
+                        switch (baseRom)
                         {
-                            case "platinum" :
-                            case "heartgold" :
-                            case "soulsilver" :
+                            case Platinum:
+                            case HeartGold:
+                            case SoulSilver:
                                 ballSeal= buffer.readShort();
                                 break;
 
-                            case "diamond" :
-                            case "pearl" :
+                            case Diamond:
+                            case Pearl:
                                 ballSeal= (short)buffer.readByte();
                                 break;
                         }
@@ -471,7 +468,7 @@ public class TrainerEditorGen4
                         System.out.println("    Ball Seal: " + ballSeal);
 
                         short finalBallSeal = ballSeal;
-                        thisTrainer.add(new TrainerPokemonData.TrainerPokemonData2() {
+                        thisTrainer.add(new TrainerPokemonData() {
                             @Override
                             public short getIvs() {
                                 return ivs;
@@ -500,6 +497,30 @@ public class TrainerEditorGen4
                             @Override
                             public int getItem() {
                                 return item;
+                            }
+
+                            @Override
+                            public int getMove1()
+                            {
+                                return 0;
+                            }
+
+                            @Override
+                            public int getMove2()
+                            {
+                                return 0;
+                            }
+
+                            @Override
+                            public int getMove3()
+                            {
+                                return 0;
+                            }
+
+                            @Override
+                            public int getMove4()
+                            {
+                                return 0;
                             }
 
                             @Override
@@ -538,16 +559,16 @@ public class TrainerEditorGen4
 
 
                         short ballSeal= 0;
-                        switch (game)
+                        switch (baseRom)
                         {
-                            case "platinum" :
-                            case "heartgold" :
-                            case "soulsilver" :
+                            case Platinum:
+                            case HeartGold:
+                            case SoulSilver:
                                 ballSeal= buffer.readShort();
                                 break;
 
-                            case "diamond" :
-                            case "pearl" :
+                            case Diamond:
+                            case Pearl:
                                 ballSeal= (short)buffer.readByte();
                                 break;
                         }
@@ -562,7 +583,7 @@ public class TrainerEditorGen4
                         System.out.println("    Ball Seal:  " + ballSeal);
 
                         short finalBallSeal = ballSeal;
-                        thisTrainer.add(new TrainerPokemonData.TrainerPokemonData3() {
+                        thisTrainer.add(new TrainerPokemonData() {
                             @Override
                             public short getIvs() {
                                 return ivs;
@@ -632,7 +653,29 @@ public class TrainerEditorGen4
             }
             System.out.println();
 
-            trainerPokemonData.add(thisTrainer);
+            trainerPokemonList.add(thisTrainer);
+        }
+
+
+        String[][] trainerDataTable= new String[trainerDataList.size()][];
+        for(int i= 0; i < trainerDataList.size(); i++)
+        {
+            int idx= 0;
+            TrainerDataGen4 trainerData= trainerDataList.get(i);
+            String[] thisTrainer= new String[20];
+            Arrays.fill(thisTrainer,"");
+
+            thisTrainer[idx++]= Boolean.toString((trainerData.getFlag() & 0x1) == 1);
+            thisTrainer[idx++]= Boolean.toString(((trainerData.getFlag() >> 1) & 0x1) == 1);
+
+        }
+
+        String[][] trainerPokemonTable= new String[trainerDataList.size()][];
+        for(int i= 0; i < trainerPokemonList.size(); i++)
+        {
+            ArrayList<TrainerPokemonData> thisTeam= trainerPokemonList.get(i);
+            String[] thisTrainer= new String[50];
+            Arrays.fill(thisTrainer,"");
         }
 
 
@@ -651,31 +694,31 @@ public class TrainerEditorGen4
     }
 
 
-    public void csvToTrainers(String trainerCsv, String outputDir) throws IOException {
-        String trainerPath = path + trainerCsv;
-        String outputPath;
-
-        if (outputDir.contains("Recompile")) {
-            outputPath = path + "temp" + File.separator + outputDir;
-        } else {
-            outputPath = path + File.separator + outputDir;
-        }
-
-        if (!new File(outputPath).exists() && !new File(outputPath).mkdir()) {
-            throw new RuntimeException("Could not create output directory. Check write permissions");
-        }
-        outputPath += File.separator;
-
-        CsvReader csvReader = new CsvReader(trainerPath);
-        BinaryWriter writer;
-        for (int i = 0; i < csvReader.length(); i++) {
-            initializeIndex(csvReader.next());
-            writer = new BinaryWriter(outputPath + i + ".bin");
-
-            writer.close();
-        }
-
-    }
+//    public void csvToTrainers(String trainerCsv, String outputDir) throws IOException {
+//        String trainerPath = path + trainerCsv;
+//        String outputPath;
+//
+//        if (outputDir.contains("Recompile")) {
+//            outputPath = path + "temp" + File.separator + outputDir;
+//        } else {
+//            outputPath = path + File.separator + outputDir;
+//        }
+//
+//        if (!new File(outputPath).exists() && !new File(outputPath).mkdir()) {
+//            throw new RuntimeException("Could not create output directory. Check write permissions");
+//        }
+//        outputPath += File.separator;
+//
+//        CsvReader csvReader = new CsvReader(trainerPath);
+//        BinaryWriter writer;
+//        for (int i = 0; i < csvReader.length(); i++) {
+//            initializeIndex(csvReader.next());
+//            writer = new BinaryWriter(outputPath + i + ".bin");
+//
+//            writer.close();
+//        }
+//
+//    }
 
     private void sort(File arr[]) {
         Arrays.sort(arr, Comparator.comparingInt(TrainerEditorGen4::fileToInt));
@@ -701,16 +744,6 @@ public class TrainerEditorGen4
         }
     }
 
-    private static byte getType(String type) {
-        for (int i = 0; i < typeArr.length; i++) {
-            if (type.equals(typeArr[i])) {
-                return (byte) i;
-            }
-        }
-
-        throw new RuntimeException("Invalid type entered: " + type);
-    }
-
     private static int getMove(String move) {
         for (int i = 0; i < moveData.length; i++) {
             if (move.equals(moveData[i])) {
@@ -718,33 +751,6 @@ public class TrainerEditorGen4
             }
         }
         throw new RuntimeException("Invalid move entered: " + move);
-    }
-
-    private static short getEffect(String effect) {
-        for (int i = 0; i < effects.length; i++) {
-            if (effect.equals(effects[i])) {
-                return (short) i;
-            }
-        }
-        throw new RuntimeException("Invalid effect entered: " + effect);
-    }
-
-    private static byte getCategory(String category) {
-        for (int i = 0; i < categories.length; i++) {
-            if (category.equals(categories[i])) {
-                return (byte) i;
-            }
-        }
-        throw new RuntimeException("Invalid category entered: " + category);
-    }
-
-    private static short getTargets(String target) {
-        for (int i = 0; i < targets.length; i++) {
-            if (target.equals(targets[i])) {
-                return (byte) i;
-            }
-        }
-        throw new RuntimeException("Invalid target(s) entered: " + target);
     }
 
     private boolean isNotFull(int[] arr)

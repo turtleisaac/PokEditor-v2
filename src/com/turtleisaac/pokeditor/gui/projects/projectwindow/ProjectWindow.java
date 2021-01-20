@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.*;
@@ -240,6 +241,15 @@ public class ProjectWindow extends JFrame
             RomApplier editApplier= new RomApplier(project, projectPath, api, this);
             editApplier.setLocationRelativeTo(this);
             setEnabled(false);
+            try
+            {
+                Thread.sleep(100);
+            }
+            catch (InterruptedException | IllegalMonitorStateException exception)
+            {
+                exception.printStackTrace();
+            }
+
             editApplier.toFront();
         }
 

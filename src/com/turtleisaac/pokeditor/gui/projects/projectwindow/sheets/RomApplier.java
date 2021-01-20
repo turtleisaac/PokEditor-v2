@@ -17,6 +17,7 @@ import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.gui.JCheckboxTree;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
@@ -35,6 +36,7 @@ import java.util.Objects;
 
 /**
  * @author turtleisaac
+ * This class is for applying rom data to sheets
  */
 public class RomApplier extends JFrame
 {
@@ -192,6 +194,16 @@ public class RomApplier extends JFrame
                         if(contains(selected,"Mode"))
                             api.updateSheet("Dual-Slot Mode Encounters",encounterReturn.getDualSlot());
                     }
+
+                    if(contains(selected, "Trainer"))
+                    {
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        narctowl.unpack(dataPath + "/poketool/trainer/trdata.narc",dataPath + "/poketool/trainer/trdata");
+                        narctowl.unpack(dataPath + "/poketool/trainer/trpoke.narc",dataPath + "/poketool/trainer/trpoke");
+                        toDelete.add(new File(dataPath + "/poketool/trainer/trdata"));
+                        toDelete.add(new File(dataPath + "/poketool/trainer/trpoke"));
+                        editor.trainersToCsv("/poketool/trainer/trdata","/poketool/trainer/trpoke");
+                    }
                     break;
 
                 case Platinum:
@@ -273,6 +285,16 @@ public class RomApplier extends JFrame
                             api.updateSheet("Poke Radar Encounters",encounterReturn.getRadar());
                         if(contains(selected,"Mode"))
                             api.updateSheet("Dual-Slot Mode Encounters",encounterReturn.getDualSlot());
+                    }
+
+                    if(contains(selected, "Trainer"))
+                    {
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        narctowl.unpack(dataPath + "/poketool/trainer/trdata.narc",dataPath + "/poketool/trainer/trdata");
+                        narctowl.unpack(dataPath + "/poketool/trainer/trpoke.narc",dataPath + "/poketool/trainer/trpoke");
+                        toDelete.add(new File(dataPath + "/poketool/trainer/trdata"));
+                        toDelete.add(new File(dataPath + "/poketool/trainer/trpoke"));
+                        editor.trainersToCsv("/poketool/trainer/trdata","/poketool/trainer/trpoke");
                     }
                     break;
 

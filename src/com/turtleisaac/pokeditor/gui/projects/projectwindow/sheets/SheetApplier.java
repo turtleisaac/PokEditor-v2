@@ -30,6 +30,7 @@ import turtleisaac.GoogleSheetsAPI;
 
 /**
  * @author turtleisaac
+ * This class is for applying sheet data to a ROM
  */
 public class SheetApplier extends JFrame
 {
