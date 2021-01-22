@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.*;
@@ -26,6 +25,7 @@ import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
 import com.turtleisaac.pokeditor.gui.MyFilter;
 import com.turtleisaac.pokeditor.gui.main.PokEditor;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.console.ConsoleWindow;
+import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers.TrainerPanel;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.RomApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetsSetup;
@@ -612,6 +612,16 @@ public class ProjectWindow extends JFrame
         JOptionPane.showMessageDialog(this,"Not implemented yet.","Error",JOptionPane.ERROR_MESSAGE);
     }
 
+    private void trainerSelectionComboBoxActionPerformed(ActionEvent e)
+    {
+        // TODO add your code here
+    }
+
+    private void newTrainerButtonActionPerformed(ActionEvent e)
+    {
+        // TODO add your code here
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         menuBar = new JMenuBar();
@@ -640,13 +650,14 @@ public class ProjectWindow extends JFrame
         sheetRefreshChangesButton = new JButton();
         sheetUploadChangesButton = new JButton();
         warningLabel = new JLabel();
-        panel2 = new JPanel();
+        trainerPanel1 = new TrainerPanel();
+        starterPanel = new JPanel();
         label1 = new JLabel();
-        panel3 = new JPanel();
+        introPanel = new JPanel();
         label2 = new JLabel();
-        panel4 = new JPanel();
+        openingPanel = new JPanel();
         label3 = new JLabel();
-        panel5 = new JPanel();
+        spritePanel = new JPanel();
         label4 = new JLabel();
         jtbMain = new JToolBar();
         openProjectButton = new JButton();
@@ -671,11 +682,7 @@ public class ProjectWindow extends JFrame
             "[853,grow,fill]",
             // rows
             "[]" +
-            "[63,grow,top]" +
-            "[]" +
-            "[]" +
-            "[]" +
-            "[grow]"));
+            "[63,grow,top]"));
 
         //======== menuBar ========
         {
@@ -765,9 +772,9 @@ public class ProjectWindow extends JFrame
                     "[]" +
                     "[]" +
                     "[]" +
-                    "[grow,center]" +
+                    "[grow,fill]" +
                     "[]" +
-                    "[top]"));
+                    "[bottom]"));
 
                 //---- sheetsSetupButton ----
                 sheetsSetupButton.setText("Google Sheets Integration Setup");
@@ -787,6 +794,7 @@ public class ProjectWindow extends JFrame
 
                 //---- sheetChooserComboBox ----
                 sheetChooserComboBox.setEnabled(false);
+                sheetChooserComboBox.setEditable(true);
                 sheetChooserComboBox.addActionListener(e -> sheetChooserComboBoxActionPerformed(e));
                 mainPanel.add(sheetChooserComboBox, "cell 0 2 2 1");
 
@@ -836,10 +844,11 @@ public class ProjectWindow extends JFrame
                 mainPanel.add(warningLabel, "cell 0 6 2 1,alignx center,growx 0");
             }
             tabbedPane1.addTab("Main", mainPanel);
+            tabbedPane1.addTab("Trainer Editor", trainerPanel1);
 
-            //======== panel2 ========
+            //======== starterPanel ========
             {
-                panel2.setLayout(new MigLayout(
+                starterPanel.setLayout(new MigLayout(
                     "hidemode 3",
                     // columns
                     "[fill]" +
@@ -851,13 +860,13 @@ public class ProjectWindow extends JFrame
 
                 //---- label1 ----
                 label1.setText("You were expecting a starter editor, but it was me, Dio!");
-                panel2.add(label1, "cell 0 0");
+                starterPanel.add(label1, "cell 0 0");
             }
-            tabbedPane1.addTab("Starters", panel2);
+            tabbedPane1.addTab("Starters", starterPanel);
 
-            //======== panel3 ========
+            //======== introPanel ========
             {
-                panel3.setLayout(new MigLayout(
+                introPanel.setLayout(new MigLayout(
                     "hidemode 3",
                     // columns
                     "[fill]" +
@@ -869,13 +878,13 @@ public class ProjectWindow extends JFrame
 
                 //---- label2 ----
                 label2.setText("You were expecting an intro cutscene editor, but it was me, Dio!");
-                panel3.add(label2, "cell 0 0");
+                introPanel.add(label2, "cell 0 0");
             }
-            tabbedPane1.addTab("Intro Cutscene", panel3);
+            tabbedPane1.addTab("Intro Cutscene", introPanel);
 
-            //======== panel4 ========
+            //======== openingPanel ========
             {
-                panel4.setLayout(new MigLayout(
+                openingPanel.setLayout(new MigLayout(
                     "hidemode 3",
                     // columns
                     "[fill]" +
@@ -887,13 +896,13 @@ public class ProjectWindow extends JFrame
 
                 //---- label3 ----
                 label3.setText("You were expecting an opening cutscene editor, but it was me, Dio!");
-                panel4.add(label3, "cell 0 0");
+                openingPanel.add(label3, "cell 0 0");
             }
-            tabbedPane1.addTab("Opening Cutscene", panel4);
+            tabbedPane1.addTab("Opening Cutscene", openingPanel);
 
-            //======== panel5 ========
+            //======== spritePanel ========
             {
-                panel5.setLayout(new MigLayout(
+                spritePanel.setLayout(new MigLayout(
                     "hidemode 3",
                     // columns
                     "[fill]" +
@@ -905,11 +914,11 @@ public class ProjectWindow extends JFrame
 
                 //---- label4 ----
                 label4.setText("You were expecting a sprite editor, but it was me, Dio!");
-                panel5.add(label4, "cell 0 0");
+                spritePanel.add(label4, "cell 0 0");
             }
-            tabbedPane1.addTab("Sprites", panel5);
+            tabbedPane1.addTab("Sprites", spritePanel);
         }
-        contentPane.add(tabbedPane1, "cell 0 1 1 5");
+        contentPane.add(tabbedPane1, "cell 0 1");
 
         //======== jtbMain ========
         {
@@ -992,13 +1001,14 @@ public class ProjectWindow extends JFrame
     private JButton sheetRefreshChangesButton;
     private JButton sheetUploadChangesButton;
     private JLabel warningLabel;
-    private JPanel panel2;
+    private TrainerPanel trainerPanel1;
+    private JPanel starterPanel;
     private JLabel label1;
-    private JPanel panel3;
+    private JPanel introPanel;
     private JLabel label2;
-    private JPanel panel4;
+    private JPanel openingPanel;
     private JLabel label3;
-    private JPanel panel5;
+    private JPanel spritePanel;
     private JLabel label4;
     private JToolBar jtbMain;
     private JButton openProjectButton;

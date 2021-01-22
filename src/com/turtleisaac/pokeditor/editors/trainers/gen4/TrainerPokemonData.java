@@ -1,5 +1,7 @@
 package com.turtleisaac.pokeditor.editors.trainers.gen4;
 
+import java.util.ArrayList;
+
 public interface TrainerPokemonData
 {
     short getIvs();
@@ -17,4 +19,11 @@ public interface TrainerPokemonData
     int getMove4();
 
     short getBallCapsule();
+
+//    public static ArrayList<TrainerPokemonData> create(String[] arr)
+//    {
+//        ArrayList<TrainerPokemonData> pokemonList= new ArrayList<>();
+//
+//
+//    }
 }

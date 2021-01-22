@@ -6,7 +6,7 @@ new FormModel {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "hidemode 3"
 			"$columnConstraints": "[853,grow,fill]"
-			"$rowConstraints": "[][63,grow,top][][][][grow]"
+			"$rowConstraints": "[][63,grow,top]"
 		} ) {
 			name: "this"
 			"title": "PokEditor"
@@ -23,7 +23,7 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "hidemode 3"
 					"$columnConstraints": "[grow,fill][grow,fill]"
-					"$rowConstraints": "[54][][][][grow,center][][top]"
+					"$rowConstraints": "[54][][][][grow,fill][][bottom]"
 				} ) {
 					name: "mainPanel"
 					add( new FormComponent( "javax.swing.JButton" ) {
@@ -44,6 +44,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "sheetChooserComboBox"
 						"enabled": false
+						"editable": true
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sheetChooserComboBoxActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 2 2 1"
@@ -106,12 +107,17 @@ new FormModel {
 				}, new FormLayoutConstraints( null ) {
 					"title": "Main"
 				} )
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.TrainerPanel" ) {
+					name: "trainerPanel1"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Trainer Editor"
+				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "hidemode 3"
 					"$columnConstraints": "[fill][fill]"
 					"$rowConstraints": "[][][]"
 				} ) {
-					name: "panel2"
+					name: "starterPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
 						"text": "You were expecting a starter editor, but it was me, Dio!"
@@ -126,7 +132,7 @@ new FormModel {
 					"$columnConstraints": "[fill][fill]"
 					"$rowConstraints": "[][][]"
 				} ) {
-					name: "panel3"
+					name: "introPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label2"
 						"text": "You were expecting an intro cutscene editor, but it was me, Dio!"
@@ -141,7 +147,7 @@ new FormModel {
 					"$columnConstraints": "[fill][fill]"
 					"$rowConstraints": "[][][]"
 				} ) {
-					name: "panel4"
+					name: "openingPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label3"
 						"text": "You were expecting an opening cutscene editor, but it was me, Dio!"
@@ -156,7 +162,7 @@ new FormModel {
 					"$columnConstraints": "[fill][fill]"
 					"$rowConstraints": "[][][]"
 				} ) {
-					name: "panel5"
+					name: "spritePanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label4"
 						"text": "You were expecting a sprite editor, but it was me, Dio!"
@@ -167,7 +173,7 @@ new FormModel {
 					"title": "Sprites"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 1 1 5"
+				"value": "cell 0 1"
 			} )
 			add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
 				name: "jtbMain"
@@ -292,7 +298,7 @@ new FormModel {
 			}
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 920, 660 )
+			"size": new java.awt.Dimension( 960, 950 )
 		} )
 	}
 }

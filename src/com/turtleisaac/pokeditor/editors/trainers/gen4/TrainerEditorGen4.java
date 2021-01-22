@@ -16,6 +16,7 @@ public class TrainerEditorGen4
     private static String[] nameData;
     private static String[] moveData;
     private static String[] itemData;
+    private static String[] abilityData;
     private static String[] trainerNames;
     private static String[] trainerClassData;
 
@@ -99,6 +100,17 @@ public class TrainerEditorGen4
             trainerClassList.add(line);
         }
         trainerClassData= trainerClassList.toArray(new String[0]);
+        reader.close();
+
+        reader= new BufferedReader(new FileReader(resourcePath + "AbilityList.txt"));
+        ArrayList<String> abilityList= new ArrayList<>();
+
+        while((line= reader.readLine()) != null)
+        {
+            line= line.trim();
+            abilityList.add(line);
+        }
+        abilityData= abilityList.toArray(new String[0]);
         reader.close();
     }
 
@@ -687,20 +699,68 @@ public class TrainerEditorGen4
         {
             int idx= 0;
             TrainerDataGen4 trainerData= trainerDataList.get(i);
-            String[] thisTrainer= new String[20];
+            String[] thisTrainer= new String[27];
             Arrays.fill(thisTrainer,"");
 
-            thisTrainer[idx++]= Boolean.toString((trainerData.getFlag() & 0x1) == 1);
-            thisTrainer[idx++]= Boolean.toString(((trainerData.getFlag() >> 1) & 0x1) == 1);
+            thisTrainer[idx++]= Boolean.toString((trainerData.getFlag() & 0x1) == 1); //defined moveset
+            thisTrainer[idx++]= Boolean.toString(((trainerData.getFlag() >> 1) & 0x1) == 1); //defined held items
+            thisTrainer[idx++]= trainerClassData[trainerData.getTrainerClass()];
+            thisTrainer[idx++]= "" + trainerData.getBattleType();
+            thisTrainer[idx++]= "" + trainerData.getNumPokemon();
+            thisTrainer[idx++]= itemData[trainerData.getItem1()];
+            thisTrainer[idx++]= itemData[trainerData.getItem2()];
+            thisTrainer[idx++]= itemData[trainerData.getItem3()];
+            thisTrainer[idx++]= itemData[trainerData.getItem4()];
 
+            for(int x= 0; x < 14; x++)
+            {
+                thisTrainer[idx++]= Boolean.toString(((trainerData.getAI() >> x) & 0x1) == 1);
+            }
+
+            thisTrainer[idx++]= trainerData.getBattleType2() == 0 ? "Single Battle" : "Double Battle";
+            thisTrainer[idx++]= "" + trainerData.getUnknown1();
+            thisTrainer[idx++]= "" + trainerData.getUnknown2();
+            thisTrainer[idx]= "" + trainerData.getUnknown3();
+
+//            System.out.println(i + ": " + Arrays.toString(thisTrainer));
+            trainerDataTable[i]= thisTrainer;
         }
 
         String[][] trainerPokemonTable= new String[trainerDataList.size()][];
         for(int i= 0; i < trainerPokemonList.size(); i++)
         {
             ArrayList<TrainerPokemonData> thisTeam= trainerPokemonList.get(i);
-            String[] thisTrainer= new String[50];
+            TrainerDataGen4 trainerData= trainerDataList.get(i);
+            String[] thisTrainer= new String[150];
             Arrays.fill(thisTrainer,"");
+
+            System.out.println(i + ": ");
+            int idx= 0;
+            for(int x= 0; x < thisTeam.size(); x++)
+            {
+                TrainerPokemonData pokemon= thisTeam.get(x);
+                System.out.println("    " + Integer.toBinaryString(pokemon.getIvs()) + " (" + pokemon.getIvs() + ")");
+                for(int y= 0; y < 8; y++)
+                {
+                    thisTrainer[idx++]= Boolean.toString(((pokemon.getIvs() >> y) & 0x1) == 1);
+                }
+                thisTrainer[idx++]= abilityData[pokemon.getAbility()];
+                thisTrainer[idx++]= "" + pokemon.getLevel();
+                thisTrainer[idx++]= nameData[pokemon.getPokemon()];
+                thisTrainer[idx++]= "" + pokemon.getAltForm();
+                thisTrainer[idx++]= itemData[pokemon.getItem()];
+                thisTrainer[idx++]= moveData[pokemon.getMove1()];
+                thisTrainer[idx++]= moveData[pokemon.getMove2()];
+                thisTrainer[idx++]= moveData[pokemon.getMove3()];
+                thisTrainer[idx++]= moveData[pokemon.getMove4()];
+                for(int y= 0; y < 8; y++)
+                {
+                    thisTrainer[idx++]= Boolean.toString(((pokemon.getBallCapsule() >> y) & 0x1) == 1);
+                }
+            }
+            System.out.println();
+//            System.out.println(i + ": " + Arrays.toString(thisTrainer));
+            trainerPokemonTable[i]= thisTrainer;
         }
 
 
@@ -776,6 +836,18 @@ public class TrainerEditorGen4
             }
         }
         throw new RuntimeException("Invalid move entered: " + move);
+    }
+
+    private static int getAbility(String ability)
+    {
+        for(int i= 0; i < abilityData.length; i++)
+        {
+            if(ability.equals(abilityData[i]))
+            {
+                return i;
+            }
+        }
+        throw new RuntimeException("Invalid ability entered: " + ability);
     }
 
     private boolean isNotFull(int[] arr)
