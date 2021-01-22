@@ -44,7 +44,6 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "sheetChooserComboBox"
 						"enabled": false
-						"editable": true
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sheetChooserComboBoxActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 2 2 1"
@@ -107,7 +106,7 @@ new FormModel {
 				}, new FormLayoutConstraints( null ) {
 					"title": "Main"
 				} )
-				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.TrainerPanel" ) {
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers.TrainerPanel" ) {
 					name: "trainerPanel1"
 				}, new FormLayoutConstraints( null ) {
 					"title": "Trainer Editor"

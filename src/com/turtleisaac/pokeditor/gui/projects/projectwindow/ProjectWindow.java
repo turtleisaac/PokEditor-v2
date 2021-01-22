@@ -19,6 +19,7 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 
 import com.jackhack96.jNdstool.main.JNdstool;
+import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
@@ -129,7 +130,7 @@ public class ProjectWindow extends JFrame
                 break;
         }
 
-        setPreferredSize(new Dimension(850, 750));
+        setPreferredSize(new Dimension(850, 800));
 
         pack();
         toFront();
@@ -184,6 +185,8 @@ public class ProjectWindow extends JFrame
             zipIn.closeEntry();
             zipIn.close();
         }
+
+        ComboBoxSearchable sheetComboBoxSearchable= new ComboBoxSearchable(sheetChooserComboBox);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -794,7 +797,6 @@ public class ProjectWindow extends JFrame
 
                 //---- sheetChooserComboBox ----
                 sheetChooserComboBox.setEnabled(false);
-                sheetChooserComboBox.setEditable(true);
                 sheetChooserComboBox.addActionListener(e -> sheetChooserComboBoxActionPerformed(e));
                 mainPanel.add(sheetChooserComboBox, "cell 0 2 2 1");
 

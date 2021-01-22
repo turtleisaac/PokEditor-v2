@@ -31,8 +31,8 @@ public class MoveEditorGen4
     {
         this.projectPath= projectPath;
         dataPath= projectPath;
-        resourcePath= projectPath.substring(0,projectPath.lastIndexOf("/"));
-        resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf("/")) + File.separator + "Program Files" + File.separator;
+        resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
+        resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
         String entryPath= resourcePath + "EntryData.txt";
         String movePath= resourcePath + "MoveList.txt";

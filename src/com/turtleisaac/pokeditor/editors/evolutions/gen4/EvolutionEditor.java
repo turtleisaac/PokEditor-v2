@@ -28,8 +28,8 @@ public class EvolutionEditor
         this.projectPath= projectPath;
         this.baseRom= baseRom;
         dataPath= projectPath;
-        resourcePath= projectPath.substring(0,projectPath.lastIndexOf("/"));
-        resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf("/")) + File.separator + "Program Files" + File.separator;
+        resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
+        resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
         defaultsPath= resourcePath + "Defaults" + File.separator;
 
 
