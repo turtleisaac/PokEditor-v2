@@ -244,6 +244,7 @@ public class TrainerEditorGen4
 
             System.out.println(trainerClassData[trainerData.getTrainerClass()] + " " + trainerNames[i]);
             System.out.println(numPokemon + " Pokemon, Flag: " + flag);
+            System.out.println(trainerData.getTrainerClass());
             if(flag == 0) //no defined moveset and no defined held items
             {
                 for(int x= 0; x < numPokemon; x++)
@@ -610,14 +611,14 @@ public class TrainerEditorGen4
                                 break;
                         }
 
-//                        System.out.println(nameData[species] + ":");
-//                        System.out.println("    Species Ability #: " + abilitySlot);
-//                        System.out.println("    IVs: " + ivs);
-//                        System.out.println("    Level: " + level);
-//                        System.out.println("    Alternate Form #: " + altForm);
-//                        System.out.println("    Item: " + itemData[item]);
-//                        System.out.println("    Moves: " + moveData[move1] + ", " + moveData[move2] + ", " + moveData[move3] + ", " + moveData[move4]);
-//                        System.out.println("    Ball Seal:  " + ballSeal);
+                        System.out.println(nameData[species] + ":");
+                        System.out.println("    Species Ability #: " + abilitySlot);
+                        System.out.println("    IVs: " + ivs);
+                        System.out.println("    Level: " + level);
+                        System.out.println("    Alternate Form #: " + altForm);
+                        System.out.println("    Item: " + itemData[item]);
+                        System.out.println("    Moves: " + moveData[move1] + ", " + moveData[move2] + ", " + moveData[move3] + ", " + moveData[move4]);
+                        System.out.println("    Ball Seal:  " + ballSeal);
 
                         short finalBallSeal = ballSeal;
                         thisTrainer.add(new TrainerPokemonData() {
@@ -722,7 +723,7 @@ public class TrainerEditorGen4
             thisTrainer[idx++]= "" + trainerData.getUnknown2();
             thisTrainer[idx]= "" + trainerData.getUnknown3();
 
-//            System.out.println(i + ": " + Arrays.toString(thisTrainer));
+            System.out.println(i + ": " + Arrays.toString(thisTrainer));
             trainerDataTable[i]= thisTrainer;
         }
 
@@ -733,13 +734,10 @@ public class TrainerEditorGen4
             TrainerDataGen4 trainerData= trainerDataList.get(i);
             String[] thisTrainer= new String[150];
             Arrays.fill(thisTrainer,"");
-
-            System.out.println(i + ": ");
             int idx= 0;
             for(int x= 0; x < thisTeam.size(); x++)
             {
                 TrainerPokemonData pokemon= thisTeam.get(x);
-                System.out.println("    " + Integer.toBinaryString(pokemon.getIvs()) + " (" + pokemon.getIvs() + ")");
                 for(int y= 0; y < 8; y++)
                 {
                     thisTrainer[idx++]= Boolean.toString(((pokemon.getIvs() >> y) & 0x1) == 1);
@@ -758,7 +756,7 @@ public class TrainerEditorGen4
                     thisTrainer[idx++]= Boolean.toString(((pokemon.getBallCapsule() >> y) & 0x1) == 1);
                 }
             }
-            System.out.println();
+//            System.out.println();
 //            System.out.println(i + ": " + Arrays.toString(thisTrainer));
             trainerPokemonTable[i]= thisTrainer;
         }

@@ -130,7 +130,7 @@ public class ProjectWindow extends JFrame
                 break;
         }
 
-        setPreferredSize(new Dimension(850, 800));
+        setPreferredSize(new Dimension(950, 1000));
 
         pack();
         toFront();
@@ -187,6 +187,7 @@ public class ProjectWindow extends JFrame
         }
 
         ComboBoxSearchable sheetComboBoxSearchable= new ComboBoxSearchable(sheetChooserComboBox);
+        trainerPanel1.setProjectPath(projectPath);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -1240,5 +1241,10 @@ public class ProjectWindow extends JFrame
         }
 
         return destFile;
+    }
+
+    public String getProjectPath()
+    {
+        return projectPath;
     }
 }

@@ -5,10 +5,23 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "hidemode 3"
-			"$columnConstraints": "[fill][fill]"
-			"$rowConstraints": "[][grow,center]"
+			"$columnConstraints": "[grow,fill][fill]"
+			"$rowConstraints": "[][][grow,center]"
 		} ) {
 			name: "this"
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "trainerSelectionComboBox"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "trainerSelectionComboBoxActionPerformed", true ) )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "newTrainerButton"
+				"text": "New Trainer"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "newTrainerButtonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0"
+			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "hidemode 3"
 				"$columnConstraints": "[grow,fill][fill][fill][fill][fill]"
@@ -16,23 +29,17 @@ new FormModel {
 			} ) {
 				name: "trainerDataPanel"
 				"border": new javax.swing.border.TitledBorder( "Trainer Data" )
-				add( new FormComponent( "javax.swing.JComboBox" ) {
-					name: "trainerSelectionComboBox"
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "trainerSelectionComboBoxActionPerformed", true ) )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "button1"
+					"text": "Export Pokémon"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "newTrainerButton"
-					"text": "New Trainer"
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "newTrainerButtonActionPerformed", true ) )
+					name: "button2"
+					"text": "Import Pokémon"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0"
-				} )
-				add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
-					name: "hSpacer1"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 0 2 1"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
 					name: "toggleMovesCheckbox"
@@ -98,9 +105,8 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "trainerNameTextField"
-						"text": "                                                                                    "
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 1,alignx left,growx 0"
+						"value": "cell 0 1,growx"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "numberPokemonLabel"
@@ -244,13 +250,13 @@ new FormModel {
 					"value": "cell 0 1 5 1"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 0"
+				"value": "cell 0 1 2 1"
 			} )
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "trainerPokemonTabbedPane"
 				"border": new javax.swing.border.TitledBorder( "Pokémon" )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 1,grow"
+				"value": "cell 0 2 2 1,grow"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )

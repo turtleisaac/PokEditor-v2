@@ -6,7 +6,7 @@ new FormModel {
 		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "hidemode 3"
 			"$columnConstraints": "[grow,fill][338,grow,fill][fill]"
-			"$rowConstraints": "[][]"
+			"$rowConstraints": "[][grow]"
 		} ) {
 			name: "this"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
@@ -86,83 +86,198 @@ new FormModel {
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 0,growy"
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-				"$layoutConstraints": "hidemode 3"
-				"$columnConstraints": "[fill][fill][fill][grow,fill][fill][grow,fill]"
-				"$rowConstraints": "[][]"
-			} ) {
-				name: "pidPanel"
-				"border": new javax.swing.border.TitledBorder( "PID Generation" )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label1"
-					"text": "Level"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 0,alignx center,growx 0"
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "pidPane"
+				"border": new javax.swing.border.TitledBorder( "text" )
+				"name": "PID Calculation"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[grow,fill][grow,fill][grow,fill][grow,fill][grow,fill][grow,fill][fill]"
+					"$rowConstraints": "[][]"
+				} ) {
+					name: "superCustomPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "superCustomLevelLabel"
+						"text": "Level"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "superCustomIvLable"
+						"text": "IV Value"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "superCustomAbilityLabel"
+						"text": "Ability"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 2 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "superCustomNatureLabel"
+						"text": "Nature"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 3 0 2 1,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "superCustomFormLabel"
+						"text": "Form No."
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 5 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "superCustomLevelTextField"
+						"toolTipText": "A value ranging from 1 to 100"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "superCustomIvTextField"
+						"toolTipText": "A value ranging from 0 to 31"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "superCustomAbilityTextField"
+						"toolTipText": "Changes which ability posessed by this species is used (HGSS only)"
+						"text": "0"
+						"editable": false
+						"enabled": false
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 2 1"
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "superCustomNatureComboBox"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 3 1 2 1"
+					} )
+					add( new FormComponent( "javax.swing.JSlider" ) {
+						name: "superCustomFormSlider"
+						"paintLabels": true
+						"paintTicks": true
+						"snapToTicks": true
+						"value": 0
+						"maximum": 1
+						"majorTickSpacing": 1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 5 1"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "superCustomApplyButton"
+						"text": "Apply"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "superCustomApplyButtonActionPerformed", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 6 0 1 2,grow"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Method 1"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label2"
-					"text": "IV Value"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 0,alignx center,growx 0"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][grow,fill][fill]"
+					"$rowConstraints": "[][grow]"
+				} ) {
+					name: "targetPidPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "targetPidLevelLabel"
+						"text": "Level"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "targetPidLabel"
+						"text": "Target PID (Hexadecimal)"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "targetPidTextField"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "targetPidApplyButton"
+						"text": "Apply"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "targetPidApplyButtonActionPerformed", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 2 0 1 2,growy"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "targetPidLevelTextField"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Method 2"
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label3"
-					"text": "Ability"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 2 0,alignx center,growx 0"
-				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label4"
-					"text": "Nature"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 3 0 2 1,alignx center,growx 0"
-				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "formLabel"
-					"text": "Form No."
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 5 0,alignx center,growx 0"
-				} )
-				add( new FormComponent( "javax.swing.JTextField" ) {
-					name: "textField1"
-					"toolTipText": "A value ranging from 1 to 100"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 1"
-				} )
-				add( new FormComponent( "javax.swing.JTextField" ) {
-					name: "textField2"
-					"toolTipText": "A value ranging from 0 to 31"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 1"
-				} )
-				add( new FormComponent( "javax.swing.JTextField" ) {
-					name: "textField3"
-					"toolTipText": "Changes which ability posessed by this species is used (HGSS only)"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 2 1"
-				} )
-				add( new FormComponent( "javax.swing.JComboBox" ) {
-					name: "comboBox1"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 3 1 2 1"
-				} )
-				add( new FormComponent( "javax.swing.JSlider" ) {
-					name: "formSlider"
-					"paintLabels": true
-					"paintTicks": true
-					"snapToTicks": true
-					"value": 0
-					"maximum": 1
-					"majorTickSpacing": 1
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 5 1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[grow,fill][grow,fill][grow,fill][grow,fill][fill]"
+					"$rowConstraints": "[][grow]"
+				} ) {
+					name: "oldMethodPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "oldMethodLevelLabel"
+						"text": "Level"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "oldMethodFormLabel"
+						"text": "Form No."
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "oldMethodLevelTextField"
+						"toolTipText": "A value ranging from 1 to 100"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "oldMethodDifficultyLabel"
+						"text": "Difficulty Value"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 2 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "oldMethodAbilityLabel"
+						"text": "Ability No."
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 3 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "oldMethodFormTextField"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "oldMethodDifficultyTextField"
+						"toolTipText": "A value ranging from 0 to 31"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 2 1"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "oldMethodAbilityTextField"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 3 1"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "oldMethodApplyButton"
+						"text": "Apply"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 4 0 1 2,grow"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Method 3"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 1 3 1"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 650, 370 )
+			"size": new java.awt.Dimension( 650, 400 )
 		} )
 	}
 }

@@ -6,6 +6,7 @@ package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -25,11 +26,17 @@ public class TrainerPanel extends JPanel
     private ArrayList<TrainerPokemonData> pokemonlist;
     private int lastSelected;
 
+    private String projectPath;
+    private String[] nameData;
+    private String[] itemData;
+    private String[] moveData;
+    private static String[] trainerNames;
+    private static String[] trainerClassData;
+
     public TrainerPanel()
     {
         initComponents();
         lastSelected= 0;
-        trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
 
         ComboBoxSearchable itemComboBoxSearchable1= new ComboBoxSearchable(itemComboBox1);
         ComboBoxSearchable itemComboBoxSearchable2= new ComboBoxSearchable(itemComboBox2);
@@ -38,6 +45,9 @@ public class TrainerPanel extends JPanel
 
         ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
         ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
+
+
+
     }
 
     public void setTrainer(TrainerDataGen4 trainer)
@@ -50,7 +60,7 @@ public class TrainerPanel extends JPanel
         this.pokemonlist= pokemonlist;
         for(TrainerPokemonData pokemon : pokemonlist)
         {
-            trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
+            trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
         }
     }
 
@@ -76,7 +86,7 @@ public class TrainerPanel extends JPanel
         {
             while(trainerPokemonTabbedPane.getTabCount() != numberPokemonSlider.getValue())
             {
-                trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
+                trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
             }
         }
         else
@@ -127,10 +137,11 @@ public class TrainerPanel extends JPanel
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        trainerDataPanel = new JPanel();
         trainerSelectionComboBox = new JComboBox();
         newTrainerButton = new JButton();
-        hSpacer1 = new JPanel(null);
+        trainerDataPanel = new JPanel();
+        button1 = new JButton();
+        button2 = new JButton();
         toggleMovesCheckbox = new JCheckBox();
         toggleHeldItemsCheckbox = new JCheckBox();
         checkBox1 = new JCheckBox();
@@ -168,11 +179,21 @@ public class TrainerPanel extends JPanel
         setLayout(new MigLayout(
             "hidemode 3",
             // columns
-            "[fill]" +
+            "[grow,fill]" +
             "[fill]",
             // rows
             "[]" +
+            "[]" +
             "[grow,center]"));
+
+        //---- trainerSelectionComboBox ----
+        trainerSelectionComboBox.addActionListener(e -> trainerSelectionComboBoxActionPerformed(e));
+        add(trainerSelectionComboBox, "cell 0 0");
+
+        //---- newTrainerButton ----
+        newTrainerButton.setText("New Trainer");
+        newTrainerButton.addActionListener(e -> newTrainerButtonActionPerformed(e));
+        add(newTrainerButton, "cell 1 0");
 
         //======== trainerDataPanel ========
         {
@@ -189,15 +210,13 @@ public class TrainerPanel extends JPanel
                 "[grow]" +
                 "[]0"));
 
-            //---- trainerSelectionComboBox ----
-            trainerSelectionComboBox.addActionListener(e -> trainerSelectionComboBoxActionPerformed(e));
-            trainerDataPanel.add(trainerSelectionComboBox, "cell 0 0");
+            //---- button1 ----
+            button1.setText("Export Pok\u00e9mon");
+            trainerDataPanel.add(button1, "cell 0 0");
 
-            //---- newTrainerButton ----
-            newTrainerButton.setText("New Trainer");
-            newTrainerButton.addActionListener(e -> newTrainerButtonActionPerformed(e));
-            trainerDataPanel.add(newTrainerButton, "cell 1 0");
-            trainerDataPanel.add(hSpacer1, "cell 1 0 2 1");
+            //---- button2 ----
+            button2.setText("Import Pok\u00e9mon");
+            trainerDataPanel.add(button2, "cell 1 0");
 
             //---- toggleMovesCheckbox ----
             toggleMovesCheckbox.setText("Moves");
@@ -249,10 +268,7 @@ public class TrainerPanel extends JPanel
                     itemPanel.add(itemComboBox4, "cell 1 1,grow");
                 }
                 trainerDataSubPanel.add(itemPanel, "cell 1 0 1 5,grow");
-
-                //---- trainerNameTextField ----
-                trainerNameTextField.setText("                                                                                    ");
-                trainerDataSubPanel.add(trainerNameTextField, "cell 0 1,alignx left,growx 0");
+                trainerDataSubPanel.add(trainerNameTextField, "cell 0 1,growx");
 
                 //---- numberPokemonLabel ----
                 numberPokemonLabel.setText("Number of Pok\u00e9mon");
@@ -369,21 +385,22 @@ public class TrainerPanel extends JPanel
             }
             trainerDataPanel.add(trainerDataSubPanel, "cell 0 1 5 1");
         }
-        add(trainerDataPanel, "cell 0 0");
+        add(trainerDataPanel, "cell 0 1 2 1");
 
         //======== trainerPokemonTabbedPane ========
         {
             trainerPokemonTabbedPane.setBorder(new TitledBorder("Pok\u00e9mon"));
         }
-        add(trainerPokemonTabbedPane, "cell 0 1,grow");
+        add(trainerPokemonTabbedPane, "cell 0 2 2 1,grow");
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private JPanel trainerDataPanel;
     private JComboBox trainerSelectionComboBox;
     private JButton newTrainerButton;
-    private JPanel hSpacer1;
+    private JPanel trainerDataPanel;
+    private JButton button1;
+    private JButton button2;
     private JCheckBox toggleMovesCheckbox;
     private JCheckBox toggleHeldItemsCheckbox;
     private JCheckBox checkBox1;
@@ -417,4 +434,128 @@ public class TrainerPanel extends JPanel
     private JCheckBox catchingDemoCheckbox;
     private JTabbedPane trainerPokemonTabbedPane;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
+    public int getSelectedClassIndex()
+    {
+        return trainerClassSelectorComboBox.getSelectedIndex();
+    }
+
+    public int getTrainerFileIndex()
+    {
+        return trainerSelectionComboBox.getSelectedIndex();
+    }
+
+    public boolean getSelectedClassGender()
+    {
+        return true;
+    }
+
+    public String[] getSpeciesList()
+    {
+        return nameData;
+    }
+
+    public String[] getItemList()
+    {
+        return itemData;
+    }
+
+    public String[] getMoveData()
+    {
+        return moveData;
+    }
+
+    public void setProjectPath(String projectPath)
+    {
+        System.out.println(projectPath);
+        this.projectPath= projectPath;
+
+        String resourcePath= projectPath + File.separator + "Program Files" + File.separator;
+        String entryPath = resourcePath + "EntryData.txt";
+        String movePath = resourcePath + "MoveList.txt";
+        String itemPath= resourcePath;
+        String classPath= resourcePath;
+        String trainerNamePath= resourcePath;
+
+        try
+        {
+            BufferedReader reader = new BufferedReader(new FileReader(entryPath));
+            ArrayList<String> nameList = new ArrayList<>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                nameList.add(line);
+            }
+            nameData = nameList.toArray(new String[0]);
+            reader.close();
+
+            reader = new BufferedReader(new FileReader(movePath));
+            ArrayList<String> moveList = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                moveList.add(line);
+            }
+            moveData = moveList.toArray(new String[0]);
+            reader.close();
+
+            reader = new BufferedReader(new FileReader(itemPath + "ItemListPt.txt"));
+            ArrayList<String> itemList = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                itemList.add(line);
+            }
+            itemData = itemList.toArray(new String[0]);
+            reader.close();
+
+            reader = new BufferedReader(new FileReader(classPath + "TrainerClassesPt.txt"));
+            ArrayList<String> trainerClassList = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                trainerClassList.add(line);
+            }
+            trainerClassData= trainerClassList.toArray(new String[0]);
+            reader.close();
+
+            reader = new BufferedReader(new FileReader(trainerNamePath + "TrainerNamesPt.txt"));
+            ArrayList<String> trainerNameList = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                trainerNameList.add(line);
+            }
+            trainerNames= trainerNameList.toArray(new String[0]);
+            reader.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        for(String item : itemData)
+        {
+            itemComboBox1.addItem(item);
+            itemComboBox2.addItem(item);
+            itemComboBox3.addItem(item);
+            itemComboBox4.addItem(item);
+        }
+
+        for(String trainerClass : trainerClassData)
+        {
+            trainerClassSelectorComboBox.addItem(trainerClass);
+        }
+
+        int idx= 0;
+        for(String trainerName : trainerNames)
+        {
+            trainerSelectionComboBox.addItem(trainerName + " (" + idx++ + ")");
+        }
+
+        TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
+//        newPanel.enableParentData();
+
+        trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), newPanel);
+    }
+
+    public String getProjectPath()
+    {
+        return projectPath;
+    }
 }
