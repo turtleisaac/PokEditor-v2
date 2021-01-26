@@ -16,6 +16,7 @@ import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import net.miginfocom.swing.*;
+import turtleisaac.GoogleSheetsAPI;
 
 /**
  * @author Truck
@@ -26,11 +27,14 @@ public class TrainerPanel extends JPanel
     private ArrayList<TrainerPokemonData> pokemonlist;
     private int lastSelected;
 
+    private GoogleSheetsAPI api;
+    private Object[][] trainerDataTable;
+    private Object[][] trainerPokemonTable;
+
     private String projectPath;
     private String[] nameData;
     private String[] itemData;
     private String[] moveData;
-    private static String[] trainerNames;
     private static String[] trainerClassData;
 
     public TrainerPanel()
@@ -45,7 +49,6 @@ public class TrainerPanel extends JPanel
 
         ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
         ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
-
 
 
     }
@@ -64,8 +67,10 @@ public class TrainerPanel extends JPanel
         }
     }
 
-    private void trainerSelectionComboBoxActionPerformed(ActionEvent e) {
-        // TODO add your code here
+    private void trainerSelectionComboBoxActionPerformed(ActionEvent e)
+    {
+        int trainerFile= trainerSelectionComboBox.getSelectedIndex();
+
     }
 
     private void newTrainerButtonActionPerformed(ActionEvent e) {
@@ -135,10 +140,16 @@ public class TrainerPanel extends JPanel
         }
     }
 
+    private void saveTrainerButtonActionPerformed(ActionEvent e)
+    {
+        // TODO add your code here
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         trainerSelectionComboBox = new JComboBox();
         newTrainerButton = new JButton();
+        saveTrainerButton = new JButton();
         trainerDataPanel = new JPanel();
         button1 = new JButton();
         button2 = new JButton();
@@ -193,7 +204,12 @@ public class TrainerPanel extends JPanel
         //---- newTrainerButton ----
         newTrainerButton.setText("New Trainer");
         newTrainerButton.addActionListener(e -> newTrainerButtonActionPerformed(e));
-        add(newTrainerButton, "cell 1 0");
+        add(newTrainerButton, "cell 1 0,growx");
+
+        //---- saveTrainerButton ----
+        saveTrainerButton.setText("Save Trainer");
+        saveTrainerButton.addActionListener(e -> saveTrainerButtonActionPerformed(e));
+        add(saveTrainerButton, "cell 1 0,growx");
 
         //======== trainerDataPanel ========
         {
@@ -398,6 +414,7 @@ public class TrainerPanel extends JPanel
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     private JComboBox trainerSelectionComboBox;
     private JButton newTrainerButton;
+    private JButton saveTrainerButton;
     private JPanel trainerDataPanel;
     private JButton button1;
     private JButton button2;
@@ -475,7 +492,6 @@ public class TrainerPanel extends JPanel
         String movePath = resourcePath + "MoveList.txt";
         String itemPath= resourcePath;
         String classPath= resourcePath;
-        String trainerNamePath= resourcePath;
 
         try
         {
@@ -514,15 +530,6 @@ public class TrainerPanel extends JPanel
             }
             trainerClassData= trainerClassList.toArray(new String[0]);
             reader.close();
-
-            reader = new BufferedReader(new FileReader(trainerNamePath + "TrainerNamesPt.txt"));
-            ArrayList<String> trainerNameList = new ArrayList<>();
-
-            while ((line = reader.readLine()) != null) {
-                trainerNameList.add(line);
-            }
-            trainerNames= trainerNameList.toArray(new String[0]);
-            reader.close();
         }
         catch (IOException e)
         {
@@ -542,12 +549,6 @@ public class TrainerPanel extends JPanel
             trainerClassSelectorComboBox.addItem(trainerClass);
         }
 
-        int idx= 0;
-        for(String trainerName : trainerNames)
-        {
-            trainerSelectionComboBox.addItem(trainerName + " (" + idx++ + ")");
-        }
-
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
 //        newPanel.enableParentData();
 
@@ -557,5 +558,24 @@ public class TrainerPanel extends JPanel
     public String getProjectPath()
     {
         return projectPath;
+    }
+
+    public void setApi(GoogleSheetsAPI api) throws IOException
+    {
+        this.api= api;
+
+        trainerDataTable= api.getSpecifiedSheetArr("Trainer Data");
+        trainerPokemonTable= api.getSpecifiedSheetArr("Trainer Pokemon");
+        trainerSelectionComboBox.removeAllItems();
+
+        int idx= 0;
+        boolean first= true;
+        for(Object[] row : trainerDataTable)
+        {
+            if(!first)
+                trainerSelectionComboBox.addItem(row[1] + " (" + idx++ + ")");
+            else
+                first= false;
+        }
     }
 }

@@ -18,6 +18,7 @@ import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerReturnGen4;
 import com.turtleisaac.pokeditor.gui.JCheckboxTree;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
@@ -202,7 +203,11 @@ public class RomApplier extends JFrame
                         narctowl.unpack(dataPath + "/poketool/trainer/trpoke.narc",dataPath + "/poketool/trainer/trpoke");
                         toDelete.add(new File(dataPath + "/poketool/trainer/trdata"));
                         toDelete.add(new File(dataPath + "/poketool/trainer/trpoke"));
-                        editor.trainersToCsv("/poketool/trainer/trdata","/poketool/trainer/trpoke");
+                        TrainerReturnGen4 trainerReturn= editor.trainersToCsv("/poketool/trainer/trdata","/poketool/trainer/trpoke");
+                        if(contains(selected,"Data"))
+                            api.updateSheet("Trainer Data",trainerReturn.getTrainerData());
+                        if(contains(selected,"Pokemon"))
+                            api.updateSheet("Trainer Pokemon",trainerReturn.getTrainerPokemon());
                     }
                     break;
 
@@ -294,7 +299,11 @@ public class RomApplier extends JFrame
                         narctowl.unpack(dataPath + "/poketool/trainer/trpoke.narc",dataPath + "/poketool/trainer/trpoke");
                         toDelete.add(new File(dataPath + "/poketool/trainer/trdata"));
                         toDelete.add(new File(dataPath + "/poketool/trainer/trpoke"));
-                        editor.trainersToCsv("/poketool/trainer/trdata","/poketool/trainer/trpoke");
+                        TrainerReturnGen4 trainerReturn= editor.trainersToCsv("/poketool/trainer/trdata","/poketool/trainer/trpoke");
+                        if(contains(selected,"Data"))
+                            api.updateSheet("Trainer Data",trainerReturn.getTrainerData());
+                        if(contains(selected,"Pokemon"))
+                            api.updateSheet("Trainer Pokemon",trainerReturn.getTrainerPokemon());
                     }
                     break;
 

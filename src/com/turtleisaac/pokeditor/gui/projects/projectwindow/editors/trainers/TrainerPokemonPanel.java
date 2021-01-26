@@ -4,6 +4,7 @@
 
 package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
 
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import javax.swing.*;
@@ -170,7 +171,28 @@ public class TrainerPokemonPanel extends JPanel
         }
         else
         {
-            JOptionPane.showMessageDialog(parent,"Error: No possible difficulty value can result in the specified target nature and IV's for this trainer file number, trainer class, species, level, and nature.","Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent,"Error: No possible difficulty value can result in the specified target nature with the selected level and IVs. Please adjust them and try again.","Error",JOptionPane.ERROR_MESSAGE);
+            JFrame frame= new JFrame();
+            frame.setTitle("Possible IVs and Natures");
+            frame.setMinimumSize(new Dimension(500,500));
+            frame.setPreferredSize(frame.getMinimumSize());
+            frame.setLocationRelativeTo(parent);
+
+            JScrollPane scrollPane= new JScrollPane();
+
+            JTextArea area= new JTextArea();
+            area.append("Level " + level + " " + speciesComboBox.getSelectedItem() + " in trainer file " + parent.getTrainerFileIndex() + " with trainer class " + parent.getSelectedClassIndex());
+
+            for(int i= 255; i != 0; i--)
+            {
+                int pid= TrainerPersonalityCalculator.generatePid(parent.getTrainerFileIndex(),parent.getSelectedClassIndex(),parent.getSelectedClassGender(),speciesComboBox.getSelectedIndex(),level,i);
+                area.append("\nIVs: " + i*31/255 + ", Nature: " + natures[(pid%100)%25]);
+            }
+            area.setEditable(false);
+            scrollPane.setViewportView(area);
+            frame.setContentPane(scrollPane);
+            frame.pack();
+            frame.setVisible(true);
         }
 
     }

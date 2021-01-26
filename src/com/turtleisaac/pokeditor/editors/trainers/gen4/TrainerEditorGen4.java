@@ -114,7 +114,7 @@ public class TrainerEditorGen4
         reader.close();
     }
 
-    public void trainersToCsv(String trainerDataDir, String trainerPokemonDir) throws IOException
+    public TrainerReturnGen4 trainersToCsv(String trainerDataDir, String trainerPokemonDir) throws IOException
     {
         dataPath+= trainerDataDir;
 
@@ -695,14 +695,17 @@ public class TrainerEditorGen4
         }
 
 
-        String[][] trainerDataTable= new String[trainerDataList.size()][];
+        String[][] trainerDataTable= new String[trainerDataList.size()+1][];
+        trainerDataTable[0]= "ID Number,Name,Moves,Held Item,Trainer Class,Battle Type,Number of Pokemon,Item 1,Item 2,Item 3,Item 4,Prioritize Effectiveness,Evaluate Attacks,Expert,Prioritize Status,Risky Attacks,Prioritize Damage,Partner,Double Battle,Prioritize Healing,Utilize Weather,Harassment,Roaming Pokemon,Safari Zone,Catching Demo,Battle Type,Unknown 1,Unknown 2,Unknown 3".split(",");
         for(int i= 0; i < trainerDataList.size(); i++)
         {
             int idx= 0;
             TrainerDataGen4 trainerData= trainerDataList.get(i);
-            String[] thisTrainer= new String[27];
+            String[] thisTrainer= new String[29];
             Arrays.fill(thisTrainer,"");
 
+            thisTrainer[idx++]= "" + i;
+            thisTrainer[idx++]= trainerNames[i];
             thisTrainer[idx++]= Boolean.toString((trainerData.getFlag() & 0x1) == 1); //defined moveset
             thisTrainer[idx++]= Boolean.toString(((trainerData.getFlag() >> 1) & 0x1) == 1); //defined held items
             thisTrainer[idx++]= trainerClassData[trainerData.getTrainerClass()];
@@ -723,25 +726,35 @@ public class TrainerEditorGen4
             thisTrainer[idx++]= "" + trainerData.getUnknown2();
             thisTrainer[idx]= "" + trainerData.getUnknown3();
 
-            System.out.println(i + ": " + Arrays.toString(thisTrainer));
-            trainerDataTable[i]= thisTrainer;
+//            System.out.println(i + ": " + Arrays.toString(thisTrainer));
+            trainerDataTable[i+1]= thisTrainer;
         }
 
-        String[][] trainerPokemonTable= new String[trainerDataList.size()][];
+        Object[][] trainerPokemonTable= new Object[trainerDataList.size()+1][];
+        StringBuilder header= new StringBuilder("ID Number,Name,");
+        String pokemonHeader= "Difficulty Value,Ability Number,Level,Species,Form Number,Held Item,Move 1,Move 2,Move 3,Move 4,Ball Seal,";
+        for(int i= 0; i < 6; i++)
+        {
+            header.append(pokemonHeader);
+        }
+        String[] headerArr= header.toString().split(",");
+        trainerPokemonTable[0]= new String[68];
+        Arrays.fill(trainerPokemonTable[0],"");
+        System.arraycopy(headerArr,0,trainerPokemonTable[0],0,headerArr.length);
+//        System.out.println("0: " + Arrays.toString(trainerPokemonTable[0]));
         for(int i= 0; i < trainerPokemonList.size(); i++)
         {
             ArrayList<TrainerPokemonData> thisTeam= trainerPokemonList.get(i);
             TrainerDataGen4 trainerData= trainerDataList.get(i);
-            String[] thisTrainer= new String[150];
+            String[] thisTrainer= new String[68];
             Arrays.fill(thisTrainer,"");
             int idx= 0;
+            thisTrainer[idx++]= "" + i;
+            thisTrainer[idx++]= trainerNames[i];
             for(int x= 0; x < thisTeam.size(); x++)
             {
                 TrainerPokemonData pokemon= thisTeam.get(x);
-                for(int y= 0; y < 8; y++)
-                {
-                    thisTrainer[idx++]= Boolean.toString(((pokemon.getIvs() >> y) & 0x1) == 1);
-                }
+                thisTrainer[idx++]= "" + pokemon.getIvs();
                 thisTrainer[idx++]= abilityData[pokemon.getAbility()];
                 thisTrainer[idx++]= "" + pokemon.getLevel();
                 thisTrainer[idx++]= nameData[pokemon.getPokemon()];
@@ -751,15 +764,27 @@ public class TrainerEditorGen4
                 thisTrainer[idx++]= moveData[pokemon.getMove2()];
                 thisTrainer[idx++]= moveData[pokemon.getMove3()];
                 thisTrainer[idx++]= moveData[pokemon.getMove4()];
-                for(int y= 0; y < 8; y++)
-                {
-                    thisTrainer[idx++]= Boolean.toString(((pokemon.getBallCapsule() >> y) & 0x1) == 1);
-                }
+                thisTrainer[idx++]= "" + pokemon.getBallCapsule();
             }
 //            System.out.println();
 //            System.out.println(i + ": " + Arrays.toString(thisTrainer));
-            trainerPokemonTable[i]= thisTrainer;
+            trainerPokemonTable[i+1]= thisTrainer;
         }
+
+        return new TrainerReturnGen4()
+        {
+            @Override
+            public Object[][] getTrainerData()
+            {
+                return trainerDataTable;
+            }
+
+            @Override
+            public Object[][] getTrainerPokemon()
+            {
+                return trainerPokemonTable;
+            }
+        };
 
 
 //        BufferedWriter writer = new BufferedWriter(new FileWriter(path + "trainerData.csv"));

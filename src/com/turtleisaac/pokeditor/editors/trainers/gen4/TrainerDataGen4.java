@@ -20,7 +20,7 @@ public interface TrainerDataGen4
     short getUnknown2();
     short getUnknown3();
 
-    public static TrainerDataGen4 create(String[] arr)
+    static TrainerDataGen4 create(String[] arr)
     {
         return new TrainerDataGen4()
         {

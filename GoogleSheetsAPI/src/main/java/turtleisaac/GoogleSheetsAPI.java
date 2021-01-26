@@ -129,6 +129,7 @@ public class GoogleSheetsAPI
 
         for(Object[] arr : values)
         {
+            System.out.println(Arrays.toString(arr));
             List<Object> row = new ArrayList<>(Arrays.asList(arr));
             data.add(row);
         }

@@ -188,6 +188,7 @@ public class ProjectWindow extends JFrame
 
         ComboBoxSearchable sheetComboBoxSearchable= new ComboBoxSearchable(sheetChooserComboBox);
         trainerPanel1.setProjectPath(projectPath);
+        trainerPanel1.setApi(api);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -1246,5 +1247,10 @@ public class ProjectWindow extends JFrame
     public String getProjectPath()
     {
         return projectPath;
+    }
+
+    public GoogleSheetsAPI getApi()
+    {
+        return api;
     }
 }
