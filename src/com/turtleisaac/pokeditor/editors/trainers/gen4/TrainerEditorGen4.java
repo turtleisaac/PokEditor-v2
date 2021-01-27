@@ -1,6 +1,7 @@
 package com.turtleisaac.pokeditor.editors.trainers.gen4;
 
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
+import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.framework.CsvReader;
 import com.turtleisaac.pokeditor.project.Game;
@@ -27,8 +28,16 @@ public class TrainerEditorGen4
         this.projectPath= projectPath;
         this.baseRom= baseRom;
         dataPath= projectPath;
-        resourcePath= projectPath.substring(0,projectPath.lastIndexOf("/"));
-        resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf("/")) + File.separator + "Program Files" + File.separator;
+        resourcePath= projectPath;
+        System.out.println(projectPath);
+        if(projectPath.endsWith("/data"))
+        {
+            resourcePath= projectPath.substring(0,projectPath.lastIndexOf("/"));
+            resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf("/"));
+        }
+        resourcePath+= File.separator + "Program Files" + File.separator;
+        System.out.println(resourcePath);
+
 
         String entryPath = resourcePath + "EntryData.txt";
         String movePath = resourcePath + "MoveList.txt";
@@ -755,7 +764,7 @@ public class TrainerEditorGen4
             {
                 TrainerPokemonData pokemon= thisTeam.get(x);
                 thisTrainer[idx++]= "" + pokemon.getIvs();
-                thisTrainer[idx++]= abilityData[pokemon.getAbility()];
+                thisTrainer[idx++]= "" + pokemon.getAbility();
                 thisTrainer[idx++]= "" + pokemon.getLevel();
                 thisTrainer[idx++]= nameData[pokemon.getPokemon()];
                 thisTrainer[idx++]= "" + pokemon.getAltForm();
@@ -828,6 +837,237 @@ public class TrainerEditorGen4
 //
 //    }
 
+    public ArrayList<TrainerPokemonData> parseTrainerTeam(Object[] arr, int num)
+    {
+        System.out.println(Arrays.toString(arr));
+
+        ArrayList<TrainerPokemonData> ret= new ArrayList<>();
+        for(int i= 0; i < num; i++)
+        {
+            ret.add(parseTrainerPokemon(Arrays.copyOfRange(arr,(i*11),(i+1)*11)));
+        }
+        return ret;
+    }
+
+    public TrainerPokemonData parseTrainerPokemon(Object[] arr)
+    {
+        System.out.println(Arrays.toString(arr));
+        return new TrainerPokemonData()
+        {
+            @Override
+            public short getIvs()
+            {
+                return (short) Integer.parseInt((String) arr[0]);
+            }
+
+            @Override
+            public short getAbility()
+            {
+                return (short) Integer.parseInt((String) arr[1]);
+            }
+
+            @Override
+            public int getLevel()
+            {
+                return Integer.parseInt((String) arr[2]);
+            }
+
+            @Override
+            public int getPokemon()
+            {
+                return getSpecies((String) arr[3]);
+            }
+
+            @Override
+            public int getAltForm()
+            {
+                return (Integer.parseInt((String) arr[4]));
+            }
+
+            @Override
+            public int getItem()
+            {
+                return TrainerEditorGen4.getItem((String) arr[5]);
+            }
+
+            @Override
+            public int getMove1()
+            {
+                return getMove((String) arr[6]);
+            }
+
+            @Override
+            public int getMove2()
+            {
+                return getMove((String) arr[7]);
+            }
+
+            @Override
+            public int getMove3()
+            {
+                return getMove((String) arr[8]);
+            }
+
+            @Override
+            public int getMove4()
+            {
+                return getMove((String) arr[9]);
+            }
+
+            @Override
+            public short getBallCapsule()
+            {
+                return (short) Integer.parseInt((String) arr[10]);
+            }
+        };
+    }
+
+    public String[] createTrainerTeamRow(ArrayList<TrainerPokemonData> team)
+    {
+        String[] ret= new String[66];
+        for(int i= 0; i < team.size(); i++)
+        {
+            TrainerPokemonData pokemon= team.get(i);
+            System.arraycopy(createTrainerTeamPokemon(pokemon),0,ret,i*11,11);
+        }
+        return ret;
+    }
+
+    public String[] createTrainerTeamPokemon(TrainerPokemonData pokemon)
+    {
+        String[] arr= new String[11];
+        int idx= 0;
+
+        arr[idx++]= "" + pokemon.getIvs();
+        arr[idx++]= "" + pokemon.getAbility();
+        arr[idx++]= "" + pokemon.getLevel();
+        arr[idx++]= nameData[pokemon.getPokemon()];
+        arr[idx++]= "" + pokemon.getAltForm();
+        arr[idx++]= itemData[pokemon.getItem()];
+        arr[idx++]= moveData[pokemon.getMove1()];
+        arr[idx++]= moveData[pokemon.getMove2()];
+        arr[idx++]= moveData[pokemon.getMove3()];
+        arr[idx++]= moveData[pokemon.getMove4()];
+        arr[idx]= "" + pokemon.getBallCapsule();
+
+        return arr;
+    }
+
+    public TrainerDataGen4 parseTrainerData(Object[] arr)
+    {
+        return new TrainerDataGen4()
+        {
+            @Override
+            public short getFlag()
+            {
+                return (short) ((Boolean.parseBoolean((String) arr[2]) ? 1 : 0) + (Boolean.parseBoolean((String) arr[3]) ? 2 : 0));
+            }
+
+            @Override
+            public short getTrainerClass()
+            {
+                return (short) TrainerEditorGen4.getTrainerClass((String) arr[4]);
+            }
+
+            @Override
+            public short getBattleType()
+            {
+                return (short) Integer.parseInt((String) arr[5]);
+            }
+
+            @Override
+            public short getNumPokemon()
+            {
+                return (short) Integer.parseInt((String) arr[6]);
+            }
+
+            @Override
+            public int getItem1()
+            {
+                return getItem((String) arr[7]);
+            }
+
+            @Override
+            public int getItem2()
+            {
+                return getItem((String) arr[8]);
+            }
+
+            @Override
+            public int getItem3()
+            {
+                return getItem((String) arr[9]);
+            }
+
+            @Override
+            public int getItem4()
+            {
+                return getItem((String) arr[10]);
+            }
+
+            @Override
+            public long getAI()
+            {
+                BitStream bitStream= new BitStream();
+                for(int i= 0; i < 14; i++)
+                    bitStream.append(Boolean.parseBoolean((String) arr[i+11]));
+                return Long.parseLong(bitStream.toString(),2);
+            }
+
+            @Override
+            public short getBattleType2()
+            {
+                return (short) (arr[25].equals("Single Battle") ? 0 : 1);
+            }
+
+            @Override
+            public short getUnknown1()
+            {
+                return (short) Integer.parseInt((String) arr[26]);
+            }
+
+            @Override
+            public short getUnknown2()
+            {
+                return (short) Integer.parseInt((String) arr[27]);
+            }
+
+            @Override
+            public short getUnknown3()
+            {
+                return (short) Integer.parseInt((String) arr[28]);
+            }
+        };
+    }
+
+    public String[] createTrainerDataRow(TrainerDataGen4 trainerData)
+    {
+        String[] thisTrainer= new String[27];
+        int idx= 0;
+
+        thisTrainer[idx++]= Boolean.toString((trainerData.getFlag() & 0x1) == 1); //defined moveset
+        thisTrainer[idx++]= Boolean.toString(((trainerData.getFlag() >> 1) & 0x1) == 1); //defined held items
+        thisTrainer[idx++]= trainerClassData[trainerData.getTrainerClass()];
+        thisTrainer[idx++]= "" + trainerData.getBattleType();
+        thisTrainer[idx++]= "" + trainerData.getNumPokemon();
+        thisTrainer[idx++]= itemData[trainerData.getItem1()];
+        thisTrainer[idx++]= itemData[trainerData.getItem2()];
+        thisTrainer[idx++]= itemData[trainerData.getItem3()];
+        thisTrainer[idx++]= itemData[trainerData.getItem4()];
+
+        for(int x= 0; x < 14; x++)
+        {
+            thisTrainer[idx++]= Boolean.toString(((trainerData.getAI() >> x) & 0x1) == 1);
+        }
+
+        thisTrainer[idx++]= trainerData.getBattleType2() == 0 ? "Single Battle" : "Double Battle";
+        thisTrainer[idx++]= "" + trainerData.getUnknown1();
+        thisTrainer[idx++]= "" + trainerData.getUnknown2();
+        thisTrainer[idx]= "" + trainerData.getUnknown3();
+
+        return thisTrainer;
+    }
+
     private void sort(File arr[]) {
         Arrays.sort(arr, Comparator.comparingInt(TrainerEditorGen4::fileToInt));
     }
@@ -852,6 +1092,24 @@ public class TrainerEditorGen4
         }
     }
 
+    private static int getSpecies(String species) {
+        for (int i = 0; i < nameData.length; i++) {
+            if (species.equals(nameData[i])) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Invalid species entered: " + species);
+    }
+
+    private static int getItem(String item) {
+        for (int i = 0; i < itemData.length; i++) {
+            if (item.equals(itemData[i])) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Invalid item entered: " + item);
+    }
+
     private static int getMove(String move) {
         for (int i = 0; i < moveData.length; i++) {
             if (move.equals(moveData[i])) {
@@ -871,6 +1129,15 @@ public class TrainerEditorGen4
             }
         }
         throw new RuntimeException("Invalid ability entered: " + ability);
+    }
+
+    private static int getTrainerClass(String trainerClass) {
+        for (int i = 0; i < trainerClassData.length; i++) {
+            if (trainerClass.equals(trainerClassData[i])) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Invalid trainer class entered: " + trainerClass);
     }
 
     private boolean isNotFull(int[] arr)

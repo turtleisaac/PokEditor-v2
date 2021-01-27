@@ -8,6 +8,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
+import com.apple.eawt.Application;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.turtleisaac.pokeditor.Config;
@@ -41,6 +42,13 @@ public class PokEditor extends JDialog
 
     public static void main(String[] args)
     {
+        String os= (System.getProperty("os.name").toLowerCase());
+        if(os.contains("mac"))
+        {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "PokEditor");
+        }
+
         /**
          * First startup config
          */
@@ -118,6 +126,12 @@ public class PokEditor extends JDialog
          */
 
         frame= new JFrame("PokEditor");
+        URL icon= PokEditor.class.getResource("/icons/icon.png");
+        Image img = Toolkit.getDefaultToolkit().createImage(icon);
+        Application.getApplication().setDockIconImage(img);
+        frame.setIconImage(img);
+
+
         PokEditor pokeditor= new PokEditor();
         pokeditor.jokeLabel.setText(mainMenuJokes[(int) (Math.random()*(mainMenuJokes.length))]);
         System.out.println(mainMenuJokes.length);
@@ -129,6 +143,8 @@ public class PokEditor extends JDialog
 
 //        pokeditor.jokeLabel.setText(mainMenuJokes[mainMenuJokes.length-3]);
         pokeditor.setConfig(config);
+
+
 
 
 

@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.io.File;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.calculations.TrainerPersonalityCalculator;
@@ -22,6 +23,7 @@ public class TrainerPokemonPanel extends JPanel
 {
     private TrainerPokemonData pokemonData;
     private static final String[] natures= {"Hardy","Lonely","Brave","Adamant","Naughty","Bold","Docile","Relaxed","Impish","Lax","Timid","Hasty","Serious","Jolly","Naive","Modest","Mild","Quiet","Bashful","Rash","Calm","Gentle","Sassy","Careful","Quirky"};
+    private static int[] formNumberData;
     private final TrainerPanel parent;
     private final String projectPath;
 
@@ -32,11 +34,8 @@ public class TrainerPokemonPanel extends JPanel
         this.parent= parent;
         projectPath= parent.getProjectPath();
 
-        for(String nature : natures)
-        {
-            superCustomNatureComboBox.addItem(nature);
-        }
 
+//        sealSelectionComboBox= getLargeComboBox();
 
         ComboBoxSearchable speciesSearchable= new ComboBoxSearchable(speciesComboBox);
         ComboBoxSearchable heldItemSearchable= new ComboBoxSearchable(heldItemComboBox);
@@ -45,6 +44,7 @@ public class TrainerPokemonPanel extends JPanel
         ComboBoxSearchable move3Searchable= new ComboBoxSearchable(move3ComboBox);
         ComboBoxSearchable move4Searchable= new ComboBoxSearchable(move4ComboBox);
         ComboBoxSearchable natureSearchable= new ComboBoxSearchable(superCustomNatureComboBox);
+        ComboBoxSearchable sealSearchable= new ComboBoxSearchable(sealSelectionComboBox);
 
         setMovesEnabled(moves);
         setItemEnabled(item);
@@ -52,7 +52,33 @@ public class TrainerPokemonPanel extends JPanel
 
         enableParentData();
 
+        if(pokemon != null)
+        {
+            speciesComboBox.setSelectedIndex(pokemon.getPokemon());
+            heldItemComboBox.setSelectedIndex(pokemon.getItem());
+            move1ComboBox.setSelectedIndex(pokemon.getMove1());
+            move2ComboBox.setSelectedIndex(pokemon.getMove2());
+            move3ComboBox.setSelectedIndex(pokemon.getMove3());
+            move4ComboBox.setSelectedIndex(pokemon.getMove4());
+            sealSelectionComboBox.setSelectedIndex(pokemon.getBallCapsule());
 
+            int pidValue= TrainerPersonalityCalculator.generatePid(parent.getTrainerFileIndex(),parent.getSelectedClassIndex(),parent.getSelectedClassGender(),speciesComboBox.getSelectedIndex(),pokemon.getLevel(),pokemon.getIvs());
+
+            superCustomLevelTextField.setText("" + pokemon.getLevel());
+            superCustomIvTextField.setText("" + pokemon.getIvs()*31/255);
+            superCustomAbilityTextField.setText("" + pokemon.getAbility());
+            superCustomFormSlider.setValue(pokemon.getAltForm());
+            superCustomNatureComboBox.setSelectedIndex((pidValue%100)%25);
+
+            targetPidLevelTextField.setText("" + pokemon.getLevel());
+            targetPidFormTextField.setText("" + pokemon.getAltForm());
+            targetPidFormTextField.setText("0x" + fixHexString(Integer.toHexString(pidValue)));
+
+            oldMethodLevelTextField.setText("" + pokemon.getLevel());
+            oldMethodFormTextField.setText("" + pokemon.getAltForm());
+            oldMethodDifficultyTextField.setText("" + pokemon.getIvs());
+            oldMethodAbilityTextField.setText("" + pokemon.getAbility());
+        }
     }
 
     public void enableParentData()
@@ -74,6 +100,8 @@ public class TrainerPokemonPanel extends JPanel
             move3ComboBox.addItem(move);
             move4ComboBox.addItem(move);
         }
+
+        formNumberData= parent.getFormNumberData();
     }
 
     public void setMovesEnabled(boolean bool)
@@ -91,6 +119,7 @@ public class TrainerPokemonPanel extends JPanel
 
     private void targetPidApplyButtonActionPerformed(ActionEvent e)
     {
+        parent.setSaved(false);
         int level= Integer.parseInt(targetPidLevelTextField.getText());
         String pid= targetPidTextField.getText();
 
@@ -130,10 +159,80 @@ public class TrainerPokemonPanel extends JPanel
         {
             JOptionPane.showMessageDialog(parent,"Error: No possible combination of values can result in the target PID for this trainer file number, trainer class, species, and level.","Error",JOptionPane.ERROR_MESSAGE);
         }
+
+        pokemonData= new TrainerPokemonData()
+        {
+            @Override
+            public short getIvs()
+            {
+                return (short) difficultyValue;
+            }
+
+            @Override
+            public short getAbility()
+            {
+                return pokemonData.getAbility();
+            }
+
+            @Override
+            public int getLevel()
+            {
+                return level;
+            }
+
+            @Override
+            public int getPokemon()
+            {
+                return speciesComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getAltForm()
+            {
+                return Integer.parseInt(targetPidFormTextField.getText());
+            }
+
+            @Override
+            public int getItem()
+            {
+                return heldItemComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getMove1()
+            {
+                return move1ComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getMove2()
+            {
+                return move2ComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getMove3()
+            {
+                return move3ComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getMove4()
+            {
+                return move4ComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public short getBallCapsule()
+            {
+                return (short) sealSelectionComboBox.getSelectedIndex();
+            }
+        };
     }
 
     private void superCustomApplyButtonActionPerformed(ActionEvent e)
     {
+        parent.setSaved(false);
         int level= Integer.parseInt(superCustomLevelTextField.getText());
         int ivValue= Integer.parseInt(superCustomIvTextField.getText());
         int ability= Integer.parseInt(superCustomAbilityTextField.getText());
@@ -161,6 +260,75 @@ public class TrainerPokemonPanel extends JPanel
             if((pidValue%100)%25 == nature)
             {
                 difficultyValue= i;
+                int finalDifficultyValue = difficultyValue;
+                pokemonData= new TrainerPokemonData()
+                {
+                    @Override
+                    public short getIvs()
+                    {
+                        return (short) finalDifficultyValue;
+                    }
+
+                    @Override
+                    public short getAbility()
+                    {
+                        return (short) ability;
+                    }
+
+                    @Override
+                    public int getLevel()
+                    {
+                        return level;
+                    }
+
+                    @Override
+                    public int getPokemon()
+                    {
+                        return speciesComboBox.getSelectedIndex();
+                    }
+
+                    @Override
+                    public int getAltForm()
+                    {
+                        return superCustomFormSlider.getValue();
+                    }
+
+                    @Override
+                    public int getItem()
+                    {
+                        return heldItemComboBox.getSelectedIndex();
+                    }
+
+                    @Override
+                    public int getMove1()
+                    {
+                        return move1ComboBox.getSelectedIndex();
+                    }
+
+                    @Override
+                    public int getMove2()
+                    {
+                        return move2ComboBox.getSelectedIndex();
+                    }
+
+                    @Override
+                    public int getMove3()
+                    {
+                        return move3ComboBox.getSelectedIndex();
+                    }
+
+                    @Override
+                    public int getMove4()
+                    {
+                        return move4ComboBox.getSelectedIndex();
+                    }
+
+                    @Override
+                    public short getBallCapsule()
+                    {
+                        return (short) sealSelectionComboBox.getSelectedIndex();
+                    }
+                };
                 break;
             }
         }
@@ -197,6 +365,100 @@ public class TrainerPokemonPanel extends JPanel
 
     }
 
+    private void superCustomFormSliderStateChanged(ChangeEvent e)
+    {
+        parent.setSaved(false);
+        // TODO add your code here
+    }
+
+    private void speciesComboBoxActionPerformed(ActionEvent e)
+    {
+        parent.setSaved(false);
+        try
+        {
+            superCustomFormSlider.setMaximum(formNumberData[speciesComboBox.getSelectedIndex()]-1);
+        }
+        catch(NullPointerException exception)
+        {
+            superCustomFormSlider.setEnabled(false);
+            return;
+        }
+        superCustomFormSlider.setEnabled(true);
+    }
+
+    private void oldMethodApplyButtonActionPerformed(ActionEvent e)
+    {
+        parent.setSaved(false);
+        pokemonData= new TrainerPokemonData()
+        {
+            @Override
+            public short getIvs()
+            {
+                return (short) Integer.parseInt(oldMethodDifficultyTextField.getText());
+            }
+
+            @Override
+            public short getAbility()
+            {
+                return (short) Integer.parseInt(oldMethodAbilityTextField.getText());
+            }
+
+            @Override
+            public int getLevel()
+            {
+                return Integer.parseInt(oldMethodLevelTextField.getText());
+            }
+
+            @Override
+            public int getPokemon()
+            {
+                return speciesComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getAltForm()
+            {
+                return Integer.parseInt(oldMethodFormTextField.getText());
+            }
+
+            @Override
+            public int getItem()
+            {
+                return heldItemComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getMove1()
+            {
+                return move1ComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getMove2()
+            {
+                return move2ComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getMove3()
+            {
+                return move3ComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public int getMove4()
+            {
+                return move4ComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public short getBallCapsule()
+            {
+                return (short) sealSelectionComboBox.getSelectedIndex();
+            }
+        };
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         movesPanel = new JPanel();
@@ -205,7 +467,7 @@ public class TrainerPokemonPanel extends JPanel
         move3ComboBox = new JComboBox();
         move4ComboBox = new JComboBox();
         sealPanel = new JPanel();
-        comboBox2 = new JComboBox();
+        sealSelectionComboBox = new JComboBox<>();
         generalPanel = new JPanel();
         speciesLabel = new JLabel();
         speciesComboBox = new JComboBox();
@@ -221,15 +483,17 @@ public class TrainerPokemonPanel extends JPanel
         superCustomLevelTextField = new JTextField();
         superCustomIvTextField = new JTextField();
         superCustomAbilityTextField = new JTextField();
-        superCustomNatureComboBox = new JComboBox();
+        superCustomNatureComboBox = new JComboBox<>();
         superCustomFormSlider = new JSlider();
         superCustomApplyButton = new JButton();
         targetPidPanel = new JPanel();
         targetPidLevelLabel = new JLabel();
+        targetPidFormLabel = new JLabel();
         targetPidLabel = new JLabel();
         targetPidTextField = new JTextField();
         targetPidApplyButton = new JButton();
         targetPidLevelTextField = new JTextField();
+        targetPidFormTextField = new JTextField();
         oldMethodPanel = new JPanel();
         oldMethodLevelLabel = new JLabel();
         oldMethodFormLabel = new JLabel();
@@ -273,18 +537,42 @@ public class TrainerPokemonPanel extends JPanel
         //======== sealPanel ========
         {
             sealPanel.setBorder(new TitledBorder("Pok\u00e9 Ball Seals"));
-            sealPanel.setLayout(new MigLayout(
-                "hidemode 3",
-                // columns
-                "[fill]",
-                // rows
-                "[]" +
-                "[]" +
-                "[]" +
-                "[]"));
-            sealPanel.add(comboBox2, "cell 0 0");
+            sealPanel.setLayout(new FlowLayout());
+
+            //---- sealSelectionComboBox ----
+            sealSelectionComboBox.setFont(new Font(".SF NS Text", Font.PLAIN, 13));
+            sealSelectionComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
+                "Red Petals",
+                "Music Notes",
+                "Confetti",
+                "Lightning Bolts",
+                "Black Smoke",
+                "Hearts & Stars",
+                "Red Hearts",
+                "Blue Bubbles",
+                "Pink Bubbles",
+                "Yellow Stars",
+                "Cyan & Yellow Stars",
+                "Black & White Smoke",
+                "Red Flames",
+                "Blue Flames",
+                "Pink & Blue Bubbles",
+                "Various 1",
+                "Various 2",
+                "Music and Lightning",
+                "Red Petals 2",
+                "Petals & Confetti",
+                "Petal Spirals",
+                "Small Confetti",
+                "Blue Stars",
+                "Blue & Yellow Stars",
+                "Black Smoke 2",
+                "Purple Petal Spirals",
+                "Red Petals 3"
+            }));
+            sealPanel.add(sealSelectionComboBox);
         }
-        add(sealPanel, "cell 2 0,grow");
+        add(sealPanel, "cell 2 0,growy");
 
         //======== generalPanel ========
         {
@@ -302,6 +590,9 @@ public class TrainerPokemonPanel extends JPanel
             //---- speciesLabel ----
             speciesLabel.setText("Species");
             generalPanel.add(speciesLabel, "cell 0 0,grow");
+
+            //---- speciesComboBox ----
+            speciesComboBox.addActionListener(e -> speciesComboBoxActionPerformed(e));
             generalPanel.add(speciesComboBox, "cell 0 1,grow");
 
             //---- heldItemLabel ----
@@ -366,6 +657,35 @@ public class TrainerPokemonPanel extends JPanel
                 superCustomAbilityTextField.setEditable(false);
                 superCustomAbilityTextField.setEnabled(false);
                 superCustomPanel.add(superCustomAbilityTextField, "cell 2 1");
+
+                //---- superCustomNatureComboBox ----
+                superCustomNatureComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
+                    "Hardy",
+                    "Lonely",
+                    "Brave",
+                    "Adamant",
+                    "Naughty",
+                    "Bold",
+                    "Docile",
+                    "Relaxed",
+                    "Impish",
+                    "Lax",
+                    "Timid",
+                    "Hasty",
+                    "Serious",
+                    "Jolly",
+                    "Naive",
+                    "Modest",
+                    "Mild",
+                    "Quiet",
+                    "Bashful",
+                    "Rash",
+                    "Calm",
+                    "Gentle",
+                    "Sassy",
+                    "Careful",
+                    "Quirky"
+                }));
                 superCustomPanel.add(superCustomNatureComboBox, "cell 3 1 2 1");
 
                 //---- superCustomFormSlider ----
@@ -375,6 +695,7 @@ public class TrainerPokemonPanel extends JPanel
                 superCustomFormSlider.setValue(0);
                 superCustomFormSlider.setMaximum(1);
                 superCustomFormSlider.setMajorTickSpacing(1);
+                superCustomFormSlider.addChangeListener(e -> superCustomFormSliderStateChanged(e));
                 superCustomPanel.add(superCustomFormSlider, "cell 5 1");
 
                 //---- superCustomApplyButton ----
@@ -386,9 +707,11 @@ public class TrainerPokemonPanel extends JPanel
 
             //======== targetPidPanel ========
             {
+                targetPidPanel.setToolTipText("This method will brute force for a specific PID. Useful for things like Spinda patterns");
                 targetPidPanel.setLayout(new MigLayout(
                     "hidemode 3",
                     // columns
+                    "[fill]" +
                     "[fill]" +
                     "[grow,fill]" +
                     "[fill]",
@@ -400,21 +723,30 @@ public class TrainerPokemonPanel extends JPanel
                 targetPidLevelLabel.setText("Level");
                 targetPidPanel.add(targetPidLevelLabel, "cell 0 0,alignx center,growx 0");
 
+                //---- targetPidFormLabel ----
+                targetPidFormLabel.setText("Form No.");
+                targetPidPanel.add(targetPidFormLabel, "cell 1 0,alignx center,growx 0");
+
                 //---- targetPidLabel ----
                 targetPidLabel.setText("Target PID (Hexadecimal)");
-                targetPidPanel.add(targetPidLabel, "cell 1 0,alignx center,growx 0");
-                targetPidPanel.add(targetPidTextField, "cell 1 1");
+                targetPidPanel.add(targetPidLabel, "cell 2 0,alignx center,growx 0");
+                targetPidPanel.add(targetPidTextField, "cell 2 1");
 
                 //---- targetPidApplyButton ----
                 targetPidApplyButton.setText("Apply");
                 targetPidApplyButton.addActionListener(e -> targetPidApplyButtonActionPerformed(e));
-                targetPidPanel.add(targetPidApplyButton, "cell 2 0 1 2,growy");
+                targetPidPanel.add(targetPidApplyButton, "cell 3 0 1 2,growy");
+
+                //---- targetPidLevelTextField ----
+                targetPidLevelTextField.setToolTipText("A value ranging from 1 to 100");
                 targetPidPanel.add(targetPidLevelTextField, "cell 0 1");
+                targetPidPanel.add(targetPidFormTextField, "cell 1 1");
             }
             pidPane.addTab("Method 2", targetPidPanel);
 
             //======== oldMethodPanel ========
             {
+                oldMethodPanel.setToolTipText("The old method for setting trainer data, used in tools such as SDSME");
                 oldMethodPanel.setLayout(new MigLayout(
                     "hidemode 3",
                     // columns
@@ -449,12 +781,16 @@ public class TrainerPokemonPanel extends JPanel
                 oldMethodPanel.add(oldMethodFormTextField, "cell 1 1");
 
                 //---- oldMethodDifficultyTextField ----
-                oldMethodDifficultyTextField.setToolTipText("A value ranging from 0 to 31");
+                oldMethodDifficultyTextField.setToolTipText("A value ranging from 0 to 255");
                 oldMethodPanel.add(oldMethodDifficultyTextField, "cell 2 1");
+
+                //---- oldMethodAbilityTextField ----
+                oldMethodAbilityTextField.setToolTipText("Changes which ability posessed by this species is used (HGSS only)");
                 oldMethodPanel.add(oldMethodAbilityTextField, "cell 3 1");
 
                 //---- oldMethodApplyButton ----
                 oldMethodApplyButton.setText("Apply");
+                oldMethodApplyButton.addActionListener(e -> oldMethodApplyButtonActionPerformed(e));
                 oldMethodPanel.add(oldMethodApplyButton, "cell 4 0 1 2,grow");
             }
             pidPane.addTab("Method 3", oldMethodPanel);
@@ -470,7 +806,7 @@ public class TrainerPokemonPanel extends JPanel
     private JComboBox move3ComboBox;
     private JComboBox move4ComboBox;
     private JPanel sealPanel;
-    private JComboBox comboBox2;
+    private JComboBox<String> sealSelectionComboBox;
     private JPanel generalPanel;
     private JLabel speciesLabel;
     private JComboBox speciesComboBox;
@@ -486,15 +822,17 @@ public class TrainerPokemonPanel extends JPanel
     private JTextField superCustomLevelTextField;
     private JTextField superCustomIvTextField;
     private JTextField superCustomAbilityTextField;
-    private JComboBox superCustomNatureComboBox;
+    private JComboBox<String> superCustomNatureComboBox;
     private JSlider superCustomFormSlider;
     private JButton superCustomApplyButton;
     private JPanel targetPidPanel;
     private JLabel targetPidLevelLabel;
+    private JLabel targetPidFormLabel;
     private JLabel targetPidLabel;
     private JTextField targetPidTextField;
     private JButton targetPidApplyButton;
     private JTextField targetPidLevelTextField;
+    private JTextField targetPidFormTextField;
     private JPanel oldMethodPanel;
     private JLabel oldMethodLevelLabel;
     private JLabel oldMethodFormLabel;
@@ -507,6 +845,18 @@ public class TrainerPokemonPanel extends JPanel
     private JButton oldMethodApplyButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
+    public TrainerPokemonData getPokemonData()
+    {
+        return pokemonData;
+    }
 
-
+    private String fixHexString(String str)
+    {
+        StringBuilder stringBuilder= new StringBuilder(str);
+        while(stringBuilder.length() != 8)
+        {
+            stringBuilder.insert(0,"0");
+        }
+        return stringBuilder.toString();
+    }
 }

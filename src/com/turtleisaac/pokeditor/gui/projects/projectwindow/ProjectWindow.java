@@ -18,6 +18,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 
+import com.apple.eawt.Application;
 import com.jackhack96.jNdstool.main.JNdstool;
 import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
@@ -189,6 +190,8 @@ public class ProjectWindow extends JFrame
         ComboBoxSearchable sheetComboBoxSearchable= new ComboBoxSearchable(sheetChooserComboBox);
         trainerPanel1.setProjectPath(projectPath);
         trainerPanel1.setApi(api);
+
+        Application.getApplication().setDefaultMenuBar(menuBar);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -378,7 +381,7 @@ public class ProjectWindow extends JFrame
 //                break;
 //
 //            case Black2:
-//
+//z
 //                break;
 //
 //            case White2:

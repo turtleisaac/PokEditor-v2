@@ -39,20 +39,45 @@ new FormModel {
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 0,grow"
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-				"$layoutConstraints": "hidemode 3"
-				"$columnConstraints": "[fill]"
-				"$rowConstraints": "[][][][]"
-			} ) {
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) ) {
 				name: "sealPanel"
 				"border": new javax.swing.border.TitledBorder( "Poké Ball Seals" )
 				add( new FormComponent( "javax.swing.JComboBox" ) {
-					name: "comboBox2"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 0"
+					name: "sealSelectionComboBox"
+					"font": new java.awt.Font( ".SF NS Text", 0, 13 )
+					"model": new javax.swing.DefaultComboBoxModel {
+						selectedItem: "Red Petals"
+						addElement( "Red Petals" )
+						addElement( "Music Notes" )
+						addElement( "Confetti" )
+						addElement( "Lightning Bolts" )
+						addElement( "Black Smoke" )
+						addElement( "Hearts & Stars" )
+						addElement( "Red Hearts" )
+						addElement( "Blue Bubbles" )
+						addElement( "Pink Bubbles" )
+						addElement( "Yellow Stars" )
+						addElement( "Cyan & Yellow Stars" )
+						addElement( "Black & White Smoke" )
+						addElement( "Red Flames" )
+						addElement( "Blue Flames" )
+						addElement( "Pink & Blue Bubbles" )
+						addElement( "Various 1" )
+						addElement( "Various 2" )
+						addElement( "Music and Lightning" )
+						addElement( "Red Petals 2" )
+						addElement( "Petals & Confetti" )
+						addElement( "Petal Spirals" )
+						addElement( "Small Confetti" )
+						addElement( "Blue Stars" )
+						addElement( "Blue & Yellow Stars" )
+						addElement( "Black Smoke 2" )
+						addElement( "Purple Petal Spirals" )
+						addElement( "Red Petals 3" )
+					}
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 2 0,grow"
+				"value": "cell 2 0,growy"
 			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "hidemode 3"
@@ -69,6 +94,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JComboBox" ) {
 					name: "speciesComboBox"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "speciesComboBoxActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1,grow"
 				} )
@@ -149,6 +175,34 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "superCustomNatureComboBox"
+						"model": new javax.swing.DefaultComboBoxModel {
+							selectedItem: "Hardy"
+							addElement( "Hardy" )
+							addElement( "Lonely" )
+							addElement( "Brave" )
+							addElement( "Adamant" )
+							addElement( "Naughty" )
+							addElement( "Bold" )
+							addElement( "Docile" )
+							addElement( "Relaxed" )
+							addElement( "Impish" )
+							addElement( "Lax" )
+							addElement( "Timid" )
+							addElement( "Hasty" )
+							addElement( "Serious" )
+							addElement( "Jolly" )
+							addElement( "Naive" )
+							addElement( "Modest" )
+							addElement( "Mild" )
+							addElement( "Quiet" )
+							addElement( "Bashful" )
+							addElement( "Rash" )
+							addElement( "Calm" )
+							addElement( "Gentle" )
+							addElement( "Sassy" )
+							addElement( "Careful" )
+							addElement( "Quirky" )
+						}
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 3 1 2 1"
 					} )
@@ -160,6 +214,7 @@ new FormModel {
 						"value": 0
 						"maximum": 1
 						"majorTickSpacing": 1
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "superCustomFormSliderStateChanged", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 5 1"
 					} )
@@ -175,10 +230,11 @@ new FormModel {
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "hidemode 3"
-					"$columnConstraints": "[fill][grow,fill][fill]"
+					"$columnConstraints": "[fill][fill][grow,fill][fill]"
 					"$rowConstraints": "[][grow]"
 				} ) {
 					name: "targetPidPanel"
+					"toolTipText": "This method will brute force for a specific PID. Useful for things like Spinda patterns"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "targetPidLevelLabel"
 						"text": "Level"
@@ -186,27 +242,39 @@ new FormModel {
 						"value": "cell 0 0,alignx center,growx 0"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "targetPidFormLabel"
+						"text": "Form No."
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,alignx center,growx 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "targetPidLabel"
 						"text": "Target PID (Hexadecimal)"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 1 0,alignx center,growx 0"
+						"value": "cell 2 0,alignx center,growx 0"
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "targetPidTextField"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 1 1"
+						"value": "cell 2 1"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "targetPidApplyButton"
 						"text": "Apply"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "targetPidApplyButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 2 0 1 2,growy"
+						"value": "cell 3 0 1 2,growy"
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "targetPidLevelTextField"
+						"toolTipText": "A value ranging from 1 to 100"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 1"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "targetPidFormTextField"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1"
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Method 2"
@@ -217,6 +285,7 @@ new FormModel {
 					"$rowConstraints": "[][grow]"
 				} ) {
 					name: "oldMethodPanel"
+					"toolTipText": "The old method for setting trainer data, used in tools such as SDSME"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "oldMethodLevelLabel"
 						"text": "Level"
@@ -254,18 +323,20 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "oldMethodDifficultyTextField"
-						"toolTipText": "A value ranging from 0 to 31"
+						"toolTipText": "A value ranging from 0 to 255"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 2 1"
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "oldMethodAbilityTextField"
+						"toolTipText": "Changes which ability posessed by this species is used (HGSS only)"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 3 1"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "oldMethodApplyButton"
 						"text": "Apply"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "oldMethodApplyButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 4 0 1 2,grow"
 					} )

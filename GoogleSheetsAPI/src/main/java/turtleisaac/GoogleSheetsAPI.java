@@ -137,6 +137,14 @@ public class GoogleSheetsAPI
         updateSheet(range, data);
     }
 
+    public void updateSheet(String range, Object[] values) throws IOException
+    {
+        List<Object> row = new ArrayList<>(Arrays.asList(values));
+        List<List<Object>> data= new ArrayList<>();
+        data.add(row);
+        updateSheet(range, data);
+    }
+
     public void deleteRow() throws IOException
     {
         DeleteDimensionRequest deleteRequest= new DeleteDimensionRequest()

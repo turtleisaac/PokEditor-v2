@@ -4,17 +4,19 @@
 
 package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
+import com.turtleisaac.pokeditor.project.Game;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
 
@@ -24,23 +26,29 @@ import turtleisaac.GoogleSheetsAPI;
 public class TrainerPanel extends JPanel
 {
     private TrainerDataGen4 trainer;
-    private ArrayList<TrainerPokemonData> pokemonlist;
-    private int lastSelected;
+    private ArrayList<TrainerPokemonData> pokemonList;
+    private int numberPokemonLastSelected;
+    private int trainerFileLastSelected;
+    private boolean saved= true;
 
     private GoogleSheetsAPI api;
     private Object[][] trainerDataTable;
     private Object[][] trainerPokemonTable;
+    private TrainerEditorGen4 trainerEditor;
 
     private String projectPath;
     private String[] nameData;
     private String[] itemData;
     private String[] moveData;
     private static String[] trainerClassData;
+    private static int[] formNumberData;
 
     public TrainerPanel()
     {
         initComponents();
-        lastSelected= 0;
+
+        numberPokemonLastSelected= 0;
+        trainerFileLastSelected= 0;
 
         ComboBoxSearchable itemComboBoxSearchable1= new ComboBoxSearchable(itemComboBox1);
         ComboBoxSearchable itemComboBoxSearchable2= new ComboBoxSearchable(itemComboBox2);
@@ -50,6 +58,31 @@ public class TrainerPanel extends JPanel
         ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
         ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
 
+    }
+
+    public TrainerPanel(GoogleSheetsAPI api, String projectPath)
+    {
+        initComponents();
+
+        numberPokemonLastSelected= 0;
+        trainerFileLastSelected= 0;
+
+        ComboBoxSearchable itemComboBoxSearchable1= new ComboBoxSearchable(itemComboBox1);
+        ComboBoxSearchable itemComboBoxSearchable2= new ComboBoxSearchable(itemComboBox2);
+        ComboBoxSearchable itemComboBoxSearchable3= new ComboBoxSearchable(itemComboBox3);
+        ComboBoxSearchable itemComboBoxSearchable4= new ComboBoxSearchable(itemComboBox4);
+
+        ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
+        ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
+
+        setProjectPath(projectPath);
+        try
+        {
+            setApi(api);
+        } catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
 
     }
 
@@ -58,36 +91,77 @@ public class TrainerPanel extends JPanel
         this.trainer = trainer;
     }
 
-    public void setPokemonlist(ArrayList<TrainerPokemonData> pokemonlist)
+    public void setPokemonList()
     {
-        this.pokemonlist= pokemonlist;
-        for(TrainerPokemonData pokemon : pokemonlist)
+        trainerPokemonTabbedPane.removeAll();
+        for(TrainerPokemonData pokemon : pokemonList)
         {
-            trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
+            trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,pokemon,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
         }
     }
 
     private void trainerSelectionComboBoxActionPerformed(ActionEvent e)
     {
-        int trainerFile= trainerSelectionComboBox.getSelectedIndex();
+        if(trainerEditor == null)
+        {
+            try
+            {
+                trainerEditor= new TrainerEditorGen4(projectPath,Game.Platinum);
+            }
+            catch (IOException exception)
+            {
+                exception.printStackTrace();
+            }
+        }
 
+        if(trainerSelectionComboBox.hasFocus())
+        {
+//            if(!saved)
+//            {
+//                if(JOptionPane.showConfirmDialog(this,"Do you want to save your changes to this trainer?","PokEditor",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE) == 0)
+//                {
+//                    saveTrainerButtonActionPerformed(e);
+//                }
+//            }
+
+            int trainerFile= trainerSelectionComboBox.getSelectedIndex();
+            try
+            {
+                trainer= trainerEditor.parseTrainerData(trainerDataTable[trainerFile+1]);
+                loadTrainerData();
+            }
+            catch(NullPointerException exception)
+            {
+                exception.printStackTrace();
+            }
+            trainerFileLastSelected= trainerSelectionComboBox.getSelectedIndex();
+        }
+        else
+        {
+            saved= true;
+        }
     }
 
-    private void newTrainerButtonActionPerformed(ActionEvent e) {
+    private void newTrainerButtonActionPerformed(ActionEvent e)
+    {
         // TODO add your code here
     }
 
-    private void trainerClassSelectorComboBoxActionPerformed(ActionEvent e) {
-        // TODO add your code here
+    private void trainerClassSelectorComboBoxActionPerformed(ActionEvent e)
+    {
+        saved= false;
     }
 
-    private void trainerClassImageButtonActionPerformed(ActionEvent e) {
+    private void trainerClassImageButtonActionPerformed(ActionEvent e)
+    {
         // TODO add your code here
+        JOptionPane.showMessageDialog(this,"Trainer Class Detail Viewer not available","Error",JOptionPane.ERROR_MESSAGE);
     }
 
     private void numberPokemonSliderStateChanged(ChangeEvent e)
     {
-        if(numberPokemonSlider.getValue() >= lastSelected)
+        saved= false;
+        if(numberPokemonSlider.getValue() >= numberPokemonLastSelected)
         {
             while(trainerPokemonTabbedPane.getTabCount() != numberPokemonSlider.getValue())
             {
@@ -102,11 +176,12 @@ public class TrainerPanel extends JPanel
             }
         }
 
-        lastSelected= numberPokemonSlider.getValue();
+        numberPokemonLastSelected = numberPokemonSlider.getValue();
     }
 
     private void toggleMovesCheckboxItemStateChanged(ItemEvent e)
     {
+        saved= false;
         for(int i= 0; i < trainerPokemonTabbedPane.getTabCount(); i++)
         {
             TrainerPokemonPanel panel= (TrainerPokemonPanel) trainerPokemonTabbedPane.getComponentAt(i);
@@ -124,6 +199,7 @@ public class TrainerPanel extends JPanel
 
     private void toggleHeldItemsCheckboxItemStateChanged(ItemEvent e)
     {
+        saved= false;
         System.out.println("Tab count: " + trainerPokemonTabbedPane.getTabCount());
         for(int i= 0; i < trainerPokemonTabbedPane.getTabCount(); i++)
         {
@@ -142,7 +218,115 @@ public class TrainerPanel extends JPanel
 
     private void saveTrainerButtonActionPerformed(ActionEvent e)
     {
-        // TODO add your code here
+        trainer= new TrainerDataGen4()
+        {
+            @Override
+            public short getFlag()
+            {
+                return 0;
+            }
+
+            @Override
+            public short getTrainerClass()
+            {
+                return (short) trainerClassSelectorComboBox.getSelectedIndex();
+            }
+
+            @Override
+            public short getBattleType()
+            {
+                return 0;
+            }
+
+            @Override
+            public short getNumPokemon()
+            {
+                return (short) numberPokemonSlider.getValue();
+            }
+
+            @Override
+            public int getItem1()
+            {
+                return itemComboBox1.getSelectedIndex();
+            }
+
+            @Override
+            public int getItem2()
+            {
+                return itemComboBox2.getSelectedIndex();
+            }
+
+            @Override
+            public int getItem3()
+            {
+                return itemComboBox3.getSelectedIndex();
+            }
+
+            @Override
+            public int getItem4()
+            {
+                return itemComboBox4.getSelectedIndex();
+            }
+
+            @Override
+            public long getAI()
+            {
+                return 0;
+            }
+
+            @Override
+            public short getBattleType2() //Single or Double battle
+            {
+                return (short) (doubleBattleCheckbox.isSelected() ? 1 : 2);
+            }
+
+            @Override
+            public short getUnknown1()
+            {
+                return trainer.getUnknown1();
+            }
+
+            @Override
+            public short getUnknown2()
+            {
+                return trainer.getUnknown2();
+            }
+
+            @Override
+            public short getUnknown3()
+            {
+                return trainer.getUnknown3();
+            }
+        };
+
+        String[] trainerDataArr= new String[29];
+        trainerDataArr[0]= "" + trainerFileLastSelected;
+        trainerDataArr[1]= trainerNameTextField.getText();
+        System.arraycopy(trainerEditor.createTrainerDataRow(trainer),0,trainerDataArr,2,27);
+
+        String[] team= new String[68];
+        team[0]= trainerDataArr[0];
+        team[1]= trainerDataArr[1];
+
+        for(int i= 0; i < trainerPokemonTabbedPane.getTabCount(); i++)
+        {
+            TrainerPokemonPanel panel= (TrainerPokemonPanel) trainerPokemonTabbedPane.getComponentAt(i);
+            pokemonList.set(i,panel.getPokemonData());
+        }
+
+        System.arraycopy(trainerEditor.createTrainerTeamRow(pokemonList),0,team,2,66);
+
+        try
+        {
+            api.updateSheet("Trainer Data!" + (trainerFileLastSelected+1) + ":" + (trainerFileLastSelected+1),trainerDataArr);
+            api.updateSheet("Trainer Pokemon!" + (trainerFileLastSelected+1) + ":" + (trainerFileLastSelected+1),team);
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+
+        saved= true;
     }
 
     private void initComponents() {
@@ -151,11 +335,11 @@ public class TrainerPanel extends JPanel
         newTrainerButton = new JButton();
         saveTrainerButton = new JButton();
         trainerDataPanel = new JPanel();
-        button1 = new JButton();
-        button2 = new JButton();
+        exportSmogonButton = new JButton();
+        importSmogonButton = new JButton();
         toggleMovesCheckbox = new JCheckBox();
         toggleHeldItemsCheckbox = new JCheckBox();
-        checkBox1 = new JCheckBox();
+        toggleDoubleBattleCheckbox = new JCheckBox();
         trainerDataSubPanel = new JPanel();
         trainerNameLabel = new JLabel();
         itemPanel = new JPanel();
@@ -226,13 +410,15 @@ public class TrainerPanel extends JPanel
                 "[grow]" +
                 "[]0"));
 
-            //---- button1 ----
-            button1.setText("Export Pok\u00e9mon");
-            trainerDataPanel.add(button1, "cell 0 0");
+            //---- exportSmogonButton ----
+            exportSmogonButton.setText("Export Pok\u00e9mon");
+            exportSmogonButton.setToolTipText("Export team in Smogon format");
+            trainerDataPanel.add(exportSmogonButton, "cell 0 0");
 
-            //---- button2 ----
-            button2.setText("Import Pok\u00e9mon");
-            trainerDataPanel.add(button2, "cell 1 0");
+            //---- importSmogonButton ----
+            importSmogonButton.setText("Import Pok\u00e9mon");
+            importSmogonButton.setToolTipText("Import team in Smogon format");
+            trainerDataPanel.add(importSmogonButton, "cell 1 0");
 
             //---- toggleMovesCheckbox ----
             toggleMovesCheckbox.setText("Moves");
@@ -244,9 +430,9 @@ public class TrainerPanel extends JPanel
             toggleHeldItemsCheckbox.addItemListener(e -> toggleHeldItemsCheckboxItemStateChanged(e));
             trainerDataPanel.add(toggleHeldItemsCheckbox, "cell 3 0");
 
-            //---- checkBox1 ----
-            checkBox1.setText("Double Battle");
-            trainerDataPanel.add(checkBox1, "cell 4 0");
+            //---- toggleDoubleBattleCheckbox ----
+            toggleDoubleBattleCheckbox.setText("Double Battle");
+            trainerDataPanel.add(toggleDoubleBattleCheckbox, "cell 4 0");
 
             //======== trainerDataSubPanel ========
             {
@@ -416,11 +602,11 @@ public class TrainerPanel extends JPanel
     private JButton newTrainerButton;
     private JButton saveTrainerButton;
     private JPanel trainerDataPanel;
-    private JButton button1;
-    private JButton button2;
+    private JButton exportSmogonButton;
+    private JButton importSmogonButton;
     private JCheckBox toggleMovesCheckbox;
     private JCheckBox toggleHeldItemsCheckbox;
-    private JCheckBox checkBox1;
+    private JCheckBox toggleDoubleBattleCheckbox;
     private JPanel trainerDataSubPanel;
     private JLabel trainerNameLabel;
     private JPanel itemPanel;
@@ -482,6 +668,8 @@ public class TrainerPanel extends JPanel
         return moveData;
     }
 
+    public int[] getFormNumberData() {return formNumberData;}
+
     public void setProjectPath(String projectPath)
     {
         System.out.println(projectPath);
@@ -499,6 +687,8 @@ public class TrainerPanel extends JPanel
             ArrayList<String> nameList = new ArrayList<>();
             String line;
             while ((line = reader.readLine()) != null) {
+                if(line.equalsIgnoreCase("Egg"))
+                    break;
                 nameList.add(line);
             }
             nameData = nameList.toArray(new String[0]);
@@ -529,6 +719,17 @@ public class TrainerPanel extends JPanel
                 trainerClassList.add(line);
             }
             trainerClassData= trainerClassList.toArray(new String[0]);
+            reader.close();
+
+            reader = new BufferedReader(new FileReader(classPath + "FormDataPt.txt"));
+            ArrayList<Integer> formNumberList = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                formNumberList.add(Integer.parseInt(line.split(" ")[line.split(" ").length-1]));
+            }
+            formNumberData= new int[formNumberList.size()];
+            for(int i= 0; i < formNumberList.size(); i++)
+                formNumberData[i]= formNumberList.get(i);
             reader.close();
         }
         catch (IOException e)
@@ -577,5 +778,36 @@ public class TrainerPanel extends JPanel
             else
                 first= false;
         }
+
+        try
+        {
+            trainerEditor= new TrainerEditorGen4(projectPath, Game.Platinum);
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+    }
+
+    public void setSaved(boolean saved)
+    {
+        this.saved= saved;
+    }
+
+    private void loadTrainerData()
+    {
+        trainerNameTextField.setText((String) trainerDataTable[trainerSelectionComboBox.getSelectedIndex()+1][1]);
+        numberPokemonSlider.setValue(trainer.getNumPokemon());
+        itemComboBox1.setSelectedIndex(trainer.getItem1());
+        itemComboBox2.setSelectedIndex(trainer.getItem2());
+        itemComboBox3.setSelectedIndex(trainer.getItem3());
+        itemComboBox4.setSelectedIndex(trainer.getItem4());
+        toggleMovesCheckbox.setSelected((trainer.getFlag() & 1) == 1);
+        toggleHeldItemsCheckbox.setSelected(((trainer.getFlag() >> 1) & 1) == 1);
+        toggleDoubleBattleCheckbox.setSelected(trainer.getBattleType2() == 1);
+        trainerClassSelectorComboBox.setSelectedIndex(trainer.getTrainerClass());
+
+        pokemonList= trainerEditor.parseTrainerTeam(Arrays.copyOfRange(trainerPokemonTable[trainerSelectionComboBox.getSelectedIndex()+1],2,trainerPokemonTable[0].length),trainer.getNumPokemon());
+        setPokemonList();
     }
 }

@@ -37,14 +37,16 @@ new FormModel {
 				name: "trainerDataPanel"
 				"border": new javax.swing.border.TitledBorder( "Trainer Data" )
 				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "button1"
+					name: "exportSmogonButton"
 					"text": "Export Pokémon"
+					"toolTipText": "Export team in Smogon format"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "button2"
+					name: "importSmogonButton"
 					"text": "Import Pokémon"
+					"toolTipText": "Import team in Smogon format"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0"
 				} )
@@ -63,7 +65,7 @@ new FormModel {
 					"value": "cell 3 0"
 				} )
 				add( new FormComponent( "javax.swing.JCheckBox" ) {
-					name: "checkBox1"
+					name: "toggleDoubleBattleCheckbox"
 					"text": "Double Battle"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 4 0"
