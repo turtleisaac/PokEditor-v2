@@ -46,7 +46,8 @@ new FormModel {
 					name: "sealSelectionComboBox"
 					"font": new java.awt.Font( ".SF NS Text", 0, 13 )
 					"model": new javax.swing.DefaultComboBoxModel {
-						selectedItem: "Red Petals"
+						selectedItem: "None"
+						addElement( "None" )
 						addElement( "Red Petals" )
 						addElement( "Music Notes" )
 						addElement( "Confetti" )

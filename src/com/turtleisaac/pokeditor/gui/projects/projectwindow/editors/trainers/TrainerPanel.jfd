@@ -38,15 +38,15 @@ new FormModel {
 				"border": new javax.swing.border.TitledBorder( "Trainer Data" )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "exportSmogonButton"
-					"text": "Export Pokémon"
-					"toolTipText": "Export team in Smogon format"
+					"text": "Import/ Export Pokémon"
+					"toolTipText": "Export or import team in Smogon format"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "exportSmogonButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "importSmogonButton"
-					"text": "Import Pokémon"
-					"toolTipText": "Import team in Smogon format"
+					name: "button1"
+					"text": "Trainer Text"
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0"
 				} )

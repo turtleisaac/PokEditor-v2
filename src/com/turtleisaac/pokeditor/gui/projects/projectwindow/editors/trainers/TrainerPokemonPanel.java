@@ -17,7 +17,7 @@ import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import net.miginfocom.swing.*;
 
 /**
- * @author Truck
+ * @author turtleisaac
  */
 public class TrainerPokemonPanel extends JPanel
 {
@@ -542,6 +542,7 @@ public class TrainerPokemonPanel extends JPanel
             //---- sealSelectionComboBox ----
             sealSelectionComboBox.setFont(new Font(".SF NS Text", Font.PLAIN, 13));
             sealSelectionComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
+                "None",
                 "Red Petals",
                 "Music Notes",
                 "Confetti",
@@ -858,5 +859,25 @@ public class TrainerPokemonPanel extends JPanel
             stringBuilder.insert(0,"0");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        String ret= speciesComboBox.getSelectedItem() + (heldItemComboBox.getSelectedIndex() != 0 ? " @ " + heldItemComboBox.getSelectedItem() : "")
+                + "\nLevel: " + superCustomLevelTextField.getText()
+                + "\n" + superCustomNatureComboBox.getSelectedItem() + " Nature"
+                + "\nIVs: " + superCustomIvTextField.getText() + " HP / " + superCustomIvTextField.getText() + " Atk / " + superCustomIvTextField.getText() + " Def / "  + superCustomIvTextField.getText() + " SpA / "  + superCustomIvTextField.getText() + " SpD / " + superCustomIvTextField.getText() + " Spe"
+                + "\n- " + move1ComboBox.getSelectedItem()
+                + "\n- " + move2ComboBox.getSelectedItem()
+                + "\n- " + move3ComboBox.getSelectedItem()
+                + "\n- " + move4ComboBox.getSelectedItem();
+
+        return ret;
+    }
+
+    public void parseSmogon(String smogonSet)
+    {
+
     }
 }

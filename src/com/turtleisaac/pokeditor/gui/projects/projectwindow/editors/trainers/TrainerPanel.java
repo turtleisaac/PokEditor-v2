@@ -4,6 +4,7 @@
 
 package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
 
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -16,12 +17,13 @@ import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
+import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.project.Game;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
 
 /**
- * @author Truck
+ * @author turtleisaac
  */
 public class TrainerPanel extends JPanel
 {
@@ -218,12 +220,20 @@ public class TrainerPanel extends JPanel
 
     private void saveTrainerButtonActionPerformed(ActionEvent e)
     {
+        short unknown1= trainer.getUnknown1();
+        short unknown2= trainer.getUnknown2();
+        short unknown3= trainer.getUnknown3();
+        short battleType= trainer.getBattleType();
+
         trainer= new TrainerDataGen4()
         {
             @Override
             public short getFlag()
             {
-                return 0;
+                BitStream bitStream= new BitStream();
+                bitStream.append(toggleMovesCheckbox.isSelected());
+                bitStream.append(toggleHeldItemsCheckbox.isSelected());
+                return (short) Integer.parseInt(bitStream.toString(),2);
             }
 
             @Override
@@ -235,7 +245,7 @@ public class TrainerPanel extends JPanel
             @Override
             public short getBattleType()
             {
-                return 0;
+                return battleType;
             }
 
             @Override
@@ -271,31 +281,47 @@ public class TrainerPanel extends JPanel
             @Override
             public long getAI()
             {
-                return 0;
+                BitStream bitStream= new BitStream();
+                bitStream.append(effectivenessPriorityCheckbox.isSelected());
+                bitStream.append(attackEvaluationCheckbox.isSelected());
+                bitStream.append(expertModeCheckbox.isSelected());
+                bitStream.append(statusPriorityCheckbox.isSelected());
+                bitStream.append(riskyAttackCheckbox.isSelected());
+                bitStream.append(damagePriorityCheckbox.isSelected());
+                bitStream.append(partnerTrainerCheckbox.isSelected());
+                bitStream.append(doubleBattleCheckbox.isSelected());
+                bitStream.append(healingPriorityCheckbox.isSelected());
+                bitStream.append(utilizeWeatherCheckbox.isSelected());
+                bitStream.append(harassmentCheckbox.isSelected());
+                bitStream.append(roamingCheckbox.isSelected());
+                bitStream.append(safariZoneCheckbox.isSelected());
+                bitStream.append(catchingDemoCheckbox.isSelected());
+
+                return Long.parseLong(bitStream.toString(),2);
             }
 
             @Override
             public short getBattleType2() //Single or Double battle
             {
-                return (short) (doubleBattleCheckbox.isSelected() ? 1 : 2);
+                return (short) (doubleBattleCheckbox.isSelected() ? 1 : 0);
             }
 
             @Override
             public short getUnknown1()
             {
-                return trainer.getUnknown1();
+                return unknown1;
             }
 
             @Override
             public short getUnknown2()
             {
-                return trainer.getUnknown2();
+                return unknown2;
             }
 
             @Override
             public short getUnknown3()
             {
-                return trainer.getUnknown3();
+                return unknown3;
             }
         };
 
@@ -318,8 +344,8 @@ public class TrainerPanel extends JPanel
 
         try
         {
-            api.updateSheet("Trainer Data!" + (trainerFileLastSelected+1) + ":" + (trainerFileLastSelected+1),trainerDataArr);
-            api.updateSheet("Trainer Pokemon!" + (trainerFileLastSelected+1) + ":" + (trainerFileLastSelected+1),team);
+            api.updateSheet("Trainer Data!" + (trainerSelectionComboBox.getSelectedIndex()+2) + ":" + (trainerSelectionComboBox.getSelectedIndex()+2),trainerDataArr);
+            api.updateSheet("Trainer Pokemon!" + (trainerSelectionComboBox.getSelectedIndex()+2) + ":" + (trainerSelectionComboBox.getSelectedIndex()+2),team);
         }
         catch (IOException exception)
         {
@@ -329,6 +355,21 @@ public class TrainerPanel extends JPanel
         saved= true;
     }
 
+    private void exportSmogonButtonActionPerformed(ActionEvent e)
+    {
+        SmogonFrame smogonFrame= new SmogonFrame();
+        for(int i= 0; i < trainerPokemonTabbedPane.getTabCount(); i++)
+        {
+            TrainerPokemonPanel pokemonPanel= (TrainerPokemonPanel) trainerPokemonTabbedPane.getComponentAt(i);
+            smogonFrame.append(pokemonPanel.toString() + "\n\n");
+        }
+        smogonFrame.setLocationRelativeTo(this);
+        smogonFrame.setPreferredSize(new Dimension(400,500));
+        smogonFrame.setMinimumSize(smogonFrame.getMinimumSize());
+        smogonFrame.pack();
+        smogonFrame.setVisible(true);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         trainerSelectionComboBox = new JComboBox();
@@ -336,7 +377,7 @@ public class TrainerPanel extends JPanel
         saveTrainerButton = new JButton();
         trainerDataPanel = new JPanel();
         exportSmogonButton = new JButton();
-        importSmogonButton = new JButton();
+        button1 = new JButton();
         toggleMovesCheckbox = new JCheckBox();
         toggleHeldItemsCheckbox = new JCheckBox();
         toggleDoubleBattleCheckbox = new JCheckBox();
@@ -411,14 +452,14 @@ public class TrainerPanel extends JPanel
                 "[]0"));
 
             //---- exportSmogonButton ----
-            exportSmogonButton.setText("Export Pok\u00e9mon");
-            exportSmogonButton.setToolTipText("Export team in Smogon format");
+            exportSmogonButton.setText("Import/ Export Pok\u00e9mon");
+            exportSmogonButton.setToolTipText("Export or import team in Smogon format");
+            exportSmogonButton.addActionListener(e -> exportSmogonButtonActionPerformed(e));
             trainerDataPanel.add(exportSmogonButton, "cell 0 0");
 
-            //---- importSmogonButton ----
-            importSmogonButton.setText("Import Pok\u00e9mon");
-            importSmogonButton.setToolTipText("Import team in Smogon format");
-            trainerDataPanel.add(importSmogonButton, "cell 1 0");
+            //---- button1 ----
+            button1.setText("Trainer Text");
+            trainerDataPanel.add(button1, "cell 1 0");
 
             //---- toggleMovesCheckbox ----
             toggleMovesCheckbox.setText("Moves");
@@ -603,7 +644,7 @@ public class TrainerPanel extends JPanel
     private JButton saveTrainerButton;
     private JPanel trainerDataPanel;
     private JButton exportSmogonButton;
-    private JButton importSmogonButton;
+    private JButton button1;
     private JCheckBox toggleMovesCheckbox;
     private JCheckBox toggleHeldItemsCheckbox;
     private JCheckBox toggleDoubleBattleCheckbox;
@@ -806,6 +847,24 @@ public class TrainerPanel extends JPanel
         toggleHeldItemsCheckbox.setSelected(((trainer.getFlag() >> 1) & 1) == 1);
         toggleDoubleBattleCheckbox.setSelected(trainer.getBattleType2() == 1);
         trainerClassSelectorComboBox.setSelectedIndex(trainer.getTrainerClass());
+
+        int idx= 0;
+        effectivenessPriorityCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        attackEvaluationCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        expertModeCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        statusPriorityCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        riskyAttackCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        healingPriorityCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        partnerTrainerCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        doubleBattleCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        healingPriorityCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        utilizeWeatherCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        harassmentCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        roamingCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        safariZoneCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        catchingDemoCheckbox.setSelected(((trainer.getAI() >> idx) & 1) == 1);
+
+
 
         pokemonList= trainerEditor.parseTrainerTeam(Arrays.copyOfRange(trainerPokemonTable[trainerSelectionComboBox.getSelectedIndex()+1],2,trainerPokemonTable[0].length),trainer.getNumPokemon());
         setPokemonList();
