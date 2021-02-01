@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.calculations;
+package com.turtleisaac.pokeditor.utilities;
 
 public class TrainerPersonalityCalculator
 {

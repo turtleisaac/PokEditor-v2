@@ -153,24 +153,25 @@ new FormModel {
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 5 0,alignx center,growx 0"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "superCustomLevelTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "superCustomLevelSpinner"
 						"toolTipText": "A value ranging from 1 to 100"
+						"model": new javax.swing.SpinnerNumberModel( 1, 1, 100, 1 )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 1"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "superCustomIvTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "superCustomIvSpinner"
 						"toolTipText": "A value ranging from 0 to 31"
+						"model": new javax.swing.SpinnerNumberModel( 0, 0, 31, 1 )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 1"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "superCustomAbilityTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "superCustomAbilitySpinner"
 						"toolTipText": "Changes which ability posessed by this species is used (HGSS only)"
-						"text": "0"
-						"editable": false
 						"enabled": false
+						"model": new javax.swing.SpinnerNumberModel( 0, 0, 255, 1 )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 2 1"
 					} )
@@ -215,7 +216,6 @@ new FormModel {
 						"value": 0
 						"maximum": 1
 						"majorTickSpacing": 1
-						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "superCustomFormSliderStateChanged", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 5 1"
 					} )
@@ -266,14 +266,16 @@ new FormModel {
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 3 0 1 2,growy"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "targetPidLevelTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "targetPidLevelSpinner"
 						"toolTipText": "A value ranging from 1 to 100"
+						"model": new javax.swing.SpinnerNumberModel( 1, 1, 100, 1 )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 1"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "targetPidFormTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "targetPidFormSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 0, 0, 0, 1 )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 1"
 					} )
@@ -299,9 +301,10 @@ new FormModel {
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 0,alignx center,growx 0"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "oldMethodLevelTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "oldMethodLevelSpinner"
 						"toolTipText": "A value ranging from 1 to 100"
+						"model": new javax.swing.SpinnerNumberModel( 1, 1, 100, 1 )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 1"
 					} )
@@ -317,20 +320,23 @@ new FormModel {
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 3 0,alignx center,growx 0"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "oldMethodFormTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "oldMethodFormSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 0, 0, 0, 1 )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 1"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "oldMethodDifficultyTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "oldMethodDifficultySpinner"
 						"toolTipText": "A value ranging from 0 to 255"
+						"model": new javax.swing.SpinnerNumberModel( 0s, 0s, 255s, 1s )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 2 1"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "oldMethodAbilityTextField"
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "oldMethodAbilitySpinner"
 						"toolTipText": "Changes which ability posessed by this species is used (HGSS only)"
+						"model": new javax.swing.SpinnerNumberModel( 0s, 0s, 255s, 1s )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 3 1"
 					} )

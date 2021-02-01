@@ -31,8 +31,8 @@ public enum Game
             new String[] {});
 
 
-    public String[] sheetList;
-    public String[] editorList;
+    public final String[] sheetList;
+    public final String[] editorList;
 
     Game(String[] sheetList, String[] editorList)
     {

@@ -357,7 +357,7 @@ public class TrainerPanel extends JPanel
 
     private void exportSmogonButtonActionPerformed(ActionEvent e)
     {
-        SmogonFrame smogonFrame= new SmogonFrame();
+        SmogonFrame smogonFrame= new SmogonFrame(this);
         for(int i= 0; i < trainerPokemonTabbedPane.getTabCount(); i++)
         {
             TrainerPokemonPanel pokemonPanel= (TrainerPokemonPanel) trainerPokemonTabbedPane.getComponentAt(i);
@@ -368,6 +368,25 @@ public class TrainerPanel extends JPanel
         smogonFrame.setMinimumSize(smogonFrame.getMinimumSize());
         smogonFrame.pack();
         smogonFrame.setVisible(true);
+    }
+
+    public void importSmogonButtonActionPerformed(String[] arr)
+    {
+        ArrayList<String[]> smogonList= new ArrayList<>();
+        int start= 0;
+        for(int i= 1; i < arr.length; i++)
+        {
+            if(contains(nameData,arr[i]))
+            {
+                smogonList.add(Arrays.copyOfRange(arr,start,i));
+                start= i;
+            }
+        }
+
+        for(String[] pokemon : smogonList)
+        {
+            System.out.println(Arrays.toString(pokemon));
+        }
     }
 
     private void initComponents() {
@@ -790,6 +809,7 @@ public class TrainerPanel extends JPanel
         {
             trainerClassSelectorComboBox.addItem(trainerClass);
         }
+        System.out.println("LLLL " + trainerClassData.length);
 
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
 //        newPanel.enableParentData();
@@ -868,5 +888,15 @@ public class TrainerPanel extends JPanel
 
         pokemonList= trainerEditor.parseTrainerTeam(Arrays.copyOfRange(trainerPokemonTable[trainerSelectionComboBox.getSelectedIndex()+1],2,trainerPokemonTable[0].length),trainer.getNumPokemon());
         setPokemonList();
+    }
+
+    private boolean contains(String[] arr, String str)
+    {
+        for(String s : arr)
+        {
+            if(str.startsWith(s))
+                return true;
+        }
+        return false;
     }
 }

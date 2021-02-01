@@ -1,0 +1,80 @@
+JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.9" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "hidemode 3"
+			"$columnConstraints": "[grow,fill]"
+			"$rowConstraints": "[][][]"
+		} ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "hidemode 3"
+				"$columnConstraints": "[fill][grow,fill][fill]"
+				"$rowConstraints": "[]"
+			} ) {
+				name: "panel1"
+				"border": new javax.swing.border.TitledBorder( "Gender" )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "Female"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0,align center center,grow 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JSlider" ) {
+					name: "slider1"
+					"maximum": 1
+					"majorTickSpacing": 1
+					"snapToTicks": true
+					"value": 0
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label2"
+					"text": "Male"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 0,align center center,grow 0 0"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+				"$layoutConstraints": "hidemode 3"
+				"$columnConstraints": "[fill][grow,fill][fill][grow,fill]"
+				"$rowConstraints": "[]"
+			} ) {
+				name: "panel2"
+				"border": new javax.swing.border.TitledBorder( "Misc" )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label3"
+					"text": "Prize Money"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 0"
+				} )
+				add( new FormComponent( "javax.swing.JSpinner" ) {
+					name: "spinner1"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 1 0"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label4"
+					"text": "Song"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 2 0"
+				} )
+				add( new FormComponent( "javax.swing.JSpinner" ) {
+					name: "spinner2"
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 3 0"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

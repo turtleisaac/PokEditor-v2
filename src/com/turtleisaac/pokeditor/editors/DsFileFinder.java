@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class DsFileFinder
 {
@@ -100,7 +102,8 @@ public class DsFileFinder
 //
 //        findFile(0x80, 0x1f, 0x03, 0x00, 0x00);
 
-        findFile(0x7A, 0x0c,0x40);
+        findFile(0x7A, 0x14,0x47,0x0F,0x02);
+        findFile(0x7A, 0x02,0x0F,0x47,0x14);
 //        findFile(0x7A, 0x84, 0x03);
 
 
@@ -544,7 +547,9 @@ public class DsFileFinder
             {
                 gap= startingOffset-lastEnd;
             }
-//            System.out.println(gap);
+
+            if(0xF4714 > startingOffset && 0xf4714 < endingOffset)
+                System.out.println("File " + i);
 
             int finalI = i;
             long finalDiff = gap;
@@ -646,6 +651,19 @@ public class DsFileFinder
             romBuffer.close();
             toFind.close();
         }
+    }
+
+    public void findFile(int max, String bytes) throws IOException
+    {
+//        findFile(max, Arrays.stream(bytes.split(" ")).map(s -> Integer.parseInt(s, 16)).mapToInt(Integer::intValue).toArray());
+        String[] sArr= bytes.split(" ");
+        int[] arr= new int[sArr.length];
+        for(int i= 0; i < arr.length; i++)
+        {
+            arr[i]= Integer.parseInt(sArr[i],16);
+        }
+        System.out.println(Arrays.toString(arr));
+        findFile(max,arr);
     }
 
     public void findFile(int max, int... bytes) throws IOException

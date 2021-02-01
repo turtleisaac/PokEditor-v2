@@ -6,6 +6,8 @@ package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.*;
 import net.miginfocom.swing.*;
 
@@ -15,13 +17,15 @@ import net.miginfocom.swing.*;
 public class SmogonFrame extends JFrame
 {
     private TrainerPanel parent;
-    public SmogonFrame() {
+    public SmogonFrame(TrainerPanel parent) {
         initComponents();
+        this.parent= parent;
     }
 
     private void applyButtonActionPerformed(ActionEvent e)
     {
-        // TODO add your code here
+        String[] arr= teamTextArea.getText().split("\n");
+        parent.importSmogonButtonActionPerformed(arr);
     }
 
     private void initComponents() {

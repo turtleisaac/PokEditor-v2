@@ -6,13 +6,13 @@ package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
+import java.beans.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
-import com.turtleisaac.pokeditor.calculations.TrainerPersonalityCalculator;
+import com.turtleisaac.pokeditor.utilities.TrainerPersonalityCalculator;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import net.miginfocom.swing.*;
 
@@ -54,30 +54,7 @@ public class TrainerPokemonPanel extends JPanel
 
         if(pokemon != null)
         {
-            speciesComboBox.setSelectedIndex(pokemon.getPokemon());
-            heldItemComboBox.setSelectedIndex(pokemon.getItem());
-            move1ComboBox.setSelectedIndex(pokemon.getMove1());
-            move2ComboBox.setSelectedIndex(pokemon.getMove2());
-            move3ComboBox.setSelectedIndex(pokemon.getMove3());
-            move4ComboBox.setSelectedIndex(pokemon.getMove4());
-            sealSelectionComboBox.setSelectedIndex(pokemon.getBallCapsule());
-
-            int pidValue= TrainerPersonalityCalculator.generatePid(parent.getTrainerFileIndex(),parent.getSelectedClassIndex(),parent.getSelectedClassGender(),speciesComboBox.getSelectedIndex(),pokemon.getLevel(),pokemon.getIvs());
-
-            superCustomLevelTextField.setText("" + pokemon.getLevel());
-            superCustomIvTextField.setText("" + pokemon.getIvs()*31/255);
-            superCustomAbilityTextField.setText("" + pokemon.getAbility());
-            superCustomFormSlider.setValue(pokemon.getAltForm());
-            superCustomNatureComboBox.setSelectedIndex((pidValue%100)%25);
-
-            targetPidLevelTextField.setText("" + pokemon.getLevel());
-            targetPidFormTextField.setText("" + pokemon.getAltForm());
-            targetPidFormTextField.setText("0x" + fixHexString(Integer.toHexString(pidValue)));
-
-            oldMethodLevelTextField.setText("" + pokemon.getLevel());
-            oldMethodFormTextField.setText("" + pokemon.getAltForm());
-            oldMethodDifficultyTextField.setText("" + pokemon.getIvs());
-            oldMethodAbilityTextField.setText("" + pokemon.getAbility());
+            loadPokemonData();
         }
     }
 
@@ -117,10 +94,38 @@ public class TrainerPokemonPanel extends JPanel
         heldItemComboBox.setEnabled(bool);
     }
 
+    private void loadPokemonData()
+    {
+        speciesComboBox.setSelectedIndex(pokemonData.getPokemon());
+        heldItemComboBox.setSelectedIndex(pokemonData.getItem());
+        move1ComboBox.setSelectedIndex(pokemonData.getMove1());
+        move2ComboBox.setSelectedIndex(pokemonData.getMove2());
+        move3ComboBox.setSelectedIndex(pokemonData.getMove3());
+        move4ComboBox.setSelectedIndex(pokemonData.getMove4());
+        sealSelectionComboBox.setSelectedIndex(pokemonData.getBallCapsule());
+
+        int pidValue= TrainerPersonalityCalculator.generatePid(parent.getTrainerFileIndex(),parent.getSelectedClassIndex(),parent.getSelectedClassGender(),speciesComboBox.getSelectedIndex(),pokemonData.getLevel(),pokemonData.getIvs());
+
+        superCustomLevelSpinner.setValue(pokemonData.getLevel());
+        superCustomIvSpinner.setValue(pokemonData.getIvs()*31/255);
+        superCustomAbilitySpinner.setValue(pokemonData.getAbility());
+        superCustomFormSlider.setValue(pokemonData.getAltForm());
+        superCustomNatureComboBox.setSelectedIndex((pidValue%100)%25);
+
+        targetPidLevelSpinner.setValue(pokemonData.getLevel());
+        targetPidFormSpinner.setValue(pokemonData.getAltForm());
+        targetPidTextField.setText("0x" + fixHexString(Integer.toHexString(pidValue)));
+
+        oldMethodLevelSpinner.setValue(pokemonData.getLevel());
+        oldMethodFormSpinner.setValue(pokemonData.getAltForm());
+        oldMethodDifficultySpinner.setValue(pokemonData.getIvs());
+        oldMethodAbilitySpinner.setValue(pokemonData.getAbility());
+    }
+
     private void targetPidApplyButtonActionPerformed(ActionEvent e)
     {
         parent.setSaved(false);
-        int level= Integer.parseInt(targetPidLevelTextField.getText());
+        int level= (Integer) targetPidLevelSpinner.getValue();;
         String pid= targetPidTextField.getText();
 
         if(pid.contains(" "))
@@ -158,6 +163,7 @@ public class TrainerPokemonPanel extends JPanel
         else
         {
             JOptionPane.showMessageDialog(parent,"Error: No possible combination of values can result in the target PID for this trainer file number, trainer class, species, and level.","Error",JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         pokemonData= new TrainerPokemonData()
@@ -189,7 +195,7 @@ public class TrainerPokemonPanel extends JPanel
             @Override
             public int getAltForm()
             {
-                return Integer.parseInt(targetPidFormTextField.getText());
+                return (Integer) targetPidFormSpinner.getValue();
             }
 
             @Override
@@ -228,14 +234,15 @@ public class TrainerPokemonPanel extends JPanel
                 return (short) sealSelectionComboBox.getSelectedIndex();
             }
         };
+        loadPokemonData();
     }
 
     private void superCustomApplyButtonActionPerformed(ActionEvent e)
     {
         parent.setSaved(false);
-        int level= Integer.parseInt(superCustomLevelTextField.getText());
-        int ivValue= Integer.parseInt(superCustomIvTextField.getText());
-        int ability= Integer.parseInt(superCustomAbilityTextField.getText());
+        int level= (Integer) superCustomLevelSpinner.getValue();
+        int ivValue= (Integer) superCustomIvSpinner.getValue();
+        int ability= (Short) superCustomAbilitySpinner.getValue();
         int nature= superCustomNatureComboBox.getSelectedIndex();
         int formNumber= superCustomFormSlider.getValue();
 
@@ -290,7 +297,7 @@ public class TrainerPokemonPanel extends JPanel
                     @Override
                     public int getAltForm()
                     {
-                        return superCustomFormSlider.getValue();
+                        return formNumber;
                     }
 
                     @Override
@@ -329,6 +336,7 @@ public class TrainerPokemonPanel extends JPanel
                         return (short) sealSelectionComboBox.getSelectedIndex();
                     }
                 };
+                loadPokemonData();
                 break;
             }
         }
@@ -365,12 +373,6 @@ public class TrainerPokemonPanel extends JPanel
 
     }
 
-    private void superCustomFormSliderStateChanged(ChangeEvent e)
-    {
-        parent.setSaved(false);
-        // TODO add your code here
-    }
-
     private void speciesComboBoxActionPerformed(ActionEvent e)
     {
         parent.setSaved(false);
@@ -394,19 +396,19 @@ public class TrainerPokemonPanel extends JPanel
             @Override
             public short getIvs()
             {
-                return (short) Integer.parseInt(oldMethodDifficultyTextField.getText());
+                return (Short) oldMethodDifficultySpinner.getValue();
             }
 
             @Override
             public short getAbility()
             {
-                return (short) Integer.parseInt(oldMethodAbilityTextField.getText());
+                return (Short) oldMethodAbilitySpinner.getValue();
             }
 
             @Override
             public int getLevel()
             {
-                return Integer.parseInt(oldMethodLevelTextField.getText());
+                return (Integer) oldMethodLevelSpinner.getValue();
             }
 
             @Override
@@ -418,7 +420,7 @@ public class TrainerPokemonPanel extends JPanel
             @Override
             public int getAltForm()
             {
-                return Integer.parseInt(oldMethodFormTextField.getText());
+                return (Integer) oldMethodFormSpinner.getValue();
             }
 
             @Override
@@ -457,6 +459,9 @@ public class TrainerPokemonPanel extends JPanel
                 return (short) sealSelectionComboBox.getSelectedIndex();
             }
         };
+
+        loadPokemonData();
+
     }
 
     private void initComponents() {
@@ -480,9 +485,9 @@ public class TrainerPokemonPanel extends JPanel
         superCustomAbilityLabel = new JLabel();
         superCustomNatureLabel = new JLabel();
         superCustomFormLabel = new JLabel();
-        superCustomLevelTextField = new JTextField();
-        superCustomIvTextField = new JTextField();
-        superCustomAbilityTextField = new JTextField();
+        superCustomLevelSpinner = new JSpinner();
+        superCustomIvSpinner = new JSpinner();
+        superCustomAbilitySpinner = new JSpinner();
         superCustomNatureComboBox = new JComboBox<>();
         superCustomFormSlider = new JSlider();
         superCustomApplyButton = new JButton();
@@ -492,17 +497,17 @@ public class TrainerPokemonPanel extends JPanel
         targetPidLabel = new JLabel();
         targetPidTextField = new JTextField();
         targetPidApplyButton = new JButton();
-        targetPidLevelTextField = new JTextField();
-        targetPidFormTextField = new JTextField();
+        targetPidLevelSpinner = new JSpinner();
+        targetPidFormSpinner = new JSpinner();
         oldMethodPanel = new JPanel();
         oldMethodLevelLabel = new JLabel();
         oldMethodFormLabel = new JLabel();
-        oldMethodLevelTextField = new JTextField();
+        oldMethodLevelSpinner = new JSpinner();
         oldMethodDifficultyLabel = new JLabel();
         oldMethodAbilityLabel = new JLabel();
-        oldMethodFormTextField = new JTextField();
-        oldMethodDifficultyTextField = new JTextField();
-        oldMethodAbilityTextField = new JTextField();
+        oldMethodFormSpinner = new JSpinner();
+        oldMethodDifficultySpinner = new JSpinner();
+        oldMethodAbilitySpinner = new JSpinner();
         oldMethodApplyButton = new JButton();
 
         //======== this ========
@@ -644,20 +649,21 @@ public class TrainerPokemonPanel extends JPanel
                 superCustomFormLabel.setText("Form No.");
                 superCustomPanel.add(superCustomFormLabel, "cell 5 0,alignx center,growx 0");
 
-                //---- superCustomLevelTextField ----
-                superCustomLevelTextField.setToolTipText("A value ranging from 1 to 100");
-                superCustomPanel.add(superCustomLevelTextField, "cell 0 1");
+                //---- superCustomLevelSpinner ----
+                superCustomLevelSpinner.setToolTipText("A value ranging from 1 to 100");
+                superCustomLevelSpinner.setModel(new SpinnerNumberModel(1, 1, 100, 1));
+                superCustomPanel.add(superCustomLevelSpinner, "cell 0 1");
 
-                //---- superCustomIvTextField ----
-                superCustomIvTextField.setToolTipText("A value ranging from 0 to 31");
-                superCustomPanel.add(superCustomIvTextField, "cell 1 1");
+                //---- superCustomIvSpinner ----
+                superCustomIvSpinner.setToolTipText("A value ranging from 0 to 31");
+                superCustomIvSpinner.setModel(new SpinnerNumberModel(0, 0, 31, 1));
+                superCustomPanel.add(superCustomIvSpinner, "cell 1 1");
 
-                //---- superCustomAbilityTextField ----
-                superCustomAbilityTextField.setToolTipText("Changes which ability posessed by this species is used (HGSS only)");
-                superCustomAbilityTextField.setText("0");
-                superCustomAbilityTextField.setEditable(false);
-                superCustomAbilityTextField.setEnabled(false);
-                superCustomPanel.add(superCustomAbilityTextField, "cell 2 1");
+                //---- superCustomAbilitySpinner ----
+                superCustomAbilitySpinner.setToolTipText("Changes which ability posessed by this species is used (HGSS only)");
+                superCustomAbilitySpinner.setEnabled(false);
+                superCustomAbilitySpinner.setModel(new SpinnerNumberModel(0, 0, 255, 1));
+                superCustomPanel.add(superCustomAbilitySpinner, "cell 2 1");
 
                 //---- superCustomNatureComboBox ----
                 superCustomNatureComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
@@ -696,7 +702,6 @@ public class TrainerPokemonPanel extends JPanel
                 superCustomFormSlider.setValue(0);
                 superCustomFormSlider.setMaximum(1);
                 superCustomFormSlider.setMajorTickSpacing(1);
-                superCustomFormSlider.addChangeListener(e -> superCustomFormSliderStateChanged(e));
                 superCustomPanel.add(superCustomFormSlider, "cell 5 1");
 
                 //---- superCustomApplyButton ----
@@ -738,10 +743,14 @@ public class TrainerPokemonPanel extends JPanel
                 targetPidApplyButton.addActionListener(e -> targetPidApplyButtonActionPerformed(e));
                 targetPidPanel.add(targetPidApplyButton, "cell 3 0 1 2,growy");
 
-                //---- targetPidLevelTextField ----
-                targetPidLevelTextField.setToolTipText("A value ranging from 1 to 100");
-                targetPidPanel.add(targetPidLevelTextField, "cell 0 1");
-                targetPidPanel.add(targetPidFormTextField, "cell 1 1");
+                //---- targetPidLevelSpinner ----
+                targetPidLevelSpinner.setToolTipText("A value ranging from 1 to 100");
+                targetPidLevelSpinner.setModel(new SpinnerNumberModel(1, 1, 100, 1));
+                targetPidPanel.add(targetPidLevelSpinner, "cell 0 1");
+
+                //---- targetPidFormSpinner ----
+                targetPidFormSpinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
+                targetPidPanel.add(targetPidFormSpinner, "cell 1 1");
             }
             pidPane.addTab("Method 2", targetPidPanel);
 
@@ -768,9 +777,10 @@ public class TrainerPokemonPanel extends JPanel
                 oldMethodFormLabel.setText("Form No.");
                 oldMethodPanel.add(oldMethodFormLabel, "cell 1 0,alignx center,growx 0");
 
-                //---- oldMethodLevelTextField ----
-                oldMethodLevelTextField.setToolTipText("A value ranging from 1 to 100");
-                oldMethodPanel.add(oldMethodLevelTextField, "cell 0 1");
+                //---- oldMethodLevelSpinner ----
+                oldMethodLevelSpinner.setToolTipText("A value ranging from 1 to 100");
+                oldMethodLevelSpinner.setModel(new SpinnerNumberModel(1, 1, 100, 1));
+                oldMethodPanel.add(oldMethodLevelSpinner, "cell 0 1");
 
                 //---- oldMethodDifficultyLabel ----
                 oldMethodDifficultyLabel.setText("Difficulty Value");
@@ -779,15 +789,20 @@ public class TrainerPokemonPanel extends JPanel
                 //---- oldMethodAbilityLabel ----
                 oldMethodAbilityLabel.setText("Ability No.");
                 oldMethodPanel.add(oldMethodAbilityLabel, "cell 3 0,alignx center,growx 0");
-                oldMethodPanel.add(oldMethodFormTextField, "cell 1 1");
 
-                //---- oldMethodDifficultyTextField ----
-                oldMethodDifficultyTextField.setToolTipText("A value ranging from 0 to 255");
-                oldMethodPanel.add(oldMethodDifficultyTextField, "cell 2 1");
+                //---- oldMethodFormSpinner ----
+                oldMethodFormSpinner.setModel(new SpinnerNumberModel(0, 0, 0, 1));
+                oldMethodPanel.add(oldMethodFormSpinner, "cell 1 1");
 
-                //---- oldMethodAbilityTextField ----
-                oldMethodAbilityTextField.setToolTipText("Changes which ability posessed by this species is used (HGSS only)");
-                oldMethodPanel.add(oldMethodAbilityTextField, "cell 3 1");
+                //---- oldMethodDifficultySpinner ----
+                oldMethodDifficultySpinner.setToolTipText("A value ranging from 0 to 255");
+                oldMethodDifficultySpinner.setModel(new SpinnerNumberModel((short) 0, (short) 0, (short) 255, (short) 1));
+                oldMethodPanel.add(oldMethodDifficultySpinner, "cell 2 1");
+
+                //---- oldMethodAbilitySpinner ----
+                oldMethodAbilitySpinner.setToolTipText("Changes which ability posessed by this species is used (HGSS only)");
+                oldMethodAbilitySpinner.setModel(new SpinnerNumberModel((short) 0, (short) 0, (short) 255, (short) 1));
+                oldMethodPanel.add(oldMethodAbilitySpinner, "cell 3 1");
 
                 //---- oldMethodApplyButton ----
                 oldMethodApplyButton.setText("Apply");
@@ -820,9 +835,9 @@ public class TrainerPokemonPanel extends JPanel
     private JLabel superCustomAbilityLabel;
     private JLabel superCustomNatureLabel;
     private JLabel superCustomFormLabel;
-    private JTextField superCustomLevelTextField;
-    private JTextField superCustomIvTextField;
-    private JTextField superCustomAbilityTextField;
+    private JSpinner superCustomLevelSpinner;
+    private JSpinner superCustomIvSpinner;
+    private JSpinner superCustomAbilitySpinner;
     private JComboBox<String> superCustomNatureComboBox;
     private JSlider superCustomFormSlider;
     private JButton superCustomApplyButton;
@@ -832,17 +847,17 @@ public class TrainerPokemonPanel extends JPanel
     private JLabel targetPidLabel;
     private JTextField targetPidTextField;
     private JButton targetPidApplyButton;
-    private JTextField targetPidLevelTextField;
-    private JTextField targetPidFormTextField;
+    private JSpinner targetPidLevelSpinner;
+    private JSpinner targetPidFormSpinner;
     private JPanel oldMethodPanel;
     private JLabel oldMethodLevelLabel;
     private JLabel oldMethodFormLabel;
-    private JTextField oldMethodLevelTextField;
+    private JSpinner oldMethodLevelSpinner;
     private JLabel oldMethodDifficultyLabel;
     private JLabel oldMethodAbilityLabel;
-    private JTextField oldMethodFormTextField;
-    private JTextField oldMethodDifficultyTextField;
-    private JTextField oldMethodAbilityTextField;
+    private JSpinner oldMethodFormSpinner;
+    private JSpinner oldMethodDifficultySpinner;
+    private JSpinner oldMethodAbilitySpinner;
     private JButton oldMethodApplyButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
@@ -865,9 +880,9 @@ public class TrainerPokemonPanel extends JPanel
     public String toString()
     {
         String ret= speciesComboBox.getSelectedItem() + (heldItemComboBox.getSelectedIndex() != 0 ? " @ " + heldItemComboBox.getSelectedItem() : "")
-                + "\nLevel: " + superCustomLevelTextField.getText()
+                + "\nLevel: " + superCustomLevelSpinner.getValue().toString()
                 + "\n" + superCustomNatureComboBox.getSelectedItem() + " Nature"
-                + "\nIVs: " + superCustomIvTextField.getText() + " HP / " + superCustomIvTextField.getText() + " Atk / " + superCustomIvTextField.getText() + " Def / "  + superCustomIvTextField.getText() + " SpA / "  + superCustomIvTextField.getText() + " SpD / " + superCustomIvTextField.getText() + " Spe"
+                + "\nIVs: " + superCustomIvSpinner.getValue().toString() + " HP / " + superCustomIvSpinner.getValue().toString() + " Atk / " + superCustomIvSpinner.getValue().toString() + " Def / "  + superCustomIvSpinner.getValue().toString() + " SpA / "  + superCustomIvSpinner.getValue().toString() + " SpD / " + superCustomIvSpinner.getValue().toString() + " Spe"
                 + "\n- " + move1ComboBox.getSelectedItem()
                 + "\n- " + move2ComboBox.getSelectedItem()
                 + "\n- " + move3ComboBox.getSelectedItem()
