@@ -112,7 +112,7 @@ public class MoveEditorGen4
         {
             buffer = new Buffer(file.toString());
 
-            int effect = buffer.readUIntS();
+            int effect = buffer.readUInt16();
             int category = buffer.readByte();
             int power = buffer.readByte();
 
@@ -121,7 +121,7 @@ public class MoveEditorGen4
             int pp = buffer.readByte();
             int additionalEffect = buffer.readByte();
 
-            int range = buffer.readUIntS();
+            int range = buffer.readUInt16();
             byte priority = buffer.readBytes(1)[0];
             int flag = buffer.readByte();
 

@@ -100,9 +100,9 @@ public class ScriptEditorGen4
             long num;
             try
             {
-                while((num= buffer.readUIntS()) != 0xfd13)
+                while((num= buffer.readUInt16()) != 0xfd13)
                 {
-                    num|= buffer.readUIntS() << 16;
+                    num|= buffer.readUInt16() << 16;
                     scriptOffsets.add(num + scriptOffsets.size()*4 + 0x4);
 //                    System.out.println("    0x" + Integer.toHexString((int)num));
                 }
@@ -114,7 +114,7 @@ public class ScriptEditorGen4
                     buffer.skipTo(scriptOffsets.get(x));
                     int commandIdx;
 
-                    while((commandIdx= buffer.readUIntS()) != 0x2)
+                    while((commandIdx= buffer.readUInt16()) != 0x2)
                     {
                         ScriptData command= scriptCommands.getScript(commandIdx);
 //                        System.out.print(yellow + "(0x" + Integer.toHexString(commandIdx) + ") " + reset);
@@ -124,15 +124,15 @@ public class ScriptEditorGen4
                             switch (val)
                             {
                                 case 1 :
-                                    System.out.print(blue + "0x" + Integer.toHexString(buffer.readUShortB()) + reset + " ");
+                                    System.out.print(blue + "0x" + Integer.toHexString(buffer.readUShort8()) + reset + " ");
                                     break;
 
                                 case 2 :
-                                    System.out.print(blue + "0x" + Integer.toHexString(buffer.readUIntS()) + reset + " ");
+                                    System.out.print(blue + "0x" + Integer.toHexString(buffer.readUInt16()) + reset + " ");
                                     break;
 
                                 case 4 :
-                                    System.out.print(blue + "0x" + Long.toHexString(buffer.readUIntI()) + reset + " ");
+                                    System.out.print(blue + "0x" + Long.toHexString(buffer.readUInt32()) + reset + " ");
                                     break;
 
                                 default:

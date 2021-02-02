@@ -153,7 +153,7 @@ public class ItemEditorGen4
             buffer= new Buffer(file.toString());
             System.out.println(itemNames[i] + ": " + i);
 
-            int price= buffer.readUIntS();
+            int price= buffer.readUInt16();
             int equipmentEffect= buffer.readByte();
             int power= buffer.readByte();
             int pluckEffect= buffer.readByte();

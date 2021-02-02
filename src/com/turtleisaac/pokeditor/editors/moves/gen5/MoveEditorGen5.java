@@ -144,7 +144,7 @@ public class MoveEditorGen5
 //            System.out.println("Min # Hits: " + Integer.parseInt(fixBinaryString(Integer.toBinaryString(numHits),8).substring(4),2) + " ");
 //            System.out.println("Max # Hits: " + Integer.parseInt(fixBinaryString(Integer.toBinaryString(numHits),8).substring(0,4),2) + " ");
 
-            int resultEffect= buffer.readUIntS();
+            int resultEffect= buffer.readUInt16();
             short effectChance= (short) buffer.readByte();
             short status= (short) buffer.readByte();
             short minTurns= (short) buffer.readByte();
@@ -179,7 +179,7 @@ public class MoveEditorGen5
 
             short crit= (short) buffer.readByte();
             short flinch= (short) buffer.readByte();
-            int effect= buffer.readUIntS();
+            int effect= buffer.readUInt16();
             short recoil= (short) buffer.readByte();
             short healing= (short) buffer.readByte();
             short target= (short) buffer.readByte();

@@ -146,8 +146,8 @@ public class LearnsetEditor
                 }
                 else
                 {
-                    int move= learnsetBuffer.readUIntS();
-                    int level= learnsetBuffer.readUIntS();
+                    int move= learnsetBuffer.readUInt16();
+                    int level= learnsetBuffer.readUInt16();
                     System.out.print("  " + moveData[move]);
                     System.out.println(": " + level);
                     moveList.add(new MoveLearnsetData() {

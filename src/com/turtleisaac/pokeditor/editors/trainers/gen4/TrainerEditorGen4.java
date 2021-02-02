@@ -1,9 +1,7 @@
 package com.turtleisaac.pokeditor.editors.trainers.gen4;
 
-import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.framework.Buffer;
-import com.turtleisaac.pokeditor.framework.CsvReader;
 import com.turtleisaac.pokeditor.project.Game;
 
 import java.io.*;
@@ -141,21 +139,21 @@ public class TrainerEditorGen4
         {
             buffer = new Buffer(file.toString());
 
-            short flag= buffer.readUShortB();
-            short trainerClass= buffer.readUShortB();
-            short battleType= buffer.readUShortB();
-            short numPokemon= buffer.readUShortB();
+            short flag= buffer.readUShort8();
+            short trainerClass= buffer.readUShort8();
+            short battleType= buffer.readUShort8();
+            short numPokemon= buffer.readUShort8();
 
-            int item1= buffer.readUIntS();
-            int item2= buffer.readUIntS();
-            int item3= buffer.readUIntS();
-            int item4= buffer.readUIntS();
+            int item1= buffer.readUInt16();
+            int item2= buffer.readUInt16();
+            int item3= buffer.readUInt16();
+            int item4= buffer.readUInt16();
 
-            long ai= buffer.readUIntI();
-            short battleType2= buffer.readUShortB();
-            short unknown1= buffer.readUShortB();
-            short unknown2= buffer.readUShortB();
-            short unknown3= buffer.readUShortB();
+            long ai= buffer.readUInt32();
+            short battleType2= buffer.readUShort8();
+            short unknown1= buffer.readUShort8();
+            short unknown2= buffer.readUShort8();
+            short unknown3= buffer.readUShort8();
 
             trainerDataList.add(new TrainerDataGen4() {
                 @Override
@@ -264,7 +262,7 @@ public class TrainerEditorGen4
                         byte abilitySlot= (byte)buffer.readByte();
                         short level= buffer.readShort();
 
-                        int thisPokemon= buffer.readUIntS();
+                        int thisPokemon= buffer.readUInt16();
                         int species= thisPokemon & 0x3ff;
                         int altForm= thisPokemon >> 10;
 
@@ -375,14 +373,14 @@ public class TrainerEditorGen4
                         byte abilitySlot= (byte)buffer.readByte();
                         short level= buffer.readShort();
 
-                        int thisPokemon= buffer.readUIntS();
+                        int thisPokemon= buffer.readUInt16();
                         int species= thisPokemon & 0x3ff;
                         int altForm= thisPokemon >> 10;
 
-                        int move1= buffer.readUIntS();
-                        int move2= buffer.readUIntS();
-                        int move3= buffer.readUIntS();
-                        int move4= buffer.readUIntS();
+                        int move1= buffer.readUInt16();
+                        int move2= buffer.readUInt16();
+                        int move3= buffer.readUInt16();
+                        int move4= buffer.readUInt16();
 
                         short ballSeal= 0;
                         switch (baseRom)
@@ -485,11 +483,11 @@ public class TrainerEditorGen4
                         byte abilitySlot= (byte)buffer.readByte();
                         short level= buffer.readShort();
 
-                        int thisPokemon= buffer.readUIntS();
+                        int thisPokemon= buffer.readUInt16();
                         int species= thisPokemon & 0x3ff;
                         int altForm= thisPokemon >> 10;
 
-                        int item= buffer.readUIntS();
+                        int item= buffer.readUInt16();
 
                         short ballSeal= 0;
                         switch (baseRom)
@@ -592,16 +590,16 @@ public class TrainerEditorGen4
                         byte abilitySlot= (byte)buffer.readByte();
                         short level= buffer.readShort();
 
-                        int thisPokemon= buffer.readUIntS();
+                        int thisPokemon= buffer.readUInt16();
                         int species= thisPokemon & 0x3ff;
                         int altForm= thisPokemon >> 10;
 
-                        int item= buffer.readUIntS();
+                        int item= buffer.readUInt16();
 
-                        int move1= buffer.readUIntS();
-                        int move2= buffer.readUIntS();
-                        int move3= buffer.readUIntS();
-                        int move4= buffer.readUIntS();
+                        int move1= buffer.readUInt16();
+                        int move2= buffer.readUInt16();
+                        int move3= buffer.readUInt16();
+                        int move4= buffer.readUInt16();
 
 
 

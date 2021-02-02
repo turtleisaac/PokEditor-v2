@@ -165,7 +165,7 @@ public class TutorMoveListEditor
 
         for(int i= 0; i < 38; i++)
         {
-            int moveId= buffer.readUIntS();
+            int moveId= buffer.readUInt16();
 
             int redShards= buffer.readByte();
             int blueShards= buffer.readByte();

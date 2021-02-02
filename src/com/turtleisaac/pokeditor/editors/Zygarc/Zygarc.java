@@ -110,22 +110,22 @@ public class Zygarc
             throw new RuntimeException("Not a GARC file");
 
         int headerSize = buffer.readInt();
-        int endianId= buffer.readUIntS();
+        int endianId= buffer.readUInt16();
         if (endianId == 0xfffe)
             throw new RuntimeException("Big endian GARC files are not supported yet");
         else if (endianId != 0xfeff)
             throw new RuntimeException("Not a GARC file");
 
         short headerConstant= buffer.readShort();
-        long fileSize= buffer.readUIntI();
-        long dataOffset= buffer.readUIntI();
-        long fileLength= buffer.readUIntI();
-        long lastSize= buffer.readUIntI();
+        long fileSize= buffer.readUInt32();
+        long dataOffset= buffer.readUInt32();
+        long fileLength= buffer.readUInt32();
+        long lastSize= buffer.readUInt32();
 
         //File Allocation Table Offsets (FATO/ OTAF)
         ArrayList<GarcSubFile> subFiles= new ArrayList<>();
         String otafMagic = buffer.readString(4);
-        long otafSize= buffer.readUIntI();
+        long otafSize= buffer.readUInt32();
 
         buffer.skipBytes((int) (otafSize-8));
 //        long numFiles = buffer.readUIntI();
@@ -190,10 +190,10 @@ public class Zygarc
         int count= 0;
         for(int i= 0; i < numFiles2; i++)
         {
-            long bits= buffer.readUIntI();
-            long startingOffset= buffer.readUIntI();
-            long endingOffset= buffer.readUIntI();
-            long length= buffer.readUIntI();
+            long bits= buffer.readUInt32();
+            long startingOffset= buffer.readUInt32();
+            long endingOffset= buffer.readUInt32();
+            long length= buffer.readUInt32();
 
             if(length != endingOffset-startingOffset)
                 throw new RuntimeException("Invalid FATB entry at file number: " + i + ", Lengths: " + length + ", " + (endingOffset-startingOffset) + ", at position: " + buffer.getPosition());
@@ -255,8 +255,8 @@ public class Zygarc
         //File Image Block (BMIF/ FIMB)
         long fimbOffset= buffer.getPosition() + 8;
         String fimbMagic= buffer.readString(4);
-        long fimbSize= buffer.readUIntI();
-        long fimbDataSize= buffer.readUIntI();
+        long fimbSize= buffer.readUInt32();
+        long fimbDataSize= buffer.readUInt32();
 
         BinaryWriter writer;
         for(int i= 0; i < subFiles.size(); i++)

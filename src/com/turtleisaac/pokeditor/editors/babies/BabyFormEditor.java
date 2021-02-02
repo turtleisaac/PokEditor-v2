@@ -59,7 +59,7 @@ public class BabyFormEditor
 
         for(int i= 0; i < numPokemon; i++)
         {
-            babyForms[i]= buffer.readUIntS();
+            babyForms[i]= buffer.readUInt16();
         }
 
         ArrayProcessor processor= new ArrayProcessor();

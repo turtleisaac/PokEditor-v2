@@ -46,14 +46,14 @@ public class CommandRelocater
     {
         int originalEnd= buffer.getLength();
         buffer.skipTo(offsetTablePointer);
-        long currentTablePosition= buffer.readUIntI() & 0xfffff;
+        long currentTablePosition= buffer.readUInt32() & 0xfffff;
         System.out.println("\nOffset Table Location: 0x" + Long.toHexString(currentTablePosition));
         buffer.skipTo(currentTablePosition);
 
         ArrayList<Long> commandOffsets= new ArrayList<>();
         for(int i= 0; i < 0x347; i++)
         {
-            commandOffsets.add((buffer.readUIntI() & 0xfffff) + i*4);
+            commandOffsets.add((buffer.readUInt32() & 0xfffff) + i*4);
         }
 
         buffer= new Buffer(path + "arm9.bin");

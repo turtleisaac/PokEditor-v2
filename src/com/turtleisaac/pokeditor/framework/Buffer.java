@@ -79,10 +79,10 @@ public class Buffer {
         return ret <= max ? ret : alt;
     }
 
-    public long readUIntI() {
+    public long readUInt32() {
         return (long)readInt() & 0xffffffffL;
     }
-    public int readUIntS() { return (int)readShort() & 0xffff; }
+    public int readUInt16() { return (int)readShort() & 0xffff; }
 
 
     public long readLong() {
@@ -160,7 +160,7 @@ public class Buffer {
         return bytes[position++] & 0xff;
     }
 
-    public short readUShortB()
+    public short readUShort8()
     {
         return (short) ((short)readByte() & 0xff);
     }

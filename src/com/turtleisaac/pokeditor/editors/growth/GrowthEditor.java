@@ -50,7 +50,7 @@ public class GrowthEditor
             buffer = new Buffer(file.toString());
             for (int x = 0; x < entry.length; x++)
             {
-                entry[x]= buffer.readUIntI();
+                entry[x]= buffer.readUInt32();
             }
             buffer.close();
             dataList.add(entry);

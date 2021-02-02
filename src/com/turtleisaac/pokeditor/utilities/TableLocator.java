@@ -43,15 +43,15 @@ public class TableLocator
 
         for(int i= 0; i < numOverlays; i++)
         {
-            long overlayId= buffer.readUIntI();
+            long overlayId= buffer.readUInt32();
 
-            long ramAddress= buffer.readUIntI();
-            long ramSize= buffer.readUIntI();
+            long ramAddress= buffer.readUInt32();
+            long ramSize= buffer.readUInt32();
 
-            long bssSize= buffer.readUIntI();
-            long staticInitStart= buffer.readUIntI();
-            long staticInitEnd= buffer.readUIntI();
-            long fileId= buffer.readUIntI();
+            long bssSize= buffer.readUInt32();
+            long staticInitStart= buffer.readUInt32();
+            long staticInitEnd= buffer.readUInt32();
+            long fileId= buffer.readUInt32();
             int reserved= buffer.readInt();
 
             System.out.println("Overlay ID: " + overlayId);

@@ -52,9 +52,9 @@ public class TextEditor2
 
             try
             {
-                int numStrings= buffer.readUIntS();
+                int numStrings= buffer.readUInt16();
                 System.out.println("File: " + i + ", " + numStrings);
-                int seed= buffer.readUIntS();
+                int seed= buffer.readUInt16();
 
                 int num= ((seed * 0x2fd) & 0xffff);
                 int num2, num3, num4;
@@ -81,7 +81,7 @@ public class TextEditor2
 
                     for (int k= 0; k < sizes[j]; k++)
                     {
-                        num4= buffer.readUIntS();
+                        num4= buffer.readUInt16();
                         num4= (num4 ^ num);
 
                         if (num4 == 57344 || num4 == 9660 || num4 == 9661 || num4 == 61696 || num4 == 65534 || num4 == 65535)
@@ -195,7 +195,7 @@ public class TextEditor2
                                             }
                                             num += 18749;
                                             num &= 65535;
-                                            num4= buffer.readUIntS();
+                                            num4= buffer.readUInt16();
                                             num4 ^= num;
                                             k++;
                                         }

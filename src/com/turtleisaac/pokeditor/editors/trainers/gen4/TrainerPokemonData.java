@@ -19,11 +19,4 @@ public interface TrainerPokemonData
     int getMove4();
 
     short getBallCapsule();
-
-//    public static ArrayList<TrainerPokemonData> create(String[] arr)
-//    {
-//        ArrayList<TrainerPokemonData> pokemonList= new ArrayList<>();
-//
-//
-//    }
 }

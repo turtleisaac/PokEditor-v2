@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class DsFileFinder
 {
@@ -534,8 +532,8 @@ public class DsFileFinder
         for(int i= 0; i < romData.getFatbLength()/8; i++)
         {
 //            System.out.println("Fatb Offset: " + buffer.getPosition());
-            long startingOffset= buffer.readUIntI();
-            long endingOffset= buffer.readUIntI();
+            long startingOffset= buffer.readUInt32();
+            long endingOffset= buffer.readUInt32();
             fatbPos+= 4;
 //            System.out.println("ID: 0x" + Integer.toHexString(i));
 //            System.out.println("Starting Offset: " +startingOffset);
