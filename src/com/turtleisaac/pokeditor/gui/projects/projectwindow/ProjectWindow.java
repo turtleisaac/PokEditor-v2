@@ -27,6 +27,7 @@ import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
 import com.turtleisaac.pokeditor.gui.MyFilter;
 import com.turtleisaac.pokeditor.gui.main.PokEditor;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.console.ConsoleWindow;
+import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.*;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers.TrainerPanel;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.RomApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetApplier;
@@ -192,6 +193,7 @@ public class ProjectWindow extends JFrame
         trainerPanel1.setApi(api);
 
         Application.getApplication().setDefaultMenuBar(menuBar);
+        spritePanel.setProject(project);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -665,8 +667,7 @@ public class ProjectWindow extends JFrame
         label2 = new JLabel();
         openingPanel = new JPanel();
         label3 = new JLabel();
-        spritePanel = new JPanel();
-        label4 = new JLabel();
+        spritePanel = new SpritePanel();
         jtbMain = new JToolBar();
         openProjectButton = new JButton();
         exportRomButton = new JButton();
@@ -906,23 +907,6 @@ public class ProjectWindow extends JFrame
                 openingPanel.add(label3, "cell 0 0");
             }
             tabbedPane1.addTab("Opening Cutscene", openingPanel);
-
-            //======== spritePanel ========
-            {
-                spritePanel.setLayout(new MigLayout(
-                    "hidemode 3",
-                    // columns
-                    "[fill]" +
-                    "[fill]",
-                    // rows
-                    "[]" +
-                    "[]" +
-                    "[]"));
-
-                //---- label4 ----
-                label4.setText("You were expecting a sprite editor, but it was me, Dio!");
-                spritePanel.add(label4, "cell 0 0");
-            }
             tabbedPane1.addTab("Sprites", spritePanel);
         }
         contentPane.add(tabbedPane1, "cell 0 1");
@@ -1015,8 +999,7 @@ public class ProjectWindow extends JFrame
     private JLabel label2;
     private JPanel openingPanel;
     private JLabel label3;
-    private JPanel spritePanel;
-    private JLabel label4;
+    private SpritePanel spritePanel;
     private JToolBar jtbMain;
     private JButton openProjectButton;
     private JButton exportRomButton;

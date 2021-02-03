@@ -156,18 +156,8 @@ new FormModel {
 				}, new FormLayoutConstraints( null ) {
 					"title": "Opening Cutscene"
 				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-					"$layoutConstraints": "hidemode 3"
-					"$columnConstraints": "[fill][fill]"
-					"$rowConstraints": "[][][]"
-				} ) {
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.SpritePanel" ) {
 					name: "spritePanel"
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label4"
-						"text": "You were expecting a sprite editor, but it was me, Dio!"
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 0"
-					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Sprites"
 				} )

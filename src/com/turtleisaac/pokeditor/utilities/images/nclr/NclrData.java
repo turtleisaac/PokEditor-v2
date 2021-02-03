@@ -1,4 +1,6 @@
-package com.turtleisaac.pokeditor.utilities.nclr;
+package com.turtleisaac.pokeditor.utilities.images.nclr;
+
+import com.turtleisaac.pokeditor.utilities.images.ColorFormat;
 
 import java.awt.*;
 
@@ -25,10 +27,10 @@ public interface NclrData
     {
         String getMagicId();
         long getSectionSize();
-        int getPaletteBitDepth();
+        ColorFormat getDepth();
         short getUnknown1();
         int getUnknown2();
-        long getPaletteDataSize();
+        long getPaletteLength();
         long getColorStartOffset();
         long getNumColors();
         Color[][] getPalettes();
@@ -41,10 +43,10 @@ public interface NclrData
     {
         String getMagicId();
         long getSectionSize();
-        int getUnknown1();
-        int getUnknown2(); //for some reason is always BEEF
-        long getUnknown3();
-        int[] getPaletteIDs();
+        short getUnknown1();
+        short getUnknown2(); //for some reason is always BEEF
+        int getUnknown3();
+        int getFirstPaletteNum();
     }
 
 }

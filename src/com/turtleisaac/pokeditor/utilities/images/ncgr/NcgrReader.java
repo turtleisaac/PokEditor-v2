@@ -1,12 +1,15 @@
-package com.turtleisaac.pokeditor.utilities.ncgr;
+package com.turtleisaac.pokeditor.utilities.images.ncgr;
 
 import com.turtleisaac.pokeditor.framework.Buffer;
+import com.turtleisaac.pokeditor.utilities.images.ColorFormat;
+import com.turtleisaac.pokeditor.utilities.images.ImageBase;
+import com.turtleisaac.pokeditor.utilities.images.TileFormat;
 
 import java.io.IOException;
 
 public class NcgrReader
 {
-    public static NcgrData readFile(String file) throws IOException
+    public static NcgrData readFile(String file, ImageBase base) throws IOException
     {
         Buffer buffer= new Buffer(file);
 
@@ -23,12 +26,13 @@ public class NcgrReader
         long dataSectionSize= buffer.readUInt32();
         int numTilesY= buffer.readUInt16();
         int numTilesX= buffer.readUInt16();
-        long depth= buffer.readUInt32();
+        ColorFormat depth= ColorFormat.getColorFormat(buffer.readInt());
         short dataUnknown1= buffer.readShort();
         short dataUnknown2= buffer.readShort();
         TileFormat tileOrder= (buffer.readInt() & 0xff) == 0 ? TileFormat.Horizontal : TileFormat.Linear;
         long tileDataSize= buffer.readUInt32();
         int dataUnknown3= buffer.readInt();
+        byte[] data= buffer.readBytes((int) tileDataSize);
 
         if(numTilesX != 0xffff)
         {
@@ -44,6 +48,7 @@ public class NcgrReader
         int numCharacters= 0;
         if(numSections == 2 && buffer.getPosition() < buffer.getLength())
         {
+            System.out.println("CPOS exists");
             positionID= buffer.readString(4);
             positionSectionSize= buffer.readUInt32();
             positionUnknown1= buffer.readInt();
@@ -51,6 +56,7 @@ public class NcgrReader
             numCharacters= buffer.readUInt16();
         }
         buffer.close();
+        base.Set_Tiles(data,numTilesX,numTilesY,depth,tileOrder,true);
 
         //Establishing final variables
         int finalNumTilesY = numTilesY;
@@ -135,7 +141,7 @@ public class NcgrReader
                     }
 
                     @Override
-                    public long getTileBitDepth()
+                    public ColorFormat getDepth()
                     {
                         return depth;
                     }
@@ -168,6 +174,12 @@ public class NcgrReader
                     public int getUnknown3()
                     {
                         return dataUnknown3;
+                    }
+
+                    @Override
+                    public byte[] getData()
+                    {
+                        return data;
                     }
                 };
             }

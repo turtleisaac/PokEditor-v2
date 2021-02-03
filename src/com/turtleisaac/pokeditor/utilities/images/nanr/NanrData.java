@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.utilities.nanr;
+package com.turtleisaac.pokeditor.utilities.images.nanr;
 
 public interface NanrData
 {

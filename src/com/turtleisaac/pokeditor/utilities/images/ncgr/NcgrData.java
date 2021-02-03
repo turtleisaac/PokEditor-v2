@@ -1,4 +1,7 @@
-package com.turtleisaac.pokeditor.utilities.ncgr;
+package com.turtleisaac.pokeditor.utilities.images.ncgr;
+
+import com.turtleisaac.pokeditor.utilities.images.ColorFormat;
+import com.turtleisaac.pokeditor.utilities.images.TileFormat;
 
 public interface NcgrData
 {
@@ -25,12 +28,13 @@ public interface NcgrData
         long getSectionSize();
         int getNumTiles_Y();
         int getNumTiles_X();
-        long getTileBitDepth();
+        ColorFormat getDepth();
         short getUnknown1();
         short getUnknown2();
         TileFormat getTileOrder(); //read four bytes
         long getTileDataSize();
         int getUnknown3();
+        byte[] getData();
     }
 
     /**

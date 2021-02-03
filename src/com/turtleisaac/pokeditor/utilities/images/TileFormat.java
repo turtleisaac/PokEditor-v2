@@ -1,9 +1,10 @@
-package com.turtleisaac.pokeditor.utilities.ncgr;
+package com.turtleisaac.pokeditor.utilities.images;
 
 public enum TileFormat
 {
     Horizontal(0),
-    Linear(1)
+    Linear(1),
+    Vertical(3)
     ;
 
     public final int value;

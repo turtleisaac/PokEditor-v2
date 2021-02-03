@@ -19,6 +19,7 @@ import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.project.Game;
+import com.turtleisaac.pokeditor.utilities.images.ImageBase;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
 
@@ -77,11 +78,13 @@ public class TrainerPanel extends JPanel
         ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
         ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
 
-        setProjectPath(projectPath);
+
         try
         {
+            setProjectPath(projectPath);
             setApi(api);
-        } catch (IOException exception)
+        }
+        catch (IOException exception)
         {
             exception.printStackTrace();
         }
@@ -730,7 +733,7 @@ public class TrainerPanel extends JPanel
 
     public int[] getFormNumberData() {return formNumberData;}
 
-    public void setProjectPath(String projectPath)
+    public void setProjectPath(String projectPath) throws IOException
     {
         System.out.println(projectPath);
         this.projectPath= projectPath;
@@ -809,7 +812,10 @@ public class TrainerPanel extends JPanel
         {
             trainerClassSelectorComboBox.addItem(trainerClass);
         }
-        System.out.println("LLLL " + trainerClassData.length);
+
+        ImageBase imageBase= new ImageBase(projectPath,"/poketool/trgra/trfgra/345.ncgr","/poketool/trgra/trfgra/346.nclr");
+
+        trainerClassImageButton.setIcon(new ImageIcon(imageBase.Get_Image_Transparent(trainerClassImageButton.getBackground(),64)));
 
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
 //        newPanel.enableParentData();

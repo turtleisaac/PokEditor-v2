@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.utilities.ncer;
+package com.turtleisaac.pokeditor.utilities.images.ncer;
 
 public interface NcerData
 {
