@@ -56,7 +56,7 @@ public class NcgrReader
             numCharacters= buffer.readUInt16();
         }
         buffer.close();
-        base.Set_Tiles(data,numTilesX,numTilesY,depth,tileOrder,true);
+        base.setTiles(data,numTilesX,numTilesY,depth,tileOrder,true);
 
         //Establishing final variables
         int finalNumTilesY = numTilesY;

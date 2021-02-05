@@ -813,9 +813,9 @@ public class TrainerPanel extends JPanel
             trainerClassSelectorComboBox.addItem(trainerClass);
         }
 
-        ImageBase imageBase= new ImageBase(projectPath,"/poketool/trgra/trfgra/345.ncgr","/poketool/trgra/trfgra/346.nclr");
-
-        trainerClassImageButton.setIcon(new ImageIcon(imageBase.Get_Image_Transparent(trainerClassImageButton.getBackground(),64)));
+//        ImageBase imageBase= new ImageBase(projectPath,"/poketool/trgra/trfgra/345.ncgr","/poketool/trgra/trfgra/346.nclr");
+//
+//        trainerClassImageButton.setIcon(new ImageIcon(imageBase.getImageTransparent(trainerClassImageButton.getBackground(),64,64)));
 
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
 //        newPanel.enableParentData();

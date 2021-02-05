@@ -40,7 +40,7 @@ public class NclrReader
 
         buffer.skipTo(0x18 + colorStartOffset);
         for(int i= 0; i < palettes.length; i++)
-            palettes[i]= ImageActions.BGR555ToColor(buffer.readBytes((int) (numColors*2)));
+            palettes[i]= ImageActions.bgr555ToColor(buffer.readBytes((int) (numColors*2)));
 
 
         //Pallete Count Map

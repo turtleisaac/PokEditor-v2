@@ -10,55 +10,45 @@ import java.util.Arrays;
 
 public class ImageActions
 {
-    public static Color[] BGR555ToColor(byte[] bytes)
+    public static Color[] bgr555ToColor(byte[] bytes)
     {
         Color[] colors = new Color[bytes.length / 2];
 
         for (int i = 0; i < bytes.length / 2; i++)
         {
-            colors[i] = BGR555ToColor(bytes[i * 2], bytes[i * 2 + 1]);
+            colors[i] = bgr555ToColor(bytes[i * 2], bytes[i * 2 + 1]);
         }
 
         return colors;
     }
 
-    public static Color BGR555ToColor(byte byte1, byte byte2)
+    public static Color bgr555ToColor(byte byte1, byte byte2)
     {
         int r, b, g;
-        String b1= Integer.toHexString(byte1);
-        String b2= Integer.toHexString(byte2);
 
-        if(b1.length() > 2)
-            b1= b1.substring(b1.length()-2);
-        if(b2.length() > 2)
-            b2= b2.substring(b2.length()-2);
+        int bgr= ((byte2 & 0xff) << 8) | (byte1 & 0xff);
 
-        int bgr= Integer.parseUnsignedInt(b2 + b1,16);
-//        short bgr= ByteBuffer.allocate(2).put(new byte[] {byte1, byte2}).getShort();
+        r = (bgr & 0x001F) << 3;
+        g = ((bgr & 0x03E0) >> 2);
+        b = ((bgr & 0x7C00) >> 7);
 
-        r = (bgr & 0x001F) * 0x08;
-        g = ((bgr & 0x03E0) >> 5) * 0x08;
-        b = ((bgr & 0x7C00) >> 10) * 0x08;
-
-        Color color= new Color(r, g, b);
-
-        return color;
+        return new Color(r, g, b);
     }
 
-    public static byte[] ColorToBGR555(Color[] colors)
+    public static byte[] colorToBGR555(Color[] colors)
     {
         byte[] data = new byte[colors.length * 2];
 
         for (int i = 0; i < colors.length; i++)
         {
-            byte[] bgr = ColorToBGR555(colors[i]);
+            byte[] bgr = colorToBGR555(colors[i]);
             data[i * 2] = bgr[0];
             data[i * 2 + 1] = bgr[1];
         }
 
         return data;
     }
-    public static byte[] ColorToBGRA555(Color color)
+    public static byte[] colorToBGRA555(Color color)
     {
         byte[] d = new byte[2];
 
@@ -72,7 +62,7 @@ public class ImageActions
 
         return d;
     }
-    public static byte[] ColorToBGR555(Color color)
+    public static byte[] colorToBGR555(Color color)
     {
         byte[] d = new byte[2];
 
@@ -86,7 +76,7 @@ public class ImageActions
         return d;
     }
 
-    public static BufferedImage Get_Image(Color[] colors)
+    public static BufferedImage getImage(Color[] colors)
     {
         int height = (colors.length / 0x10);
         if (colors.length % 0x10 != 0)
@@ -117,7 +107,7 @@ public class ImageActions
         return image;
     }
 
-    public static Color[][] Palette_16To256(Color[][] palette)
+    public static Color[][] palette16To256(Color[][] palette)
     {
         // Get the colours of all the palettes in BGR555 encoding
         ArrayList<Color> paletteColor = new ArrayList<>();
@@ -130,7 +120,7 @@ public class ImageActions
 
         return newPal;
     }
-    public static Color[][] Palette_256To16(Color[][] palette)
+    public static Color[][] palette256To16(Color[][] palette)
     {
         Color[][] newPal;
 
@@ -200,7 +190,7 @@ public class ImageActions
 //        return direct;
 //    }
     
-    public static byte[] Bpp2ToBpp4(byte[] data)
+    public static byte[] bpp2ToBpp4(byte[] data)
     {
         byte[] bpp4 = new byte[data.length * 2];
 
@@ -219,7 +209,7 @@ public class ImageActions
         return bpp4;
     }
 
-    public static BufferedImage Get_Palette(Color[][] palette, ColorFormat format)
+    public static BufferedImage getPalette(Color[][] palette, ColorFormat format)
     {
         BufferedImage image= new BufferedImage(64,4,BufferedImage.TYPE_INT_RGB);
         int idx= 0;
@@ -249,12 +239,12 @@ public class ImageActions
         return image;
     }
 
-    public static BufferedImage Get_Image(byte[] tiles, byte[] tile_pal, Color[][] palette, ColorFormat format, int width, int height)
+    public static BufferedImage getImage(byte[] tiles, byte[] tile_pal, Color[][] palette, ColorFormat format, int width, int height)
     {
-        return Get_Image(tiles,tile_pal,palette,format,width,height,8);
+        return getImage(tiles,tile_pal,palette,format,width,height,8);
     }
 
-    public static BufferedImage Get_Image(byte[] tiles, byte[] tile_pal, Color[][] palette, ColorFormat format, int width, int height, int start)
+    public static BufferedImage getImage(byte[] tiles, byte[] tile_pal, Color[][] palette, ColorFormat format, int width, int height, int start)
     {
         if (tiles.length == 0)
             return new BufferedImage(1, 1,format.value);
@@ -288,7 +278,7 @@ public class ImageActions
                     num_pal = 0;
 
 
-                Color color = Get_Color(tiles, palette[num_pal], format, pos++);
+                Color color = getColor(tiles, palette[num_pal], format, pos++);
 
                 image.setRGB(w, h, color.getRGB());
             }
@@ -296,7 +286,7 @@ public class ImageActions
         return image;
     }
 
-    public static Color Get_Color(byte[] data, Color[] palette, ColorFormat format, int pos)
+    public static Color getColor(byte[] data, Color[] palette, ColorFormat format, int pos)
     {
         Color color = palette[0];
         int alpha, index;
@@ -348,7 +338,7 @@ public class ImageActions
             case colors2:
                 if (data.length <= (pos / 8)) break;
                 byte bit1 = data[pos / 8];
-                index= BitsConverter.ByteToBits(bit1)[pos % 8];
+                index= BitsConverter.byteToBits(bit1)[pos % 8];
                 if (palette.length > index)
                     color = palette[index];
                 pos++;
@@ -357,7 +347,7 @@ public class ImageActions
             case colors4:
                 if (data.length <= (pos / 4)) break;
                 byte bit2 = data[pos / 4];
-                index = BitsConverter.ByteToBit2(bit2)[pos % 4];
+                index = BitsConverter.byteToBit2(bit2)[pos % 4];
                 if (palette.length > index)
                     color = palette[index];
                 pos++;
@@ -365,18 +355,11 @@ public class ImageActions
 
             case colors16:
                 if (data.length <= (pos / 2))
-                {
-                    System.out.println("Color break");
                     break;
-                }
                 int bit4 = data[pos / 2] & 0xff;
-                System.out.println(bit4);
-                index = BitsConverter.ByteToBit4(bit4)[pos % 2];
+                index = BitsConverter.byteToBit4(bit4)[pos % 2];
                 if (palette.length > index)
-                {
-//                    System.out.println("Index: " + index);
                     color = palette[index];
-                }
                 pos++;
                 break;
 
@@ -420,12 +403,10 @@ public class ImageActions
             default:
                 throw new RuntimeException("Unknown color format");
         }
-
-        System.out.println(color.toString());
         return color;
     }
 
-    public static byte[] HorizontalToLineal(byte[] horizontal, int width, int height, int bpp, int tile_size)
+    public static byte[] horizontalToLineal(byte[] horizontal, int width, int height, int bpp, int tile_size)
     {
         byte[] lineal = new byte[horizontal.length];
         int tile_width = tile_size * bpp / 8;   // Calculate the number of byte per line in the tile
@@ -458,7 +439,7 @@ public class ImageActions
         return lineal;
     }
 
-    public static byte[] LinealToHorizontal(byte[] lineal, int width, int height, int bpp, int tile_size)
+    public static byte[] linealToHorizontal(byte[] lineal, int width, int height, int bpp, int tile_size)
     {
         byte[] horizontal = new byte[lineal.length];
         int tile_width = tile_size * bpp / 8;   // Calculate the number of byte per line in the tile
@@ -491,7 +472,7 @@ public class ImageActions
         return horizontal;
     }
 
-    public static int Remove_DuplicatedColors(Color[] palette, byte[] tiles)
+    public static int removeDuplicatedColors(Color[] palette, byte[] tiles)
     {
         ArrayList<Color> colors = new ArrayList<Color>();
         int first_duplicated_color = -1;
@@ -503,7 +484,7 @@ public class ImageActions
             else        // The color is duplicated
             {
                 int newIndex = colors.indexOf(palette[i]);
-                Replace_Color(tiles, i, newIndex);
+                replaceColor(tiles, i, newIndex);
                 colors.add(new Color(248, 0, 248));
 
                 if (first_duplicated_color == -1)
@@ -515,7 +496,7 @@ public class ImageActions
         return first_duplicated_color;
     }
     
-    public static int Remove_NotUsedColors(Color[] palette, byte[] tiles)
+    public static int removeNotUsedColors(Color[] palette, byte[] tiles)
     {
         int first_notUsed_color = -1;
 
@@ -575,7 +556,7 @@ public class ImageActions
 //            tiles = Helper.BitsConverter.Bits4ToByte(tiles);
 //    }
 
-    public static void Replace_Color(byte[] tiles, int oldIndex, int newIndex)
+    public static void replaceColor(byte[] tiles, int oldIndex, int newIndex)
     {
         for (int i = 0; i < tiles.length; i++)
         {
@@ -627,7 +608,7 @@ public class ImageActions
 //            tiles = Helper.BitsConverter.Bits4ToByte(tiles);
 //    }
 
-    public static Size Get_Size(int fileSize, int bpp)
+    public static Size getSize(int fileSize, int bpp)
     {
         int width, height;
         int num_pix = fileSize * 8 / bpp;
@@ -649,7 +630,7 @@ public class ImageActions
         return new Size(width, height);
     }
 
-    public static long Add_Image(byte[] data, byte[] newData, long blockSize)
+    public static long addImage(byte[] data, byte[] newData, long blockSize)
     {
         // Add the image to the end of the data
         // Return the offset where the data is added
@@ -675,7 +656,7 @@ public class ImageActions
         return offset;
     }
 
-    public static long Add_Image(byte[] data, byte[] newData, long partOffset, long partSize, long blockSize, long addedLength)
+    public static long addImage(byte[] data, byte[] newData, long partOffset, long partSize, long blockSize, long addedLength)
     {
         // Add the image to the end of the partition data
         // Return the offset where the data has been inserted
@@ -709,7 +690,7 @@ public class ImageActions
         return offset;
     }
 
-    public static int FindNextColor(Color c, Color[] palette, double threshold)
+    public static int findNextColor(Color c, Color[] palette, double threshold)
     {
         int id = -1;
         double minDistance = Double.MAX_VALUE;
@@ -1361,7 +1342,7 @@ public class ImageActions
 
     public static class BitsConverter
     {
-        public static byte[] ByteToBits(byte data)
+        public static byte[] byteToBits(byte data)
         {
             ArrayList<Byte> bits = new ArrayList<>();
 
@@ -1377,7 +1358,7 @@ public class ImageActions
             return bytes;
         }
 
-        public static byte[] ByteToBit2(byte data)
+        public static byte[] byteToBit2(byte data)
         {
             byte[] bit2 = new byte[4];
 
@@ -1389,7 +1370,7 @@ public class ImageActions
             return bit2;
         }
 
-        public static byte[] ByteToBit4(int data)
+        public static byte[] byteToBit4(int data)
         {
             byte[] bit4 = new byte[2];
 
@@ -1399,12 +1380,12 @@ public class ImageActions
             return bit4;
         }
 
-        public static byte[] BytesToBit4(byte[] data)
+        public static byte[] bytesToBit4(byte[] data)
         {
             byte[] bit4 = new byte[data.length * 2];
             for (int i = 0; i < data.length; i++)
             {
-                byte[] b4 = ByteToBit4(data[i]);
+                byte[] b4 = byteToBit4(data[i]);
                 bit4[i * 2] = b4[0];
                 bit4[i * 2 + 1] = b4[1];
             }

@@ -27,7 +27,8 @@ import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
 import com.turtleisaac.pokeditor.gui.MyFilter;
 import com.turtleisaac.pokeditor.gui.main.PokEditor;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.console.ConsoleWindow;
-import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.*;
+import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.pokemon.PokemonSpritePanel;
+import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.trainers.*;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers.TrainerPanel;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.RomApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetApplier;
@@ -193,7 +194,7 @@ public class ProjectWindow extends JFrame
         trainerPanel1.setApi(api);
 
         Application.getApplication().setDefaultMenuBar(menuBar);
-        spritePanel.setProject(project);
+        pokemonSpritePanel.setProject(project);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -667,7 +668,9 @@ public class ProjectWindow extends JFrame
         label2 = new JLabel();
         openingPanel = new JPanel();
         label3 = new JLabel();
-        spritePanel = new SpritePanel();
+        pokemonSpritePanel = new PokemonSpritePanel();
+        panel1 = new TrainerSpritePanel();
+        panel2 = new JPanel();
         jtbMain = new JToolBar();
         openProjectButton = new JButton();
         exportRomButton = new JButton();
@@ -907,7 +910,22 @@ public class ProjectWindow extends JFrame
                 openingPanel.add(label3, "cell 0 0");
             }
             tabbedPane1.addTab("Opening Cutscene", openingPanel);
-            tabbedPane1.addTab("Sprites", spritePanel);
+            tabbedPane1.addTab("Pok\u00e9mon Sprites", pokemonSpritePanel);
+            tabbedPane1.addTab("Trainer Sprites", panel1);
+
+            //======== panel2 ========
+            {
+                panel2.setLayout(new MigLayout(
+                    "hidemode 3",
+                    // columns
+                    "[fill]" +
+                    "[fill]",
+                    // rows
+                    "[]" +
+                    "[]" +
+                    "[]"));
+            }
+            tabbedPane1.addTab("Overworld Sprites", panel2);
         }
         contentPane.add(tabbedPane1, "cell 0 1");
 
@@ -999,7 +1017,9 @@ public class ProjectWindow extends JFrame
     private JLabel label2;
     private JPanel openingPanel;
     private JLabel label3;
-    private SpritePanel spritePanel;
+    private PokemonSpritePanel pokemonSpritePanel;
+    private TrainerSpritePanel panel1;
+    private JPanel panel2;
     private JToolBar jtbMain;
     private JButton openProjectButton;
     private JButton exportRomButton;

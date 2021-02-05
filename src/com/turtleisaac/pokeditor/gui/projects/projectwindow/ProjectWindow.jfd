@@ -156,10 +156,24 @@ new FormModel {
 				}, new FormLayoutConstraints( null ) {
 					"title": "Opening Cutscene"
 				} )
-				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.SpritePanel" ) {
-					name: "spritePanel"
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.pokemon.PokemonSpritePanel" ) {
+					name: "pokemonSpritePanel"
 				}, new FormLayoutConstraints( null ) {
-					"title": "Sprites"
+					"title": "Pokémon Sprites"
+				} )
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.trainers.TrainerSpritePanel" ) {
+					name: "panel1"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Trainer Sprites"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][fill]"
+					"$rowConstraints": "[][][]"
+				} ) {
+					name: "panel2"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Overworld Sprites"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 1"

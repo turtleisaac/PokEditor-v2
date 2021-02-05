@@ -1,7 +1,7 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
 import java.awt.*;
-import java.awt.image.ColorModel;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -36,23 +36,41 @@ public class ImageBase
     int bpp;
     boolean canEdit;
 
-    Object obj;
-
     public ImageBase()
     {
 
     }
 
-    public ImageBase(Project project, String ncgr, String nclr) throws IOException
+    public ImageBase(Project project, String ncgr, String nclr)
     {
         this.project= project;
         String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
-        Narctowl narctowl= new Narctowl(true);
-        narctowl.unpack(dataPath + "/poketool/trgra/trfgra.narc",dataPath + "/poketool/trgra/trfgra");
-        new File(dataPath + "/poketool/trgra/trfgra").deleteOnExit();
-        this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
-        this.nclr= NclrReader.readFile(dataPath + nclr);
+        try
+        {
+            this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
+            this.nclr= NclrReader.readFile(dataPath + nclr);
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
     }
+
+    public ImageBase(Project project, NcgrData ncgr, String nclr)
+    {
+        this.project= project;
+        this.ncgr= ncgr;
+        String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
+        try
+        {
+            this.nclr= NclrReader.readFile(dataPath + nclr);
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+    }
+
 
     public ImageBase(String projectPath, String ncgr, String nclr) throws IOException
     {
@@ -67,7 +85,7 @@ public class ImageBase
     public ImageBase(byte[] tiles, int width, int height, ColorFormat format, TileFormat tileForm, boolean editable, String fileName)
     {
         this.fileName = fileName;
-        Set_Tiles(tiles, width, height, format, tileForm, editable);
+        setTiles(tiles, width, height, format, tileForm, editable);
     }
 
     public ImageBase(String file, int id, String fileName)
@@ -81,7 +99,36 @@ public class ImageBase
 //        Read(file);
     }
 
-    public Image Get_Image()
+    public Image getImage(int height, int width)
+    {
+//        nclr.Depth = format;
+        Color[][] pal_colors= nclr.getPalette().getPalettes();
+
+        if(width == 0)
+            width= 64;
+        if(height == 0)
+            height= 96;
+
+
+        byte[] img_tiles;
+        if (tileForm == TileFormat.Horizontal)
+        {
+            if (height < tile_size) height = tile_size;
+            {
+                System.out.println("Shifting img");
+                System.out.println(Arrays.toString(tiles) + "\n");
+                img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
+                System.out.println(Arrays.toString(img_tiles));
+            }
+            tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
+        }
+        else
+            img_tiles = tiles;
+
+        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+    }
+
+    public Image getImage()
     {
 //        nclr.Depth = format;
         Color[][] pal_colors= nclr.getPalette().getPalettes();
@@ -108,21 +155,22 @@ public class ImageBase
             {
                 System.out.println("Shifting img");
                 System.out.println(Arrays.toString(tiles) + "\n");
-                img_tiles = ImageActions.LinealToHorizontal(tiles, width, height, bpp, tile_size);
+                img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
                 System.out.println(Arrays.toString(img_tiles));
             }
-            tilePal = ImageActions.LinealToHorizontal(tilePal, width, height, 8, tile_size);
+            tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
         }
         else
             img_tiles = tiles;
 
-        return ImageActions.Get_Image(img_tiles, tilePal, pal_colors, format, width, height);
+        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
     }
 
-    public Image Get_Image_Transparent(Color transparent, int height)
+    public Image getImageTransparent(Color transparent, int height, int width)
     {
         Color[][] pal_colors= nclr.getPalette().getPalettes();
         this.height= height;
+        this.width= width;
 
         for(Color[] arr : pal_colors)
         {
@@ -146,29 +194,42 @@ public class ImageBase
             {
                 System.out.println("Shifting img");
                 System.out.println(Arrays.toString(tiles) + "\n");
-                img_tiles = ImageActions.LinealToHorizontal(tiles, width, height, bpp, tile_size);
+                img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
                 System.out.println(Arrays.toString(img_tiles));
             }
-            tilePal = ImageActions.LinealToHorizontal(tilePal, width, height, 8, tile_size);
+            tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
         }
         else
             img_tiles = tiles;
 
         pal_colors[0][0]= transparent;
 
-        return ImageActions.Get_Image(img_tiles, tilePal, pal_colors, format, width, height);
+        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
     }
 
-    public Image Get_Palette()
+    public Image getPalette()
     {
         Color[][] pal_colors= nclr.getPalette().getPalettes();
-        return ImageActions.Get_Palette(pal_colors,format);
+        return ImageActions.getPalette(pal_colors,format);
+    }
+
+    public Image getPaletteColor(int i)
+    {
+        BufferedImage image= new BufferedImage(40,16,BufferedImage.TYPE_INT_RGB);
+        for(int row= 0; row < image.getHeight(); row++)
+        {
+            for(int col= 0; col < image.getWidth(); col++)
+            {
+                image.setRGB(col,row,nclr.getPalette().getPalettes()[0][i].getRGB());
+            }
+        }
+        return image;
     }
 
 //    public void Read(String fileIn);
 //    public void Write(String fileOut, PaletteBase palette);
 
-    public void Change_StartByte(int start)
+    public void changeStartByte(int start)
     {
         if (start < 0 || start >= original.length)
             return;
@@ -180,12 +241,12 @@ public class ImageBase
         tilePal = new byte[tiles.length * (tile_size / bpp)];
     }
 
-    public void Set_Tiles(byte[] tiles, int width, int height, ColorFormat format, TileFormat form, boolean editable)
+    public void setTiles(byte[] tiles, int width, int height, ColorFormat format, TileFormat form, boolean editable)
     {
-        Set_Tiles(tiles,width,height,format,form,editable,8);
+        setTiles(tiles,width,height,format,form,editable,8);
     }
 
-    public void Set_Tiles(byte[] tiles, int width, int height, ColorFormat format, TileFormat form, boolean editable, int tile_size)
+    public void setTiles(byte[] tiles, int width, int height, ColorFormat format, TileFormat form, boolean editable, int tile_size)
     {
         this.tiles = tiles;
         this.format = format;
@@ -218,7 +279,7 @@ public class ImageBase
         original= Arrays.copyOf(tiles,tiles.length);
     }
 
-    public void Set_Tiles(ImageBase new_img)
+    public void setTiles(ImageBase new_img)
     {
         this.tiles = new_img.getTiles();
         this.format = new_img.getFormat();
@@ -249,7 +310,8 @@ public class ImageBase
         // Get the original data for changes in startByte
         original= Arrays.copyOf(tiles,tiles.length);
     }
-    public void Set_Tiles(byte[] tiles)
+
+    public void setTiles(byte[] tiles)
     {
         this.tiles = tiles;
 
@@ -379,11 +441,6 @@ public class ImageBase
         return tiles;
     }
 
-    public void setTiles(byte[] tiles)
-    {
-        this.tiles = tiles;
-    }
-
     public byte[] getTilePal()
     {
         return tilePal;
@@ -420,5 +477,10 @@ public class ImageBase
     public byte[] getOriginal()
     {
         return original;
+    }
+
+    public Color[][] getPaletteArr()
+    {
+        return nclr.getPalette().getPalettes();
     }
 }

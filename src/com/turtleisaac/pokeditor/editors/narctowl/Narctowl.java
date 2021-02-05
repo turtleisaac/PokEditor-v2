@@ -228,7 +228,8 @@ public class Narctowl {
             bytes = buffer.readBytes(subFiles.get(i).getEndingOffset() - subFiles.get(i).getStartingOffset()); //reads the amount of bytes equal to the length of the current file
 
             byte[] identifier = new byte[4]; //creates a new byte[] of size 4 to contain the first four bytes of a file so file extension can be appended properly
-            System.arraycopy(bytes, 0, identifier, 0, 4); //copies the first four bytes of the current file's contents to the identifier byte[]
+            if(bytes.length >= 4)
+                System.arraycopy(bytes, 0, identifier, 0, 4); //copies the first four bytes of the current file's contents to the identifier byte[]
             int index = -1; //creates a new int variable and sets value to -1
             for (int j = 0; j < extensionStrings.length; j++) //goes through each byte[] in the fileExtensions ArrayList
             {
