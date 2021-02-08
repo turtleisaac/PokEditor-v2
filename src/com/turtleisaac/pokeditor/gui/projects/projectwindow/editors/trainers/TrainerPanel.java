@@ -155,6 +155,15 @@ public class TrainerPanel extends JPanel
     private void trainerClassSelectorComboBoxActionPerformed(ActionEvent e)
     {
         saved= false;
+        int baseOffset= trainerClassSelectorComboBox.getSelectedIndex()*5;
+        try
+        {
+            ImageBase imageBase= new ImageBase(projectPath,"/poketool/trgra/trfgra/" + baseOffset + ".ncgr","/poketool/trgra/trfgra/" + (baseOffset + 1) + ".nclr");
+            trainerClassImageButton.setIcon(new ImageIcon(imageBase.getImageTransparent(trainerClassImageButton.getBackground(),64,64)));
+        } catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
     }
 
     private void trainerClassImageButtonActionPerformed(ActionEvent e)
@@ -397,9 +406,10 @@ public class TrainerPanel extends JPanel
         trainerSelectionComboBox = new JComboBox();
         newTrainerButton = new JButton();
         saveTrainerButton = new JButton();
+        refreshButton = new JButton();
         trainerDataPanel = new JPanel();
         exportSmogonButton = new JButton();
-        button1 = new JButton();
+        trainerTextButton = new JButton();
         toggleMovesCheckbox = new JCheckBox();
         toggleHeldItemsCheckbox = new JCheckBox();
         toggleDoubleBattleCheckbox = new JCheckBox();
@@ -458,6 +468,10 @@ public class TrainerPanel extends JPanel
         saveTrainerButton.addActionListener(e -> saveTrainerButtonActionPerformed(e));
         add(saveTrainerButton, "cell 1 0,growx");
 
+        //---- refreshButton ----
+        refreshButton.setText("Refresh");
+        add(refreshButton, "cell 1 0");
+
         //======== trainerDataPanel ========
         {
             trainerDataPanel.setBorder(new TitledBorder("Trainer Data"));
@@ -479,9 +493,9 @@ public class TrainerPanel extends JPanel
             exportSmogonButton.addActionListener(e -> exportSmogonButtonActionPerformed(e));
             trainerDataPanel.add(exportSmogonButton, "cell 0 0");
 
-            //---- button1 ----
-            button1.setText("Trainer Text");
-            trainerDataPanel.add(button1, "cell 1 0");
+            //---- trainerTextButton ----
+            trainerTextButton.setText("Trainer Text");
+            trainerDataPanel.add(trainerTextButton, "cell 1 0");
 
             //---- toggleMovesCheckbox ----
             toggleMovesCheckbox.setText("Moves");
@@ -664,9 +678,10 @@ public class TrainerPanel extends JPanel
     private JComboBox trainerSelectionComboBox;
     private JButton newTrainerButton;
     private JButton saveTrainerButton;
+    private JButton refreshButton;
     private JPanel trainerDataPanel;
     private JButton exportSmogonButton;
-    private JButton button1;
+    private JButton trainerTextButton;
     private JCheckBox toggleMovesCheckbox;
     private JCheckBox toggleHeldItemsCheckbox;
     private JCheckBox toggleDoubleBattleCheckbox;
@@ -813,10 +828,6 @@ public class TrainerPanel extends JPanel
             trainerClassSelectorComboBox.addItem(trainerClass);
         }
 
-//        ImageBase imageBase= new ImageBase(projectPath,"/poketool/trgra/trfgra/345.ncgr","/poketool/trgra/trfgra/346.nclr");
-//
-//        trainerClassImageButton.setIcon(new ImageIcon(imageBase.getImageTransparent(trainerClassImageButton.getBackground(),64,64)));
-
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
 //        newPanel.enableParentData();
 
@@ -871,7 +882,7 @@ public class TrainerPanel extends JPanel
         itemComboBox4.setSelectedIndex(trainer.getItem4());
         toggleMovesCheckbox.setSelected((trainer.getFlag() & 1) == 1);
         toggleHeldItemsCheckbox.setSelected(((trainer.getFlag() >> 1) & 1) == 1);
-        toggleDoubleBattleCheckbox.setSelected(trainer.getBattleType2() == 1);
+        toggleDoubleBattleCheckbox.setSelected(trainer.getBattleType2() == 2);
         trainerClassSelectorComboBox.setSelectedIndex(trainer.getTrainerClass());
 
         int idx= 0;

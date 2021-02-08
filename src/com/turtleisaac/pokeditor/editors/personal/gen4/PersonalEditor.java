@@ -746,19 +746,10 @@ public class PersonalEditor
             });
         }
 
-        System.out.println("");
-
-
 
         for(int i= 0; i < personalCsv.length; i++)
         {
             tmLearnsetData[i] = new BitStream();
-
-//            String[] strs = new String[tmLearnsetCsv[i].length];
-//            for(int x= 0; x < strs.length; x++)
-//            {
-//                strs[i]= (String) tmLearnsetCsv[i][x];
-//            }
 
 
             for (Object obj : tmLearnsetCsv[i]) {

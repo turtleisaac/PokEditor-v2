@@ -1,6 +1,7 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
 import com.sun.glass.ui.Size;
+import com.turtleisaac.pokeditor.utilities.images.ncer.NcerData;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -197,10 +198,10 @@ public class ImageActions
         for (int i = 0; i < data.length; i++)
         {
             byte b1 = (byte)(data[i] & 0x3);
-            b1 += (byte)(((data[i] >> 2) & 0x3) << 4);
+            b1+= (byte)(((data[i] >> 2) & 0x3) << 4);
 
             byte b2 = (byte)((data[i] >> 4) & 0x3);
-            b2 += (byte)(((data[i] >> 6) & 0x3) << 4);
+            b2+= (byte)(((data[i] >> 6) & 0x3) << 4);
 
             bpp4[i * 2] = b1;
             bpp4[i * 2 + 1] = b2;
@@ -261,8 +262,6 @@ public class ImageActions
             image= new BufferedImage(width,height,format.value);
 //            e.printStackTrace();
         }
-
-        System.out.println(format);
 
 
         int pos = start;
@@ -379,7 +378,7 @@ public class ImageActions
                         ((byteColor >> 5) & 0x1F) * 8,
                         ((byteColor >> 10) & 0x1F) * 8,
                         (byteColor >> 15) == 1 ? 255 : 0);
-                pos += 2;
+                pos+= 2;
                 break;
 
             case BGRA32:
@@ -387,7 +386,7 @@ public class ImageActions
                     break;
 
                 color = new Color(data[pos], data[pos+1], data[pos+2],data[pos+3]);
-                pos += 4;
+                pos+= 4;
                 break;
 
             case ABGR32:
@@ -395,7 +394,7 @@ public class ImageActions
                     break;
 
                 color = new Color(data[pos], data[pos+1], data[pos+2], data[pos+3]);
-                pos += 4;
+                pos+= 4;
                 break;
 
             case texel4x4:
@@ -672,7 +671,7 @@ public class ImageActions
         else
             for(int i= 0; i < addedLength; i++)
                 result.add((int) (i + offset), (byte) 0);
-        offset += addedLength;
+        offset+= addedLength;
 
         if (offset == result.size())
             for(byte b : newData)
@@ -680,7 +679,7 @@ public class ImageActions
         else
             for(int i= 0; i < newData.length; i++)
                 result.add((int) (i + offset), newData[i]);
-        addedLength += newData.length;
+        addedLength+= newData.length;
 
         data= new byte[result.size()];
         for(int i= 0; i < data.length; i++)
@@ -792,7 +791,7 @@ public class ImageActions
 //                case colors4:
 //                case colors16:
 //                case colors256:
-//                    for (int b = 0; b < 8; b += bpc)
+//                    for (int b = 0; b < 8; b+= bpc)
 //                        if (j < data.length)
 //                            tiles[i] |= (byte)(data[j++][0] << b);
 //
@@ -873,53 +872,54 @@ public class ImageActions
 //        return bytes.toArray();
 //    }
 //
-//    public static byte[] XFlip(byte[] tile, int tile_size, int bpp)
-//    {
-//        byte[] newTile = new byte[tile.length];
-//        int tile_width = tile_size * bpp / 8;
-//
-//        for (int h = 0; h < tile_size; h++)
-//        {
-//            for (int w = 0; w < tile_width / 2; w++)
-//            {
-//                byte b = tile[((tile_width - 1) - w) + h * tile_width];
-//                newTile[w + h * tile_width] = Reverse_Bits(b, bpp);
-//
-//                b = tile[w + h * tile_width];
-//                newTile[((tile_width - 1) - w) + h * tile_width] = Reverse_Bits(b, bpp);
-//            }
-//        }
-//        return newTile;
-//    }
-//
-//    public static Byte Reverse_Bits(byte b, int length)
-//    {
-//        byte rb = 0;
-//
-//        if (length == 4)
-//            rb = (byte)((b << 4) + (b >> 4));
-//        else if (length == 8)
-//            return b;
-//
-//        return rb;
-//    }
-//
-//    public static byte[] YFlip(byte[] tile, int tile_size, int bpp)
-//    {
-//        byte[] newTile = new byte[tile.length];
-//        int tile_width = tile_size * bpp / 8;
-//
-//        for (int h = 0; h < tile_size / 2; h++)
-//        {
-//            for (int w = 0; w < tile_width; w++)
-//            {
-//                newTile[w + h * tile_width] = tile[w + (tile_size - 1 - h) * tile_width];
-//                newTile[w + (tile_size - 1 - h) * tile_width] = tile[w + h * tile_width];
-//            }
-//        }
-//        return newTile;
-//    }
-//
+    public static byte[] XFlip(byte[] tile, int tile_size, int bpp)
+    {
+        byte[] newTile = new byte[tile.length];
+        int tile_width = tile_size * bpp / 8;
+
+        for (int h = 0; h < tile_size; h++)
+        {
+            for (int w = 0; w < tile_width / 2; w++)
+            {
+                final int index = ((tile_width - 1) - w) + h * tile_width;
+                byte b = tile[index];
+                newTile[w + h * tile_width] = Reverse_Bits(b, bpp);
+
+                b = tile[w + h * tile_width];
+                newTile[index] = Reverse_Bits(b, bpp);
+            }
+        }
+        return newTile;
+    }
+
+    public static byte Reverse_Bits(byte b, int length)
+    {
+        byte rb = 0;
+
+        if (length == 4)
+            rb = (byte)((b << 4) + (b >> 4));
+        else if (length == 8)
+            return b;
+
+        return rb;
+    }
+
+    public static byte[] YFlip(byte[] tile, int tile_size, int bpp)
+    {
+        byte[] newTile = new byte[tile.length];
+        int tile_width = tile_size * bpp / 8;
+
+        for (int h = 0; h < tile_size / 2; h++)
+        {
+            for (int w = 0; w < tile_width; w++)
+            {
+                newTile[w + h * tile_width] = tile[w + (tile_size - 1 - h) * tile_width];
+                newTile[w + (tile_size - 1 - h) * tile_width] = tile[w + h * tile_width];
+            }
+        }
+        return newTile;
+    }
+
 //    public static NTFS[] Create_BasicMap(int num_tiles, int startTile = 0, byte palette = 0)
 //    {
 //        NTFS[] map = new NTFS[num_tiles];
@@ -1046,302 +1046,310 @@ public class ImageActions
      * Region - OAM
      */
 
-//    public static Size Get_OAMSize(byte shape, byte size)
+    public static Size getOAMSize(byte shape, byte size)
+    {
+        Size imageSize = new Size();
+
+        switch (shape)
+        {
+            case 0x00:  // Square
+                switch (size)
+                {
+                    case 0x00:
+                        imageSize = new Size(8, 8);
+                        break;
+                    case 0x01:
+                        imageSize = new Size(16, 16);
+                        break;
+                    case 0x02:
+                        imageSize = new Size(32, 32);
+                        break;
+                    case 0x03:
+                        imageSize = new Size(64, 64);
+                        break;
+                }
+                break;
+            case 0x01:  // Horizontal
+                switch (size)
+                {
+                    case 0x00:
+                        imageSize = new Size(16, 8);
+                        break;
+                    case 0x01:
+                        imageSize = new Size(32, 8);
+                        break;
+                    case 0x02:
+                        imageSize = new Size(32, 16);
+                        break;
+                    case 0x03:
+                        imageSize = new Size(64, 32);
+                        break;
+                }
+                break;
+            case 0x02:  // Vertical
+                switch (size)
+                {
+                    case 0x00:
+                        imageSize = new Size(8, 16);
+                        break;
+                    case 0x01:
+                        imageSize = new Size(8, 32);
+                        break;
+                    case 0x02:
+                        imageSize = new Size(16, 32);
+                        break;
+                    case 0x03:
+                        imageSize = new Size(32, 64);
+                        break;
+                }
+                break;
+        }
+
+        return imageSize;
+    }
+
+//    public static BufferedImage Get_Image(NcerData.Bank bank, long blockSize, ImageBase img, Color[] palette, int max_width, int max_height, boolean draw_grid, boolean draw_cells, boolean draw_numbers, boolean trans, boolean image)
 //    {
-//        Size imageSize = new Size();
-//
-//        switch (shape)
-//        {
-//            case 0x00:  // Square
-//                switch (size)
-//                {
-//                    case 0x00:
-//                        imageSize = new Size(8, 8);
-//                        break;
-//                    case 0x01:
-//                        imageSize = new Size(16, 16);
-//                        break;
-//                    case 0x02:
-//                        imageSize = new Size(32, 32);
-//                        break;
-//                    case 0x03:
-//                        imageSize = new Size(64, 64);
-//                        break;
-//                }
-//                break;
-//            case 0x01:  // Horizontal
-//                switch (size)
-//                {
-//                    case 0x00:
-//                        imageSize = new Size(16, 8);
-//                        break;
-//                    case 0x01:
-//                        imageSize = new Size(32, 8);
-//                        break;
-//                    case 0x02:
-//                        imageSize = new Size(32, 16);
-//                        break;
-//                    case 0x03:
-//                        imageSize = new Size(64, 32);
-//                        break;
-//                }
-//                break;
-//            case 0x02:  // Vertical
-//                switch (size)
-//                {
-//                    case 0x00:
-//                        imageSize = new Size(8, 16);
-//                        break;
-//                    case 0x01:
-//                        imageSize = new Size(8, 32);
-//                        break;
-//                    case 0x02:
-//                        imageSize = new Size(16, 32);
-//                        break;
-//                    case 0x03:
-//                        imageSize = new Size(32, 64);
-//                        break;
-//                }
-//                break;
-//        }
-//
-//        return imageSize;
+//        return Get_Image(bank,blockSize,img,palette,max_width,max_height,draw_grid,draw_cells,draw_numbers,trans,image,-1,1,null);
 //    }
 //
-//    public static BufferedImage Get_Image(Bank bank, long blockSize, ImageBase img, PaletteBase pal, int max_width, int max_height,
-//                                   boolean draw_grid, boolean draw_cells, boolean draw_numbers, boolean trans, boolean image, int currOAM = -1,
-//                                   int zoom = 1, int[] index = null)
+//    public static BufferedImage Get_Image(NcerData.Bank bank, long blockSize, ImageBase img, Color[] palette, int max_width, int max_height, boolean draw_grid, boolean draw_cells, boolean draw_numbers, boolean trans, boolean image, int currOAM, int zoom, int[] index)
 //    {
 //        Size size = new Size(max_width * zoom, max_height * zoom);
-//        BufferedImage bank_img = new BufferedImage(size.Width, size.Height);
-//        Graphics graphic = Graphics.FromImage(bank_img);
+//        BufferedImage bank_img = new BufferedImage(size.width, size.height,BufferedImage.TYPE_INT_RGB);
 //
-//        if (bank.oams.length == 0)
-//        {
-//            graphic.DrawString("No OAM", SystemFonts.CaptionFont, Brushes.Black, new PointF(max_width / 2, max_height / 2));
+//        if (bank.getOAMs().length == 0)
 //            return bank_img;
-//        }
-//
-//        if (draw_grid)
-//        {
-//            for (int i = (0 - size.Width); i < size.Width; i += 8)
-//            {
-//                graphic.DrawLine(Pens.LightBlue, (i + size.Width / 2) * zoom, 0, (i + size.Width / 2) * zoom, size.Height * zoom);
-//                graphic.DrawLine(Pens.LightBlue, 0, (i + size.Height / 2) * zoom, size.Width * zoom, (i + size.Height / 2) * zoom);
-//            }
-//            graphic.DrawLine(Pens.Blue, (max_width / 2) * zoom, 0, (max_width / 2) * zoom, max_height * zoom);
-//            graphic.DrawLine(Pens.Blue, 0, (max_height / 2) * zoom, max_width * zoom, (max_height / 2) * zoom);
-//        }
-//
 //
 //        Image cell;
-//        for (int i = 0; i < bank.oams.length; i++)
+//        for (int i = 0; i < bank.getOAMs().length; i++)
 //        {
 //            boolean draw = false;
 //            if (index == null)
 //                draw = true;
 //            else
-//                for (int k = 0; k < index.length; k++)
-//                    if (index[k] == i)
+//                for (int j : index)
+//                    if (j == i)
+//                    {
 //                        draw = true;
+//                        break;
+//                    }
 //            if (!draw)
 //                continue;
 //
-//            if (bank.oams[i].width == 0x00 || bank.oams[i].height == 0x00)
+//            if (bank.getOAMs()[i].getWidth() == 0x00 || bank.getOAMs()[i].getHeight() == 0x00)
 //                continue;
 //
-//            long tileOffset = bank.oams[i].obj2.tileOffset;
-//            tileOffset = (long)(tileOffset << (byte)blockSize);
+//            long tileOffset = bank.getOAMs()[i].getObj2().getTileOffset();
+//            tileOffset = tileOffset << (byte)blockSize;
 //
 //            if (image)
 //            {
-//                ImageBase cell_img = new TestImage();
-//                cell_img.Set_Tiles((byte[])img.Tiles.Clone(), bank.oams[i].width, bank.oams[i].height, img.FormatColor,
-//                        img.FormTile, false);
-//                cell_img.StartByte = (int)(tileOffset * 0x20 + bank.data_offset);
+//                ImageBase cell_img= new ImageBase();
+//                cell_img.setTiles(img.tiles.clone(), bank.getOAMs()[i].getWidth(), bank.getOAMs()[i].getHeight(), img.format,
+//                        img.tileForm, false);
+//                cell_img.startByte = (int)(tileOffset * 0x20 + bank.getCellOffset());
 //
-//                byte num_pal = bank.oams[i].obj2.index_palette;
-//                if (num_pal >= pal.NumberOfPalettes)
+//                byte num_pal = bank.getOAMs()[i].getObj2().getIndexPalette();
+//                if (num_pal >= 1) // TODO check if this is right, previously PaletteBase.NumberOfPalettes
 //                    num_pal = 0;
-//                for (int j = 0; j < cell_img.TilesPalette.length; j++)
-//                    cell_img.TilesPalette[j] = num_pal;
+//                Arrays.fill(cell_img.tilePal, num_pal);
 //
 //                cell = cell_img.Get_Image(pal);
-//                //else
-//                //{
-//                //    tileOffset /= (blockSize / 2);
-//                //    int imageWidth = img.Width;
-//                //    int imageHeight = img.Height;
 //
-//                //    int posX = (int)(tileOffset % imageWidth);
-//                //    int posY = (int)(tileOffset / imageWidth);
-//
-//                //    if (img.ColorFormat == ColorFormat.colors16)
-//                //        posY *= (int)blockSize * 2;
-//                //    else
-//                //        posY *= (int)blockSize;
-//                //    if (posY >= imageHeight)
-//                //        posY = posY % imageHeight;
-//
-//                //    cells[i] = ((BufferedImage)img.Get_Image(pal)).Clone(new Rectangle(posX * zoom, posY * zoom, bank.oams[i].width * zoom, bank.oams[i].height * zoom),
-//                //                                                System.Drawing.Imaging.PixelFormat.DontCare);
-//                //}
-//
-//                if (bank.oams[i].obj1.flipX == 1 && bank.oams[i].obj1.flipY == 1)
-//                    cell.RotateFlip(RotateFlipType.RotateNoneFlipXY);
-//                else if (bank.oams[i].obj1.flipX == 1)
-//                    cell.RotateFlip(RotateFlipType.RotateNoneFlipX);
-//                else if (bank.oams[i].obj1.flipY == 1)
-//                    cell.RotateFlip(RotateFlipType.RotateNoneFlipY);
-//
-//                if (trans)
-//                    ((BufferedImage)cell).MakeTransparent(pal.Palette[num_pal][0]);
-//
-//                graphic.DrawImageUnscaled(cell, size.Width / 2 + bank.oams[i].obj1.xOffset * zoom, size.Height / 2 + bank.oams[i].obj0.yOffset * zoom);
+////                if (bank.getOAMs()[i].getObj1().flipX == 1 && bank.getOAMs()[i].getObj1().flipY == 1)
+////                    cell.RotateFlip(RotateFlipType.RotateNoneFlipXY);
+////                else if (bank.getOAMs()[i].getObj1().flipX == 1)
+////                    cell.RotateFlip(RotateFlipType.RotateNoneFlipX);
+////                else if (bank.getOAMs()[i].getObj1().flipY == 1)
+////                    cell.RotateFlip(RotateFlipType.RotateNoneFlipY);
+////
+////                if (trans)
+////                    ((BufferedImage)cell).MakeTransparent(pal.Palette[num_pal][0]);
 //            }
 //
-//            if (draw_cells)
-//                graphic.DrawRectangle(Pens.Black, size.Width / 2 + bank.oams[i].obj1.xOffset * zoom, size.Height / 2 + bank.oams[i].obj0.yOffset * zoom,
-//                        bank.oams[i].width * zoom, bank.oams[i].height * zoom);
-//            if (i == currOAM)
-//                graphic.DrawRectangle(new Pen(Color.Red, 3), size.Width / 2 + bank.oams[i].obj1.xOffset * zoom, size.Height / 2 + bank.oams[i].obj0.yOffset * zoom,
-//                        bank.oams[i].width * zoom, bank.oams[i].height * zoom);
-//            if (draw_numbers)
-//                graphic.DrawString(bank.oams[i].num_cell.toString(), SystemFonts.CaptionFont, Brushes.Black, size.Width / 2 + bank.oams[i].obj1.xOffset * zoom,
-//                        size.Height / 2 + bank.oams[i].obj0.yOffset * zoom);
+////            if (draw_cells)
+////                graphic.DrawRectangle(Pens.Black, size.Width / 2 + bank.getOAMs()[i].getObj1().xOffset * zoom, size.Height / 2 + bank.getOAMs()[i].getObj0().yOffset * zoom,
+////                        bank.getOAMs()[i].width * zoom, bank.getOAMs()[i].height * zoom);
+////            if (i == currOAM)
+////                graphic.DrawRectangle(new Pen(Color.Red, 3), size.Width / 2 + bank.getOAMs()[i].getObj1().xOffset * zoom, size.Height / 2 + bank.getOAMs()[i].getObj0().yOffset * zoom,
+////                        bank.getOAMs()[i].width * zoom, bank.getOAMs()[i].height * zoom);
+////            if (draw_numbers)
+////                graphic.DrawString(bank.getOAMs()[i].num_cell.toString(), SystemFonts.CaptionFont, Brushes.Black, size.Width / 2 + bank.getOAMs()[i].getObj1().xOffset * zoom,
+////                        size.Height / 2 + bank.getOAMs()[i].getObj0().yOffset * zoom);
 //        }
 //
 //        return bank_img;
 //    }
-//
-//    public static byte[] Get_OAMdata(OAM oam, byte[] image, ColorFormat format)
-//    {
-//        if (format == ColorFormat.colors16)
-//            image = Helper.BitsConverter.BytesToBit4(image);
-//
-//        ArrayList<Byte> data = new ArrayList<Byte>();
-//        int y1 = 128 + oam.obj0.yOffset;
-//        int y2 = y1 + oam.height;
-//        int x1 = 256 + oam.obj1.xOffset;
-//        int x2 = x1 + oam.width;
-//
-//        for (int ht = 0; ht < 256; ht++)
-//            for (int wt = 0; wt < 512; wt++)
-//                if (ht >= y1 && ht < y2)
-//                    if (wt >= x1 && wt < x2)
-//                        data.add(image[wt + ht * 512]);
-//
-//        if (format == ColorFormat.colors16)
-//            return Helper.BitsConverter.Bits4ToByte(data.toArray());
-//        else
-//            return data.toArray();
-//    }
-//    public static int Comparision_OAM(OAM c1, OAM c2)
-//    {
-//        if (c1.obj2.priority < c2.obj2.priority)
-//            return 1;
-//        else if (c1.obj2.priority > c2.obj2.priority)
-//            return -1;
-//        else   // Same priority
-//        {
-//            if (c1.num_cell < c2.num_cell)
-//                return 1;
-//            else if (c1.num_cell > c2.num_cell)
-//                return -1;
-//            else // Same cell
-//                return 0;
-//        }
-//    }
-//
-//    public static int[] OAMInfo(OAM oam)
+
+    public static byte[] getOAMData(NcerData.OAM oam, byte[] image, ColorFormat format)
+    {
+        if (format == ColorFormat.colors16)
+            image= BitsConverter.bytesToBit4(image);
+
+        ArrayList<Byte> data = new ArrayList<>();
+        int y1 = 128 + oam.getObj0().getYOffset();
+        int y2 = y1 + oam.getHeight();
+        int x1 = (int) (256 + oam.getObj1().getXOffset());
+        int x2 = x1 + oam.getWidth();
+
+        for (int ht = 0; ht < 256; ht++)
+            for (int wt = 0; wt < 512; wt++)
+                if (ht >= y1 && ht < y2)
+                    if (wt >= x1 && wt < x2)
+                        data.add(image[wt + ht * 512]);
+
+        if (format == ColorFormat.colors16)
+            return BitsConverter.Bits4ToByte(BitsConverter.toArray(data));
+        else
+            return BitsConverter.toArray(data);
+    }
+    public static int OAMComparison(NcerData.OAM c1, NcerData.OAM c2)
+    {
+        if (c1.getObj2().getPriority() < c2.getObj2().getPriority())
+            return 1;
+        else if (c1.getObj2().getPriority() > c2.getObj2().getPriority())
+            return -1;
+        else   // Same priority
+        {
+            if (c1.getCellNumber() < c2.getCellNumber())
+                return 1;
+            else if (c1.getCellNumber() > c2.getCellNumber())
+                return -1;
+            else // Same cell
+                return 0;
+        }
+    }
+
+//    public static int[] OAMInfo(NcerData.OAM oam)
 //    {
 //        int[] obj = new int[3];
 //
 //        // OBJ0
 //        obj[0] = 0;
-//        obj[0] += (int)((sbyte)(oam.obj0.yOffset) & 0xFF);
-//        obj[0] += (int)((oam.obj0.rs_flag & 1) << 8);
-//        if (oam.obj0.rs_flag == 0x00)
-//            obj[0] += (int)((oam.obj0.objDisable & 1) << 9);
+//        obj[0]+= (int)((sbyte)(oam.getObj0().getYOffset()) & 0xFF);
+//        obj[0]+= (oam.getObj0().getRsFlag() & 1) << 8;
+//        if (oam.getObj0().getRsFlag() == 0x00)
+//            obj[0]+= (oam.getObj0().getObjDisable() & 1) << 9;
 //        else
-//            obj[0] += (int)((oam.obj0.doubleSize & 1) << 9);
-//        obj[0] += (int)((oam.obj0.objMode & 3) << 10);
-//        obj[0] += (int)((oam.obj0.mosaic_flag & 1) << 12);
-//        obj[0] += (int)((oam.obj0.depth & 1) << 13);
-//        obj[0] += (int)((oam.obj0.shape & 3) << 14);
+//            obj[0]+= (oam.getObj0().getDoubleSize() & 1) << 9;
+//        obj[0]+= (oam.getObj0().getObjMode() & 3) << 10;
+//        obj[0]+= (oam.getObj0().getMosaicFlag() & 1) << 12;
+//        obj[0]+= (oam.getObj0().getDepth() & 1) << 13;
+//        obj[0]+= (oam.getObj0().getShape() & 3) << 14;
 //
 //        // OBJ1
 //        obj[1] = 0;
-//        if (oam.obj1.xOffset < 0)
-//            oam.obj1.xOffset += 0x200;
-//        obj[1] += (int)(oam.obj1.xOffset & 0x1FF);
-//        if (oam.obj0.rs_flag == 0)
+//        if (oam.getObj1().getXOffset() < 0)
+//            oam.getObj1().getXOffset()+= 0x200;
+//        obj[1]+= (int)(oam.getObj1().getXOffset() & 0x1FF);
+//        if (oam.getObj0().getRsFlag() == 0)
 //        {
-//            obj[1] += (int)((oam.obj1.unused & 0x7) << 9);
-//            obj[1] += (int)((oam.obj1.flipX & 1) << 12);
-//            obj[1] += (int)((oam.obj1.flipY & 1) << 13);
+//            obj[1]+= (int)((oam.getObj1().unused & 0x7) << 9);
+//            obj[1]+= (int)((oam.getObj1().flipX & 1) << 12);
+//            obj[1]+= (int)((oam.getObj1().flipY & 1) << 13);
 //        }
 //        else
-//            obj[1] += (int)((oam.obj1.select_param & 0x1F) << 9);
-//        obj[1] += (int)((oam.obj1.size & 3) << 14);
+//            obj[1]+= (int)((oam.getObj1().getSelectParameter() & 0x1F) << 9);
+//        obj[1]+= (int)((oam.getObj1().getSize() & 3) << 14);
 //
 //        // OBJ2
 //        obj[2] = 0;
-//        obj[2] += (int)(oam.obj2.tileOffset & 0x3FF);
-//        obj[2] += (int)((oam.obj2.priority & 3) << 10);
-//        obj[2] += (int)((oam.obj2.index_palette & 0xF) << 12);
+//        obj[2]+= (int)(oam.getObj2().getTileOffset() & 0x3FF);
+//        obj[2]+= (oam.getObj2().getPriority() & 3) << 10;
+//        obj[2]+= (oam.getObj2().getIndexPalette() & 0xF) << 12;
+//
+//        oam= new NcerData.OAM()
+//        {
+//            @Override
+//            public NcerData.Obj0 getObj0()
+//            {
+//                return null;
+//            }
+//
+//            @Override
+//            public NcerData.Obj1 getObj1()
+//            {
+//                return null;
+//            }
+//
+//            @Override
+//            public NcerData.Obj2 getObj2()
+//            {
+//                return null;
+//            }
+//
+//            @Override
+//            public int getWidth()
+//            {
+//                return 0;
+//            }
+//
+//            @Override
+//            public int getHeight()
+//            {
+//                return 0;
+//            }
+//
+//            @Override
+//            public int getNumCells()
+//            {
+//                return 0;
+//            }
+//        };
 //
 //        return obj;
 //    }
-//    public static OAM OAMInfo(int[] obj)
+//    public static NcerData.OAM OAMInfo(int[] obj)
 //    {
-//        OAM oam = new OAM();
+//        NcerData.OAM oam = new NcerData.OAM();
 //
 //        // Obj 0
-//        oam.obj0.yOffset = (sbyte)(obj[0] & 0xFF);
-//        oam.obj0.rs_flag = (byte)((obj[0] >> 8) & 1);
-//        if (oam.obj0.rs_flag == 0)
-//            oam.obj0.objDisable = (byte)((obj[0] >> 9) & 1);
+//        oam.getObj0().yOffset = (sbyte)(obj[0] & 0xFF);
+//        oam.getObj0().rs_flag = (byte)((obj[0] >> 8) & 1);
+//        if (oam.getObj0().rs_flag == 0)
+//            oam.getObj0().objDisable = (byte)((obj[0] >> 9) & 1);
 //        else
-//            oam.obj0.doubleSize = (byte)((obj[0] >> 9) & 1);
-//        oam.obj0.objMode = (byte)((obj[0] >> 10) & 3);
-//        oam.obj0.mosaic_flag = (byte)((obj[0] >> 12) & 1);
-//        oam.obj0.depth = (byte)((obj[0] >> 13) & 1);
-//        oam.obj0.shape = (byte)((obj[0] >> 14) & 3);
+//            oam.getObj0().doubleSize = (byte)((obj[0] >> 9) & 1);
+//        oam.getObj0().objMode = (byte)((obj[0] >> 10) & 3);
+//        oam.getObj0().mosaic_flag = (byte)((obj[0] >> 12) & 1);
+//        oam.getObj0().depth = (byte)((obj[0] >> 13) & 1);
+//        oam.getObj0().shape = (byte)((obj[0] >> 14) & 3);
 //
 //        // Obj 1
-//        oam.obj1.xOffset = obj[1] & 0x01FF;
-//        if (oam.obj1.xOffset >= 0x100)
-//            oam.obj1.xOffset -= 0x200;
-//        if (oam.obj0.rs_flag == 0)
+//        oam.getObj1().xOffset = obj[1] & 0x01FF;
+//        if (oam.getObj1().xOffset >= 0x100)
+//            oam.getObj1().xOffset -= 0x200;
+//        if (oam.getObj0().rs_flag == 0)
 //        {
-//            oam.obj1.unused = (byte)((obj[1] >> 9) & 7);
-//            oam.obj1.flipX = (byte)((obj[1] >> 12) & 1);
-//            oam.obj1.flipY = (byte)((obj[1] >> 13) & 1);
+//            oam.getObj1().unused = (byte)((obj[1] >> 9) & 7);
+//            oam.getObj1().flipX = (byte)((obj[1] >> 12) & 1);
+//            oam.getObj1().flipY = (byte)((obj[1] >> 13) & 1);
 //        }
 //        else
-//            oam.obj1.select_param = (byte)((obj[1] >> 9) & 0x1F);
-//        oam.obj1.size = (byte)((obj[1] >> 14) & 3);
+//            oam.getObj1().select_param = (byte)((obj[1] >> 9) & 0x1F);
+//        oam.getObj1().size = (byte)((obj[1] >> 14) & 3);
 //
 //        // Obj 2
-//        oam.obj2.tileOffset = (long)(obj[2] & 0x03FF);
-//        oam.obj2.priority = (byte)((obj[2] >> 10) & 3);
-//        oam.obj2.index_palette = (byte)((obj[2] >> 12) & 0xF);
+//        oam.getObj2().tileOffset = (long)(obj[2] & 0x03FF);
+//        oam.getObj2().priority = (byte)((obj[2] >> 10) & 3);
+//        oam.getObj2().index_palette = (byte)((obj[2] >> 12) & 0xF);
 //
-//        Size size = Get_OAMSize(oam.obj0.shape, oam.obj1.size);
+//        Size size = Get_OAMSize(oam.getObj0().shape, oam.getObj1().size);
 //        oam.width = (int)size.Width;
 //        oam.height = (int)size.Height;
 //
 //        return oam;
 //    }
-//
-//    public static OAM OAMInfo(int v1, int v2, int v3)
+
+//    public static NcerData.OAM OAMInfo(int v1, int v2, int v3)
 //    {
 //        return OAMInfo(new int[] { v1, v2, v3 });
 //    }
 
     public static class BitsConverter
     {
+        //To bits
         public static byte[] byteToBits(byte data)
         {
             ArrayList<Byte> bits = new ArrayList<>();
@@ -1390,6 +1398,63 @@ public class ImageActions
                 bit4[i * 2 + 1] = b4[1];
             }
             return bit4;
+        }
+
+        // To Byte
+        public static byte[] BitsToBytes(byte[] bits)
+        {
+            ArrayList<Byte> bytes = new ArrayList<>();
+
+            for (int i = 0; i < bits.length; i+= 8)
+            {
+                byte newByte= 0;
+                int b = 0;
+                for (int j = 7; j >= 0; j--, b++)
+                {
+                    newByte+= (byte)(bits[i + b] << j);
+                }
+                bytes.add(newByte);
+            }
+
+            return toArray(bytes);
+        }
+        
+        public static byte Bit4ToByte(byte[] data)
+        {
+            return (byte)(data[0] + (data[1] << 4));
+        }
+        
+        public static byte Bit4ToByte(byte b1, byte b2)
+        {
+            return (byte)(b1 + (b2 << 4));
+        }
+        
+        public static byte[] Bits4ToByte(byte[] data)
+        {
+            byte[] b = new byte[data.length / 2];
+
+            for (int i = 0; i < data.length; i+= 2)
+                b[i / 2] = Bit4ToByte(data[i], data[i + 1]);
+
+            return b;
+        }
+        
+        //Custom
+        
+        public static byte[] toArray(Byte[] arr)
+        {
+            byte[] ret= new byte[arr.length];
+            for(int i= 0; i < ret.length; i++)
+            {
+                ret[i]= arr[i];
+            }
+
+            return ret;
+        }
+        
+        public static byte[] toArray(ArrayList<Byte> bytes)
+        {
+            return toArray(bytes.toArray(new Byte[0]));
         }
     }
 }

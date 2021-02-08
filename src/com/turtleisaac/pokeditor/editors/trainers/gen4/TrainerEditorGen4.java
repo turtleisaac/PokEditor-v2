@@ -1,5 +1,7 @@
 package com.turtleisaac.pokeditor.editors.trainers.gen4;
 
+import com.turtleisaac.pokeditor.framework.ArrayModifier;
+import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Game;
@@ -792,53 +794,84 @@ public class TrainerEditorGen4
                 return trainerPokemonTable;
             }
         };
-
-
-//        BufferedWriter writer = new BufferedWriter(new FileWriter(path + "trainerData.csv"));
-//        writer.write("ID Number,Name,\n"); //header in spreadsheet output
-//        String line;
-//        for (int row = 0; row < dataList.size(); row++) {
-//            line = row + "," + trainerData[row] + ",";
-//            for (int col = 0; col < trainerTable[0].length; col++) {
-//                line += trainerTable[row][col] + ",";
-//            }
-//            line += "\n";
-//            writer.write(line);
-//        }
-//        writer.close();
     }
 
 
-//    public void csvToTrainers(String trainerCsv, String outputDir) throws IOException {
-//        String trainerPath = path + trainerCsv;
-//        String outputPath;
-//
-//        if (outputDir.contains("Recompile")) {
-//            outputPath = path + "temp" + File.separator + outputDir;
-//        } else {
-//            outputPath = path + File.separator + outputDir;
-//        }
-//
-//        if (!new File(outputPath).exists() && !new File(outputPath).mkdir()) {
-//            throw new RuntimeException("Could not create output directory. Check write permissions");
-//        }
-//        outputPath += File.separator;
-//
-//        CsvReader csvReader = new CsvReader(trainerPath);
-//        BinaryWriter writer;
-//        for (int i = 0; i < csvReader.length(); i++) {
-//            initializeIndex(csvReader.next());
-//            writer = new BinaryWriter(outputPath + i + ".bin");
-//
-//            writer.close();
-//        }
-//
-//    }
+    public void csvToTrainers(Object[][] trainerCsv, Object[][] pokemonCsv, String outputDir) throws IOException
+    {
+        String outputPath= dataPath + File.separator + outputDir;
+
+        trainerCsv= ArrayModifier.trim(trainerCsv,1,0);
+        pokemonCsv= ArrayModifier.trim(pokemonCsv,1,2);
+
+        new File(outputPath + File.separator + "trdata").mkdir();
+        new File(outputPath + File.separator + "trpoke").mkdir();
+
+        ArrayList<TrainerDataGen4> trainerData= new ArrayList<>();
+        ArrayList<ArrayList<TrainerPokemonData>> teamData= new ArrayList<>();
+        for(int i= 0; i < trainerCsv.length; i++)
+        {
+            trainerData.add(parseTrainerData(trainerCsv[i]));
+            teamData.add(parseTrainerTeam(pokemonCsv[i],trainerData.get(i).getNumPokemon()));
+        }
+
+        BinaryWriter writer;
+        for(int i= 0; i < trainerData.size(); i++)
+        {
+            System.out.println("Writing " + i);
+            TrainerDataGen4 trainer= trainerData.get(i);
+            ArrayList<TrainerPokemonData> team= teamData.get(i);
+
+            writer= new BinaryWriter(outputPath + "/trdata/" + i + ".bin");
+
+            writer.writeBytes(trainer.getFlag(),trainer.getTrainerClass(),trainer.getBattleType(),trainer.getNumPokemon());
+            writer.writeShort((short) trainer.getItem1());
+            writer.writeShort((short) trainer.getItem2());
+            writer.writeShort((short) trainer.getItem3());
+            writer.writeShort((short) trainer.getItem4());
+            writer.writeInt((int) trainer.getAI());
+            writer.writeBytes(i == 0 ? 0 : trainer.getBattleType2(),trainer.getUnknown1(),trainer.getUnknown2(),trainer.getUnknown3());
+
+            writer= new BinaryWriter(outputPath + "/trpoke/" + i + ".bin");
+
+            for(int x= 0; x < team.size(); x++)
+            {
+                TrainerPokemonData pokemon= team.get(x);
+
+                writer.writeBytes(pokemon.getIvs(),pokemon.getAbility());
+                writer.writeShort((short) pokemon.getLevel());
+                writer.writeShort((short)( ( (pokemon.getAltForm() & 0x7) << 10) | (pokemon.getPokemon() & 0x3ff) ) );
+
+                if(trainer.getFlag() == 2 || trainer.getFlag() == 3)
+                {
+                    writer.writeShort((short) pokemon.getItem());
+                }
+
+                if(trainer.getFlag() == 1 || trainer.getFlag() == 3)
+                {
+                    writer.writeShort((short) pokemon.getMove1());
+                    writer.writeShort((short) pokemon.getMove2());
+                    writer.writeShort((short) pokemon.getMove3());
+                    writer.writeShort((short) pokemon.getMove4());
+                }
+
+                writer.writeShort(pokemon.getBallCapsule());
+            }
+
+            if(team.size() == 0)
+            {
+                writer.writeByteNumTimes(0,8);
+            }
+
+            if(new File(outputPath + "/trpoke/" + i + ".bin").length() % 4 != 0)
+                writer.writeByteNumTimes(0,2);
+
+            writer.close();
+        }
+    }
 
     public ArrayList<TrainerPokemonData> parseTrainerTeam(Object[] arr, int num)
     {
-        System.out.println(Arrays.toString(arr));
-
         ArrayList<TrainerPokemonData> ret= new ArrayList<>();
         for(int i= 0; i < num; i++)
         {
@@ -849,7 +882,6 @@ public class TrainerEditorGen4
 
     public TrainerPokemonData parseTrainerPokemon(Object[] arr)
     {
-        System.out.println(Arrays.toString(arr));
         return new TrainerPokemonData()
         {
             @Override
@@ -1015,7 +1047,7 @@ public class TrainerEditorGen4
             @Override
             public short getBattleType2()
             {
-                return (short) (arr[25].equals("Single Battle") ? 0 : 1);
+                return (short) (arr[25].equals("Single Battle") ? 0 : 2);
             }
 
             @Override

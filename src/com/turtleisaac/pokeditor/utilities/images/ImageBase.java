@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.project.Project;
+import com.turtleisaac.pokeditor.utilities.images.ncer.NcerData;
 import com.turtleisaac.pokeditor.utilities.images.ncgr.NcgrData;
 import com.turtleisaac.pokeditor.utilities.images.ncgr.NcgrReader;
 import com.turtleisaac.pokeditor.utilities.images.nclr.NclrData;
@@ -35,6 +36,9 @@ public class ImageBase
     int tile_size;      // Pixels height
     int bpp;
     boolean canEdit;
+
+    NcerData.Bank[] banks;
+    long blockSize;
 
     public ImageBase()
     {
@@ -75,8 +79,11 @@ public class ImageBase
     public ImageBase(String projectPath, String ncgr, String nclr) throws IOException
     {
         String dataPath= projectPath + File.separator + "Platinum" + "/data";
-        Narctowl narctowl= new Narctowl(true);
-        narctowl.unpack(dataPath + "/poketool/trgra/trfgra.narc",dataPath + "/poketool/trgra/trfgra");
+        if(!new File(dataPath + "/poketool/trgra/trfgra").exists())
+        {
+            Narctowl narctowl= new Narctowl(true);
+            narctowl.unpack(dataPath + "/poketool/trgra/trfgra.narc",dataPath + "/poketool/trgra/trfgra");
+        }
         new File(dataPath + "/poketool/trgra/trfgra").deleteOnExit();
         this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
         this.nclr= NclrReader.readFile(dataPath + nclr);
@@ -99,6 +106,20 @@ public class ImageBase
 //        Read(file);
     }
 
+
+
+
+    public void setBanks(NcerData.Bank[] banks, long blockSize, boolean editable)
+    {
+        this.banks = banks;
+        this.blockSize = blockSize;
+        this.canEdit = editable;
+        loaded = true;
+    }
+
+
+
+
     public Image getImage(int height, int width)
     {
 //        nclr.Depth = format;
@@ -115,10 +136,10 @@ public class ImageBase
         {
             if (height < tile_size) height = tile_size;
             {
-                System.out.println("Shifting img");
-                System.out.println(Arrays.toString(tiles) + "\n");
+//                System.out.println("Shifting img");
+//                System.out.println(Arrays.toString(tiles) + "\n");
                 img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
-                System.out.println(Arrays.toString(img_tiles));
+//                System.out.println(Arrays.toString(img_tiles));
             }
             tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
         }
@@ -133,14 +154,14 @@ public class ImageBase
 //        nclr.Depth = format;
         Color[][] pal_colors= nclr.getPalette().getPalettes();
 
-        for(Color[] arr : pal_colors)
-        {
-            for(Color color : arr)
-            {
-                System.out.print("[r=" + color.getRed() + ",g=" + color.getGreen() + ",b=" + color.getBlue() + "], ");
-            }
-            System.out.println("\n");
-        }
+//        for(Color[] arr : pal_colors)
+//        {
+//            for(Color color : arr)
+//            {
+//                System.out.print("[r=" + color.getRed() + ",g=" + color.getGreen() + ",b=" + color.getBlue() + "], ");
+//            }
+//            System.out.println("\n");
+//        }
 
         if(width == 0)
             width= 64;
@@ -153,10 +174,10 @@ public class ImageBase
         {
             if (height < tile_size) height = tile_size;
             {
-                System.out.println("Shifting img");
-                System.out.println(Arrays.toString(tiles) + "\n");
+//                System.out.println("Shifting img");
+//                System.out.println(Arrays.toString(tiles) + "\n");
                 img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
-                System.out.println(Arrays.toString(img_tiles));
+//                System.out.println(Arrays.toString(img_tiles));
             }
             tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
         }
@@ -171,15 +192,15 @@ public class ImageBase
         Color[][] pal_colors= nclr.getPalette().getPalettes();
         this.height= height;
         this.width= width;
-
-        for(Color[] arr : pal_colors)
-        {
-            for(Color color : arr)
-            {
-                System.out.print("[r=" + color.getRed() + ",g=" + color.getGreen() + ",b=" + color.getBlue() + "], ");
-            }
-            System.out.println("\n");
-        }
+//
+//        for(Color[] arr : pal_colors)
+//        {
+//            for(Color color : arr)
+//            {
+//                System.out.print("[r=" + color.getRed() + ",g=" + color.getGreen() + ",b=" + color.getBlue() + "], ");
+//            }
+//            System.out.println("\n");
+//        }
 
         if(width == 0)
             width= 64;
@@ -192,10 +213,10 @@ public class ImageBase
         {
             if (height < tile_size) height = tile_size;
             {
-                System.out.println("Shifting img");
-                System.out.println(Arrays.toString(tiles) + "\n");
+//                System.out.println("Shifting img");
+//                System.out.println(Arrays.toString(tiles) + "\n");
                 img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
-                System.out.println(Arrays.toString(img_tiles));
+//                System.out.println(Arrays.toString(img_tiles));
             }
             tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
         }

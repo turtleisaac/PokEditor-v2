@@ -112,7 +112,8 @@ public class ImageDecrypter
     /**
      * Decrypts the encrypted NCGR files used in Platinum, HeartGold, and SoulSilver
      * @param file the path to the NCGR file to decrypt
-     * @return an InputStream to be used with the NcgrReader
+     * @param palette a Color[] which contains the colors to assign to the images being constructed
+     * @return a BufferedImage[] of length two - index 0 being the "normal" frame, and index 1 being the second frame used for animation
      */
     public static BufferedImage[] decryptPrimary(String file, Color[] palette)
     {
@@ -177,7 +178,8 @@ public class ImageDecrypter
      * Decrypts the encrypted NCGR files primarily used in Diamond and Pearl, although it is sometimes used in HeartGold and SoulSilver
      * This encryption uses an algorithm identical to that used in Platinum, excpet that the tiles are stored in inverse order
      * @param file the path to the NCGR file to decrypt
-     * @return an InputStream to be used with the NcgrReader
+     * @param palette a Color[] which contains the colors to assign to the images being constructed
+     * @return a BufferedImage[] of length two - index 0 being the "normal" frame, and index 1 being the second frame used for animation
      */
     public static BufferedImage[] decryptSecondary(String file, Color[] palette)
     {
@@ -239,6 +241,7 @@ public class ImageDecrypter
         return new BufferedImage[] {frame1, frame2};
 
     }
+
 
     private static int[] initialize(String file, int width, int height)
     {

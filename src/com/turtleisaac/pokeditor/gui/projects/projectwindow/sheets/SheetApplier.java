@@ -21,6 +21,8 @@ import com.turtleisaac.pokeditor.editors.learnsets.LearnsetEditor;
 import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerReturnGen4;
 import com.turtleisaac.pokeditor.gui.*;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.ProjectWindow;
 import com.turtleisaac.pokeditor.project.Game;
@@ -133,6 +135,16 @@ public class SheetApplier extends JFrame
                         editor.sheetToBabyForms(api.getSpecifiedSheetArr("Baby Forms"),"/poketool/personal/pms.narc");
                     }
 
+                    if(contains(selected, "Trainers"))
+                    {
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        editor.csvToTrainers(api.getSpecifiedSheetArr("Trainer Data"),api.getSpecifiedSheetArr("Trainer Pokemon"),"/poketool/trainer/");
+                        narctowl.pack(dataPath + "/poketool/trainer/trdata","",dataPath + "/poketool/trainer/trdata.narc");
+                        narctowl.pack(dataPath + "/poketool/trainer/trpoke","",dataPath + "/poketool/trainer/trpoke.narc");
+                        toDelete.add(new File(dataPath + "/poketool/trainer/trdata"));
+                        toDelete.add(new File(dataPath + "/poketool/trainer/trpoke"));
+                    }
+
                     if(contains(selected,"Moves"))
                     {
                         MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
@@ -206,6 +218,16 @@ public class SheetApplier extends JFrame
                     {
                         BabyFormEditor editor= new BabyFormEditor(dataPath);
                         editor.sheetToBabyForms(api.getSpecifiedSheetArr("Baby Forms"),"/poketool/personal/pms.narc");
+                    }
+
+                    if(contains(selected, "Trainers"))
+                    {
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        editor.csvToTrainers(api.getSpecifiedSheetArr("Trainer Data"),api.getSpecifiedSheetArr("Trainer Pokemon"),"/poketool/trainer/");
+                        narctowl.pack(dataPath + "/poketool/trainer/trdata","",dataPath + "/poketool/trainer/trdata.narc");
+                        narctowl.pack(dataPath + "/poketool/trainer/trpoke","",dataPath + "/poketool/trainer/trpoke.narc");
+                        toDelete.add(new File(dataPath + "/poketool/trainer/trdata"));
+                        toDelete.add(new File(dataPath + "/poketool/trainer/trpoke"));
                     }
 
                     if(contains(selected,"Moves"))

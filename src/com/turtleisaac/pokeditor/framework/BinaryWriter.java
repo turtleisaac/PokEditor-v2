@@ -19,8 +19,9 @@ public class BinaryWriter {
         raf.setLength(0);
     }
 
-    public BinaryWriter(String fileName) throws IOException {
-        this(new File(fileName));
+    public BinaryWriter(String fileName) throws IOException
+    {
+        this(new File(fileName.replaceAll("/",File.separator)));
     }
     
     public void setPosition(long pos) throws IOException {

@@ -17,7 +17,7 @@ public class Buffer {
 
 
     public Buffer(String file) {
-        this.file= file;
+        this.file= file.replaceAll("/",File.separator);
         this.endOfFile = false;
         try {
             in = new BufferedInputStream(new FileInputStream(file));
@@ -237,10 +237,11 @@ public class Buffer {
 
     public byte[] readTo(int offset)
     {
+
         if(offset < truePosition)
             throw new RuntimeException("Already beyond this offset. Currently at: " + truePosition + ", Target was: " + offset);
         else if(offset != truePosition)
-            return readBytes(offset-truePosition);
+            return readBytes((int) ((offset & 0xffffffffL)-(truePosition & 0xffffffffL)));
         return null;
     }
 
