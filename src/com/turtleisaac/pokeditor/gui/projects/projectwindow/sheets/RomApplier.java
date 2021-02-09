@@ -395,7 +395,23 @@ public class RomApplier extends JFrame
                         if(contains(selected,"Sound"))
                             api.updateSheet("Sound Encounters",encounterReturn.getSound());
                     }
+
+                    if(contains(selected, "Trainer"))
+                    {
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        narctowl.unpack(dataPath + "/a/0/5/5",dataPath + "/a/0/5/5_");
+                        narctowl.unpack(dataPath + "/a/0/5/6",dataPath + "/a/0/5/6_");
+                        toDelete.add(new File(dataPath + "/a/0/5/5_"));
+                        toDelete.add(new File(dataPath + "/a/0/5/6_"));
+                        TrainerReturnGen4 trainerReturn= editor.trainersToCsv("/a/0/5/5_","/a/0/5/6_");
+                        if(contains(selected,"Data"))
+                            api.updateSheet("Trainer Data",trainerReturn.getTrainerData());
+                        if(contains(selected,"Pokemon"))
+                            api.updateSheet("Trainer Pokemon",trainerReturn.getTrainerPokemon());
+                    }
                     break;
+
+
 
                 case Black:
                 case White:

@@ -14,11 +14,13 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
+import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.project.Game;
+import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.images.ImageBase;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
@@ -39,6 +41,7 @@ public class TrainerPanel extends JPanel
     private Object[][] trainerPokemonTable;
     private TrainerEditorGen4 trainerEditor;
 
+    private Project project;
     private String projectPath;
     private String[] nameData;
     private String[] itemData;
@@ -63,7 +66,7 @@ public class TrainerPanel extends JPanel
 
     }
 
-    public TrainerPanel(GoogleSheetsAPI api, String projectPath)
+    public TrainerPanel(GoogleSheetsAPI api, Project project)
     {
         initComponents();
 
@@ -81,7 +84,7 @@ public class TrainerPanel extends JPanel
 
         try
         {
-            setProjectPath(projectPath);
+            setProject(project);
             setApi(api);
         }
         catch (IOException exception)
@@ -156,14 +159,26 @@ public class TrainerPanel extends JPanel
     {
         saved= false;
         int baseOffset= trainerClassSelectorComboBox.getSelectedIndex()*5;
+        String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
         try
         {
-            ImageBase imageBase= new ImageBase(projectPath,"/poketool/trgra/trfgra/" + baseOffset + ".ncgr","/poketool/trgra/trfgra/" + (baseOffset + 1) + ".nclr");
+            String narcPath= Project.isDPPT(project) ? "/poketool/trgra/trfgra.narc" : "/a/0/5/8";
+            String folderPath= Project.isDPPT(project) ? "/poketool/trgra/trfgra" : "/a/0/5/8_";
+            new File(dataPath + folderPath).deleteOnExit();
+
+            if(!new File(dataPath + folderPath).exists())
+            {
+                Narctowl narctowl= new Narctowl(true);
+                narctowl.unpack(dataPath + narcPath,dataPath + folderPath);
+            }
+
+            ImageBase imageBase= new ImageBase(project,folderPath + File.separator + baseOffset + ".ncgr", folderPath + File.separator + (baseOffset + 1) + ".nclr");
             trainerClassImageButton.setIcon(new ImageIcon(imageBase.getImageTransparent(trainerClassImageButton.getBackground(),64,64)));
         } catch (IOException exception)
         {
             exception.printStackTrace();
         }
+
     }
 
     private void trainerClassImageButtonActionPerformed(ActionEvent e)
@@ -401,6 +416,20 @@ public class TrainerPanel extends JPanel
         }
     }
 
+    private void refreshButtonActionPerformed(ActionEvent e)
+    {
+        try
+        {
+            setApi(api);
+        } catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+
+        trainerSelectionComboBox.setSelectedIndex(1);
+        trainerSelectionComboBoxActionPerformed(null);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         trainerSelectionComboBox = new JComboBox();
@@ -470,6 +499,7 @@ public class TrainerPanel extends JPanel
 
         //---- refreshButton ----
         refreshButton.setText("Refresh");
+        refreshButton.addActionListener(e -> refreshButtonActionPerformed(e));
         add(refreshButton, "cell 1 0");
 
         //======== trainerDataPanel ========
@@ -748,16 +778,37 @@ public class TrainerPanel extends JPanel
 
     public int[] getFormNumberData() {return formNumberData;}
 
-    public void setProjectPath(String projectPath) throws IOException
+    public void setProject(Project project) throws IOException
     {
         System.out.println(projectPath);
-        this.projectPath= projectPath;
+        this.project= project;
+        this.projectPath= project.getProjectPath().getAbsolutePath();
 
         String resourcePath= projectPath + File.separator + "Program Files" + File.separator;
         String entryPath = resourcePath + "EntryData.txt";
         String movePath = resourcePath + "MoveList.txt";
         String itemPath= resourcePath;
         String classPath= resourcePath;
+
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                itemPath+= "ItemListDP.txt";
+                classPath+= "TrainerClassesDP.txt";
+                break;
+
+            case Platinum:
+                itemPath+= "ItemListPt.txt";
+                classPath+= "TrainerClassesPt.txt";
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                itemPath+= "ItemListJohto.txt";
+                classPath+= "TrainerClassesHGSS.txt";
+                break;
+        }
 
         try
         {
@@ -781,7 +832,7 @@ public class TrainerPanel extends JPanel
             moveData = moveList.toArray(new String[0]);
             reader.close();
 
-            reader = new BufferedReader(new FileReader(itemPath + "ItemListPt.txt"));
+            reader = new BufferedReader(new FileReader(itemPath));
             ArrayList<String> itemList = new ArrayList<>();
 
             while ((line = reader.readLine()) != null) {
@@ -790,7 +841,7 @@ public class TrainerPanel extends JPanel
             itemData = itemList.toArray(new String[0]);
             reader.close();
 
-            reader = new BufferedReader(new FileReader(classPath + "TrainerClassesPt.txt"));
+            reader = new BufferedReader(new FileReader(classPath));
             ArrayList<String> trainerClassList = new ArrayList<>();
 
             while ((line = reader.readLine()) != null) {
@@ -799,7 +850,7 @@ public class TrainerPanel extends JPanel
             trainerClassData= trainerClassList.toArray(new String[0]);
             reader.close();
 
-            reader = new BufferedReader(new FileReader(classPath + "FormDataPt.txt"));
+            reader = new BufferedReader(new FileReader(resourcePath + "FormDataPt.txt"));
             ArrayList<Integer> formNumberList = new ArrayList<>();
 
             while ((line = reader.readLine()) != null) {
@@ -849,6 +900,7 @@ public class TrainerPanel extends JPanel
 
         int idx= 0;
         boolean first= true;
+        trainerSelectionComboBox.removeAllItems();
         for(Object[] row : trainerDataTable)
         {
             if(!first)
@@ -859,7 +911,7 @@ public class TrainerPanel extends JPanel
 
         try
         {
-            trainerEditor= new TrainerEditorGen4(projectPath, Game.Platinum);
+            trainerEditor= new TrainerEditorGen4(projectPath, project.getBaseRom());
         }
         catch (IOException exception)
         {

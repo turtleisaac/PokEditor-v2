@@ -231,4 +231,19 @@ public class Project implements Serializable
     {
         return gameCode.startsWith("IPG");
     }
+
+    public static boolean isPrimary(Project project)
+    {
+        return project.getBaseRom() == Game.Platinum || project.getBaseRom() == Game.HeartGold || project.getBaseRom() == Game.SoulSilver;
+    }
+
+    public static boolean isHGSS(Project project)
+    {
+        return project.getBaseRom() == Game.HeartGold || project.getBaseRom() == Game.SoulSilver;
+    }
+
+    public static boolean isDPPT(Project project)
+    {
+        return project.getBaseRom() == Game.Diamond || project.getBaseRom() == Game.Pearl || project.getBaseRom() == Game.Platinum;
+    }
 }

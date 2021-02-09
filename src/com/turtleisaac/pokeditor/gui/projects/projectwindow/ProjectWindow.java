@@ -190,7 +190,7 @@ public class ProjectWindow extends JFrame
         }
 
         ComboBoxSearchable sheetComboBoxSearchable= new ComboBoxSearchable(sheetChooserComboBox);
-        trainerPanel1.setProjectPath(projectPath);
+        trainerPanel1.setProject(project);
         trainerPanel1.setApi(api);
 
         Application.getApplication().setDefaultMenuBar(menuBar);

@@ -1,19 +1,17 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
 import com.turtleisaac.pokeditor.framework.Buffer;
-import com.turtleisaac.pokeditor.utilities.images.nclr.NclrData;
 import com.turtleisaac.pokeditor.utilities.images.nclr.NclrReader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class ImageDecrypter
 {
 
-    public static PokemonSprites getSprites(String path, int species)
+    public static PokemonSprites getSprites(String path, int species, boolean primary)
     {
         path+= File.separator;
         Color[] palette= null;
@@ -27,17 +25,17 @@ public class ImageDecrypter
             exception.printStackTrace();
         }
 
-        BufferedImage[] femaleBack= decryptPrimary(path + species + ".ncgr",palette);
-        BufferedImage[] shinyFemaleBack= decryptPrimary(path + species + ".ncgr",shinyPalette);
+        BufferedImage[] femaleBack= primary ? decryptPrimary(path + species + ".ncgr",palette) : decryptSecondary(path + species + ".ncgr",palette);
+        BufferedImage[] shinyFemaleBack= primary ? decryptPrimary(path + species + ".ncgr",shinyPalette) : decryptSecondary(path + species + ".ncgr",shinyPalette);
 
-        BufferedImage[] maleBack= decryptPrimary(path + (species + 1) + ".ncgr",palette);
-        BufferedImage[] shinyMaleBack= decryptPrimary(path + (species + 1) + ".ncgr",shinyPalette);
+        BufferedImage[] maleBack= primary ? decryptPrimary(path + (species + 1) + ".ncgr",palette) : decryptSecondary(path + (species + 1) + ".ncgr",palette);
+        BufferedImage[] shinyMaleBack= primary ? decryptPrimary(path + (species + 1) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 1) + ".ncgr",shinyPalette);
 
-        BufferedImage[] femaleFront= decryptPrimary(path + (species + 2) + ".ncgr",palette);
-        BufferedImage[] shinyFemaleFront= decryptPrimary(path + (species + 2) + ".ncgr",shinyPalette);
+        BufferedImage[] femaleFront= primary ? decryptPrimary(path + (species + 2) + ".ncgr",palette) : decryptSecondary(path + (species + 2) + ".ncgr",palette);
+        BufferedImage[] shinyFemaleFront= primary ? decryptPrimary(path + (species + 2) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 2) + ".ncgr",shinyPalette);
 
-        BufferedImage[] maleFront= decryptPrimary(path + (species + 3) + ".ncgr",palette);
-        BufferedImage[] shinyMaleFront= decryptPrimary(path + (species + 3) + ".ncgr",shinyPalette);
+        BufferedImage[] maleFront= primary ? decryptPrimary(path + (species + 3) + ".ncgr",palette) : decryptSecondary(path + (species + 3) + ".ncgr",palette);
+        BufferedImage[] shinyMaleFront= primary ? decryptPrimary(path + (species + 3) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 3) + ".ncgr",shinyPalette);
 
 
         Color[] finalPalette = palette;
@@ -193,7 +191,7 @@ public class ImageDecrypter
         {
             int num= data[width*height];
 
-            for(int i= width*height - 1; i < data.length; i--)
+            for(int i= width*height - 1; i != 0; i--)
             {
                 data[i]= data[i] ^ (num & 0xffff);
                 num*= 1103515245;

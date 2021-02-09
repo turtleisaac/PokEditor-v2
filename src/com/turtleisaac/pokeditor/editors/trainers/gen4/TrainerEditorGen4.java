@@ -81,6 +81,8 @@ public class TrainerEditorGen4
             case HeartGold:
             case SoulSilver:
                 itemPath+= "ItemListJohto.txt";
+                trainerNamePath+= "TrainerNamesHGSS.txt";
+                classPath+= "TrainerClassesHGSS.txt";
                 break;
         }
 
@@ -123,7 +125,7 @@ public class TrainerEditorGen4
         reader.close();
     }
 
-    public TrainerReturnGen4 trainersToCsv(String trainerDataDir, String trainerPokemonDir) throws IOException
+    public TrainerReturnGen4 trainersToCsv(String trainerDataDir, String trainerPokemonDir)
     {
         dataPath+= trainerDataDir;
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.images.ncer.NcerData;
 import com.turtleisaac.pokeditor.utilities.images.ncgr.NcgrData;
@@ -45,10 +46,11 @@ public class ImageBase
 
     }
 
-    public ImageBase(Project project, String ncgr, String nclr)
+    public ImageBase(Project project, String ncgr, String nclr) throws IOException
     {
         this.project= project;
         String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
+
         try
         {
             this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
@@ -60,19 +62,24 @@ public class ImageBase
         }
     }
 
-    public ImageBase(Project project, NcgrData ncgr, String nclr)
+    public ImageBase(Project project, NcgrData ncgr, String nclr) throws IOException
     {
         this.project= project;
         this.ncgr= ncgr;
         String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
-        try
+        if(!new File(dataPath + nclr).getParentFile().exists())
         {
-            this.nclr= NclrReader.readFile(dataPath + nclr);
+            Narctowl narctowl= new Narctowl(true);
+            if(project.getBaseRom() == Game.Platinum || project.getBaseRom() == Game.Diamond || project.getBaseRom() == Game.Pearl)
+                narctowl.unpack(dataPath + "/poketool/trgra/trfgra.narc",dataPath + "/poketool/trgra/trfgra");
+            else if(project.getBaseRom() == Game.HeartGold || project.getBaseRom() == Game.SoulSilver)
+                narctowl.unpack(dataPath + "/a/0/0/4",dataPath + "/a/0/0/4_");
         }
-        catch (IOException exception)
-        {
-            exception.printStackTrace();
-        }
+        new File(dataPath + "/poketool/trgra/trfgra").deleteOnExit();
+        new File(dataPath + "/a/0/0/4_").deleteOnExit();
+
+        this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
+        this.nclr= NclrReader.readFile(dataPath + nclr);
     }
 
 

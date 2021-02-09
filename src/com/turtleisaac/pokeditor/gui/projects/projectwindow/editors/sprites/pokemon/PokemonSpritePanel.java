@@ -24,6 +24,7 @@ import javax.swing.colorchooser.ColorSelectionModel;
 import javax.swing.event.*;
 
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.images.ImageDecrypter;
 import com.turtleisaac.pokeditor.utilities.images.PokemonSprites;
@@ -561,13 +562,20 @@ public class PokemonSpritePanel extends JPanel
         frameToggleButton.setSelected(false);
         String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
         int selected= (int)(speciesChooserComboBox.getValue())*6;
-        File pokegraPath= new File(dataPath + "/poketool/pokegra/pl_pokegra");
+
+        boolean primary= false;
+
+        File narcPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? "/poketool/pokegra/pl_pokegra.narc" : "/poketool/pokegra/pokegra.narc" : "/a/0/0/4"));
+        File pokegraPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? "/poketool/pokegra/pl_pokegra" : "/poketool/pokegra/pokegra" : "/a/0/0/4_"));
+
+        primary= Project.isPrimary(project);
+
         try
         {
-            if(!new File(pokegraPath.getAbsolutePath() + File.separator + "0.ncgr").exists())
+            if(!pokegraPath.exists())
             {
                 Narctowl narctowl = new Narctowl(true);
-                narctowl.unpack(dataPath + "/poketool/pokegra/pl_pokegra.narc", dataPath + "/poketool/pokegra/pl_pokegra");
+                narctowl.unpack(narcPath.getAbsolutePath(), pokegraPath.getAbsolutePath());
             }
             toDelete.add(pokegraPath);
             pokegraPath.deleteOnExit();
@@ -576,7 +584,7 @@ public class PokemonSpritePanel extends JPanel
         {
         }
 
-        sprites= ImageDecrypter.getSprites(pokegraPath.getAbsolutePath(),selected);
+        sprites= ImageDecrypter.getSprites(pokegraPath.getAbsolutePath(),selected,primary);
 
         BufferedImage[] femaleBack= Arrays.copyOf(sprites.getFemaleBack(),2);
         BufferedImage[] shinyFemaleBack= Arrays.copyOf(sprites.getShinyFemaleBack(),2);
@@ -1172,7 +1180,6 @@ public class PokemonSpritePanel extends JPanel
     {
         this.project= project;
         speciesChooserComboBox.setValue(1);
-
     }
 
     public Image getPaletteImage(Color color)
