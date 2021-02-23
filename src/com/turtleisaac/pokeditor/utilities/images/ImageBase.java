@@ -4,21 +4,26 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.images.ncer.NcerData;
+import com.turtleisaac.pokeditor.utilities.images.ncer.NcerReader;
 import com.turtleisaac.pokeditor.utilities.images.ncgr.NcgrData;
 import com.turtleisaac.pokeditor.utilities.images.ncgr.NcgrReader;
 import com.turtleisaac.pokeditor.utilities.images.nclr.NclrData;
 import com.turtleisaac.pokeditor.utilities.images.nclr.NclrReader;
 
+import javax.imageio.ImageIO;
+
 public class ImageBase
 {
     NclrData nclr;
     NcgrData ncgr;
+    NcerData ncer;
     Project project;
 
     protected String fileName;
@@ -55,6 +60,25 @@ public class ImageBase
         {
             this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
             this.nclr= NclrReader.readFile(dataPath + nclr);
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+    }
+
+    public ImageBase(Project project, String ncgr, String nclr, String ncer) throws IOException
+    {
+        this.project= project;
+        String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
+
+        try
+        {
+            this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
+            this.nclr= NclrReader.readFile(dataPath + nclr);
+            this.ncer= NcerReader.readFile(dataPath + ncer);
+            banks= this.ncer.getCellBank().getBanks();
+            blockSize= this.ncer.getCellBank().getBlockSize();
         }
         catch (IOException exception)
         {
@@ -129,7 +153,6 @@ public class ImageBase
 
     public Image getImage(int height, int width)
     {
-//        nclr.Depth = format;
         Color[][] pal_colors= nclr.getPalette().getPalettes();
 
         if(width == 0)
@@ -143,10 +166,7 @@ public class ImageBase
         {
             if (height < tile_size) height = tile_size;
             {
-//                System.out.println("Shifting img");
-//                System.out.println(Arrays.toString(tiles) + "\n");
                 img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
-//                System.out.println(Arrays.toString(img_tiles));
             }
             tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
         }
@@ -158,17 +178,7 @@ public class ImageBase
 
     public Image getImage()
     {
-//        nclr.Depth = format;
         Color[][] pal_colors= nclr.getPalette().getPalettes();
-
-//        for(Color[] arr : pal_colors)
-//        {
-//            for(Color color : arr)
-//            {
-//                System.out.print("[r=" + color.getRed() + ",g=" + color.getGreen() + ",b=" + color.getBlue() + "], ");
-//            }
-//            System.out.println("\n");
-//        }
 
         if(width == 0)
             width= 64;
@@ -181,10 +191,7 @@ public class ImageBase
         {
             if (height < tile_size) height = tile_size;
             {
-//                System.out.println("Shifting img");
-//                System.out.println(Arrays.toString(tiles) + "\n");
                 img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
-//                System.out.println(Arrays.toString(img_tiles));
             }
             tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
         }
@@ -235,10 +242,202 @@ public class ImageBase
         return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
     }
 
+    public BufferedImage getImage(int num, Color background)
+    {
+        return ImageActions.getImage(banks[num],blockSize,this, nclr.getPalette(), 80,80,true,1,null, background);
+    }
+
+    public BufferedImage[] getImages(Color background)
+    {
+        System.out.println("-----------------------------");
+        ArrayList<BufferedImage> images= new ArrayList<>();
+        for (int i= 0; i < banks.length; i++)
+        {
+            BufferedImage image= ImageActions.getImage(banks[i], blockSize, this, nclr.getPalette(), 80, 80, true, 1, null, background);
+
+            int value= 0;
+            for(int row= 0; row < image.getHeight(); row++)
+            {
+                for(int col= 0; col < image.getWidth(); col++)
+                {
+                    value^= image.getRGB(col,row);
+                }
+            }
+
+            if(value != 0)
+                images.add(image);
+        }
+        return images.toArray(new BufferedImage[0]);
+    }
+
+    public BufferedImage getImage(NclrData.Palette palette)
+    {
+        Color[][] pal_colors = palette.getPalettes();
+
+
+        byte[] img_tiles;
+        if (tileForm == TileFormat.Horizontal)
+        {
+            if (height < tile_size)
+                height= tile_size;
+
+            img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
+            tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
+        }
+        else
+            img_tiles = tiles;
+
+        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+    }
+
     public Image getPalette()
     {
         Color[][] pal_colors= nclr.getPalette().getPalettes();
         return ImageActions.getPalette(pal_colors,format);
+    }
+
+    public BufferedImage[] getNcerImage()
+    {
+        Color[][] pal_colors= nclr.getPalette().getPalettes();
+        CenterImage[] out= new CenterImage[ncer.getCellBank().getBanks().length];
+
+        for(int i= 0; i < out.length; i++)
+        {
+            NcerData.Bank bank= ncer.getCellBank().getBanks()[i];
+            CenterImage oamIndex= new CenterImage(80,80,BufferedImage.TYPE_INT_RGB);
+
+            for(int j= 0; j < bank.getOAMs().length; j++)
+            {
+                NcerData.OAM oam= bank.getOAMs()[j];
+
+                width= oam.getWidth();
+                System.out.println("Width: " + width);
+                height= oam.getHeight();
+                System.out.println("Height: " + height);
+
+                int xStart= (int) oam.getObj1().getXOffset();
+                System.out.println("X Origin: " + xStart);
+                int yStart= oam.getObj0().getYOffset();
+                System.out.println("Y Origin: " + yStart);
+
+                long start= bank.getPartitionOffset();
+                long size= bank.getPartitionSize();
+
+                byte[] img_tiles;
+                if (tileForm == TileFormat.Horizontal)
+                {
+                    if(height < tile_size) height = tile_size;
+                    {
+                        img_tiles = ImageActions.linealToHorizontal(Arrays.copyOfRange(tiles,(int)start,(int)(start+size)), width, height, bpp, tile_size);
+                    }
+                    tilePal = ImageActions.linealToHorizontal(Arrays.copyOfRange(tilePal,(int)start,(int)(start+size)), width, height, 8, tile_size);
+                }
+                else
+                    img_tiles = tiles;
+
+
+                BufferedImage image= ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+                try
+                {
+                    ImageIO.write(oamIndex,"png",new File(System.getProperty("user.dir") + File.separator + i + "_" + j + ".png"));
+                } catch (IOException exception)
+                {
+                    exception.printStackTrace();
+                }
+
+//                for(int row= yStart; Math.abs(Math.max(row,yStart))-Math.abs(Math.min(row,yStart)) < height; row++)
+//                {
+//                    for(int col= xStart; col-xStart < width; col++)
+//                    {
+//                        int rgb= image.getRGB(col-xStart,row-yStart);
+//
+//                        //Translate values
+//                        int globalRow= oam.getHeight()/2 + row;
+//                        int globalCol= oam.getWidth()/2 + col;
+//
+//                        oamIndex.setRGB(globalCol,globalRow,rgb);
+//                    }
+//                }
+
+//                int originalX= 0;
+//                int originalY= 0;
+//                for(int row= yStart; row < yStart + oam.getHeight(); row++)
+//                {
+//                    for(int col= xStart; col < xStart + oam.getWidth(); col++)
+//                    {
+//                        int rgb= image.getRGB(originalX++,originalY);
+//
+//                        System.out.print(col - oam.getWidth()/2 + ", ");
+//                        System.out.println(row - oam.getHeight()/2);
+//                        oamIndex.setRGB(col,row,rgb);
+//                    }
+//                    originalY++;
+//                    originalX= 0;
+//                }
+
+                try
+                {
+                    oamIndex.setSection(xStart,yStart,image);
+                }
+                catch (ArrayIndexOutOfBoundsException ignored)
+                {
+
+                }
+                System.out.println();
+            }
+
+            try
+            {
+                ImageIO.write(oamIndex,"png",new File(System.getProperty("user.dir") + File.separator + i + ".png"));
+            } catch (IOException exception)
+            {
+                exception.printStackTrace();
+            }
+            System.out.println();
+
+        }
+
+        return out;
+    }
+
+    public BufferedImage[] getNcerImage2()
+    {
+        Color[][] pal_colors= nclr.getPalette().getPalettes();
+        BufferedImage[] out= new BufferedImage[ncer.getCellBank().getBanks().length];
+
+        for(int i= 0; i < out.length; i++)
+        {
+            NcerData.Bank bank= ncer.getCellBank().getBanks()[i];
+            BufferedImage oamIndex= new CenterImage(80,80,BufferedImage.TYPE_INT_RGB);
+
+            for(int j= 0; j < bank.getOAMs().length; j++)
+            {
+                NcerData.OAM oam= bank.getOAMs()[j];
+
+                byte[] img_tiles;
+                if (tileForm == TileFormat.Horizontal)
+                {
+                    if (height < tile_size) height = tile_size;
+                    {
+                        img_tiles = ImageActions.linealToHorizontal(tiles, width, height, bpp, tile_size);
+                    }
+                    tilePal = ImageActions.linealToHorizontal(tilePal, width, height, 8, tile_size);
+                }
+                else
+                    img_tiles = tiles;
+
+                img_tiles= ImageActions.getOAMData(oam,img_tiles,format);
+
+                ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+            }
+        }
+
+        return out;
+    }
+
+    private int translate(int coordinate, int length)
+    {
+        return coordinate + length/2;
     }
 
     public Image getPaletteColor(int i)
@@ -281,6 +480,8 @@ public class ImageBase
         this.tileForm = form;
         this.canEdit = editable;
         this.tile_size = tile_size;
+        this.width= width;
+        this.height= height;
 
         width = width;
         height = height;
@@ -414,7 +615,7 @@ public class ImageBase
         return height;
     }
 
-    public void setheight(int height)
+    public void setHeight(int height)
     {
         this.height = height;
         if (tileForm == TileFormat.Horizontal || tileForm == TileFormat.Vertical)
@@ -430,7 +631,7 @@ public class ImageBase
         return width;
     }
 
-    public void setwidth(int width)
+    public void setWidth(int width)
     {
         this.width = width;
         if (tileForm == TileFormat.Horizontal || tileForm == TileFormat.Vertical)

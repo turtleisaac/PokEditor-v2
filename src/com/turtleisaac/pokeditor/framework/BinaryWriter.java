@@ -21,7 +21,7 @@ public class BinaryWriter {
 
     public BinaryWriter(String fileName) throws IOException
     {
-        this(new File(fileName.replaceAll("/",File.separator)));
+        this(new File(fileName));
     }
     
     public void setPosition(long pos) throws IOException {
@@ -85,13 +85,13 @@ public class BinaryWriter {
 
     public void writeShorts(int... shorts) throws IOException {
         for (int s : shorts) {
-            raf.writeShort(s);
+            writeShort((short) (s & 0xffff));
         }
     }
 
     public void writeShorts(short... shorts) throws IOException {
         for (short s : shorts) {
-            raf.writeShort(s);
+            writeShort(s);
         }
     }
 

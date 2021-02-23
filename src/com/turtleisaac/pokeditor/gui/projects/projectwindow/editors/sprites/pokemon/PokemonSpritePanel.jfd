@@ -12,7 +12,9 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JSpinner" ) {
 				name: "speciesChooserComboBox"
 				"autoscrolls": true
-				"model": new javax.swing.SpinnerNumberModel( 0, 0, 493, 1 )
+				"model": new javax.swing.SpinnerNumberModel {
+					minimum: 0
+				}
 				addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "speciesChooserComboBoxStateChanged", true ) )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 0"

@@ -18,7 +18,7 @@ public class ConsoleWindow extends JFrame {
     public ConsoleWindow() {
         initComponents();
         setVisible(false);
-//        redirectSystemStreams();
+        redirectSystemStreams();
 
         setPreferredSize(new Dimension(500,500));
         setMinimumSize(new Dimension(500,500));

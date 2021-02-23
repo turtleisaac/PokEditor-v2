@@ -310,7 +310,7 @@ public class EvolutionEditor
             else
             {
                 int current= 0;
-                System.out.println(nameData[row]);
+//                System.out.println(nameData[row]);
                 for (int col = 0; col < 7; col++)
                 {
                     int evolutionMethodID = dataList.get(row).getEvolutionMethod()[col];
@@ -388,12 +388,15 @@ public class EvolutionEditor
 
     public void sheetToEvolutions(Object[][] evolutionCsv, String outputDir) throws IOException
     {
-
         String outputPath= dataPath + outputDir;
 
-        if(!new File(outputPath).exists() && !new File(outputPath).mkdir())
+        if(!new File(outputPath).exists())
         {
-            throw new RuntimeException("Could not create output directory. Check write permissions");
+            if(!new File(outputPath).mkdir())
+            {
+                System.err.println(outputPath);
+                throw new RuntimeException("Could not create output directory. Check write permissions");
+            }
         }
 
         evolutionCsv= ArrayModifier.trim(evolutionCsv,1,2);
@@ -484,7 +487,10 @@ public class EvolutionEditor
                 return i;
             }
         }
-        throw new RuntimeException("Invalid evolution method entered");
+
+        if(evo.equals(""))
+            return 0;
+        throw new RuntimeException("Invalid evolution method entered: " + evo);
     }
 
     private static int getType(String type)
@@ -520,7 +526,21 @@ public class EvolutionEditor
                 return i;
             }
         }
-        throw new RuntimeException("Invalid pokemon entered: " + pokemon);
+
+        if(pokemon.equals(""))
+            return 0;
+
+        int species;
+        try
+        {
+            species= Integer.parseInt(pokemon);
+        }
+        catch (NumberFormatException ignored)
+        {
+            throw new RuntimeException("Invalid pokemon entered: " + pokemon);
+        }
+
+        return species;
     }
 
     private static int getItem(String item)

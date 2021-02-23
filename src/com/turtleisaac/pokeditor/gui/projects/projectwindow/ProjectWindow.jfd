@@ -279,6 +279,11 @@ new FormModel {
 						"text": "BLZ Coder"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "blzCoderItemActionPerformed", true ) )
 					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "fileRandomizerItem"
+						"text": "File Randomizer"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "fileRandomizerItemActionPerformed", true ) )
+					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "debugMenu"

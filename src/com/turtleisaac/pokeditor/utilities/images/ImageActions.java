@@ -2,9 +2,13 @@ package com.turtleisaac.pokeditor.utilities.images;
 
 import com.sun.glass.ui.Size;
 import com.turtleisaac.pokeditor.utilities.images.ncer.NcerData;
+import com.turtleisaac.pokeditor.utilities.images.nclr.NclrData;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -282,6 +286,29 @@ public class ImageActions
                 image.setRGB(w, h, color.getRGB());
             }
         }
+
+
+        BufferedImage leftAll= image.getSubimage(0,0,width-8,height);
+        BufferedImage right8= image.getSubimage(width-8,0,8,height);
+
+        image= new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
+//        image= insertImage(image,right8,0,0);
+//        image= insertImage(image,leftAll,8,0);
+
+        Graphics2D g= (Graphics2D) image.getGraphics();
+        g.drawImage(right8,0,0,null);
+        g.drawImage(leftAll,8,0,null);
+
+
+//        try
+//        {
+//            ImageIO.write(left8,"png",new File(System.getProperty("user.dir") + File.separator + "left8_" + System.currentTimeMillis() + ".png"));
+//            ImageIO.write(right8,"png",new File(System.getProperty("user.dir") + File.separator + "right8_"  + System.currentTimeMillis() + ".png"));
+//        } catch (IOException exception)
+//        {
+//            exception.printStackTrace();
+//        }
+
         return image;
     }
 
@@ -1108,79 +1135,75 @@ public class ImageActions
         return imageSize;
     }
 
-//    public static BufferedImage Get_Image(NcerData.Bank bank, long blockSize, ImageBase img, Color[] palette, int max_width, int max_height, boolean draw_grid, boolean draw_cells, boolean draw_numbers, boolean trans, boolean image)
-//    {
-//        return Get_Image(bank,blockSize,img,palette,max_width,max_height,draw_grid,draw_cells,draw_numbers,trans,image,-1,1,null);
-//    }
-//
-//    public static BufferedImage Get_Image(NcerData.Bank bank, long blockSize, ImageBase img, Color[] palette, int max_width, int max_height, boolean draw_grid, boolean draw_cells, boolean draw_numbers, boolean trans, boolean image, int currOAM, int zoom, int[] index)
-//    {
-//        Size size = new Size(max_width * zoom, max_height * zoom);
-//        BufferedImage bank_img = new BufferedImage(size.width, size.height,BufferedImage.TYPE_INT_RGB);
-//
-//        if (bank.getOAMs().length == 0)
-//            return bank_img;
-//
-//        Image cell;
-//        for (int i = 0; i < bank.getOAMs().length; i++)
-//        {
-//            boolean draw = false;
-//            if (index == null)
-//                draw = true;
-//            else
-//                for (int j : index)
-//                    if (j == i)
-//                    {
-//                        draw = true;
-//                        break;
-//                    }
-//            if (!draw)
-//                continue;
-//
-//            if (bank.getOAMs()[i].getWidth() == 0x00 || bank.getOAMs()[i].getHeight() == 0x00)
-//                continue;
-//
-//            long tileOffset = bank.getOAMs()[i].getObj2().getTileOffset();
-//            tileOffset = tileOffset << (byte)blockSize;
-//
-//            if (image)
-//            {
-//                ImageBase cell_img= new ImageBase();
-//                cell_img.setTiles(img.tiles.clone(), bank.getOAMs()[i].getWidth(), bank.getOAMs()[i].getHeight(), img.format,
-//                        img.tileForm, false);
-//                cell_img.startByte = (int)(tileOffset * 0x20 + bank.getCellOffset());
-//
-//                byte num_pal = bank.getOAMs()[i].getObj2().getIndexPalette();
-//                if (num_pal >= 1) // TODO check if this is right, previously PaletteBase.NumberOfPalettes
-//                    num_pal = 0;
-//                Arrays.fill(cell_img.tilePal, num_pal);
-//
-//                cell = cell_img.Get_Image(pal);
-//
-////                if (bank.getOAMs()[i].getObj1().flipX == 1 && bank.getOAMs()[i].getObj1().flipY == 1)
-////                    cell.RotateFlip(RotateFlipType.RotateNoneFlipXY);
-////                else if (bank.getOAMs()[i].getObj1().flipX == 1)
-////                    cell.RotateFlip(RotateFlipType.RotateNoneFlipX);
-////                else if (bank.getOAMs()[i].getObj1().flipY == 1)
-////                    cell.RotateFlip(RotateFlipType.RotateNoneFlipY);
-////
-////                if (trans)
-////                    ((BufferedImage)cell).MakeTransparent(pal.Palette[num_pal][0]);
-//            }
-//
-////            if (draw_cells)
-////                graphic.DrawRectangle(Pens.Black, size.Width / 2 + bank.getOAMs()[i].getObj1().xOffset * zoom, size.Height / 2 + bank.getOAMs()[i].getObj0().yOffset * zoom,
-////                        bank.getOAMs()[i].width * zoom, bank.getOAMs()[i].height * zoom);
-////            if (i == currOAM)
-////                graphic.DrawRectangle(new Pen(Color.Red, 3), size.Width / 2 + bank.getOAMs()[i].getObj1().xOffset * zoom, size.Height / 2 + bank.getOAMs()[i].getObj0().yOffset * zoom,
-////                        bank.getOAMs()[i].width * zoom, bank.getOAMs()[i].height * zoom);
-////            if (draw_numbers)
-////                graphic.DrawString(bank.getOAMs()[i].num_cell.toString(), SystemFonts.CaptionFont, Brushes.Black, size.Width / 2 + bank.getOAMs()[i].getObj1().xOffset * zoom,
-////                        size.Height / 2 + bank.getOAMs()[i].getObj0().yOffset * zoom);
-//        }
-//
-//        return bank_img;
-//    }
+    public static BufferedImage getImage(NcerData.Bank bank, long blockSize, ImageBase img, NclrData.Palette pal, int max_width, int max_height, boolean image, int zoom, int[] index, Color background)
+    {
+        Size size = new Size(max_width * zoom, max_height * zoom);
+        NcerData.OAM[] oams= bank.getOAMs();
+        BufferedImage bankImage = new BufferedImage(size.width, size.height,BufferedImage.TYPE_INT_RGB);
+
+        for(int row= 0; row < bankImage.getHeight(); row++)
+        {
+            for(int col= 0; col < bankImage.getWidth(); col++)
+            {
+                bankImage.setRGB(col,row,background.getRGB());
+            }
+        }
+
+        BufferedImage cell;
+        for (int i = 0; i < oams.length; i++)
+        {
+            NcerData.OAM oam= oams[i];
+
+            if(oam == null)
+                break;
+
+            boolean draw = false;
+            if (index == null)
+                draw = true;
+            else
+                for (int j : index)
+                    if (j == i)
+                    {
+                        draw = true;
+                        break;
+                    }
+
+            if (!draw)
+                continue;
+
+            if (oam.getWidth() == 0x00 || oam.getHeight() == 0x00)
+                continue;
+
+            long tileOffset = oam.getObj2().getTileOffset();
+            tileOffset = (tileOffset << (byte)blockSize);
+
+            if (image)
+            {
+                ImageBase cell_img = new ImageBase();
+                cell_img.setTiles(img.tiles.clone(), oam.getWidth(), oam.getHeight(), img.format, img.tileForm, false);
+                cell_img.setTilePal(img.tilePal);
+                cell_img.changeStartByte((int)(tileOffset * 0x20 + bank.getPartitionOffset()));
+
+                byte num_pal = oam.getObj2().getIndexPalette();
+                if (num_pal >= pal.getNumColors())
+                    num_pal = 0;
+                Arrays.fill(cell_img.tilePal, num_pal);
+
+
+                cell= cell_img.getImage(pal);
+
+                int x= (int) oam.getObj1().getXOffset();
+                int y= oam.getObj0().getYOffset();
+                x+= bankImage.getWidth()/2;
+                y+= bankImage.getHeight()/2;
+
+                Graphics2D g= (Graphics2D) bankImage.getGraphics();
+                g.drawImage(cell,x,y,null);
+            }
+        }
+
+        return bankImage;
+    }
 
     public static byte[] getOAMData(NcerData.OAM oam, byte[] image, ColorFormat format)
     {
@@ -1200,10 +1223,11 @@ public class ImageActions
                         data.add(image[wt + ht * 512]);
 
         if (format == ColorFormat.colors16)
-            return BitsConverter.Bits4ToByte(BitsConverter.toArray(data));
+            return BitsConverter.Bits4ToByte(data.toArray(new Byte[0]));
         else
             return BitsConverter.toArray(data);
     }
+
     public static int OAMComparison(NcerData.OAM c1, NcerData.OAM c2)
     {
         if (c1.getObj2().getPriority() < c2.getObj2().getPriority())
@@ -1221,131 +1245,89 @@ public class ImageActions
         }
     }
 
-//    public static int[] OAMInfo(NcerData.OAM oam)
-//    {
-//        int[] obj = new int[3];
-//
-//        // OBJ0
-//        obj[0] = 0;
-//        obj[0]+= (int)((sbyte)(oam.getObj0().getYOffset()) & 0xFF);
-//        obj[0]+= (oam.getObj0().getRsFlag() & 1) << 8;
-//        if (oam.getObj0().getRsFlag() == 0x00)
-//            obj[0]+= (oam.getObj0().getObjDisable() & 1) << 9;
-//        else
-//            obj[0]+= (oam.getObj0().getDoubleSize() & 1) << 9;
-//        obj[0]+= (oam.getObj0().getObjMode() & 3) << 10;
-//        obj[0]+= (oam.getObj0().getMosaicFlag() & 1) << 12;
-//        obj[0]+= (oam.getObj0().getDepth() & 1) << 13;
-//        obj[0]+= (oam.getObj0().getShape() & 3) << 14;
-//
-//        // OBJ1
-//        obj[1] = 0;
-//        if (oam.getObj1().getXOffset() < 0)
-//            oam.getObj1().getXOffset()+= 0x200;
-//        obj[1]+= (int)(oam.getObj1().getXOffset() & 0x1FF);
-//        if (oam.getObj0().getRsFlag() == 0)
-//        {
-//            obj[1]+= (int)((oam.getObj1().unused & 0x7) << 9);
-//            obj[1]+= (int)((oam.getObj1().flipX & 1) << 12);
-//            obj[1]+= (int)((oam.getObj1().flipY & 1) << 13);
-//        }
-//        else
-//            obj[1]+= (int)((oam.getObj1().getSelectParameter() & 0x1F) << 9);
-//        obj[1]+= (int)((oam.getObj1().getSize() & 3) << 14);
-//
-//        // OBJ2
-//        obj[2] = 0;
-//        obj[2]+= (int)(oam.getObj2().getTileOffset() & 0x3FF);
-//        obj[2]+= (oam.getObj2().getPriority() & 3) << 10;
-//        obj[2]+= (oam.getObj2().getIndexPalette() & 0xF) << 12;
-//
-//        oam= new NcerData.OAM()
-//        {
-//            @Override
-//            public NcerData.Obj0 getObj0()
-//            {
-//                return null;
-//            }
-//
-//            @Override
-//            public NcerData.Obj1 getObj1()
-//            {
-//                return null;
-//            }
-//
-//            @Override
-//            public NcerData.Obj2 getObj2()
-//            {
-//                return null;
-//            }
-//
-//            @Override
-//            public int getWidth()
-//            {
-//                return 0;
-//            }
-//
-//            @Override
-//            public int getHeight()
-//            {
-//                return 0;
-//            }
-//
-//            @Override
-//            public int getNumCells()
-//            {
-//                return 0;
-//            }
-//        };
-//
-//        return obj;
-//    }
-//    public static NcerData.OAM OAMInfo(int[] obj)
-//    {
-//        NcerData.OAM oam = new NcerData.OAM();
-//
-//        // Obj 0
-//        oam.getObj0().yOffset = (sbyte)(obj[0] & 0xFF);
-//        oam.getObj0().rs_flag = (byte)((obj[0] >> 8) & 1);
-//        if (oam.getObj0().rs_flag == 0)
-//            oam.getObj0().objDisable = (byte)((obj[0] >> 9) & 1);
-//        else
-//            oam.getObj0().doubleSize = (byte)((obj[0] >> 9) & 1);
-//        oam.getObj0().objMode = (byte)((obj[0] >> 10) & 3);
-//        oam.getObj0().mosaic_flag = (byte)((obj[0] >> 12) & 1);
-//        oam.getObj0().depth = (byte)((obj[0] >> 13) & 1);
-//        oam.getObj0().shape = (byte)((obj[0] >> 14) & 3);
-//
-//        // Obj 1
-//        oam.getObj1().xOffset = obj[1] & 0x01FF;
-//        if (oam.getObj1().xOffset >= 0x100)
-//            oam.getObj1().xOffset -= 0x200;
-//        if (oam.getObj0().rs_flag == 0)
-//        {
-//            oam.getObj1().unused = (byte)((obj[1] >> 9) & 7);
-//            oam.getObj1().flipX = (byte)((obj[1] >> 12) & 1);
-//            oam.getObj1().flipY = (byte)((obj[1] >> 13) & 1);
-//        }
-//        else
-//            oam.getObj1().select_param = (byte)((obj[1] >> 9) & 0x1F);
-//        oam.getObj1().size = (byte)((obj[1] >> 14) & 3);
-//
-//        // Obj 2
-//        oam.getObj2().tileOffset = (long)(obj[2] & 0x03FF);
-//        oam.getObj2().priority = (byte)((obj[2] >> 10) & 3);
-//        oam.getObj2().index_palette = (byte)((obj[2] >> 12) & 0xF);
-//
-//        Size size = Get_OAMSize(oam.getObj0().shape, oam.getObj1().size);
-//        oam.width = (int)size.Width;
-//        oam.height = (int)size.Height;
-//
-//        return oam;
-//    }
 
-//    public static NcerData.OAM OAMInfo(int v1, int v2, int v3)
-//    {
-//        return OAMInfo(new int[] { v1, v2, v3 });
-//    }
+    private static BufferedImage insertImage(BufferedImage image, BufferedImage toInsert, int x, int y)
+    {
+        System.out.println("\n(" + x + "," + y + ")");
+        x+= image.getWidth()/2;
+        y+= image.getHeight()/2;
+
+        toInsert= copyOfImage(toInsert);
+
+        try
+        {
+            ImageIO.write(image,"png",new File(System.getProperty("user.dir") + File.separator + "ORIG_" + image.hashCode() + ".png"));
+        } catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+
+//        if(toInsert.getHeight() == 80 || toInsert.getWidth() == 80)
+//            return image;
+
+//        if(y > 80 || y < 0 || x > 80 || x < 0)
+//            return image;
+
+        System.out.println("(" + x + "," + y + ")");
+
+
+        ArrayList<Integer> colorList= new ArrayList<>();
+        for(int row= 0; row < toInsert.getHeight(); row++)
+        {
+            for(int col= 0; col < toInsert.getWidth(); col++)
+            {
+                colorList.add(toInsert.getRGB(col,row));
+            }
+        }
+
+//        if(y + toInsert.getHeight() > image.getHeight() || x + toInsert.getWidth() > image.getWidth())
+//            return image;
+
+        int idx= 0;
+        for(int row= y; row - y < toInsert.getHeight(); row++)
+        {
+            for(int col= x; col - x < toInsert.getWidth(); col++)
+            {
+                try
+                {
+                    image.setRGB(col,row,colorList.get(idx++));
+                }
+                catch (ArrayIndexOutOfBoundsException e)
+                {
+                    System.err.println("\n(" + col + "," + row + ")");
+                    System.err.println("(Image Width: " + image.getWidth() + ", Image Height: " + image.getHeight() + ")");
+                    System.err.println("(Insert Width: " + toInsert.getWidth() + ", Insert Height: " + toInsert.getHeight() + ")");
+                    e.printStackTrace();
+//                    System.exit(1);
+                }
+            }
+        }
+
+        System.out.println("\n\n");
+
+        try
+        {
+            ImageIO.write(image,"png",new File(System.getProperty("user.dir") + File.separator + "MOD_" + image.hashCode() + ".png"));
+        } catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+        return image;
+    }
+
+    public static BufferedImage copyOfImage(BufferedImage image)
+    {
+        BufferedImage newImage= new BufferedImage(image.getWidth(),image.getHeight(),BufferedImage.TYPE_INT_RGB);
+        for(int row= 0; row < image.getHeight(); row++)
+        {
+            for(int col= 0; col < image.getWidth(); col++)
+            {
+                newImage.setRGB(col,row,image.getRGB(col,row));
+            }
+        }
+        return newImage;
+    }
+
 
     public static class BitsConverter
     {
@@ -1430,6 +1412,16 @@ public class ImageActions
         }
         
         public static byte[] Bits4ToByte(byte[] data)
+        {
+            byte[] b = new byte[data.length / 2];
+
+            for (int i = 0; i < data.length; i+= 2)
+                b[i / 2] = Bit4ToByte(data[i], data[i + 1]);
+
+            return b;
+        }
+
+        public static byte[] Bits4ToByte(Byte[] data)
         {
             byte[] b = new byte[data.length / 2];
 

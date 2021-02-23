@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 public class NcerReader
 {
-    public static NcerData readNcer(String file)
+    public static NcerData readFile(String file)
     {
         Buffer buffer= new Buffer(file);
 
@@ -40,7 +40,7 @@ public class NcerReader
             buffer.skipTo(headerSize + partitionDataOffset + 8);
             maxPartitionSize= buffer.readUInt32();
             firstPartitionDataOffset= buffer.readUInt32();
-            buffer.skipTo(buffer.getPosition() + firstPartitionDataOffset - 8);
+            buffer.skipBytes((int) (firstPartitionDataOffset - 8));
             for(int i= 0; i < numBanks; i++)
             {
                 long partitionOffset= buffer.readUInt32();
@@ -111,7 +111,7 @@ public class NcerReader
             }
         }
 
-//        buffer= new Buffer(file);
+        buffer= new Buffer(file);
         buffer.skipTo(headerSize + bankDataOffset + 8);
 
             //Read banks
@@ -148,6 +148,8 @@ public class NcerReader
                 NcerData.Obj0 obj0= getObj0(obj0Value);
                 NcerData.Obj1 obj1= getObj1(obj1Value,obj0.getRsFlag());
                 NcerData.Obj2 obj2= getObj2(obj2Value);
+
+                System.out.println("    (" + obj1.getXOffset() + "," + obj0.getYOffset() + ")\n");
 
 
                 Size size= ImageActions.getOAMSize(obj0.getShape(),obj1.getSize());
@@ -304,13 +306,13 @@ public class NcerReader
         }
 
         String[] names= nameList.toArray(new String[0]);
-        names= Arrays.copyOf(names,numBanks);
-
-        for(int i= 0; i < names.length; i++)
-        {
-            if(names[i].equals(""))
-                names[i]= "" + i;
-        }
+//        names= Arrays.copyOf(names,numBanks);
+//
+//        for(int i= 0; i < names.length; i++)
+//        {
+//            if(names[i].equals(""))
+//                names[i]= "" + i;
+//        }
 
 
         //UEXT
@@ -518,12 +520,13 @@ public class NcerReader
     
     private static NcerData.Obj0 getObj0(int value)
     {
+        System.out.println("Obj0: " + Integer.toHexString(value));
         return new NcerData.Obj0()
         {
             @Override
             public int getYOffset()
             {
-                return value & 0xff;
+                return (byte)(value & 0xff);
             }
 
             @Override
@@ -572,13 +575,13 @@ public class NcerReader
 
     private static NcerData.Obj1 getObj1(int value, boolean flag)
     {
+        System.out.println("Obj1: " + Integer.toHexString(value));
         return new NcerData.Obj1()
         {
             @Override
             public long getXOffset()
             {
-                long value2= value & 0x01ffL;
-                return value2 >= 0x100 ? value2 - 0x200 : value2;
+                return (value & 0x01ff) >= 0x100 ? (value & 0x01ff) - 0x200 : (value & 0x01ff);
             }
 
             @Override
@@ -615,6 +618,7 @@ public class NcerReader
 
     private static NcerData.Obj2 getObj2(int value)
     {
+        System.out.println("Obj2: " + Integer.toHexString(value));
         return new NcerData.Obj2()
         {
             @Override
@@ -643,13 +647,13 @@ public class NcerReader
 
         for (int i = 0; i < n-1; i++)
         {
-            int min_idx = i;
+            int minIdx = i;
             for (int j = i+1; j < n; j++)
-                if (arr[j].getObj2().getPriority() < arr[min_idx].getObj2().getPriority())
-                    min_idx = j;
+                if (arr[j].getObj2().getPriority() < arr[minIdx].getObj2().getPriority())
+                    minIdx = j;
 
-            NcerData.OAM temp = arr[min_idx];
-            arr[min_idx] = arr[i];
+            NcerData.OAM temp = arr[minIdx];
+            arr[minIdx] = arr[i];
             arr[i] = temp;
         }
 

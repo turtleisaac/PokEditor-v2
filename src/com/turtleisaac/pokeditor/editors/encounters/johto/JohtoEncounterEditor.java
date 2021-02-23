@@ -436,18 +436,18 @@ public class JohtoEncounterEditor
             for(int row= 0; row < area.length; row++)
             {
                 area[row][0]= fieldRateArr[idx] + "";
-                System.out.print(area[row][0] + ", ");
+//                System.out.print(area[row][0] + ", ");
                 area[row][1]= nameData[encounterData.getFieldMorning()[idx]];
-                System.out.print(area[row][1] + ", ");
+//                System.out.print(area[row][1] + ", ");
                 area[row][2]= nameData[encounterData.getFieldDay()[idx]];
-                System.out.print(area[row][2] + ", ");
+//                System.out.print(area[row][2] + ", ");
                 area[row][3]= nameData[encounterData.getFieldNight()[idx]];
-                System.out.print(area[row][3] + ", ");
+//                System.out.print(area[row][3] + ", ");
                 area[row][4]= "" + encounterData.getFieldLevels()[idx++];
-                System.out.println(area[row][4] + "\n");
+//                System.out.println(area[row][4] + "\n");
             }
             fieldEncounterTable.add(area);
-            System.out.println("\n");
+//            System.out.println("\n");
         }
 
         ArrayList<String[][]> waterEncounterTable= new ArrayList<>();
@@ -464,34 +464,34 @@ public class JohtoEncounterEditor
             for(int row= 0; row < area.length; row++)
             {
                 area[row][0]= waterRateArr[idx] + "";
-                System.out.print(area[row][0] + ", ");
+    //            System.out.print(area[row][0] + ", ");
                 area[row][1]= nameData[encounterData.getSurfs()[idx]];
-                System.out.print(area[row][1] + ", ");
+    //            System.out.print(area[row][1] + ", ");
                 area[row][2]= "" + encounterData.getSurfMins()[idx];
-                System.out.print(area[row][2] + ", ");
+    //            System.out.print(area[row][2] + ", ");
                 area[row][3]= "" + encounterData.getSurfMaxs()[idx];
-                System.out.print(area[row][3] + ", ");
+    //            System.out.print(area[row][3] + ", ");
                 area[row][4]= nameData[encounterData.getOlds()[idx]];
-                System.out.print(area[row][4] + ", ");
+    //            System.out.print(area[row][4] + ", ");
                 area[row][5]= "" + encounterData.getOldMins()[idx];
-                System.out.print(area[row][5] + ", ");
+    //            System.out.print(area[row][5] + ", ");
                 area[row][6]= "" + encounterData.getOldMaxs()[idx];
-                System.out.print(area[row][6] + ", ");
+    //            System.out.print(area[row][6] + ", ");
                 area[row][7]= nameData[encounterData.getGoods()[idx]];
-                System.out.print(area[row][7] + ", ");
+    //            System.out.print(area[row][7] + ", ");
                 area[row][8]= "" + encounterData.getGoodMins()[idx];
-                System.out.print(area[row][8] + ", ");
+    //            System.out.print(area[row][8] + ", ");
                 area[row][9]= "" + encounterData.getGoodMaxs()[idx];
-                System.out.print(area[row][9] + ", ");
+    //            System.out.print(area[row][9] + ", ");
                 area[row][10]= nameData[encounterData.getSupers()[idx]];
-                System.out.print(area[row][10] + ", ");
+    //            System.out.print(area[row][10] + ", ");
                 area[row][11]= "" + encounterData.getSuperMins()[idx];
-                System.out.print(area[row][11] + ", ");
+    //            System.out.print(area[row][11] + ", ");
                 area[row][12]= "" + encounterData.getSuperMaxs()[idx++];
-                System.out.println(area[row][12] + "\n");
+    //            System.out.println(area[row][12] + "\n");
             }
             waterEncounterTable.add(area);
-            System.out.println("\n");
+//            System.out.println("\n");
         }
 
         ArrayList<String[][]> smashEncounterTable= new ArrayList<>();
@@ -508,13 +508,13 @@ public class JohtoEncounterEditor
             for(int row= 0; row < area.length; row++)
             {
                 area[row][0]= smashRateArr[idx] + "";
-                System.out.print(area[row][0] + ", ");
+    //            System.out.print(area[row][0] + ", ");
                 area[row][1]= nameData[encounterData.getSmashes()[idx]];
-                System.out.print(area[row][1] + ", ");
+    //            System.out.print(area[row][1] + ", ");
                 area[row][2]= "" + encounterData.getSmashMins()[idx];
-                System.out.print(area[row][2] + ", ");
+    //            System.out.print(area[row][2] + ", ");
                 area[row][3]= "" + encounterData.getSmashMaxs()[idx++];
-                System.out.println(area[row][3] + "\n");
+    //            System.out.println(area[row][3] + "\n");
             }
             smashEncounterTable.add(area);
         }
@@ -547,7 +547,7 @@ public class JohtoEncounterEditor
             for(int row= 0; row < area.length; row++)
             {
                 area[row][0]= nameData[encounterData.getHoenn()[idx]];
-                area[row][1]= nameData[encounterData.getSinnoh()[idx]];
+                area[row][1]= nameData[encounterData.getSinnoh()[idx++]];
             }
             soundTable.add(area);
         }
@@ -721,9 +721,12 @@ public class JohtoEncounterEditor
     {
         String outputPath= dataPath + File.separator + outputDir;
 
-        if(!new File(outputPath).exists() && !new File(outputPath).mkdir())
+        if(!new File(outputPath).exists())
         {
-            throw new RuntimeException("Could not create output directory. Check write permissions");
+            if(!new File(outputPath).mkdir())
+            {
+                throw new RuntimeException("Could not create output directory. Check write permissions");
+            }
         }
 
         ArrayList<int[]> rateList= new ArrayList<>();
@@ -759,13 +762,13 @@ public class JohtoEncounterEditor
                 }
             }
             fieldMorningList.add(morningArr);
-            System.out.println(Arrays.toString(morningArr));
+//            System.out.println(Arrays.toString(morningArr));
             fieldDayList.add(dayArr);
-            System.out.println(Arrays.toString(dayArr));
+//            System.out.println(Arrays.toString(dayArr));
             fieldNightList.add(nightArr);
-            System.out.println(Arrays.toString(nightArr));
+//            System.out.println(Arrays.toString(nightArr));
             fieldLevelList.add(levelArr);
-            System.out.println(Arrays.toString(levelArr) + "\n");
+//            System.out.println(Arrays.toString(levelArr) + "\n");
         }
 
         ArrayList<int[]> surfLevelMins= new ArrayList<>();
@@ -1005,7 +1008,6 @@ public class JohtoEncounterEditor
                 writer.writeByte((byte)superMaxs[x]);
                 writer.writeShort((short)superArr[x]);
             }
-            //writer.writeShorts(reverseBytes(outbreaks));
             writer.writeShorts(reverseBytes(intToShort(outbreaks)));
             writer.close();
         }
@@ -1034,7 +1036,7 @@ public class JohtoEncounterEditor
         throw new RuntimeException("Invalid type entered");
     }
 
-    private static int getPokemon(String pokemon)
+    public static int getPokemon(String pokemon)
     {
         for(int i= 0; i < nameData.length; i++)
         {
@@ -1043,7 +1045,18 @@ public class JohtoEncounterEditor
                 return i;
             }
         }
-        throw new RuntimeException("Invalid pokemon entered");
+
+        int species;
+        try
+        {
+            species= Integer.parseInt(pokemon);
+        }
+        catch (NumberFormatException ignored)
+        {
+            throw new RuntimeException("Invalid pokemon entered: " + pokemon);
+        }
+
+        return species;
     }
 
     private static int getArea(String area)
@@ -1085,7 +1098,7 @@ public class JohtoEncounterEditor
         for(int i= 0; i < shorts.length; i++) {
             short thisShort= shorts[i];
             reverse[i]= Short.reverseBytes(thisShort);
-            System.out.println("Original: " + shorts[i] + ", Reversed: " + reverse[i]);
+//            System.out.println("Original: " + shorts[i] + ", Reversed: " + reverse[i]);
         }
         return reverse;
     }

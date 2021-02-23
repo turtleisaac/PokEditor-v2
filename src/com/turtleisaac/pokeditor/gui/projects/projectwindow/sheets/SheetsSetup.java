@@ -48,6 +48,7 @@ public class SheetsSetup extends JFrame {
         setPreferredSize(minimum);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         pack();
+        setVisible(true);
         toFront();
 
         switch(game)
@@ -201,9 +202,6 @@ public class SheetsSetup extends JFrame {
                 }
             }
         });
-
-        setVisible(true);
-        toFront();
     }
 
     private void connectButtonActionPerformed(ActionEvent e)

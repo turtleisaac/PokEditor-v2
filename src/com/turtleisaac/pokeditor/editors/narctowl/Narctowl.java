@@ -93,6 +93,13 @@ public class Narctowl {
         }
     }
 
+    public static int getNumFiles(String narc)
+    {
+        Buffer buffer= new Buffer(narc);
+        buffer.skipBytes(24);
+        return (int) buffer.readUInt32();
+    }
+
     public void unpack(String narc, String targetDirectory) throws IOException
     {
         if(manualAccess)
@@ -107,7 +114,7 @@ public class Narctowl {
         String fileName = file.getName();
         String noExtension= targetDirectory.substring(targetDirectory.lastIndexOf(File.separator) + 1);
 
-        System.out.println("No Extension: " + noExtension);
+//        System.out.println("No Extension: " + noExtension);
 
 
         if (!new File(extractPath).exists()) //checks if "extracted" directory in user.dir does not exist
@@ -199,12 +206,19 @@ public class Narctowl {
                 }
             });
         }
+
         //File Name Table Block (FNTB)
         String fntbMagic = buffer.readString(4); //sets String "fntbMagic" to the BTNF identifier
         int fntbSize = buffer.readInt(); //obtains the size of the fntb (number of bytes)
         int fntbStartOffset = buffer.readInt(); //the next four bytes, which contain the starting offset of the fntb
         int fntbFirstFilePos = buffer.readShort(); //the next two bytes, which contain the first file position
         int fntbNDir = buffer.readShort(); //the next two bytes, which contain the number of directories
+
+        if(fntbSize > 16) //if the fntb is more than just the header
+        {
+            System.out.println("Skipping to end of FNTB");
+            buffer.skipBytes(fntbSize-16); //jump to end of fntb
+        }
 
 
         //File Images (FIMG)
@@ -316,7 +330,7 @@ public class Narctowl {
             }
         }
         buffer.close(); //closes Buffer object buffer's internal BufferedInputStream and flushes data
-        System.out.println("Process completed. Output directory can be found at: " + extractPath);
+        System.out.println("Narc unpacking completed. Output directory can be found at: " + extractPath);
     }
 
 
@@ -351,7 +365,6 @@ public class Narctowl {
         ArrayList<TableSubFile> fimgTable = new ArrayList<>(); //creates new ArrayList of tableSubFile instances
 
         File file; //creates a File object to be defined later in for-loop
-        System.out.println("Directory path: " + directory);
         List<File> fileList;
         try
         {
@@ -454,7 +467,7 @@ public class Narctowl {
         narcWriter.write(fimgBuf.reader().getBuffer()); //writes the entire fimg buffer
         narcWriter.close(); //closes writer and flushes data
 
-//        System.out.println("Process completed. Output file can be found at: " + path + "temp" + File.separator + name + ".narc");
+        System.out.println("Narc packing completed. Output file can be found at: " + outputNarcPath + name);
 
     }
 

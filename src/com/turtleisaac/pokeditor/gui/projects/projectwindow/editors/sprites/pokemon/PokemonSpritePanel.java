@@ -11,12 +11,7 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.*;
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
@@ -27,6 +22,7 @@ import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.images.ImageDecrypter;
+import com.turtleisaac.pokeditor.utilities.images.ImageEncrypter;
 import com.turtleisaac.pokeditor.utilities.images.PokemonSprites;
 import net.miginfocom.swing.*;
 
@@ -37,12 +33,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * @author turtleisaac
  */
 public class PokemonSpritePanel extends JPanel
 {
-    ArrayList<File> toDelete;
+    public ArrayList<File> toDelete;
 
     private PokemonSprites sprites;
     private PokemonSprites backupSprites;
@@ -53,7 +51,6 @@ public class PokemonSpritePanel extends JPanel
 
     public PokemonSpritePanel()
     {
-
         initComponents();
         toDelete= new ArrayList<>();
         normalMaleFrontButton.setTransferHandler(new TransferHandler("icon"));
@@ -207,8 +204,6 @@ public class PokemonSpritePanel extends JPanel
     {
         int frameNum= frameToggleButton.isSelected() ? 1 : 0;
 
-        JFrame colorFrame= new JFrame();
-        colorFrame.setLocationRelativeTo(this);
         JColorChooser colorChooser= new JColorChooser(shiny ? shinyPalette[num] : palette[num]);
 
         PreviewPanel previewPanel= new PreviewPanel(colorChooser,
@@ -217,6 +212,7 @@ public class PokemonSpritePanel extends JPanel
                 shiny ? sprites.getShinyFemaleFront()[frameNum] : sprites.getFemaleFront()[frameNum],
                 shiny ? sprites.getShinyFemaleBack()[frameNum] : sprites.getFemaleBack()[frameNum]);
 
+        AtomicReference<Color> atomicColor = new AtomicReference<>();
         ColorSelectionModel model = colorChooser.getSelectionModel();
         model.addChangeListener(evt ->
         {
@@ -247,155 +243,226 @@ public class PokemonSpritePanel extends JPanel
             previewPanel.currentColor= newColor;
 
             colorChooser.setColor(newColor);
+            atomicColor.set(newColor);
         });
+
+        Color finalColor= colorChooser.getColor();
 
         colorChooser.setPreviewPanel(previewPanel);
         AbstractColorChooserPanel[] chooserPanels= colorChooser.getChooserPanels();
         colorChooser.setChooserPanels(new AbstractColorChooserPanel[] {chooserPanels[3], chooserPanels[0]});
+        colorChooser.setPreferredSize(new Dimension(660,400));
 
-        colorFrame.setContentPane(colorChooser);
-        colorFrame.setPreferredSize(new Dimension(660,400));
-        colorFrame.setTitle("Species " + speciesChooserComboBox.getValue() + " - " + (shiny ? "Shiny" : "Normal") + " Palette - Color " + num);
-        colorFrame.pack();
-        colorFrame.setVisible(true);
-        colorFrame.toFront();
 
-//        colorFrame.addWindowListener(new WindowAdapter()
-//        {
-//            @Override
-//            public void windowClosing(WindowEvent e)
-//            {
-//                if(JOptionPane.showConfirmDialog(colorFrame,"Are you sure?","PokEditor",JOptionPane.YES_NO_OPTION) == 0)
-//                {
-//                    if(shiny)
-//                    {
-//                        shinyMaleFrontButton.setIcon(new ImageIcon(previewPanel.maleImage));
-//                        shinyMaleBackButton.setIcon(new ImageIcon(previewPanel.maleImage));
-//
-//                        switch (num)
-//                        {
-//                            case 0:
-//                                shinyPaletteButton0.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 1:
-//                                shinyPaletteButton1.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 2:
-//                                shinyPaletteButton2.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 3:
-//                                shinyPaletteButton3.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 4:
-//                                shinyPaletteButton4.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 5:
-//                                shinyPaletteButton5.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 6:
-//                                shinyPaletteButton6.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 7:
-//                                shinyPaletteButton7.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 8:
-//                                shinyPaletteButton8.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 9:
-//                                shinyPaletteButton9.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 10:
-//                                shinyPaletteButton10.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 11:
-//                                shinyPaletteButton11.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 12:
-//                                shinyPaletteButton12.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 13:
-//                                shinyPaletteButton13.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 14:
-//                                shinyPaletteButton14.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 15:
-//                                shinyPaletteButton15.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                        }
-//
-//                        shinyPalette[num]= newColor;
-//                    }
-//                    else
-//                    {
-//                        normalMaleFrontButton.setIcon(new ImageIcon(previewPanel.maleImage));
-//                        normalMaleBackButton.setIcon(new ImageIcon(previewPanel.maleImage));
-//
-//                        switch (num)
-//                        {
-//                            case 0:
-//                                normalPaletteButton0.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 1:
-//                                normalPaletteButton1.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 2:
-//                                normalPaletteButton2.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 3:
-//                                normalPaletteButton3.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 4:
-//                                normalPaletteButton4.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 5:
-//                                normalPaletteButton5.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 6:
-//                                normalPaletteButton6.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 7:
-//                                normalPaletteButton7.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 8:
-//                                normalPaletteButton8.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 9:
-//                                normalPaletteButton9.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 10:
-//                                normalPaletteButton10.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 11:
-//                                normalPaletteButton11.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 12:
-//                                normalPaletteButton12.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 13:
-//                                normalPaletteButton13.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 14:
-//                                normalPaletteButton14.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                            case 15:
-//                                normalPaletteButton15.setIcon(new ImageIcon(getPaletteImage(newColor)));
-//                                break;
-//                        }
-//
-//                        palette[num]= newColor;
-//                    }
-//                }
-//            }
-//        });
+        JDialog dialog= JColorChooser.createDialog(this, "Species " + speciesChooserComboBox.getValue() + " - " + (shiny ? "Shiny" : "Normal") + " Palette - Color " + num, true, colorChooser,
+                e -> //OK
+                {
+                    if(shiny)
+                    {
+                        switch (num)
+                        {
+                            case 0:
+                                shinyPaletteButton0.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 1:
+                                shinyPaletteButton1.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 2:
+                                shinyPaletteButton2.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 3:
+                                shinyPaletteButton3.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 4:
+                                shinyPaletteButton4.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 5:
+                                shinyPaletteButton5.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 6:
+                                shinyPaletteButton6.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 7:
+                                shinyPaletteButton7.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 8:
+                                shinyPaletteButton8.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 9:
+                                shinyPaletteButton9.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 10:
+                                shinyPaletteButton10.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 11:
+                                shinyPaletteButton11.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 12:
+                                shinyPaletteButton12.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 13:
+                                shinyPaletteButton13.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 14:
+                                shinyPaletteButton14.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 15:
+                                shinyPaletteButton15.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                        }
 
+                        shinyPalette[num]= finalColor;
+                    }
+                    else
+                    {
+                        switch (num)
+                        {
+                            case 0:
+                                normalPaletteButton0.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 1:
+                                normalPaletteButton1.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 2:
+                                normalPaletteButton2.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 3:
+                                normalPaletteButton3.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 4:
+                                normalPaletteButton4.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 5:
+                                normalPaletteButton5.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 6:
+                                normalPaletteButton6.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 7:
+                                normalPaletteButton7.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 8:
+                                normalPaletteButton8.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 9:
+                                normalPaletteButton9.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 10:
+                                normalPaletteButton10.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 11:
+                                normalPaletteButton11.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 12:
+                                normalPaletteButton12.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 13:
+                                normalPaletteButton13.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 14:
+                                normalPaletteButton14.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                            case 15:
+                                normalPaletteButton15.setIcon(new ImageIcon(getPaletteImage(finalColor)));
+                                break;
+                        }
+
+                        palette[num]= finalColor;
+                    }
+                },
+
+                e -> //Cancel
+                {
+
+                });
+
+        dialog.setVisible(true);
     }
 
-    private void saveChangesButtonActionPerformed(ActionEvent e) {
-//        normalMaleFrontBackup = copyOfImage((BufferedImage) normalMaleFront);
-//        normalMaleBackBackup = copyOfImage((BufferedImage) normalMaleBack);
-//        shinyMaleFrontBackup = copyOfImage((BufferedImage) shinyMaleFront);
-//        shinyMaleBackBackup = copyOfImage((BufferedImage) shinyMaleBack);
+    private void saveChangesButtonActionPerformed(ActionEvent e)
+    {
+        BufferedImage[] femaleBack= Arrays.copyOf(sprites.getFemaleBack(),2);
+        BufferedImage[] shinyFemaleBack= Arrays.copyOf(sprites.getShinyFemaleBack(),2);
+        BufferedImage[] femaleFront= Arrays.copyOf(sprites.getFemaleFront(),2);
+        BufferedImage[] shinyFemaleFront= Arrays.copyOf(sprites.getShinyFemaleFront(),2);
+
+        BufferedImage[] maleBack= Arrays.copyOf(sprites.getMaleBack(),2);
+        BufferedImage[] shinyMaleBack= Arrays.copyOf(sprites.getShinyMaleBack(),2);
+        BufferedImage[] maleFront= Arrays.copyOf(sprites.getMaleFront(),2);
+        BufferedImage[] shinyMaleFront= Arrays.copyOf(sprites.getShinyMaleFront(),2);
+
+        palette= Arrays.copyOf(sprites.getPalette(),16);
+        shinyPalette= Arrays.copyOf(sprites.getShinyPalette(),16);
+
+        backupSprites= new PokemonSprites()
+        {
+            @Override
+            public BufferedImage[] getFemaleBack()
+            {
+                return femaleBack;
+            }
+
+            @Override
+            public BufferedImage[] getShinyFemaleBack()
+            {
+                return shinyFemaleBack;
+            }
+
+            @Override
+            public BufferedImage[] getMaleBack()
+            {
+                return maleBack;
+            }
+
+            @Override
+            public BufferedImage[] getShinyMaleBack()
+            {
+                return shinyMaleBack;
+            }
+
+            @Override
+            public BufferedImage[] getFemaleFront()
+            {
+                return femaleFront;
+            }
+
+            @Override
+            public BufferedImage[] getShinyFemaleFront()
+            {
+                return shinyFemaleFront;
+            }
+
+            @Override
+            public BufferedImage[] getMaleFront()
+            {
+                return maleFront;
+            }
+
+            @Override
+            public BufferedImage[] getShinyMaleFront()
+            {
+                return shinyMaleFront;
+            }
+
+            @Override
+            public Color[] getPalette()
+            {
+                return palette;
+            }
+
+            @Override
+            public Color[] getShinyPalette()
+            {
+                return shinyPalette;
+            }
+        };
+
+        byte[] femaleBackNcgr= ImageEncrypter.encryptPrimary(femaleBack);
+        byte[] femaleFrontNcgr= ImageEncrypter.encryptPrimary(femaleFront);
+        byte[] maleBackNcgr= ImageEncrypter.encryptPrimary(maleBack);
+        byte[] maleFrontNcgr= ImageEncrypter.encryptPrimary(maleFront);
+        byte[] paletteNclr= ImageEncrypter.encryptPalette(palette);
+        byte[] shinyPaletteNclr= ImageEncrypter.encryptPalette(shinyPalette);
     }
 
     private void revertChangesButtonActionPerformed(ActionEvent e)
@@ -415,7 +482,7 @@ public class PokemonSpritePanel extends JPanel
         palette= Arrays.copyOf(backupSprites.getPalette(),16);
         shinyPalette= Arrays.copyOf(backupSprites.getShinyPalette(),16);
 
-        backupSprites= new PokemonSprites()
+        sprites= new PokemonSprites()
         {
             @Override
             public BufferedImage[] getFemaleBack()
@@ -560,13 +627,13 @@ public class PokemonSpritePanel extends JPanel
     private void speciesChooserComboBoxActionPerformed(ActionEvent e)
     {
         frameToggleButton.setSelected(false);
-        String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
+        String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + File.separator + "data";
         int selected= (int)(speciesChooserComboBox.getValue())*6;
 
         boolean primary= false;
 
-        File narcPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? "/poketool/pokegra/pl_pokegra.narc" : "/poketool/pokegra/pokegra.narc" : "/a/0/0/4"));
-        File pokegraPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? "/poketool/pokegra/pl_pokegra" : "/poketool/pokegra/pokegra" : "/a/0/0/4_"));
+        File narcPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra.narc" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra.narc" : "/a" + File.separator + "0" + File.separator + "0" + File.separator + "4"));
+        File pokegraPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra" : "/a" + File.separator + "0" + File.separator + "0" + File.separator + "4_"));
 
         primary= Project.isPrimary(project);
 
@@ -577,13 +644,13 @@ public class PokemonSpritePanel extends JPanel
                 Narctowl narctowl = new Narctowl(true);
                 narctowl.unpack(narcPath.getAbsolutePath(), pokegraPath.getAbsolutePath());
             }
-            toDelete.add(pokegraPath);
             pokegraPath.deleteOnExit();
         }
         catch (IOException ignored)
         {
         }
 
+        toDelete.add(pokegraPath);
         sprites= ImageDecrypter.getSprites(pokegraPath.getAbsolutePath(),selected,primary);
 
         BufferedImage[] femaleBack= Arrays.copyOf(sprites.getFemaleBack(),2);
@@ -815,7 +882,7 @@ public class PokemonSpritePanel extends JPanel
 
         //---- speciesChooserComboBox ----
         speciesChooserComboBox.setAutoscrolls(true);
-        speciesChooserComboBox.setModel(new SpinnerNumberModel(0, 0, 493, 1));
+        speciesChooserComboBox.setModel(new SpinnerNumberModel(0, 0, null, 1));
         speciesChooserComboBox.addChangeListener(e -> speciesChooserComboBoxStateChanged(e));
         add(speciesChooserComboBox, "cell 0 0");
 
@@ -1182,7 +1249,7 @@ public class PokemonSpritePanel extends JPanel
         speciesChooserComboBox.setValue(1);
     }
 
-    public Image getPaletteImage(Color color)
+    public BufferedImage getPaletteImage(Color color)
     {
         BufferedImage image= new BufferedImage(40,16,BufferedImage.TYPE_INT_RGB);
         for(int row= 0; row < image.getHeight(); row++)
@@ -1284,6 +1351,13 @@ public class PokemonSpritePanel extends JPanel
             g.drawImage(femaleBack, getWidth() / 2 + 100,20,this);
         }
     }
+
+
+
+
+
+
+
 
 //    private static void testIndexedColor() throws IOException {
 //        File in = new File("test.png");

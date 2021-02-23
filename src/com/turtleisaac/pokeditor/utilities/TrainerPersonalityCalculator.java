@@ -40,8 +40,8 @@ public class TrainerPersonalityCalculator
         for(;trainerClassIdx > 0; trainerClassIdx--)
         {
             rnd= random();
-            System.out.println("Seed: 0x" + Long.toHexString(rnd));
-            System.out.println("    Seed: " + rnd);
+//            System.out.println("Seed: 0x" + Long.toHexString(rnd));
+//            System.out.println("    Seed: " + rnd);
         }
         rnd= (rnd >> 16) & 0xffff;
         rnd*= 256;
@@ -50,7 +50,7 @@ public class TrainerPersonalityCalculator
         String result= Long.toHexString((int)rnd);
         System.out.println("PID: 0x00" + (result.length() == 6 ? result : "0" + result));
         System.out.println("PID: " + rnd);
-        System.out.println("Nature: " + natures[(int)(rnd%100)%25]);
+        System.out.println("Nature: " + natures[(int)(rnd%100)%25] + "\n");
 
         return (int)rnd;
     }

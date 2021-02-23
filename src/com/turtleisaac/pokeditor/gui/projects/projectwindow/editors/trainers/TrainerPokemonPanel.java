@@ -362,13 +362,14 @@ public class TrainerPokemonPanel extends JPanel
             for(int i= 255; i != 0; i--)
             {
                 int pid= TrainerPersonalityCalculator.generatePid(parent.getTrainerFileIndex(),parent.getSelectedClassIndex(),parent.getSelectedClassGender(),speciesComboBox.getSelectedIndex(),level,i);
-                area.append("\nIVs: " + i*31/255 + ", Nature: " + natures[(pid%100)%25]);
+                area.append("\nIVs: " + i*31/255 + " (" + i + "), Nature: " + natures[(pid%100)%25]);
             }
             area.setEditable(false);
             scrollPane.setViewportView(area);
             frame.setContentPane(scrollPane);
             frame.pack();
             frame.setVisible(true);
+            frame.toFront();
         }
 
     }

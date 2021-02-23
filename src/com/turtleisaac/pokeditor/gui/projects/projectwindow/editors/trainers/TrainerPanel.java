@@ -6,6 +6,7 @@ package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,8 @@ import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
+import com.turtleisaac.pokeditor.utilities.TableLocator;
+import com.turtleisaac.pokeditor.utilities.TablePointer;
 import com.turtleisaac.pokeditor.utilities.images.ImageBase;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
@@ -49,6 +52,12 @@ public class TrainerPanel extends JPanel
     private static String[] trainerClassData;
     private static int[] formNumberData;
 
+    private static TableLocator tableLocator;
+    private byte[] trainerClassGenderTable;
+
+    private final Animator animator;
+    public ArrayList<File> toDelete= new ArrayList<>();
+
     public TrainerPanel()
     {
         initComponents();
@@ -64,6 +73,9 @@ public class TrainerPanel extends JPanel
         ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
         ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
 
+        tableLocator= null;
+
+        animator= new Animator(trainerClassImageButton);
     }
 
     public TrainerPanel(GoogleSheetsAPI api, Project project)
@@ -81,6 +93,7 @@ public class TrainerPanel extends JPanel
         ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
         ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
 
+        tableLocator= null;
 
         try
         {
@@ -92,6 +105,7 @@ public class TrainerPanel extends JPanel
             exception.printStackTrace();
         }
 
+        animator= new Animator(trainerClassImageButton);
     }
 
     public void setTrainer(TrainerDataGen4 trainer)
@@ -159,12 +173,14 @@ public class TrainerPanel extends JPanel
     {
         saved= false;
         int baseOffset= trainerClassSelectorComboBox.getSelectedIndex()*5;
-        String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
+        String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + File.separator + "data";
         try
         {
-            String narcPath= Project.isDPPT(project) ? "/poketool/trgra/trfgra.narc" : "/a/0/5/8";
-            String folderPath= Project.isDPPT(project) ? "/poketool/trgra/trfgra" : "/a/0/5/8_";
+            String narcPath= Project.isDPPT(project) ? File.separator + "poketool" + File.separator + "trgra" + File.separator + "trfgra.narc" : File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "8";
+            String folderPath= Project.isDPPT(project) ? File.separator + "poketool" + File.separator + "trgra" + File.separator + "trfgra" : File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "8_";
             new File(dataPath + folderPath).deleteOnExit();
+            toDelete.add(new File(dataPath + folderPath));
+
 
             if(!new File(dataPath + folderPath).exists())
             {
@@ -172,11 +188,22 @@ public class TrainerPanel extends JPanel
                 narctowl.unpack(dataPath + narcPath,dataPath + folderPath);
             }
 
-            ImageBase imageBase= new ImageBase(project,folderPath + File.separator + baseOffset + ".ncgr", folderPath + File.separator + (baseOffset + 1) + ".nclr");
-            trainerClassImageButton.setIcon(new ImageIcon(imageBase.getImageTransparent(trainerClassImageButton.getBackground(),64,64)));
+            ImageBase imageBase= new ImageBase(project,folderPath + File.separator + baseOffset + ".ncgr", folderPath + File.separator + (baseOffset + 1) + ".nclr", folderPath + File.separator + (baseOffset + 2) + ".ncer");
+
+            animator.reset(imageBase.getImages(trainerClassImageButton.getBackground()));
+
         } catch (IOException exception)
         {
             exception.printStackTrace();
+        }
+
+        System.out.println(trainerClassSelectorComboBox.getSelectedItem());
+        try
+        {
+            getSelectedClassGender();
+        }
+        catch (NullPointerException ignored)
+        {
         }
 
     }
@@ -421,7 +448,7 @@ public class TrainerPanel extends JPanel
         try
         {
             setApi(api);
-        } catch (IOException exception)
+        } catch (IOException | NullPointerException exception)
         {
             exception.printStackTrace();
         }
@@ -758,7 +785,9 @@ public class TrainerPanel extends JPanel
 
     public boolean getSelectedClassGender()
     {
-        return true;
+        int val= trainerClassGenderTable[trainerClassSelectorComboBox.getSelectedIndex()];
+        System.out.println("Trainer Class Gender Value: " + val);
+        return val == 0 || val == 2;
     }
 
     public String[] getSpeciesList()
@@ -783,6 +812,7 @@ public class TrainerPanel extends JPanel
         System.out.println(projectPath);
         this.project= project;
         this.projectPath= project.getProjectPath().getAbsolutePath();
+        tableLocator= new TableLocator(project);
 
         String resourcePath= projectPath + File.separator + "Program Files" + File.separator;
         String entryPath = resourcePath + "EntryData.txt";
@@ -882,6 +912,23 @@ public class TrainerPanel extends JPanel
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
 //        newPanel.enableParentData();
 
+        TablePointer classGenderPointer;
+        switch (project.getBaseRom())
+        {
+            case Platinum:
+                classGenderPointer= TablePointer.ClassGender_CPUE;
+                break;
+//
+//            case HeartGold:
+//                classGenderPointer= TablePointer.
+//                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + project.getBaseRom());
+        }
+
+        trainerClassGenderTable= tableLocator.obtainTableArr(classGenderPointer,trainerClassData.length,1);
+        System.out.println(Arrays.toString(trainerClassGenderTable));
+
         trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), newPanel);
     }
 
@@ -892,30 +939,33 @@ public class TrainerPanel extends JPanel
 
     public void setApi(GoogleSheetsAPI api) throws IOException
     {
-        this.api= api;
-
-        trainerDataTable= api.getSpecifiedSheetArr("Trainer Data");
-        trainerPokemonTable= api.getSpecifiedSheetArr("Trainer Pokemon");
-        trainerSelectionComboBox.removeAllItems();
-
-        int idx= 0;
-        boolean first= true;
-        trainerSelectionComboBox.removeAllItems();
-        for(Object[] row : trainerDataTable)
+        if(api != null)
         {
-            if(!first)
-                trainerSelectionComboBox.addItem(row[1] + " (" + idx++ + ")");
-            else
-                first= false;
-        }
+            this.api= api;
 
-        try
-        {
-            trainerEditor= new TrainerEditorGen4(projectPath, project.getBaseRom());
-        }
-        catch (IOException exception)
-        {
-            exception.printStackTrace();
+            trainerDataTable= api.getSpecifiedSheetArr("Trainer Data");
+            trainerPokemonTable= api.getSpecifiedSheetArr("Trainer Pokemon");
+            trainerSelectionComboBox.removeAllItems();
+
+            int idx= 0;
+            boolean first= true;
+            trainerSelectionComboBox.removeAllItems();
+            for(Object[] row : trainerDataTable)
+            {
+                if(!first)
+                    trainerSelectionComboBox.addItem(row[1] + " (" + idx++ + ")");
+                else
+                    first= false;
+            }
+
+            try
+            {
+                trainerEditor= new TrainerEditorGen4(projectPath, project.getBaseRom());
+            }
+            catch (IOException exception)
+            {
+                exception.printStackTrace();
+            }
         }
     }
 
@@ -967,5 +1017,55 @@ public class TrainerPanel extends JPanel
                 return true;
         }
         return false;
+    }
+
+
+
+
+    static class Animator implements ActionListener
+    {
+        final Timer timer;
+        final JButton button;
+        BufferedImage[] trainerFrames;
+        int index;
+
+        public Animator(JButton button)
+        {
+            this.button= button;
+            timer= new Timer(190,this);
+        }
+
+        public void reset(BufferedImage[] trainerFrames)
+        {
+            if(this.trainerFrames == null)
+            {
+                timer.start();
+            }
+
+            BufferedImage[] arr= new BufferedImage[(int) (trainerFrames.length*2)];
+
+//            if(trainerFrames.length <= 2)
+//            {
+                Arrays.fill(arr,trainerFrames[trainerFrames.length-1]);
+                System.arraycopy(trainerFrames,0,arr,0,trainerFrames.length);
+//            }
+//            else
+//            {
+//                Arrays.fill(arr,trainerFrames[trainerFrames.length-1]);
+//                System.arraycopy(Arrays.copyOf(trainerFrames,trainerFrames.length-1),0,arr,0,trainerFrames.length-1);
+//            }
+            this.trainerFrames= arr;
+
+
+            index= 0;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            BufferedImage frame= trainerFrames[index++ % trainerFrames.length];
+
+            button.setIcon(new ImageIcon(frame));
+        }
     }
 }

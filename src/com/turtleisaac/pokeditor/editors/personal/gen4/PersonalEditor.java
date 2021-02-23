@@ -36,8 +36,7 @@ public class PersonalEditor
         this.baseRom= baseRom;
         this.projectPath= projectPath;
         dataPath= projectPath;
-        resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
-        resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
+        resourcePath= new File(projectPath).getParentFile().getParent() + File.separator + "Program Files" + File.separator;
         defaultsPath= resourcePath + "Defaults" + File.separator;
 
         String itemPath= resourcePath;

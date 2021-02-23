@@ -17,7 +17,7 @@ public class Buffer {
 
 
     public Buffer(String file) {
-        this.file= file.replaceAll("/",File.separator);
+        this.file= file;
         this.endOfFile = false;
         try {
             in = new BufferedInputStream(new FileInputStream(file));
@@ -105,7 +105,7 @@ public class Buffer {
 
         int ret = readByte() | (readByte() << 8);
 
-        return (short)ret;
+        return (short) (ret);
     }
 
     public short[] readShorts(int size) {
@@ -115,6 +115,15 @@ public class Buffer {
         }
         return ret;
     }
+
+    public short[] readUnsignedShorts(int size) {
+        short[] ret= new short[size];
+        for(int i= 0; i < size; i++){
+            ret[i]= readShort();
+        }
+        return ret;
+    }
+
 
     public String readString(int size) {
         require(size);

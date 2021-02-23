@@ -30,10 +30,10 @@ public class TrainerEditorGen4
         dataPath= projectPath;
         resourcePath= projectPath;
         System.out.println(projectPath);
-        if(projectPath.endsWith("/data"))
+        if(projectPath.endsWith(File.separator + "data"))
         {
-            resourcePath= projectPath.substring(0,projectPath.lastIndexOf("/"));
-            resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf("/"));
+            resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
+            resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator));
         }
         resourcePath+= File.separator + "Program Files" + File.separator;
         System.out.println(resourcePath);
@@ -125,7 +125,7 @@ public class TrainerEditorGen4
         reader.close();
     }
 
-    public TrainerReturnGen4 trainersToCsv(String trainerDataDir, String trainerPokemonDir)
+    public TrainerReturnGen4 trainersToSheets(String trainerDataDir, String trainerPokemonDir)
     {
         dataPath+= trainerDataDir;
 
@@ -799,15 +799,36 @@ public class TrainerEditorGen4
     }
 
 
-    public void csvToTrainers(Object[][] trainerCsv, Object[][] pokemonCsv, String outputDir) throws IOException
+    public void sheetsToTrainers(Object[][] trainerCsv, Object[][] pokemonCsv, String outputDir) throws IOException
     {
         String outputPath= dataPath + File.separator + outputDir;
 
         trainerCsv= ArrayModifier.trim(trainerCsv,1,0);
         pokemonCsv= ArrayModifier.trim(pokemonCsv,1,2);
 
-        new File(outputPath + File.separator + "trdata").mkdir();
-        new File(outputPath + File.separator + "trpoke").mkdir();
+        String dataName;
+        String pokemonName;
+
+        switch (baseRom)
+        {
+            case HeartGold:
+            case SoulSilver:
+                dataName= "5_";
+                pokemonName= "6_";
+                break;
+
+            case Platinum:
+                dataName= "trdata";
+                pokemonName= "trpoke";
+                break;
+
+            default:
+                throw new RuntimeException("Game not supported yet");
+        }
+
+
+        new File(outputPath + File.separator + dataName).mkdir();
+        new File(outputPath + File.separator + pokemonName).mkdir();
 
         ArrayList<TrainerDataGen4> trainerData= new ArrayList<>();
         ArrayList<ArrayList<TrainerPokemonData>> teamData= new ArrayList<>();
@@ -824,7 +845,7 @@ public class TrainerEditorGen4
             TrainerDataGen4 trainer= trainerData.get(i);
             ArrayList<TrainerPokemonData> team= teamData.get(i);
 
-            writer= new BinaryWriter(outputPath + "/trdata/" + i + ".bin");
+            writer= new BinaryWriter(outputPath + File.separator + dataName + File.separator + i + ".bin");
 
             writer.writeBytes(trainer.getFlag(),trainer.getTrainerClass(),trainer.getBattleType(),trainer.getNumPokemon());
             writer.writeShort((short) trainer.getItem1());
@@ -834,7 +855,7 @@ public class TrainerEditorGen4
             writer.writeInt((int) trainer.getAI());
             writer.writeBytes(i == 0 ? 0 : trainer.getBattleType2(),trainer.getUnknown1(),trainer.getUnknown2(),trainer.getUnknown3());
 
-            writer= new BinaryWriter(outputPath + "/trpoke/" + i + ".bin");
+            writer= new BinaryWriter(outputPath + File.separator + pokemonName + File.separator + i + ".bin");
 
             for(int x= 0; x < team.size(); x++)
             {
@@ -865,7 +886,7 @@ public class TrainerEditorGen4
                 writer.writeByteNumTimes(0,8);
             }
 
-            if(new File(outputPath + "/trpoke/" + i + ".bin").length() % 4 != 0)
+            if(new File(outputPath + File.separator + pokemonName + File.separator + i + ".bin").length() % 4 != 0)
                 writer.writeByteNumTimes(0,2);
 
             writer.close();
@@ -1124,13 +1145,30 @@ public class TrainerEditorGen4
         }
     }
 
-    private static int getSpecies(String species) {
-        for (int i = 0; i < nameData.length; i++) {
-            if (species.equals(nameData[i])) {
+    private static int getSpecies(String pokemon)
+    {
+        for(int i= 0; i < nameData.length; i++)
+        {
+            if(pokemon.equals(nameData[i]))
+            {
                 return i;
             }
         }
-        throw new RuntimeException("Invalid species entered: " + species);
+
+        if(pokemon.equals(""))
+            return 0;
+
+        int species;
+        try
+        {
+            species= Integer.parseInt(pokemon);
+        }
+        catch (NumberFormatException ignored)
+        {
+            throw new RuntimeException("Invalid pokemon entered: " + pokemon);
+        }
+
+        return species;
     }
 
     private static int getItem(String item) {

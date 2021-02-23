@@ -233,7 +233,8 @@ public class LearnsetEditor
         {
             System.out.println(nameData[i]);
             Object[] thisLine= learnsetCsv[i];
-            int numMoves= thisLine.length/ 2;
+            int numMoves= indexOfEnd(thisLine)/2;
+            int numBytes= 0;
 
             if(!gen5 && numMoves > 20)
             {
@@ -249,6 +250,9 @@ public class LearnsetEditor
             BinaryWriter writer= new BinaryWriter(outputPath + File.separator + i + ".bin");
             for(int m= 0; m < thisLine.length; m+= 2)
             {
+                if(thisLine[m].equals(""))
+                    break;
+
                 System.out.println("    " + thisLine[m]);
                 int moveID= getMove((String) thisLine[m]);
                 int level= Integer.parseInt((String) thisLine[m+1]);
@@ -263,20 +267,23 @@ public class LearnsetEditor
                         return level;
                     }
                 };
-                if(!gen5)
+
+                if(!gen5) //gen 4
                 {
-                    writer.writeShort(produceLearnData(thisMove));
+                    writer.writeShort((short) produceLearnData(thisMove));
                 }
-                else
+                else //gen 5
                 {
                     writer.writeShort((short) moveID);
                     writer.writeShort((short) level);
                 }
+
+                numBytes+= 2;
             }
 
-            if(!gen5)
+            if(!gen5) //gen 4
             {
-                if(numMoves % 2 == 0)
+                if(numBytes % 4 == 0)
                 {
                     writer.write(new byte[] {(byte) 0xFF, (byte) 0xFF,0x00,0x00});
                 }
@@ -285,7 +292,7 @@ public class LearnsetEditor
                     writer.write(new byte[] {(byte) 0xFF, (byte) 0xFF});
                 }
             }
-            else
+            else //gen 5
             {
                 writer.write(new byte[] {(byte) 0xFF, (byte) 0xFF,0x00,0x00});
             }
@@ -349,24 +356,24 @@ public class LearnsetEditor
         return num;
     }
 
-    private static short produceLearnData(MoveLearnsetData moveList)
+    private static int produceLearnData(MoveLearnsetData moveEntry)
     {
-        int id= moveList.getID();
-        String idBinary= Integer.toBinaryString(id);
-        int level= moveList.getLevel();
-        String levelBinary= Integer.toBinaryString(level);
+        int id= moveEntry.getID();
+        int level= moveEntry.getLevel();
 
-        while(idBinary.length() != 9)
+        return ((level & 0x7f) << 9) | (id & 0x1ff);
+    }
+
+    private static int indexOfEnd(Object[] arr)
+    {
+        for(int i= 0; i < arr.length; i++)
         {
-            idBinary= "0" + idBinary;
-        }
-        while(levelBinary.length() != 7)
-        {
-            levelBinary= "0" + levelBinary;
+            if("".equals(arr[i]))
+            {
+                return i;
+            }
         }
 
-        System.out.print("        " + levelBinary);
-        System.out.println(idBinary);
-        return parseShort(levelBinary,idBinary);
+        return -1;
     }
 }

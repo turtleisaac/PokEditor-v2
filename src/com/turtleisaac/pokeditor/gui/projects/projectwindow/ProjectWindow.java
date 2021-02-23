@@ -11,19 +11,22 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
-import com.apple.eawt.Application;
 import com.jackhack96.jNdstool.main.JNdstool;
 import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
+import com.turtleisaac.pokeditor.gui.JCheckboxTree;
 import com.turtleisaac.pokeditor.gui.MyFilter;
 import com.turtleisaac.pokeditor.gui.main.PokEditor;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.console.ConsoleWindow;
@@ -35,6 +38,7 @@ import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetsSetup;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
+import com.turtleisaac.pokeditor.utilities.RandomizerUtils;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
 
@@ -193,7 +197,7 @@ public class ProjectWindow extends JFrame
         trainerPanel1.setProject(project);
         trainerPanel1.setApi(api);
 
-        Application.getApplication().setDefaultMenuBar(menuBar);
+//        Application.getApplication().setDefaultMenuBar(menuBar);
         pokemonSpritePanel.setProject(project);
     }
 
@@ -246,7 +250,6 @@ public class ProjectWindow extends JFrame
     }
 
     private void applyToSheetButtonActionPerformed(ActionEvent e) {
-        // TODO add your code here
         if(JOptionPane.showConfirmDialog(this,"Any changes that you have made to the sheet that do not exist in the ROM will be lost. Continue?","Alert",JOptionPane.YES_NO_OPTION) == 0)
         {
             RomApplier editApplier= new RomApplier(project, projectPath, api, this);
@@ -263,14 +266,10 @@ public class ProjectWindow extends JFrame
 
             editApplier.toFront();
         }
-
-//        JOptionPane.showMessageDialog(this,"Not implemented yet","Alert",JOptionPane.ERROR_MESSAGE);
     }
 
     private void applyToRomButtonActionPerformed(ActionEvent e)
     {
-        // TODO add your code here
-
         List<List<Object>> onlineSheetValues;
 
         try
@@ -301,98 +300,13 @@ public class ProjectWindow extends JFrame
                 }
             }
         }
-
-        SheetApplier editApplier= new SheetApplier(project, projectPath, api, this);
-        editApplier.setLocationRelativeTo(this);
-        setEnabled(false);
-        editApplier.toFront();
-
-//        if(sheetType == null || sheetType.equals(""))
-//        {
-//            switch(sheetName)
-//            {
-//                case "Personal":
-//                    api.setPokeditorSheetType(sheetName,baseRom.sheetList[0]);
-//                        break;
-//
-//                    case "TM Learnsets":
-//                        api.setPokeditorSheetType(sheetName,baseRom.sheetList[0]);
-//                        break;
-//
-//                    case "Level-Up Learnsets":
-//                        break;
-//
-//                    case "Evolutions":
-//                        break;
-//
-//                default:
-//                    break;
-//            }
-//
-//            switch(JOptionPane.showOptionDialog(this,"Not a PokEditor-compatible sheet. If this is a PokEditor sheet and it is not being recognized as such, please press \"Continue\".","Error",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE,null,new String[] {"Cancel","Continue"},"Cancel"))
-//            {
-//                case 0:
-//                    JOptionPane.showMessageDialog(this,"Not implemented yet","Alert",JOptionPane.ERROR_MESSAGE);
-//                    break;
-//
-//                case 1:
-//                    break;
-//            }
-//        }
-
-//        switch(baseRom)
-//        {
-//            case Diamond:
-//                switch (sheetName)
-//                {
-//                    case "Personal":
-//                        break;
-//
-//                    case "TM Learnsets":
-//                        break;
-//
-//                    case "Level-Up Learnsets":
-//                        break;
-//
-//                    case "Evolutions":
-//                        break;
-//                }
-//                break;
-//
-//            case Pearl:
-//
-//                break;
-//
-//            case Platinum:
-//
-//                break;
-//
-//            case HeartGold:
-//
-//                break;
-//
-//            case SoulSilver:
-//
-//                break;
-//
-//            case Black:
-//
-//                break;
-//
-//            case White:
-//
-//                break;
-//
-//            case Black2:
-//z
-//                break;
-//
-//            case White2:
-//
-//                break;
-//        }
-
-//        JOptionPane.showMessageDialog(this,"Not implemented yet","Alert",JOptionPane.ERROR_MESSAGE);
+        else if(JOptionPane.showConfirmDialog(this,"Any changes that you have made to the ROM that do not exist in the sheets you apply will be lost. Continue?","Alert",JOptionPane.YES_NO_OPTION) == 0)
+        {
+            SheetApplier editApplier= new SheetApplier(project, projectPath, api, this);
+            editApplier.setLocationRelativeTo(this);
+            setEnabled(false);
+            editApplier.toFront();
+        }
     }
 
     private void setSheetChooserComboBox(String... arr)
@@ -549,19 +463,32 @@ public class ProjectWindow extends JFrame
 
     private void exportRomButtonActionPerformed(ActionEvent e)
     {
-        JOptionPane.showMessageDialog(this,"Make sure that you have applied the data that you want applied to your ROM with the \"Apply to ROM\" button.","Warning",JOptionPane.WARNING_MESSAGE);
+        if(e.getSource() == exportRomButton)
+            JOptionPane.showMessageDialog(this,"Make sure that you have applied the data that you want applied to your ROM with the \"Apply to ROM\" button.","Warning",JOptionPane.WARNING_MESSAGE);
 
         JFileChooser fc= new JFileChooser(System.getProperty("user.dir"));
         fc.addChoosableFileFilter(new MyFilter("Nintendo DS ROM",".nds"));
         fc.setAcceptAllFileFilterUsed(false);
 
-        if (e.getSource() == exportRomButton) {
-            fc.setDialogTitle("Export ROM");
-            int returnVal = fc.showOpenDialog(this);
+        for(File file : pokemonSpritePanel.toDelete)
+            clearDirs(file);
+        for(File file : trainerPanel1.toDelete)
+            clearDirs(file);
 
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                JNdstool.main("-b",projectPath + File.separator + project.getName(),fc.getSelectedFile().toString());
-            }
+        pokemonSpritePanel.toDelete= new ArrayList<>();
+        trainerPanel1.toDelete= new ArrayList<>();
+
+
+//        fc.setDialogTitle("Export ROM");
+        int returnVal = fc.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            String dirPath= projectPath + File.separator + project.getName();
+            cleanupDirs(new File(dirPath));
+            JNdstool.main("-b",dirPath,fc.getSelectedFile().toString());
+
+            JOptionPane.showMessageDialog(this,"Success!","PokEditor",JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -619,18 +546,129 @@ public class ProjectWindow extends JFrame
 
     private void randomizerItemActionPerformed(ActionEvent e)
     {
+        JFrame randomFrame= new JFrame("Close Window to Apply");
+        DefaultMutableTreeNode features= new DefaultMutableTreeNode("Features");
+        features.add(new DefaultMutableTreeNode("Randomize evolutions"));
+        features.add(new DefaultMutableTreeNode("Randomized evolutions every level"));
+        features.add(new DefaultMutableTreeNode("Randomize encounters"));
+        features.add(new DefaultMutableTreeNode("Randomize trainer teams"));
+        JCheckboxTree checkboxTree= new JCheckboxTree(features);
+        JScrollPane scrollPane= new JScrollPane(checkboxTree);
+        randomFrame.setContentPane(scrollPane);
+        randomFrame.setLocationRelativeTo(this);
+        randomFrame.setPreferredSize(new Dimension(400,500));
+        randomFrame.pack();
+        randomFrame.setVisible(true);
+        randomFrame.toFront();
+
+        ProjectWindow projectWindow= this;
+
+        randomFrame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent w)
+            {
+                randomFrame.dispose();
+
+                if(JOptionPane.showConfirmDialog(projectWindow,"Apply randomization?","Randomizer",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE) == 0)
+                {
+                    String selectedString= Arrays.toString(checkboxTree.getCheckedPaths());
+                    selectedString= selectedString.substring(0, selectedString.length()-1);
+
+                    String[] selected= selectedString.split(", ");
+                    System.out.println(Arrays.toString(selected));
+
+                    RandomizerUtils random;
+                    boolean success;
+
+                    if(selectedContains(selected,"Features"))
+                    {
+                        System.out.println("Randomizing");
+                        random= new RandomizerUtils(project);
+                        success= true;
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(projectWindow,"No randomization features were selected","Randomizer",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+
+                    if(selectedContains(selected,"Randomize evolutions")) //evolutions
+                    {
+                        try
+                        {
+                            JOptionPane.showMessageDialog(projectWindow,"Pokémon with trade evolutions will now evolve at level 38\nPokémon that evolve when traded when holding an item now evolve from leveling up while holding that item");
+                            random.randomizeEvolutions();
+                        }
+                        catch (IOException exception)
+                        {
+                            System.err.println("Evolution Randomization Error:");
+                            exception.printStackTrace();
+                            success= false;
+                        }
+                    }
+
+                    if(selectedContains(selected,"Randomized evolutions every level")) //evolutions every level
+                    {
+                        try
+                        {
+                            random.randomizeEvolutionsEveryLevel();
+                        }
+                        catch (IOException exception)
+                        {
+                            System.err.println("Evolution Randomization Error:");
+                            exception.printStackTrace();
+                            success= false;
+                        }
+                    }
+
+                    if(selectedContains(selected,"Randomize encounters")) //encounters
+                    {
+                        try
+                        {
+                            random.randomizeEncounters();
+                        }
+                        catch (IOException exception)
+                        {
+                            System.err.println("Encounter Randomization Error:");
+                            exception.printStackTrace();
+                            success= false;
+                        }
+                    }
+
+                    if(selectedContains(selected,"Randomize trainer teams")) //trainer teams
+                    {
+                        try
+                        {
+                            random.randomizeTrainerPokemon();
+                        }
+                        catch (IOException exception)
+                        {
+                            System.err.println("Trainer Randomization Error:");
+                            exception.printStackTrace();
+                            success= false;
+                        }
+                    }
+
+
+                    if(success)
+                    {
+                        exportRomButtonActionPerformed(e);
+                    }
+                    else
+                    {
+                        System.err.println("Randomization Error");
+                    }
+                }
+            }
+        });
+    }
+
+    private void fileRandomizerItemActionPerformed(ActionEvent e)
+    {
         // TODO add your code here
         JOptionPane.showMessageDialog(this,"Not implemented yet.","Error",JOptionPane.ERROR_MESSAGE);
-    }
-
-    private void trainerSelectionComboBoxActionPerformed(ActionEvent e)
-    {
-        // TODO add your code here
-    }
-
-    private void newTrainerButtonActionPerformed(ActionEvent e)
-    {
-        // TODO add your code here
     }
 
     private void initComponents() {
@@ -644,6 +682,7 @@ public class ProjectWindow extends JFrame
         randomizerItem = new JMenuItem();
         narctowlItem = new JMenuItem();
         blzCoderItem = new JMenuItem();
+        fileRandomizerItem = new JMenuItem();
         debugMenu = new JMenu();
         consoleItem = new JMenuItem();
         helpMenu = new JMenu();
@@ -738,6 +777,11 @@ public class ProjectWindow extends JFrame
                 blzCoderItem.setText("BLZ Coder");
                 blzCoderItem.addActionListener(e -> blzCoderItemActionPerformed(e));
                 toolsMenu.add(blzCoderItem);
+
+                //---- fileRandomizerItem ----
+                fileRandomizerItem.setText("File Randomizer");
+                fileRandomizerItem.addActionListener(e -> fileRandomizerItemActionPerformed(e));
+                toolsMenu.add(fileRandomizerItem);
             }
             menuBar.add(toolsMenu);
 
@@ -993,6 +1037,7 @@ public class ProjectWindow extends JFrame
     private JMenuItem randomizerItem;
     private JMenuItem narctowlItem;
     private JMenuItem blzCoderItem;
+    private JMenuItem fileRandomizerItem;
     private JMenu debugMenu;
     private JMenuItem consoleItem;
     private JMenu helpMenu;
@@ -1258,5 +1303,39 @@ public class ProjectWindow extends JFrame
     public GoogleSheetsAPI getApi()
     {
         return api;
+    }
+
+    public static void clearDirs(File folder)
+    {
+        for(File f : Objects.requireNonNull(folder.listFiles()))
+        {
+            if(f.isDirectory())
+                clearDirs(f);
+            else
+                f.delete();
+        }
+        folder.delete();
+    }
+
+    public static void cleanupDirs(File folder)
+    {
+        for(File f : Objects.requireNonNull(folder.listFiles()))
+        {
+            if(f.isDirectory())
+                cleanupDirs(f);
+            else if(f.isHidden())
+                f.delete();
+        }
+        folder.delete();
+    }
+
+    private boolean selectedContains(String[] arr, String str)
+    {
+        for(String s : arr)
+        {
+            if(s.toLowerCase().contains(str.toLowerCase()))
+                return true;
+        }
+        return false;
     }
 }

@@ -191,7 +191,7 @@ public class ImageDecrypter
         {
             int num= data[width*height];
 
-            for(int i= width*height - 1; i != 0; i--)
+            for(int i= width*height - 1; i >= 0; i--)
             {
                 data[i]= data[i] ^ (num & 0xffff);
                 num*= 1103515245;
