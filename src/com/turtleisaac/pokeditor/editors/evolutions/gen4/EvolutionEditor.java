@@ -1,14 +1,17 @@
 package com.turtleisaac.pokeditor.editors.evolutions.gen4;
 
 import com.turtleisaac.pokeditor.editors.evolutions.EvolutionData;
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
 import com.turtleisaac.pokeditor.project.Game;
+import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
 import java.util.*;
 
 public class EvolutionEditor
 {
+    private Project project;
     private static String projectPath;
     private String dataPath;
     private static final String[] typeArr= {"Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fairy", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"};
@@ -23,8 +26,9 @@ public class EvolutionEditor
     private Game baseRom;
 
 
-    public EvolutionEditor(String projectPath, Game baseRom) throws IOException
+    public EvolutionEditor(Project project, String projectPath, Game baseRom) throws IOException
     {
+        this.project= project;
         this.projectPath= projectPath;
         this.baseRom= baseRom;
         dataPath= projectPath;
@@ -33,65 +37,31 @@ public class EvolutionEditor
         defaultsPath= resourcePath + "Defaults" + File.separator;
 
 
-        String entryPath= resourcePath + "EntryData.txt";
-        String itemPath= resourcePath;
-        String movePath= resourcePath + "MoveList.txt";
-
-        switch(baseRom)
+        switch(project.getBaseRom())
         {
-            case Pearl:
             case Diamond:
-                itemPath+= "ItemListDP.txt";
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                moveData= TextEditor.getBank(project,588);
+                itemData= TextEditor.getBank(project,344);
                 break;
 
             case Platinum:
-                itemPath+= "ItemListPt.txt";
+                nameData= TextEditor.getBank(project,412);
+                moveData= TextEditor.getBank(project,647);
+                itemData= TextEditor.getBank(project,392);
                 break;
 
             case HeartGold:
             case SoulSilver:
-                itemPath+= "ItemListJohto.txt";
+                nameData= TextEditor.getBank(project,237);
+                moveData= TextEditor.getBank(project,750);
+                itemData= TextEditor.getBank(project,222);
                 break;
-
-            default :
-                throw new RuntimeException("Invalid rom header: Game Code/ Title");
         }
 
-
-        BufferedReader reader= new BufferedReader(new FileReader(entryPath));
-        ArrayList<String> nameList= new ArrayList<>();
+        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "EvolutionMethodsGen4.txt"));
         String line;
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            nameList.add(line);
-        }
-        nameData= nameList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(itemPath));
-        ArrayList<String> itemList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            itemList.add(line);
-        }
-        itemData= itemList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(movePath));
-        ArrayList<String> moveList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            moveList.add(line);
-        }
-        moveData= moveList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(resourcePath + "EvolutionMethodsGen4.txt"));
         ArrayList<String> evolutionList= new ArrayList<>();
         while((line= reader.readLine()) != null)
         {
@@ -549,10 +519,7 @@ public class EvolutionEditor
         {
             if(item.equals(itemData[i]))
             {
-                if(i <= 112)
                     return i;
-                else
-                    return i+22;
             }
         }
         throw new RuntimeException("Invalid item entered: " + item);

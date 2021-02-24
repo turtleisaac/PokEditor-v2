@@ -1,6 +1,8 @@
 package com.turtleisaac.pokeditor.editors.moves.gen4;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
+import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
 import java.util.*;
@@ -13,6 +15,7 @@ public class MoveEditorGen4
 //        moveEditor.movesToCsv("waza_tbl");
 //    }
 
+    private Project project;
     private String projectPath;
     private String dataPath;
     private static String resourcePath;
@@ -27,41 +30,39 @@ public class MoveEditorGen4
 
 
 
-    public MoveEditorGen4(String projectPath) throws IOException
+    public MoveEditorGen4(Project project, String projectPath) throws IOException
     {
+        this.project= project;
         this.projectPath= projectPath;
         dataPath= projectPath;
         resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
-        String entryPath= resourcePath + "EntryData.txt";
-        String movePath= resourcePath + "MoveList.txt";
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                moveData= TextEditor.getBank(project,588);
+                break;
+
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                moveData= TextEditor.getBank(project,647);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                moveData= TextEditor.getBank(project,750);
+                break;
+        }
 
 
-        BufferedReader reader= new BufferedReader(new FileReader(entryPath));
-        ArrayList<String> nameList= new ArrayList<>();
+        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "Effects.txt"));
         String line;
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            nameList.add(line);
-        }
-        nameData= nameList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(movePath));
-        ArrayList<String> moveList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            moveList.add(line);
-        }
-        moveData= moveList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(resourcePath + "Effects.txt"));
         ArrayList<String> effectList= new ArrayList<>();
+
         while((line= reader.readLine()) != null)
         {
             line= line.trim();

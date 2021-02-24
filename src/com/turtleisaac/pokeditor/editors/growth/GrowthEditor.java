@@ -15,20 +15,10 @@ public class GrowthEditor
     private static final String[] evolutionMethodArr= {"None","Happiness","Happiness (Day)","Happiness (Night)","Level Up","Trade","Trade (Item)","Use Item","Level (Attack > Defense)","Level (Attack = Defense)","Level (Attack < Defense)","Level (PID > 5)","Level (PID < 5)","Level (1 of 2)","Level (2 of 2)","Max Beauty","Use Item (Male)","Use Item (Female)","Use Item (Day)","Use Item (Night)","Attack Known","Pokemon in Party","Level (Male)","Level (Female)","Level (Mt. Coronet)","Level (Eterna Forest)","Level (Route 217)"};
     private static final String[] growthTableIdArr= {"Medium Fast","Erratic","Fluctuating","Medium Slow","Fast","Slow","Medium Fast","Medium Fast"};
     private static String resourcePath= path + "Program Files" + File.separator;
-    private static String[] nameData;
 
     public GrowthEditor() throws IOException
     {
-        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "EntryData.txt"));
-        ArrayList<String> nameList= new ArrayList<>();
-        String line;
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            nameList.add(line);
-        }
-        nameData= nameList.toArray(new String[0]);
-        reader.close();
+
     }
 
     public void growthToCsv(String growthDir) throws IOException

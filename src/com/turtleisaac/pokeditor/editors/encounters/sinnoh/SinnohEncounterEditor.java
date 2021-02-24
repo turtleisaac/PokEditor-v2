@@ -1,6 +1,8 @@
 package com.turtleisaac.pokeditor.editors.encounters.sinnoh;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
+import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
 import java.util.*;
@@ -24,47 +26,39 @@ public class SinnohEncounterEditor
 //    private static String[] indoorData;
 
 
-    public SinnohEncounterEditor(String projectPath) throws IOException
+    public SinnohEncounterEditor(Project project, String projectPath) throws IOException
     {
         this.projectPath= projectPath;
         dataPath= projectPath;
         resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
-        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "EntryData.txt"));
-        ArrayList<String> nameList= new ArrayList<>();
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                moveData= TextEditor.getBank(project,588);
+                itemData= TextEditor.getBank(project,344);
+                break;
+
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                moveData= TextEditor.getBank(project,647);
+                itemData= TextEditor.getBank(project,392);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                moveData= TextEditor.getBank(project,750);
+                itemData= TextEditor.getBank(project,222);
+                break;
+        }
+
+        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "LocationsPt.txt"));
         String line;
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            nameList.add(line);
-        }
-        nameData= nameList.toArray(new String[0]);
-        reader.close();
 
-        reader= new BufferedReader(new FileReader(resourcePath + "ItemList.txt"));
-        ArrayList<String> itemList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            itemList.add(line);
-        }
-        itemData= itemList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(resourcePath + "MoveList.txt"));
-        ArrayList<String> moveList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            moveList.add(line);
-        }
-        moveData= moveList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(resourcePath + "LocationsPt.txt"));
         ArrayList<String> areaList= new ArrayList<>();
 
         while ((line= reader.readLine()) != null)

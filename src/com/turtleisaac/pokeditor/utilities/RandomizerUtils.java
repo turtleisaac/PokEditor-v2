@@ -44,7 +44,7 @@ public class RandomizerUtils
     public void randomizeEncounters() throws IOException
     {
         Narctowl narctowl= new Narctowl(true);
-        JohtoEncounterEditor editor= new JohtoEncounterEditor(dataPath);
+        JohtoEncounterEditor editor= new JohtoEncounterEditor(project, dataPath);
         JohtoEncounterReturn encounterReturn;
         String narcPath;
         String dirPath;
@@ -171,7 +171,7 @@ public class RandomizerUtils
     public void randomizeTrainerPokemon() throws IOException
     {
         Narctowl narctowl= new Narctowl(true);
-        TrainerEditorGen4 trainerEditor= new TrainerEditorGen4(dataPath,game);
+        TrainerEditorGen4 trainerEditor= new TrainerEditorGen4(project,dataPath,game);
 
         String dataNarcPath=  File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "5";
         String dataDirPath= File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "5_";
@@ -230,7 +230,7 @@ public class RandomizerUtils
         pokemonTable[0]= pokemonHeader;
         System.arraycopy(pokemon,0,pokemonTable,1, pokemon.length);
 
-        trainerEditor= new TrainerEditorGen4(dataPath,game);
+        trainerEditor= new TrainerEditorGen4(project,dataPath,game);
         trainerEditor.sheetsToTrainers(dataTable,pokemonTable,File.separator + "a" + File.separator + "0" + File.separator + "5");
 
         narctowl.pack(dataPath + dataDirPath,"",dataPath + dataNarcPath);
@@ -245,7 +245,7 @@ public class RandomizerUtils
 
     public void randomizeEvolutionsEveryLevel() throws IOException
     {
-        EvolutionEditor editor= new EvolutionEditor(dataPath, game);
+        EvolutionEditor editor= new EvolutionEditor(project, dataPath, game);
         Narctowl narctowl= new Narctowl(true);
         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_"));
@@ -305,7 +305,7 @@ public class RandomizerUtils
         System.arraycopy(evolutions,0,table,1,evolutions.length);
 
 
-        editor= new EvolutionEditor(dataPath, game);
+        editor= new EvolutionEditor(project, dataPath, game);
         editor.sheetToEvolutions(table,File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
         narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4");
 
@@ -318,7 +318,7 @@ public class RandomizerUtils
 
     public void randomizeEvolutions() throws IOException
     {
-        EvolutionEditor editor= new EvolutionEditor(dataPath, game);
+        EvolutionEditor editor= new EvolutionEditor(project, dataPath, game);
         Narctowl narctowl= new Narctowl(true);
         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_"));
@@ -360,7 +360,7 @@ public class RandomizerUtils
         System.arraycopy(evolutions,0,table,1,evolutions.length);
 
 
-        editor= new EvolutionEditor(dataPath, game);
+        editor= new EvolutionEditor(project, dataPath, game);
         editor.sheetToEvolutions(table,File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
         narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4");
 

@@ -1,7 +1,10 @@
 package com.turtleisaac.pokeditor.editors.starters.gen4;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
+import com.turtleisaac.pokeditor.project.Project;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.*;
 import java.util.*;
@@ -11,26 +14,35 @@ public class StarterEditorGen4
     private static String path = System.getProperty("user.dir") + File.separator; //creates a new String field containing user.dir and File.separator (/ on Unix systems, \ on Windows)
     private static String resourcePath = path + "Program Files" + File.separator;
     private static String[] nameData;
-    private String gameCode;
+    private final String gameCode;
     Buffer starterBuffer;
     BinaryWriter writer;
+    private Project project;
 
-    public StarterEditorGen4(String gameCode) throws IOException
+    public StarterEditorGen4(Project project, String gameCode) throws IOException
     {
+        this.project= project;
         this.gameCode = gameCode;
 
-        String entryPath = resourcePath + "EntryData.txt";
-
-
-        BufferedReader reader = new BufferedReader(new FileReader(entryPath));
-        ArrayList<String> nameList = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null)
+        switch(project.getBaseRom())
         {
-            nameList.add(line);
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                break;
+
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                break;
+
+            default:
+                throw new InvalidStateException("Invalid game: " + project.getBaseRom());
         }
-        nameData = nameList.toArray(new String[0]);
-        reader.close();
     }
 
     public void changeStarters(String startersFile) throws IOException
@@ -39,10 +51,9 @@ public class StarterEditorGen4
         writer= new BinaryWriter(startersFile + "Recompile");
         int offset;
 
-        String noRegion= gameCode.substring(0,3).toLowerCase();
-        switch (noRegion)
+        switch (project.getBaseRom())
         {
-            case "cpu": //Platinum
+            case Platinum:
                 if(gameCode.substring(3).equalsIgnoreCase("j"))
                 {
                     offset = 0x1bac;
@@ -53,8 +64,8 @@ public class StarterEditorGen4
                 editStarterData(offset);
                 break;
 
-            case "apa": //Pearl
-            case "ada"://Diamond
+            case Pearl:
+            case Diamond:
                 if(gameCode.substring(3).equalsIgnoreCase("j"))
                 {
                     offset = 0x30;
@@ -66,7 +77,7 @@ public class StarterEditorGen4
                 break;
 
             default:
-                throw new RuntimeException("This editor can't be used with Gen 5 or HGSS currently.");
+                throw new InvalidStateException("This editor can't be used with Gen 5 or HGSS currently.");
         }
     }
 

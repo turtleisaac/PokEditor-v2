@@ -102,7 +102,7 @@ public class SheetApplier extends JFrame
                 case Pearl:
                     if(contains(selected, "Personal"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         editor.csvToPersonal(api.getSpecifiedSheetArr("Personal"),api.getSpecifiedSheetArr("TM Learnsets"),File.separator + "poketool" + File.separator + "personal" + File.separator + "personal");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal","",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal"));
@@ -110,7 +110,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected, "Learnsets"))
                     {
-                        LearnsetEditor editor= new LearnsetEditor(dataPath, baseRom);
+                        LearnsetEditor editor= new LearnsetEditor(dataPath, project);
                         editor.sheetToLearnsets(api.getSpecifiedSheetArr("Level-Up Learnsets"),File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl","",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl"));
@@ -118,7 +118,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected,"Evolutions"))
                     {
-                        EvolutionEditor editor= new EvolutionEditor(dataPath, baseRom);
+                        EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         editor.sheetToEvolutions(api.getSpecifiedSheetArr("Evolutions"),File.separator + "poketool" + File.separator + "personal" + File.separator + "evo");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo","",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo"));
@@ -137,7 +137,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected, "Trainers"))
                     {
-                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(project,dataPath,baseRom);
                         editor.sheetsToTrainers(api.getSpecifiedSheetArr("Trainer Data"),api.getSpecifiedSheetArr("Trainer Pokemon"),File.separator + "poketool" + File.separator + "trainer" + File.separator + "");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata","",dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata.narc");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trpoke","",dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trpoke.narc");
@@ -147,7 +147,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected,"Moves"))
                     {
-                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
                         editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl","",dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl"));
@@ -187,7 +187,7 @@ public class SheetApplier extends JFrame
                 case Platinum:
                     if(contains(selected, "Personal"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         editor.csvToPersonal(api.getSpecifiedSheetArr("Personal"),api.getSpecifiedSheetArr("TM Learnsets"),File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal","",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal"));
@@ -195,7 +195,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected, "Learnsets"))
                     {
-                        LearnsetEditor editor= new LearnsetEditor(dataPath, baseRom);
+                        LearnsetEditor editor= new LearnsetEditor(dataPath, project);
                         editor.sheetToLearnsets(api.getSpecifiedSheetArr("Level-Up Learnsets"),File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl","",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl.narc");
 //                        toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl"));
@@ -203,7 +203,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected,"Evolutions"))
                     {
-                        EvolutionEditor editor= new EvolutionEditor(dataPath, baseRom);
+                        EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         editor.sheetToEvolutions(api.getSpecifiedSheetArr("Evolutions"),File.separator + "poketool" + File.separator + "personal" + File.separator + "evo");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo","",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo"));
@@ -222,7 +222,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected, "Trainers"))
                     {
-                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(project,dataPath,baseRom);
                         editor.sheetsToTrainers(api.getSpecifiedSheetArr("Trainer Data"),api.getSpecifiedSheetArr("Trainer Pokemon"),File.separator + "poketool" + File.separator + "trainer" + File.separator + "");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata","",dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata.narc");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trpoke","",dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trpoke.narc");
@@ -232,7 +232,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected,"Moves"))
                     {
-                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
                         editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl");
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl","",dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl"));
@@ -264,7 +264,7 @@ public class SheetApplier extends JFrame
                 case SoulSilver:
                     if(contains(selected, "Personal"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         editor.csvToPersonal(api.getSpecifiedSheetArr("Personal"),api.getSpecifiedSheetArr("TM Learnsets"),File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_");
                         narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_"));
@@ -272,7 +272,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected, "Learnsets"))
                     {
-                        LearnsetEditor editor= new LearnsetEditor(dataPath, baseRom);
+                        LearnsetEditor editor= new LearnsetEditor(dataPath, project);
                         editor.sheetToLearnsets(api.getSpecifiedSheetArr("Level-Up Learnsets"),File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_");
                         narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_"));
@@ -280,7 +280,7 @@ public class SheetApplier extends JFrame
 
                     if(contains(selected,"Evolutions"))
                     {
-                        EvolutionEditor editor= new EvolutionEditor(dataPath, baseRom);
+                        EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         editor.sheetToEvolutions(api.getSpecifiedSheetArr("Evolutions"),File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
                         narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_"));
@@ -302,7 +302,7 @@ public class SheetApplier extends JFrame
 //
                     if(contains(selected,"Encounters"))
                     {
-                        JohtoEncounterEditor editor= new JohtoEncounterEditor(dataPath);
+                        JohtoEncounterEditor editor= new JohtoEncounterEditor(project, dataPath);
                         Object[][] field= api.getSpecifiedSheetArr("Field Encounters");
                         Object[][] water= api.getSpecifiedSheetArr("Water Encounters");
                         Object[][] smash= api.getSpecifiedSheetArr("Rock Smash Encounters");

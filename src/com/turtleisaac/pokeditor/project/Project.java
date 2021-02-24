@@ -96,6 +96,11 @@ public class Project implements Serializable
         this.program = program;
     }
 
+    public String getDataPath()
+    {
+        return getProjectPath().getAbsolutePath() + File.separator + getName() + File.separator + "data";
+    }
+
     public String getXml()
     {
         String ret= "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";

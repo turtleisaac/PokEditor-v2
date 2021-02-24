@@ -1,7 +1,10 @@
 package com.turtleisaac.pokeditor.editors.learnsets;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
 import com.turtleisaac.pokeditor.project.Game;
+import com.turtleisaac.pokeditor.project.Project;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import javax.swing.*;
 import java.io.*;
@@ -16,20 +19,42 @@ public class LearnsetEditor
     private static String[] moveData;
     private static boolean gen5;
     private Game baseRom;
+    private Project project;
 
     private int maxMoves;
 
 
-    public LearnsetEditor(String projectPath, Game baseRom) throws IOException
+    public LearnsetEditor(String projectPath, Project project) throws IOException
     {
+        this.project= project;
         this.projectPath= projectPath;
-        this.baseRom= baseRom;
+        this.baseRom= project.getBaseRom();
         dataPath= projectPath;
         resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
-        String entryPath= resourcePath;
-        String movePath= resourcePath +  "MoveList.txt";
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                moveData= TextEditor.getBank(project,588);
+                break;
+
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                moveData= TextEditor.getBank(project,647);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                moveData= TextEditor.getBank(project,750);
+                break;
+
+            default:
+                throw new InvalidStateException("Invalid rom: " + baseRom);
+        }
 
         switch (baseRom)
         {
@@ -39,48 +64,19 @@ public class LearnsetEditor
             case HeartGold:
             case SoulSilver:
                 maxMoves= 20;
-                entryPath+= "EntryData.txt";
                 break;
 
             case White:
             case Black:
-                maxMoves= 25;
-                gen5= true;
-                entryPath += "EntryDataGen5-1.txt";
-                break;
-
             case White2:
             case Black2:
                 maxMoves= 25;
                 gen5= true;
-                entryPath += "EntryDataGen5-2.txt";
                 break;
 
             default:
                 throw new RuntimeException("Invalid arguments");
         }
-
-        BufferedReader reader= new BufferedReader(new FileReader(entryPath));
-        ArrayList<String> nameList= new ArrayList<>();
-        String line;
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            nameList.add(line);
-        }
-        nameData= nameList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(movePath));
-        ArrayList<String> moveNameList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            moveNameList.add(line);
-        }
-        moveData= moveNameList.toArray(new String[0]);
-        reader.close();
     }
 
     public Object[][] learnsetToSheet(String learnsetDir)

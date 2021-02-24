@@ -1,19 +1,15 @@
 package com.turtleisaac.pokeditor.editors.personal.gen4;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
 import com.turtleisaac.pokeditor.project.Game;
+import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
 import java.util.*;
 
 public class PersonalEditor
 {
-    public static void main(String[] args) throws IOException
-    {
-        PersonalEditor editor= new PersonalEditor(System.getProperty("user.dir") + "/data",Game.Platinum);
-        editor.personalToSheet("/poketool/personal/pl_personal");
-    }
-
 
 //    private static String path= System.getProperty("user.dir") + File.separator; //creates a new String field containing user.dir and File.separator (/ on Unix systems, \ on Windows)
     private static String projectPath;
@@ -29,51 +25,43 @@ public class PersonalEditor
     private static String[] abilityData;
     private static String[] tmNameData;
     private static boolean autoFix;
+    private Project project;
     private Game baseRom;
 
-    public PersonalEditor(String projectPath, Game baseRom) throws IOException
+    public PersonalEditor(String projectPath, Project project) throws IOException
     {
-        this.baseRom= baseRom;
+        this.project= project;
+        this.baseRom= project.getBaseRom();
         this.projectPath= projectPath;
         dataPath= projectPath;
         resourcePath= new File(projectPath).getParentFile().getParent() + File.separator + "Program Files" + File.separator;
         defaultsPath= resourcePath + "Defaults" + File.separator;
 
-        String itemPath= resourcePath;
-
-        switch(baseRom)
+        switch(project.getBaseRom())
         {
-            case Pearl:
             case Diamond:
-                itemPath+= "ItemListDP.txt";
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                itemData= TextEditor.getBank(project,344);
+                abilityData= TextEditor.getBank(project,552);
                 break;
 
             case Platinum:
-                itemPath+= "ItemListPt.txt";
+                nameData= TextEditor.getBank(project,412);
+                itemData= TextEditor.getBank(project,392);
+                abilityData= TextEditor.getBank(project,610);
                 break;
 
             case HeartGold:
             case SoulSilver:
-                itemPath+= "ItemListJohto.txt";
+                nameData= TextEditor.getBank(project,237);
+                itemData= TextEditor.getBank(project,222);
+                abilityData= TextEditor.getBank(project,720);
                 break;
-
-            default :
-                throw new RuntimeException("Invalid rom header: Game Code/ Title");
         }
 
-        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "EntryData.txt"));
-        ArrayList<String> nameList= new ArrayList<>();
+        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "TmList.txt"));
         String line;
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            nameList.add(line);
-        }
-        nameData= nameList.toArray(new String[0]);
-        reader.close();
-
-
-        reader= new BufferedReader(new FileReader(resourcePath + "TmList.txt"));
         ArrayList<Object> tmList= new ArrayList<>();
 
         while((line= reader.readLine()) != null)
@@ -82,28 +70,6 @@ public class PersonalEditor
             tmList.add(line);
         }
         tmData= tmList.toArray(new Object[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(itemPath));
-        ArrayList<String> itemList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            itemList.add(line);
-        }
-        itemData= itemList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(resourcePath + "AbilityList.txt"));
-        ArrayList<String> abilityList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            abilityList.add(line);
-        }
-        abilityData= abilityList.toArray(new String[0]);
         reader.close();
     }
 
@@ -1187,10 +1153,7 @@ public class PersonalEditor
         {
             if(item.equals(itemData[i]))
             {
-                if(i <= 112)
-                    return i;
-                else
-                    return i+22;
+                return i;
             }
         }
         throw new RuntimeException("Invalid item entered: " + item);

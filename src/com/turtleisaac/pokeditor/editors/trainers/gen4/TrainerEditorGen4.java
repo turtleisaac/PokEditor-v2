@@ -1,16 +1,23 @@
 package com.turtleisaac.pokeditor.editors.trainers.gen4;
 
+import com.jackhack96.dspre.handlers.gen4.text.MessageFile;
+import com.jackhack96.jNdstool.io.jBinaryStream;
+import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.ArrayModifier;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Game;
+import com.turtleisaac.pokeditor.project.Project;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.*;
 import java.util.*;
 
 public class TrainerEditorGen4
 {
+    private Project project;
     private String projectPath;
     private String dataPath;
     private static String resourcePath;
@@ -23,8 +30,9 @@ public class TrainerEditorGen4
 
     private Game baseRom;
 
-    public TrainerEditorGen4(String projectPath, Game baseRom) throws IOException
+    public TrainerEditorGen4(Project project, String projectPath, Game baseRom) throws IOException
     {
+        this.project= project;
         this.projectPath= projectPath;
         this.baseRom= baseRom;
         dataPath= projectPath;
@@ -36,93 +44,38 @@ public class TrainerEditorGen4
             resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator));
         }
         resourcePath+= File.separator + "Program Files" + File.separator;
-        System.out.println(resourcePath);
 
-
-        String entryPath = resourcePath + "EntryData.txt";
-        String movePath = resourcePath + "MoveList.txt";
-        String itemPath= resourcePath;
-        String classPath= resourcePath;
-        String trainerNamePath= resourcePath;
-
-        BufferedReader reader = new BufferedReader(new FileReader(entryPath));
-        ArrayList<String> nameList = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            nameList.add(line);
-        }
-        nameData = nameList.toArray(new String[0]);
-        reader.close();
-
-        reader = new BufferedReader(new FileReader(movePath));
-        ArrayList<String> moveList = new ArrayList<>();
-
-        while ((line = reader.readLine()) != null) {
-            moveList.add(line);
-        }
-        moveData = moveList.toArray(new String[0]);
-        reader.close();
-
-        switch(baseRom)
+        switch(project.getBaseRom())
         {
             case Diamond:
             case Pearl:
-                itemPath+= "ItemListDP.txt";
-                trainerNamePath+= "TrainerNamesDP.txt";
-                classPath+= "TrainerClassesDP.txt";
+                nameData= TextEditor.getBank(project,362);
+                moveData= TextEditor.getBank(project,588);
+                itemData= TextEditor.getBank(project,344);
+                abilityData= TextEditor.getBank(project,552);
+                trainerNames= TextEditor.getBank(project,559);
+                trainerClassData= TextEditor.getBank(project,560);
                 break;
 
             case Platinum:
-                itemPath+= "ItemListPt.txt";
-                trainerNamePath+= "TrainerNamesPt.txt";
-                classPath+= "TrainerClassesPt.txt";
+                nameData= TextEditor.getBank(project,412);
+                moveData= TextEditor.getBank(project,647);
+                itemData= TextEditor.getBank(project,392);
+                abilityData= TextEditor.getBank(project,610);
+                trainerNames= TextEditor.getBank(project,618);
+                trainerClassData= TextEditor.getBank(project,619);
                 break;
 
             case HeartGold:
             case SoulSilver:
-                itemPath+= "ItemListJohto.txt";
-                trainerNamePath+= "TrainerNamesHGSS.txt";
-                classPath+= "TrainerClassesHGSS.txt";
+                nameData= TextEditor.getBank(project,237);
+                moveData= TextEditor.getBank(project,750);
+                itemData= TextEditor.getBank(project,222);
+                abilityData= TextEditor.getBank(project,720);
+                trainerNames= TextEditor.getBank(project,729);
+                trainerClassData= TextEditor.getBank(project,730);
                 break;
         }
-
-        reader = new BufferedReader(new FileReader(itemPath));
-        ArrayList<String> itemList = new ArrayList<>();
-
-        while ((line = reader.readLine()) != null) {
-            itemList.add(line);
-        }
-        itemData = itemList.toArray(new String[0]);
-        reader.close();
-
-        reader = new BufferedReader(new FileReader(trainerNamePath));
-        ArrayList<String> trainerNameList = new ArrayList<>();
-
-        while ((line = reader.readLine()) != null) {
-            trainerNameList.add(line);
-        }
-        trainerNames= trainerNameList.toArray(new String[0]);
-        reader.close();
-
-        reader = new BufferedReader(new FileReader(classPath));
-        ArrayList<String> trainerClassList = new ArrayList<>();
-
-        while ((line = reader.readLine()) != null) {
-            trainerClassList.add(line);
-        }
-        trainerClassData= trainerClassList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(resourcePath + "AbilityList.txt"));
-        ArrayList<String> abilityList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            abilityList.add(line);
-        }
-        abilityData= abilityList.toArray(new String[0]);
-        reader.close();
     }
 
     public TrainerReturnGen4 trainersToSheets(String trainerDataDir, String trainerPokemonDir)

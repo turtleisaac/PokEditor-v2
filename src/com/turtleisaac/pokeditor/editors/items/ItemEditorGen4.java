@@ -1,27 +1,24 @@
 package com.turtleisaac.pokeditor.editors.items;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
 import com.turtleisaac.pokeditor.project.Game;
+import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class ItemEditorGen4
 {
-//    public static void main(String[] args) throws IOException
-//    {
-//        ItemEditorGen4 editorGen4= new ItemEditorGen4();
-//        editorGen4.itemsToCsv("item_data");
-//        editorGen4.csvToItems("Items.csv","items");
-//    }
-
+    private Project project;
     private static String projectPath;
     private String dataPath= "";
     private static final String[] typeArr= {"Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "???", "Fire", "Water","Grass","Electric","Psychic","Ice","Dragon","Dark"};
     private static final String[] growthTableIdArr= {"Medium Fast","Erratic","Fluctuating","Medium Slow","Fast","Slow","Medium Fast","Medium Fast"};
     private static String resourcePath;
     private static String[] nameData;
-    private static String[] itemNames;
+    private static String[] itemData;
     private static String[] abilityData;
     private static String[] fieldFunctions;
     private static String[] pluckFlingEffects;
@@ -32,15 +29,42 @@ public class ItemEditorGen4
 
     private Game baseRom;
 
-    public ItemEditorGen4(String projectPath, Game baseRom) throws IOException
+    public ItemEditorGen4(String projectPath, Project project) throws IOException
     {
-        this.baseRom= baseRom;
+        this.project= project;
+        this.baseRom= project.getBaseRom();
         this.projectPath= projectPath;
         dataPath= projectPath;
         resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
-        String itemPath= resourcePath;
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                itemData= TextEditor.getBank(project,344);
+                abilityData= TextEditor.getBank(project,552);
+                break;
+
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                itemData= TextEditor.getBank(project,392);
+                abilityData= TextEditor.getBank(project,610);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                itemData= TextEditor.getBank(project,222);
+                abilityData= TextEditor.getBank(project,720);
+                break;
+        }
+
+        ArrayList<String> itemList= new ArrayList<>(Arrays.asList(itemData));
+        itemList.removeIf(s -> s.equals("???"));
+        itemData= itemList.toArray(new String[0]);
+
         String fieldFunctionsPath= resourcePath;
 
         BufferedReader reader;
@@ -50,18 +74,12 @@ public class ItemEditorGen4
         {
             case Pearl:
             case Diamond:
-                itemPath+= "ItemListDP.txt";
-                fieldFunctionsPath+= "ItemFieldFunctionsSinnoh.txt";
-                break;
-
             case Platinum:
-                itemPath+= "ItemListPt.txt";
                 fieldFunctionsPath+= "ItemFieldFunctionsSinnoh.txt";
                 break;
 
             case HeartGold:
             case SoulSilver:
-                itemPath+= "ItemListJohto.txt";
                 fieldFunctionsPath+= "ItemFieldFunctionsJohto.txt";
                 break;
 
@@ -69,27 +87,6 @@ public class ItemEditorGen4
                 throw new RuntimeException("Invalid rom header: Game Code/ Title");
         }
 
-        reader= new BufferedReader(new FileReader(itemPath));
-        ArrayList<String> itemList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            itemList.add(line);
-        }
-        itemNames = itemList.toArray(new String[0]);
-        reader.close();
-
-        reader= new BufferedReader(new FileReader(resourcePath + "AbilityList.txt"));
-        ArrayList<String> abilityList= new ArrayList<>();
-
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            abilityList.add(line);
-        }
-        abilityData= abilityList.toArray(new String[0]);
-        reader.close();
 
         reader= new BufferedReader(new FileReader(fieldFunctionsPath));
         ArrayList<String> fieldEffectList= new ArrayList<>();
@@ -151,7 +148,7 @@ public class ItemEditorGen4
         {
             file= files[i];
             buffer= new Buffer(file.toString());
-            System.out.println(itemNames[i] + ": " + i);
+            System.out.println(itemData[i] + ": " + i);
 
             int price= buffer.readUInt16();
             int equipmentEffect= buffer.readByte();
@@ -686,7 +683,7 @@ public class ItemEditorGen4
         String line;
         for(int row= 0; row < dataList.size(); row++)
         {
-            line= row + "," + itemNames[row] + ",";
+            line= row + "," + itemData[row] + ",";
             for(int col= 0; col < itemTable[0].length; col++)
             {
                 line+= itemTable[row][col] + ",";
@@ -715,7 +712,7 @@ public class ItemEditorGen4
         BinaryWriter writer;
         for(int i= 0; i < itemCsv.length; i++)
         {
-            System.out.println(itemNames[i]);
+            System.out.println(itemData[i]);
             Object[] thisLine= itemCsv[i];
             initializeIndex(thisLine);
 
@@ -899,9 +896,9 @@ public class ItemEditorGen4
     private static int getItem(String item)
     {
         item= item.replaceAll("\\?","e").replaceAll("é","e");
-        for(int i = 0; i < itemNames.length; i++)
+        for(int i = 0; i < itemData.length; i++)
         {
-            if(item.equals(itemNames[i].replaceAll("\\?","e").replaceAll("é","e")))
+            if(item.equals(itemData[i].replaceAll("\\?","e").replaceAll("é","e")))
             {
                 return i;
             }

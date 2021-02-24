@@ -1,10 +1,12 @@
 package com.turtleisaac.pokeditor.editors.tutors.sinnoh;
 
 import com.turtleisaac.pokeditor.editors.babies.SpecialBabyFormData;
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.framework.CsvReader;
+import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,13 +15,8 @@ import java.util.Comparator;
 
 public class TutorCompatibilityEditor
 {
-    public static void main(String[] args) throws IOException
-    {
-//        TutorCompatibilityEditor editor= new TutorCompatibilityEditor("CPUE","overlay9_5.bin");
-//        editor.compatibilityToCsv();
-//        editor.csvToCompatibility("tutorCompatibilityData.csv","overlay9_5_C.bin");
-    }
 
+    private Project project;
     private static String path = System.getProperty("user.dir") + File.separator; //creates a new String field containing user.dir and File.separator (/ on Unix systems, \ on Windows)
     private static String resourcePath = path + "Program Files" + File.separator;
     private static String[] nameData;
@@ -45,33 +42,33 @@ public class TutorCompatibilityEditor
     private static final int S_TUTORS_DP_S= 0x165a32;
     private static final int S_TUTORS_DP_K= 0x165a32;
 
-    public TutorCompatibilityEditor(String gameCode) throws IOException
+    public TutorCompatibilityEditor(Project project, String gameCode) throws IOException
     {
+        this.project= project;
         this.gameCode = gameCode;
         String entryPath = resourcePath + "EntryData.txt";
         String movePath= resourcePath + "MoveList.txt";
 
 
-        BufferedReader reader = new BufferedReader(new FileReader(entryPath));
-        ArrayList<String> nameList = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null)
+        switch(project.getBaseRom())
         {
-            nameList.add(line);
-        }
-        nameData = nameList.toArray(new String[0]);
-        reader.close();
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                moveData= TextEditor.getBank(project,588);
+                break;
 
-        reader= new BufferedReader(new FileReader(movePath));
-        ArrayList<String> moveList= new ArrayList<>();
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                moveData= TextEditor.getBank(project,647);
+                break;
 
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            moveList.add(line);
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                moveData= TextEditor.getBank(project,750);
+                break;
         }
-        moveData= moveList.toArray(new String[0]);
-        reader.close();
 
         String noRegion= gameCode.substring(0,3).toLowerCase();
 

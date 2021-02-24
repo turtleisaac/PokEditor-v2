@@ -1,20 +1,18 @@
 package com.turtleisaac.pokeditor.editors.encounters.johto;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.ArrayModifier;
 import com.turtleisaac.pokeditor.framework.ArrayProcessor;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
+import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
 import java.util.*;
 
 public class JohtoEncounterEditor
 {
-    public static void main(String[] args) throws IOException {
-        JohtoEncounterEditor encounterEditor= new JohtoEncounterEditor("ipge");
-        encounterEditor.encountersToSheet("a136SS");
-    }
-
+    private Project project;
     private static String projectPath;
     private String dataPath= "";
     private String separator= File.separator;
@@ -29,25 +27,34 @@ public class JohtoEncounterEditor
     private static String[] outdoorData;
     private static String[] indoorData;
 
-    public JohtoEncounterEditor(String projectPath) throws IOException
+    public JohtoEncounterEditor(Project project, String projectPath) throws IOException
     {
+        this.project= project;
         this.projectPath= projectPath;
         dataPath= projectPath;
         resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
-        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "EntryData.txt"));
-        ArrayList<String> nameList= new ArrayList<>();
-        String line;
-        while((line= reader.readLine()) != null)
-        {
-            line= line.trim();
-            nameList.add(line);
-        }
-        nameData= nameList.toArray(new String[0]);
-        reader.close();
 
-        reader= new BufferedReader(new FileReader(resourcePath + "Locations.txt"));
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                break;
+
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                break;
+        }
+
+        BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "Locations.txt"));
+        String line;
         ArrayList<String> areaList= new ArrayList<>();
 
         while ((line= reader.readLine()) != null)

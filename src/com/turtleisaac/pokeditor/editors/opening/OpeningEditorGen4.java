@@ -1,7 +1,10 @@
 package com.turtleisaac.pokeditor.editors.opening;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
+import com.turtleisaac.pokeditor.project.Project;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,22 +24,30 @@ public class OpeningEditorGen4
     private Buffer starterBuffer;
     private BinaryWriter writer;
 
-    public OpeningEditorGen4(String gameCode) throws IOException
+    public OpeningEditorGen4(Project project, String gameCode) throws IOException
     {
         this.gameCode = gameCode;
 
-        String entryPath = resourcePath + "EntryData.txt";
 
-
-        BufferedReader reader = new BufferedReader(new FileReader(entryPath));
-        ArrayList<String> nameList = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null)
+        switch(project.getBaseRom())
         {
-            nameList.add(line);
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                break;
+
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                break;
+
+            default:
+                throw new InvalidStateException("Invalid game: " + project.getBaseRom());
         }
-        nameData = nameList.toArray(new String[0]);
-        reader.close();
     }
 
     public void changeOpening(String openingFile) throws IOException

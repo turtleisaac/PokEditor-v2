@@ -1199,7 +1199,7 @@ public class ProjectWindow extends JFrame
             case Platinum:
 
                 //Personal and TM Learnsets
-                PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                PersonalEditor editor= new PersonalEditor(dataPath, project);
                 narctowl.unpack(dataPath + "/poketool/personal/pl_personal.narc",dataPath + "/poketool/personal/pl_personal");
                 new File(dataPath + "/poketool/personal/pl_personal").deleteOnExit();
                 PersonalReturnGen4 personalReturn= editor.personalToSheet("/poketool/personal/pl_personal");

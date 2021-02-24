@@ -106,7 +106,7 @@ public class RomApplier extends JFrame
                 case Pearl:
                     if(contains(selected, "Personal"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal");
                         PersonalReturnGen4 personalReturn= editor.personalToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "personal");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal"));
@@ -115,7 +115,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "TM Learnsets"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal");
                         PersonalReturnGen4 personalReturn= editor.personalToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "personal");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "personal"));
@@ -124,7 +124,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "Level-Up Learnsets"))
                     {
-                        LearnsetEditor editor= new LearnsetEditor(dataPath, baseRom);
+                        LearnsetEditor editor= new LearnsetEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl"));
                         api.updateSheet("Level-Up Learnsets",editor.learnsetToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl"));
@@ -132,7 +132,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Evolutions"))
                     {
-                        EvolutionEditor editor= new EvolutionEditor(dataPath, baseRom);
+                        EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo"));
                         api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "evo",false));
@@ -151,7 +151,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Moves"))
                     {
-                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl.narc",dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl"));
                         api.updateSheet("Moves",editor.movesToSheet(File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl"));
@@ -159,7 +159,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Items"))
                     {
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,baseRom);
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
                         narctowl.unpack(dataPath + File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "item_data.narc",dataPath + File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "item_data");
                         toDelete.add(new File(dataPath + File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "item_data"));
                         api.updateSheet("Items",editor.itemsToSheet(File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "item_data"));
@@ -167,7 +167,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Encounters"))
                     {
-                        SinnohEncounterEditor editor= new SinnohEncounterEditor(dataPath);
+                        SinnohEncounterEditor editor= new SinnohEncounterEditor(project, dataPath);
                         SinnohEncounterReturn encounterReturn;
 
                         if(baseRom == Game.Diamond) //Diamond
@@ -197,7 +197,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "Trainer"))
                     {
-                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(project,dataPath,baseRom);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata.narc",dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata");
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trpoke.narc",dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trpoke");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata"));
@@ -213,7 +213,7 @@ public class RomApplier extends JFrame
                 case Platinum:
                     if(contains(selected, "Personal"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal");
                         PersonalReturnGen4 personalReturn= editor.personalToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal"));
@@ -222,7 +222,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "TM Learnsets"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal");
                         PersonalReturnGen4 personalReturn= editor.personalToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal"));
@@ -231,7 +231,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "Level-Up Learnsets"))
                     {
-                        LearnsetEditor editor= new LearnsetEditor(dataPath, baseRom);
+                        LearnsetEditor editor= new LearnsetEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl"));
                         api.updateSheet("Level-Up Learnsets",editor.learnsetToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl"));
@@ -239,7 +239,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Evolutions"))
                     {
-                        EvolutionEditor editor= new EvolutionEditor(dataPath, baseRom);
+                        EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo"));
                         api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "evo",false));
@@ -258,7 +258,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Moves"))
                     {
-                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl.narc",dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl"));
                         api.updateSheet("Moves",editor.movesToSheet(File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl"));
@@ -266,7 +266,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Items"))
                     {
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,baseRom);
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
                         narctowl.unpack(dataPath + File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data.narc",dataPath + File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data");
                         toDelete.add(new File(dataPath + File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data"));
                         api.updateSheet("Items",editor.itemsToSheet(File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data"));
@@ -274,7 +274,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Encounters"))
                     {
-                        SinnohEncounterEditor editor= new SinnohEncounterEditor(dataPath);
+                        SinnohEncounterEditor editor= new SinnohEncounterEditor(project,dataPath);
                         narctowl.unpack(dataPath + File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "pl_enc_data.narc",dataPath + File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "pl_enc_data");
                         SinnohEncounterReturn encounterReturn= editor.encountersToSheet(File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "pl_enc_data");
                         toDelete.add(new File(dataPath + File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "pl_enc_data"));
@@ -293,7 +293,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "Trainer"))
                     {
-                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(project,dataPath,baseRom);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata.narc",dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata");
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trpoke.narc",dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trpoke");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "trainer" + File.separator + "trdata"));
@@ -310,7 +310,7 @@ public class RomApplier extends JFrame
                 case SoulSilver:
                     if(contains(selected, "Personal"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_");
                         PersonalReturnGen4 personalReturn= editor.personalToSheet(File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_"));
@@ -319,7 +319,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "TM Learnsets"))
                     {
-                        PersonalEditor editor= new PersonalEditor(dataPath, baseRom);
+                        PersonalEditor editor= new PersonalEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_");
                         PersonalReturnGen4 personalReturn= editor.personalToSheet(File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_"));
@@ -328,7 +328,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "Level-Up Learnsets"))
                     {
-                        LearnsetEditor editor= new LearnsetEditor(dataPath, baseRom);
+                        LearnsetEditor editor= new LearnsetEditor(dataPath, project);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_"));
                         api.updateSheet("Level-Up Learnsets",editor.learnsetToSheet(File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_"));
@@ -336,7 +336,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Evolutions"))
                     {
-                        EvolutionEditor editor= new EvolutionEditor(dataPath, baseRom);
+                        EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_"));
                         api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_",false));
@@ -350,7 +350,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Moves"))
                     {
-                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1_"));
                         api.updateSheet("Moves",editor.movesToSheet(File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1_"));
@@ -358,7 +358,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Items"))
                     {
-                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7_"));
                         api.updateSheet("Items",editor.movesToSheet(File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7_"));
@@ -366,7 +366,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Encounters"))
                     {
-                        JohtoEncounterEditor editor= new JohtoEncounterEditor(dataPath);
+                        JohtoEncounterEditor editor= new JohtoEncounterEditor(project, dataPath);
                         JohtoEncounterReturn encounterReturn;
 
                         if(baseRom == Game.HeartGold) //HG
@@ -397,7 +397,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected, "Trainer"))
                     {
-                        TrainerEditorGen4 editor= new TrainerEditorGen4(dataPath,baseRom);
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(project,dataPath,baseRom);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "5",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "5_");
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "6",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "6_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "5_"));

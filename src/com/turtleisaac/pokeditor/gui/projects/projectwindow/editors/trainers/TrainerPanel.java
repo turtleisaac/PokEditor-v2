@@ -16,6 +16,7 @@ import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
@@ -61,6 +62,7 @@ public class TrainerPanel extends JPanel
     public TrainerPanel()
     {
         initComponents();
+
 
         numberPokemonLastSelected= 0;
         trainerFileLastSelected= 0;
@@ -128,7 +130,7 @@ public class TrainerPanel extends JPanel
         {
             try
             {
-                trainerEditor= new TrainerEditorGen4(projectPath,Game.Platinum);
+                trainerEditor= new TrainerEditorGen4(project,projectPath,Game.Platinum);
             }
             catch (IOException exception)
             {
@@ -815,70 +817,37 @@ public class TrainerPanel extends JPanel
         tableLocator= new TableLocator(project);
 
         String resourcePath= projectPath + File.separator + "Program Files" + File.separator;
-        String entryPath = resourcePath + "EntryData.txt";
-        String movePath = resourcePath + "MoveList.txt";
-        String itemPath= resourcePath;
-        String classPath= resourcePath;
 
         switch(project.getBaseRom())
         {
             case Diamond:
             case Pearl:
-                itemPath+= "ItemListDP.txt";
-                classPath+= "TrainerClassesDP.txt";
+                nameData= TextEditor.getBank(project,362);
+                moveData= TextEditor.getBank(project,588);
+                itemData= TextEditor.getBank(project,344);
+                trainerClassData= TextEditor.getBank(project,560);
                 break;
 
             case Platinum:
-                itemPath+= "ItemListPt.txt";
-                classPath+= "TrainerClassesPt.txt";
+                nameData= TextEditor.getBank(project,412);
+                moveData= TextEditor.getBank(project,647);
+                itemData= TextEditor.getBank(project,392);
+                trainerClassData= TextEditor.getBank(project,619);
                 break;
 
             case HeartGold:
             case SoulSilver:
-                itemPath+= "ItemListJohto.txt";
-                classPath+= "TrainerClassesHGSS.txt";
+                nameData= TextEditor.getBank(project,237);
+                moveData= TextEditor.getBank(project,750);
+                itemData= TextEditor.getBank(project,222);
+                trainerClassData= TextEditor.getBank(project,730);
                 break;
         }
 
         try
         {
-            BufferedReader reader = new BufferedReader(new FileReader(entryPath));
-            ArrayList<String> nameList = new ArrayList<>();
+            BufferedReader reader;
             String line;
-            while ((line = reader.readLine()) != null) {
-                if(line.equalsIgnoreCase("Egg"))
-                    break;
-                nameList.add(line);
-            }
-            nameData = nameList.toArray(new String[0]);
-            reader.close();
-
-            reader = new BufferedReader(new FileReader(movePath));
-            ArrayList<String> moveList = new ArrayList<>();
-
-            while ((line = reader.readLine()) != null) {
-                moveList.add(line);
-            }
-            moveData = moveList.toArray(new String[0]);
-            reader.close();
-
-            reader = new BufferedReader(new FileReader(itemPath));
-            ArrayList<String> itemList = new ArrayList<>();
-
-            while ((line = reader.readLine()) != null) {
-                itemList.add(line);
-            }
-            itemData = itemList.toArray(new String[0]);
-            reader.close();
-
-            reader = new BufferedReader(new FileReader(classPath));
-            ArrayList<String> trainerClassList = new ArrayList<>();
-
-            while ((line = reader.readLine()) != null) {
-                trainerClassList.add(line);
-            }
-            trainerClassData= trainerClassList.toArray(new String[0]);
-            reader.close();
 
             reader = new BufferedReader(new FileReader(resourcePath + "FormDataPt.txt"));
             ArrayList<Integer> formNumberList = new ArrayList<>();
@@ -912,22 +881,26 @@ public class TrainerPanel extends JPanel
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
 //        newPanel.enableParentData();
 
-        TablePointer classGenderPointer;
-        switch (project.getBaseRom())
-        {
-            case Platinum:
-                classGenderPointer= TablePointer.ClassGender_CPUE;
-                break;
-//
-//            case HeartGold:
-//                classGenderPointer= TablePointer.
+        //TODO add HGSS compatibility for reading trainer class gender data
+//        TablePointer classGenderPointer;
+//        switch (project.getBaseRom())
+//        {
+//            case Platinum:
+//                classGenderPointer= TablePointer.ClassGender_CPUE;
 //                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + project.getBaseRom());
-        }
+////
+////            case HeartGold:
+////                classGenderPointer= TablePointer.
+////                break;
+//            default:
+//                throw new IllegalStateException("Unexpected value: " + project.getBaseRom());
+//        }
+//
+//        trainerClassGenderTable= tableLocator.obtainTableArr(classGenderPointer,trainerClassData.length,1);
+//        System.out.println(Arrays.toString(trainerClassGenderTable));
 
-        trainerClassGenderTable= tableLocator.obtainTableArr(classGenderPointer,trainerClassData.length,1);
-        System.out.println(Arrays.toString(trainerClassGenderTable));
+        trainerClassGenderTable= new byte[trainerClassData.length];
+        Arrays.fill(trainerClassGenderTable,(byte)0);
 
         trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), newPanel);
     }
@@ -960,7 +933,7 @@ public class TrainerPanel extends JPanel
 
             try
             {
-                trainerEditor= new TrainerEditorGen4(projectPath, project.getBaseRom());
+                trainerEditor= new TrainerEditorGen4(project, projectPath, project.getBaseRom());
             }
             catch (IOException exception)
             {
