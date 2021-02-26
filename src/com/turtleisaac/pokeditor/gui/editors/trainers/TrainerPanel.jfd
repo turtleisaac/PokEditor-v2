@@ -54,6 +54,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "trainerTextButton"
 					"text": "Trainer Text"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "trainerTextButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0"
 				} )

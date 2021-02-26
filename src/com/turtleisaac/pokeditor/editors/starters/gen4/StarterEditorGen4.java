@@ -4,7 +4,6 @@ import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.*;
 import java.util.*;
@@ -41,7 +40,7 @@ public class StarterEditorGen4
                 break;
 
             default:
-                throw new InvalidStateException("Invalid game: " + project.getBaseRom());
+                throw new RuntimeException("Invalid game: " + project.getBaseRom());
         }
     }
 
@@ -77,7 +76,7 @@ public class StarterEditorGen4
                 break;
 
             default:
-                throw new InvalidStateException("This editor can't be used with Gen 5 or HGSS currently.");
+                throw new RuntimeException("This editor can't be used with Gen 5 or HGSS currently.");
         }
     }
 

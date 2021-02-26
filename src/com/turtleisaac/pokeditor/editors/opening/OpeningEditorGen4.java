@@ -4,7 +4,6 @@ import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,7 +45,7 @@ public class OpeningEditorGen4
                 break;
 
             default:
-                throw new InvalidStateException("Invalid game: " + project.getBaseRom());
+                throw new RuntimeException("Invalid game: " + project.getBaseRom());
         }
     }
 

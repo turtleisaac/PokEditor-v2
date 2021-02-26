@@ -17,4 +17,15 @@ public class ArrayModifier
 
         return arr;
     }
+
+    public static Object[] getColumn(Object[][] arr, int col)
+    {
+        Object[] ret= new Object[arr.length];
+        for(int i= 0; i < arr.length; i++)
+        {
+            ret[i]= arr[i][col];
+        }
+
+        return ret;
+    }
 }

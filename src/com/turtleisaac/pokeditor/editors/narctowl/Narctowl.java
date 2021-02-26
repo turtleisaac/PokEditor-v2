@@ -15,7 +15,8 @@ import java.util.*;
  * Vendor, FrankieD, and Zekromaegis for updating and releasing new versions of PlatinumMaster's NARCTool
  * FrankieD for assisting me as we figured out how to read a narc and correctly extract other files from it
  */
-public class Narctowl {
+public class Narctowl
+{
 //    public static void main(String[] args) throws Exception {
 //        Narctowl narc = new Narctowl(); //creates new NarcEditor object
 //        if (args.length != 0) //checks if arguments were provided
@@ -102,6 +103,8 @@ public class Narctowl {
 
     public void unpack(String narc, String targetDirectory) throws IOException
     {
+        System.out.println("Unpacking: " + targetDirectory);
+
         if(manualAccess)
         {
             extractPath= targetDirectory;

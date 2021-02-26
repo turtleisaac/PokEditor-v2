@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Thu Jan 21 16:34:37 EST 2021
  */
 
-package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
+package com.turtleisaac.pokeditor.gui.editors.trainers;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,10 +21,10 @@ import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import com.turtleisaac.pokeditor.framework.BitStream;
+import com.turtleisaac.pokeditor.gui.ComboBoxItem;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.TableLocator;
-import com.turtleisaac.pokeditor.utilities.TablePointer;
 import com.turtleisaac.pokeditor.utilities.images.ImageBase;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
@@ -74,6 +74,8 @@ public class TrainerPanel extends JPanel
 
         ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
         ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
+
+        trainerSelectionComboBox.setMaximumRowCount(10);
 
         tableLocator= null;
 
@@ -459,6 +461,11 @@ public class TrainerPanel extends JPanel
         trainerSelectionComboBoxActionPerformed(null);
     }
 
+    private void trainerTextButtonActionPerformed(ActionEvent e)
+    {
+        // TODO add your code here
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         trainerSelectionComboBox = new JComboBox();
@@ -554,6 +561,7 @@ public class TrainerPanel extends JPanel
 
             //---- trainerTextButton ----
             trainerTextButton.setText("Trainer Text");
+            trainerTextButton.addActionListener(e -> trainerTextButtonActionPerformed(e));
             trainerDataPanel.add(trainerTextButton, "cell 1 0");
 
             //---- toggleMovesCheckbox ----
@@ -867,15 +875,15 @@ public class TrainerPanel extends JPanel
 
         for(String item : itemData)
         {
-            itemComboBox1.addItem(item);
-            itemComboBox2.addItem(item);
-            itemComboBox3.addItem(item);
-            itemComboBox4.addItem(item);
+            itemComboBox1.addItem(new ComboBoxItem(item));
+            itemComboBox2.addItem(new ComboBoxItem(item));
+            itemComboBox3.addItem(new ComboBoxItem(item));
+            itemComboBox4.addItem(new ComboBoxItem(item));
         }
 
         for(String trainerClass : trainerClassData)
         {
-            trainerClassSelectorComboBox.addItem(trainerClass);
+            trainerClassSelectorComboBox.addItem(new ComboBoxItem(trainerClass));
         }
 
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
@@ -926,7 +934,7 @@ public class TrainerPanel extends JPanel
             for(Object[] row : trainerDataTable)
             {
                 if(!first)
-                    trainerSelectionComboBox.addItem(row[1] + " (" + idx++ + ")");
+                    trainerSelectionComboBox.addItem(new ComboBoxItem(row[1] + " (" + idx++ + ")"));
                 else
                     first= false;
             }

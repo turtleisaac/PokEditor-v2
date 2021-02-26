@@ -4,7 +4,6 @@ import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import javax.swing.*;
 import java.io.*;
@@ -53,7 +52,7 @@ public class LearnsetEditor
                 break;
 
             default:
-                throw new InvalidStateException("Invalid rom: " + baseRom);
+                throw new RuntimeException("Invalid rom: " + baseRom);
         }
 
         switch (baseRom)

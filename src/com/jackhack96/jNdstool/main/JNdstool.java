@@ -27,20 +27,12 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class JNdstool {
-    public static void main(String... args)
+    public static void main(String... args) throws IOException
     {
-        try
-        {
-            if (args[0].equalsIgnoreCase("-x")) {
-                ROM.extractROM(Paths.get(args[1]), Paths.get(args[2]));
-            } else {
-                ROM.buildROM(Paths.get(args[1]), Paths.get(args[2]));
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
+        if (args[0].equalsIgnoreCase("-x")) {
+            ROM.extractROM(Paths.get(args[1]), Paths.get(args[2]));
+        } else {
+            ROM.buildROM(Paths.get(args[1]), Paths.get(args[2]));
         }
     }
 }

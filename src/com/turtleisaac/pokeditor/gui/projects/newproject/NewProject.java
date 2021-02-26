@@ -23,6 +23,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -333,9 +335,13 @@ public class NewProject extends JPanel {
     private void createButtonActionPerformed(ActionEvent e)
     {
         File directory= new File(projectLocationTextField.getText());
-        if(directory.exists())
+        if(!directory.exists())
         {
-
+            if(!directory.mkdir())
+            {
+                System.err.println("Path: " + directory.getAbsolutePath());
+                throw new RuntimeException("Unable to create directory. Check write perms");
+            }
         }
 
         Project project= new Project(projectNameTextField.getText(),projectLocationTextField.getText(),"pokeditor");
@@ -343,9 +349,37 @@ public class NewProject extends JPanel {
         project.setBaseRom(Project.parseBaseRom(baseRomConfirmLabel.getText().split(", ")[1]));
         project.setBaseRomGameCode(baseRomConfirmLabel.getText().split(", ")[1]);
 
+        String backupPath= project.getProjectPath().getAbsolutePath() + File.separator + "backups";
+        File backupDir= new File(backupPath);
+
+        if(!backupDir.exists())
+        {
+            if(!backupDir.mkdir())
+            {
+                System.err.println("Path: " + backupPath);
+                throw new RuntimeException("Unable to create directory. Check write perms");
+            }
+        }
+
+        try
+        {
+            Files.copy(Paths.get(baseRomTextField.getText()),Paths.get(backupPath + File.separator + "original.nds"));
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
 
 
-        JNdstool.main("-x",baseRomTextField.getText(),projectLocationTextField.getText() + File.separator + projectNameTextField.getText());
+        try
+        {
+            JNdstool.main("-x",baseRomTextField.getText(),projectLocationTextField.getText() + File.separator + projectNameTextField.getText());
+        } catch (IOException exception)
+        {
+            exception.printStackTrace();
+            return;
+        }
+
 
         try
         {
@@ -353,22 +387,22 @@ public class NewProject extends JPanel {
             writer.write(project.getXml());
             writer.close();
         }
-        catch (IOException ignored)
+        catch (IOException exception)
         {
-            ignored.printStackTrace();
+            exception.printStackTrace();
         }
-
-
 
         try
         {
             ProjectWindow projectWindow= new ProjectWindow(projectLocationTextField.getText() + File.separator + projectNameTextField.getText() + ".pokeditor");
             projectWindow.setLocationRelativeTo(parent);
         }
-        catch (IOException ignored)
+        catch (IOException exception)
         {
-            ignored.printStackTrace();
+            exception.printStackTrace();
         }
+
+
 
         parent.dispose();
         frame.dispose();
@@ -493,6 +527,8 @@ public class NewProject extends JPanel {
 
     private boolean isGood(String gameCode)
     {
-        return gameCode.startsWith("CPU") || gameCode.startsWith("ADA") || gameCode.startsWith("APA") || gameCode.startsWith("IPK") || gameCode.startsWith("IPG") || gameCode.startsWith("IRB") || gameCode.startsWith("IRA") || gameCode.startsWith("IRD") || gameCode.startsWith("IRE");
+//        return gameCode.startsWith("CPU") || gameCode.startsWith("ADA") || gameCode.startsWith("APA") || gameCode.startsWith("IPK") || gameCode.startsWith("IPG") || gameCode.startsWith("IRB") || gameCode.startsWith("IRA") || gameCode.startsWith("IRD") || gameCode.startsWith("IRE");
+        return gameCode.startsWith("CPU") || gameCode.startsWith("ADA") || gameCode.startsWith("APA") || gameCode.startsWith("IPK") || gameCode.startsWith("IPG");
+
     }
 }

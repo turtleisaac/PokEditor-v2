@@ -106,7 +106,7 @@ new FormModel {
 				}, new FormLayoutConstraints( null ) {
 					"title": "Main"
 				} )
-				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers.TrainerPanel" ) {
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.trainers.TrainerPanel" ) {
 					name: "trainerPanel1"
 				}, new FormLayoutConstraints( null ) {
 					"title": "Trainer Editor"
@@ -156,12 +156,12 @@ new FormModel {
 				}, new FormLayoutConstraints( null ) {
 					"title": "Opening Cutscene"
 				} )
-				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.pokemon.PokemonSpritePanel" ) {
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.sprites.pokemon.PokemonSpritePanel" ) {
 					name: "pokemonSpritePanel"
 				}, new FormLayoutConstraints( null ) {
 					"title": "Pokémon Sprites"
 				} )
-				add( new FormComponent( "com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.trainers.TrainerSpritePanel" ) {
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.sprites.trainers.TrainerSpritePanel" ) {
 					name: "panel1"
 				}, new FormLayoutConstraints( null ) {
 					"title": "Trainer Sprites"
@@ -254,6 +254,12 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator1"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "importRomItem"
+						"text": "Import ROM"
+						"toolTipText": "Re-bases this project on a different ROM of the same game"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "importRomItemActionPerformed", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "exportRomItem"

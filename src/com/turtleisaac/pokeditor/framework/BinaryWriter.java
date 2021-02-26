@@ -14,6 +14,18 @@ public class BinaryWriter {
         writer.close();
     }
 
+    public static void writeFile(File file, byte... bytes) throws IOException
+    {
+        BinaryWriter writer = new BinaryWriter(file);
+        writer.write(bytes);
+        writer.close();
+    }
+
+    public static void writeFile(String file, byte... bytes) throws IOException
+    {
+        writeFile(new File(file),bytes);
+    }
+
     public BinaryWriter(File file) throws IOException {
         raf = new RandomAccessFile(file, "rw");
         raf.setLength(0);
@@ -23,7 +35,9 @@ public class BinaryWriter {
     {
         this(new File(fileName));
     }
-    
+
+
+
     public void setPosition(long pos) throws IOException {
         raf.seek(pos);
     }

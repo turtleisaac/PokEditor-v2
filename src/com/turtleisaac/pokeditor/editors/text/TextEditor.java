@@ -5,11 +5,10 @@ import com.jackhack96.jNdstool.io.jBinaryStream;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class TextEditor
 {
@@ -38,7 +37,7 @@ public class TextEditor
                 break;
 
             default:
-                throw new InvalidStateException("Invalid game: " + project.getBaseRom());
+                throw new RuntimeException("Invalid game: " + project.getBaseRom());
         }
 
         if(!new File(textDirPath).exists())
@@ -74,7 +73,7 @@ public class TextEditor
                 break;
 
             default:
-                throw new InvalidStateException("Invalid game: " + project.getBaseRom());
+                throw new RuntimeException("Invalid game: " + project.getBaseRom());
         }
 
         int numBanks= Narctowl.getNumFiles(textNarcPath);
@@ -96,6 +95,34 @@ public class TextEditor
         }
     }
 
+    public static void cleanup(Project project)
+    {
+        File folder;
+
+        switch (project.getBaseRom())
+        {
+            case Platinum:
+                folder= new File(project.getDataPath() + File.separator + "msgdata" + File.separator + "pl_msg");
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                folder= new File(project.getDataPath() + File.separator + "a" + File.separator + "0" + File.separator + "2" + File.separator + "7_");
+                break;
+
+            case Diamond:
+            case Pearl:
+                folder= new File(project.getDataPath() + File.separator + "msgdata" + File.separator + "msg");
+                break;
+
+            default:
+                throw new RuntimeException("Invalid game: " + project.getBaseRom());
+        }
+
+        if(folder.exists())
+            clearDirs(folder);
+    }
+
     private static boolean contains(String[] arr, String str)
     {
         str= str.toLowerCase().trim();
@@ -105,5 +132,17 @@ public class TextEditor
                 return true;
         }
         return false;
+    }
+
+    private static void clearDirs(File folder)
+    {
+        for(File f : Objects.requireNonNull(folder.listFiles()))
+        {
+            if(f.isDirectory())
+                clearDirs(f);
+            else
+                f.delete();
+        }
+        folder.delete();
     }
 }

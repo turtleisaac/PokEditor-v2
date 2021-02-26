@@ -1,8 +1,4 @@
 package com.turtleisaac.pokeditor.editors.trainers.gen4;
-
-import com.jackhack96.dspre.handlers.gen4.text.MessageFile;
-import com.jackhack96.jNdstool.io.jBinaryStream;
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.ArrayModifier;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
@@ -10,7 +6,6 @@ import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
-import sun.plugin.dom.exception.InvalidStateException;
 
 import java.io.*;
 import java.util.*;

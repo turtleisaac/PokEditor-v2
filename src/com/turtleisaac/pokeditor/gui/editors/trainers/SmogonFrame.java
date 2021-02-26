@@ -2,12 +2,10 @@
  * Created by JFormDesigner on Wed Jan 27 21:53:11 EST 2021
  */
 
-package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
+package com.turtleisaac.pokeditor.gui.editors.trainers;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import javax.swing.*;
 import net.miginfocom.swing.*;
 

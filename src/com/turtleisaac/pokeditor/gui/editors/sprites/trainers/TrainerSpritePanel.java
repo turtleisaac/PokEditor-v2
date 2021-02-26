@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Wed Feb 03 16:21:32 EST 2021
  */
 
-package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.trainers;
+package com.turtleisaac.pokeditor.gui.editors.sprites.trainers;
 
 import javax.swing.*;
 import net.miginfocom.swing.*;

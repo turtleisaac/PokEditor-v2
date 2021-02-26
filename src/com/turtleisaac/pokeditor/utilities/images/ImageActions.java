@@ -1202,6 +1202,15 @@ public class ImageActions
             }
         }
 
+        for(int row= 0; row < bankImage.getHeight(); row++)
+        {
+            for(int col= 0; col < bankImage.getWidth(); col++)
+            {
+                if(bankImage.getRGB(col,row) == pal.getPalettes()[0][0].getRGB())
+                    bankImage.setRGB(col,row,background.getRGB());
+            }
+        }
+
         return bankImage;
     }
 

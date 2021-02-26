@@ -38,6 +38,12 @@ public class Buffer {
 
     }
 
+    public static byte[] readFile(String file)
+    {
+        Buffer buffer= new Buffer(file);
+        return buffer.readRemainder();
+    }
+
     public int readInt() {
         require(4);
 

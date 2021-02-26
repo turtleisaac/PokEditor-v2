@@ -9,11 +9,12 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.*;
@@ -21,18 +22,21 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.jackhack96.dspre.nitro.rom.ROMUtils;
 import com.jackhack96.jNdstool.main.JNdstool;
 import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
+import com.turtleisaac.pokeditor.editors.positions.SpriteDataProcessor;
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.gui.JCheckboxTree;
 import com.turtleisaac.pokeditor.gui.MyFilter;
 import com.turtleisaac.pokeditor.gui.main.PokEditor;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.console.ConsoleWindow;
-import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.pokemon.PokemonSpritePanel;
-import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.sprites.trainers.*;
-import com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers.TrainerPanel;
+import com.turtleisaac.pokeditor.gui.editors.sprites.pokemon.PokemonSpritePanel;
+import com.turtleisaac.pokeditor.gui.editors.sprites.trainers.*;
+import com.turtleisaac.pokeditor.gui.editors.trainers.TrainerPanel;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.RomApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetsSetup;
@@ -93,8 +97,17 @@ public class ProjectWindow extends JFrame
                 setSheetChooserComboBox(api.getSheetNames());
             } catch (ClassNotFoundException | IOException | GeneralSecurityException e)
             {
-                JOptionPane.showMessageDialog(this,"Unable to load stored API credentials. Please redo configuration.","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Unable to load stored API credentials. Please re-open project.\nIf this continues to be unsucessful, re-do the API configuration.","Error",JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
+
+                api= null;
+                linkTextField.setEnabled(false);
+                sheetChooserComboBox.setEnabled(false);
+                applyToRomButton.setEnabled(false);
+                applyToSheetButton.setEnabled(false);
+                sheetPreviewTable.setEnabled(false);
+                sheetRefreshChangesButton.setEnabled(false);
+                sheetUploadChangesButton.setEnabled(false);
             }
         }
 
@@ -232,21 +245,108 @@ public class ProjectWindow extends JFrame
 
     private void thisWindowClosing(WindowEvent e)
     {
-        switch(JOptionPane.showConfirmDialog(this,"Any local changes that have not been uploaded or applied to your ROM will be lost. Are you sure you want to exit?","Warning",JOptionPane.YES_NO_OPTION))
+        if(e != null)
         {
-            case 0: //yes
-                dispose();
+            switch(JOptionPane.showConfirmDialog(this,"Any local changes that have not been uploaded or applied to your ROM will be lost. Are you sure you want to exit?","Warning",JOptionPane.YES_NO_OPTION))
+            {
+                case 0: //yes
+                    dispose();
 
-                Point location= getLocation();
-                String xLocation= "" + location.getX();
-                String yLocation= "" + location.getY();
-                PokEditor.main(new String[] {xLocation, yLocation});
-                break;
+                    for(File file : pokemonSpritePanel.toDelete)
+                        clearDirs(file);
+                    for(File file : trainerPanel1.toDelete)
+                        clearDirs(file);
+                    for(File file : SpriteDataProcessor.toDelete)
+                        clearDirs(file);
 
-            case 1: //no
-                setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                break;
+                    TextEditor.cleanup(project);
+                    pokemonSpritePanel.toDelete= new ArrayList<>();
+                    trainerPanel1.toDelete= new ArrayList<>();
+
+                    String backupPath= project.getProjectPath().getAbsolutePath() + File.separator + "backups";
+                    File backupDir= new File(backupPath);
+                    String dirPath= projectPath + File.separator + project.getName();
+
+                    if(!backupDir.exists())
+                    {
+                        if(!backupDir.mkdir())
+                        {
+                            System.err.println("Path: " + backupPath);
+                            throw new RuntimeException("Unable to create directory. Check write perms");
+                        }
+                    }
+
+
+                    File[] backups= Objects.requireNonNull(backupDir.listFiles());
+
+                    if(backups.length >= 10)
+                    {
+                        if(JOptionPane.showConfirmDialog(this,"There are already 10 or more backup ROMs. Would you like to delete the oldest one?") == 0)
+                        {
+                            File earliestFile;
+                            if(!backups[0].getName().equals("original.nds"))
+                            {
+                                earliestFile= backups[0];
+                            }
+                            else
+                            {
+                                earliestFile= backups[1];
+                            }
+
+
+                            for(int i= 1; i < backups.length; i++)
+                            {
+                                try
+                                {
+                                    FileTime creationTime= (FileTime) Files.getAttribute(Paths.get(backups[i].getAbsolutePath()),"creationTime");
+                                    FileTime earliestCreationTime= (FileTime) Files.getAttribute(Paths.get(earliestFile.getAbsolutePath()),"creationTime");
+
+                                    if(creationTime.compareTo(earliestCreationTime) < 0 && !backups[i].getName().equals("original.nds"))
+                                    {
+                                        earliestFile= backups[i];
+                                    }
+                                }
+                                catch (IOException exception)
+                                {
+                                    exception.printStackTrace();
+                                }
+                            }
+
+
+                            if(!earliestFile.delete())
+                            {
+                                System.err.println("Unable to delete oldest backup");
+                            }
+                        }
+                    }
+
+                    String date= java.time.LocalDate.now().toString();
+                    String time= java.time.LocalTime.now().toString().replaceAll(":",".");
+                    System.out.println("Time: " + time);
+
+                    cleanupDirs(new File(dirPath));
+                    exportRom(dirPath,backupPath + File.separator + date + " " + time.substring(0,time.lastIndexOf(".")) + ".nds",false);
+
+                    Point location= getLocation();
+                    String xLocation= "" + location.getX();
+                    String yLocation= "" + location.getY();
+                    PokEditor.main(new String[] {xLocation, yLocation});
+                    break;
+
+                case 1: //no
+                    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    break;
+            }
         }
+        else
+        {
+            dispose();
+            Point location= getLocation();
+            String xLocation= "" + location.getX();
+            String yLocation= "" + location.getY();
+            PokEditor.main(new String[] {xLocation, yLocation});
+        }
+
     }
 
     private void applyToSheetButtonActionPerformed(ActionEvent e) {
@@ -474,7 +574,10 @@ public class ProjectWindow extends JFrame
             clearDirs(file);
         for(File file : trainerPanel1.toDelete)
             clearDirs(file);
+        for(File file : SpriteDataProcessor.toDelete)
+            clearDirs(file);
 
+        TextEditor.cleanup(project);
         pokemonSpritePanel.toDelete= new ArrayList<>();
         trainerPanel1.toDelete= new ArrayList<>();
 
@@ -486,10 +589,25 @@ public class ProjectWindow extends JFrame
         {
             String dirPath= projectPath + File.separator + project.getName();
             cleanupDirs(new File(dirPath));
-            JNdstool.main("-b",dirPath,fc.getSelectedFile().toString());
-
-            JOptionPane.showMessageDialog(this,"Success!","PokEditor",JOptionPane.INFORMATION_MESSAGE);
+            exportRom(dirPath,fc.getSelectedFile().toString(),true);
         }
+    }
+
+    private void exportRom(String dirPath, String outputPath, boolean display)
+    {
+        try
+        {
+            JNdstool.main("-b",dirPath,outputPath);
+        }
+        catch (IOException e)
+        {
+            System.err.println("ROM Output Error:");
+            e.printStackTrace();
+            return;
+        }
+
+        if(display)
+            JOptionPane.showMessageDialog(this,"Success!","PokEditor",JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void openProjectButtonActionPerformed(ActionEvent e)
@@ -671,12 +789,95 @@ public class ProjectWindow extends JFrame
         JOptionPane.showMessageDialog(this,"Not implemented yet.","Error",JOptionPane.ERROR_MESSAGE);
     }
 
+    private void importRomItemActionPerformed(ActionEvent e)
+    {
+
+        if(JOptionPane.showConfirmDialog(this,"Proceeding will wipe all data in the currently used ROM that is not contained on the PokEditor sheets. This includes sprites, scripts, asm, or any misc. hex edits.\n\nAre you sure that you want to continue?","Warning",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE) == 0)
+        {
+            String defaultDir;
+
+            if(new File(projectPath + File.separator + "backups").exists())
+                defaultDir= projectPath + File.separator + "backups";
+            else
+                defaultDir= System.getProperty("user.dir");
+
+            JFileChooser fc= new JFileChooser(defaultDir);
+            fc.addChoosableFileFilter(new MyFilter("Nintendo DS ROM",".nds"));
+            fc.setAcceptAllFileFilterUsed(true);
+
+            int returnVal = fc.showOpenDialog(this);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+                String gameCode = "";
+
+                try
+                {
+                    gameCode= ROMUtils.getROMCode(fc.getSelectedFile().getAbsolutePath());
+                }
+                catch (IOException exception)
+                {
+                    exception.printStackTrace();
+                    JOptionPane.showMessageDialog(this,"An unexpected error occurred while checking the ROM data","Error",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if(Project.parseBaseRom(gameCode) != baseRom)
+                {
+                    JOptionPane.showMessageDialog(this,"The selected ROM is not the same base as the ROM used for this project.","Error",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String dirPath= projectPath + File.separator + project.getName();
+                clearDirs(new File(dirPath));
+
+                try
+                {
+                    JNdstool.main("-x", fc.getSelectedFile().getAbsolutePath(),dirPath);
+                }
+                catch (IOException exception)
+                {
+                    exception.printStackTrace();
+                    JOptionPane.showMessageDialog(this,"An unexpected error occurred while unpacking this ROM","Error",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String backupPath= project.getProjectPath().getAbsolutePath() + File.separator + "backups";
+                File backupDir= new File(backupPath);
+
+                if(!backupDir.exists())
+                {
+                    if(!backupDir.mkdir())
+                    {
+                        System.err.println("Path: " + backupPath);
+                        throw new RuntimeException("Unable to create directory. Check write perms");
+                    }
+                }
+
+                try
+                {
+                    Files.copy(Paths.get(fc.getSelectedFile().getAbsolutePath()),Paths.get(backupPath + File.separator + "original.nds"));
+                }
+                catch (IOException exception)
+                {
+                    exception.printStackTrace();
+                }
+
+                JOptionPane.showMessageDialog(this,"The project will now close. After reopening it, the ROM re-base will be complete.","PokEditor",JOptionPane.INFORMATION_MESSAGE);
+                thisWindowClosing(null);
+            }
+        }
+
+
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         menuBar = new JMenuBar();
         fileMenu = new JMenu();
         openProjectItem = new JMenuItem();
         openRecentItem = new JMenuItem();
+        importRomItem = new JMenuItem();
         exportRomItem = new JMenuItem();
         toolsMenu = new JMenu();
         randomizerItem = new JMenuItem();
@@ -751,6 +952,12 @@ public class ProjectWindow extends JFrame
                 openRecentItem.setText("Open Recent");
                 fileMenu.add(openRecentItem);
                 fileMenu.addSeparator();
+
+                //---- importRomItem ----
+                importRomItem.setText("Import ROM");
+                importRomItem.setToolTipText("Re-bases this project on a different ROM of the same game");
+                importRomItem.addActionListener(e -> importRomItemActionPerformed(e));
+                fileMenu.add(importRomItem);
 
                 //---- exportRomItem ----
                 exportRomItem.setText("Export ROM");
@@ -1032,6 +1239,7 @@ public class ProjectWindow extends JFrame
     private JMenu fileMenu;
     private JMenuItem openProjectItem;
     private JMenuItem openRecentItem;
+    private JMenuItem importRomItem;
     private JMenuItem exportRomItem;
     private JMenu toolsMenu;
     private JMenuItem randomizerItem;
@@ -1307,26 +1515,32 @@ public class ProjectWindow extends JFrame
 
     public static void clearDirs(File folder)
     {
-        for(File f : Objects.requireNonNull(folder.listFiles()))
+        if(folder.exists())
         {
-            if(f.isDirectory())
-                clearDirs(f);
-            else
-                f.delete();
+            for(File f : Objects.requireNonNull(folder.listFiles()))
+            {
+                if(f.isDirectory())
+                    clearDirs(f);
+                else
+                    f.delete();
+            }
+            folder.delete();
         }
-        folder.delete();
     }
 
     public static void cleanupDirs(File folder)
     {
-        for(File f : Objects.requireNonNull(folder.listFiles()))
+        if(folder.exists())
         {
-            if(f.isDirectory())
-                cleanupDirs(f);
-            else if(f.isHidden())
-                f.delete();
+            for(File f : Objects.requireNonNull(folder.listFiles()))
+            {
+                if(f.isDirectory())
+                    cleanupDirs(f);
+                else if(f.isHidden())
+                    f.delete();
+            }
+            folder.delete();
         }
-        folder.delete();
     }
 
     private boolean selectedContains(String[] arr, String str)

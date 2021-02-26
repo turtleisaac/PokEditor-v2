@@ -114,7 +114,7 @@ public class MemBuf {
             writePos += n;
         }
 
-        public MemBufWriter writeInt(int i) throws IOException {
+        public MemBufWriter writeInt(int i) {
             require(4);
             buf[writePos++] = (byte) (i & 0xff);
             buf[writePos++] = (byte) ((i >> 8) & 0xff);
@@ -123,20 +123,20 @@ public class MemBuf {
             return this;
         }
 
-        public MemBufWriter writeShort(short s) throws IOException {
+        public MemBufWriter writeShort(short s) {
             require(2);
             buf[writePos++] = (byte) (s & 0xff);
             buf[writePos++] = (byte) ((s >> 8) & 0xff);
             return this;
         }
 
-        public MemBufWriter writeByte(byte b) throws IOException {
+        public MemBufWriter writeByte(byte b) {
             require(1);
             buf[writePos++] = b;
             return this;
         }
 
-        public MemBufWriter writeBytes(int... bytes) throws IOException {
+        public MemBufWriter writeBytes(int... bytes) {
             require(bytes.length);
             for (int b : bytes) {
                 buf[writePos++] = (byte)b;
@@ -144,7 +144,7 @@ public class MemBuf {
             return this;
         }
 
-        public MemBufWriter write(byte[] bytes) throws IOException {
+        public MemBufWriter write(byte... bytes)  {
             require(bytes.length);
             for (byte b : bytes) {
                 buf[writePos++] = b;
@@ -152,7 +152,17 @@ public class MemBuf {
             return this;
         }
 
-        public MemBufWriter write(byte[] bytes, int offset, int length) throws IOException {
+        public MemBufWriter write(short... shorts) {
+            for(short s : shorts)
+            {
+                require(2);
+                buf[writePos++] = (byte) (s & 0xff);
+                buf[writePos++] = (byte) ((s >> 8) & 0xff);
+            }
+            return this;
+        }
+
+        public MemBufWriter write(byte[] bytes, int offset, int length) {
             require(length);
             for (int i=offset; length > 0; offset++,length--) {
                 buf[writePos++] = bytes[i];

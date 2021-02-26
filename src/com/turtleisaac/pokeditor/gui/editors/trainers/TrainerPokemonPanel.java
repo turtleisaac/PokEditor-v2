@@ -2,16 +2,15 @@
  * Created by JFormDesigner on Thu Jan 21 15:19:22 EST 2021
  */
 
-package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers;
+package com.turtleisaac.pokeditor.gui.editors.trainers;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.*;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
+import com.turtleisaac.pokeditor.gui.ComboBoxItem;
 import com.turtleisaac.pokeditor.utilities.TrainerPersonalityCalculator;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import net.miginfocom.swing.*;
@@ -62,20 +61,20 @@ public class TrainerPokemonPanel extends JPanel
     {
         for(String species : parent.getSpeciesList())
         {
-            speciesComboBox.addItem(species);
+            speciesComboBox.addItem(new ComboBoxItem(species));
         }
 
         for(String heldItem : parent.getItemList())
         {
-            heldItemComboBox.addItem(heldItem);
+            heldItemComboBox.addItem(new ComboBoxItem(heldItem));
         }
 
         for(String move : parent.getMoveData())
         {
-            move1ComboBox.addItem(move);
-            move2ComboBox.addItem(move);
-            move3ComboBox.addItem(move);
-            move4ComboBox.addItem(move);
+            move1ComboBox.addItem(new ComboBoxItem(move));
+            move2ComboBox.addItem(new ComboBoxItem(move));
+            move3ComboBox.addItem(new ComboBoxItem(move));
+            move4ComboBox.addItem(new ComboBoxItem(move));
         }
 
         formNumberData= parent.getFormNumberData();

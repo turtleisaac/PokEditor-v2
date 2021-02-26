@@ -2,7 +2,7 @@
  * Created by JFormDesigner on Fri Jan 29 16:17:22 EST 2021
  */
 
-package com.turtleisaac.pokeditor.gui.projects.projectwindow.editors.trainers.classes;
+package com.turtleisaac.pokeditor.gui.editors.trainers.classes;
 
 import javax.swing.*;
 import javax.swing.border.*;

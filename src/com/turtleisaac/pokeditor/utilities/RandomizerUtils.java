@@ -265,6 +265,10 @@ public class RandomizerUtils
                 evolutions[row][2]= "Level Up";
                 evolutions[row][3]= "1";
                 evolutions[row][4]= "" + getRandom();
+
+                evolutions[row][5]= "Use Item";
+                evolutions[row][6]= "Thunderstone";
+                evolutions[row][7]= "" + getRandom();
             }
             else if(row == 132) //Ditto
             {

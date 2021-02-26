@@ -98,7 +98,7 @@ public class Project implements Serializable
 
     public String getDataPath()
     {
-        return getProjectPath().getAbsolutePath() + File.separator + getName() + File.separator + "data";
+        return new File(getProjectPath().getAbsolutePath() + File.separator + getName() + File.separator + "data").getAbsolutePath();
     }
 
     public String getXml()
