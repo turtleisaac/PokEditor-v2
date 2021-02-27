@@ -250,7 +250,16 @@ public class RandomizerUtils
         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_"));
 
-        Object[][] evolutions= editor.evolutionsToSheet(File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_",false);
+//        int numEvoFiles= Narctowl.getNumFiles(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4");
+        Object[][] evolutions= editor.evolutionsToSheet(File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_",false, true);
+
+//        Object[][] evolutions= new Object[numEvoFiles+1][70];
+
+//        for(int i= 0; i < evolutions.length; i++)
+//        {
+//            Arrays.fill(evolutions[i],"");
+//        }
+
         Object[] header= Arrays.copyOf(evolutions,1);
         evolutions= Arrays.copyOfRange(evolutions,1,evolutions.length-1);
 
@@ -327,7 +336,7 @@ public class RandomizerUtils
         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_"));
 
-        Object[][] evolutions= editor.evolutionsToSheet(File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_",false);
+        Object[][] evolutions= editor.evolutionsToSheet(File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_",false, false);
         Object[] header= Arrays.copyOf(evolutions,1);
         evolutions= Arrays.copyOfRange(evolutions,1,evolutions.length-1);
 

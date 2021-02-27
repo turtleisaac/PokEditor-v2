@@ -135,7 +135,7 @@ public class RomApplier extends JFrame
                         EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo"));
-                        api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "evo",false));
+                        api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "evo",false,false));
                     }
 
                     if(contains(selected,"Tutor Move"))
@@ -242,7 +242,7 @@ public class RomApplier extends JFrame
                         EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         narctowl.unpack(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo.narc",dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "evo"));
-                        api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "evo",false));
+                        api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "poketool" + File.separator + "personal" + File.separator + "evo",false, false));
                     }
 
                     if(contains(selected,"Tutor Move"))
@@ -339,7 +339,7 @@ public class RomApplier extends JFrame
                         EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_"));
-                        api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_",false));
+                        api.updateSheet("Evolutions",editor.evolutionsToSheet(File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_",false, false));
                     }
 
                     if(contains(selected,"Baby Forms"))

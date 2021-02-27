@@ -60,6 +60,13 @@ public class EvolutionEditor
                 break;
         }
 
+        System.out.println();
+        for(int i= 0; i < itemData.length; i++)
+        {
+            System.out.println(i + ": " + itemData[i]);
+        }
+        System.out.println();
+
         BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "EvolutionMethodsGen4.txt"));
         String line;
         ArrayList<String> evolutionList= new ArrayList<>();
@@ -73,11 +80,8 @@ public class EvolutionEditor
     }
 
 
-    public Object[][] evolutionsToSheet(String evolutionDir, boolean easyDisplay) throws IOException
+    public Object[][] evolutionsToSheet(String evolutionDir, boolean easyDisplay, boolean random) throws IOException
     {
-//        Scanner scanner= new Scanner(System.in);
-//        System.out.println("Do you wish to toggle automatic correction of incorrect/ broken data? (Y/n) (If the rom you are editing has an expanded move, ability, type, or item table, and you have not yet adjusted the data in the \"Program Files\" directory, it is safest to say no)");
-//        autoFix= !scanner.nextLine().equalsIgnoreCase("n");
         autoFix= false;
 
         dataPath+= evolutionDir;
@@ -162,6 +166,14 @@ public class EvolutionEditor
             evolutionBuffer.close();
         }
 
+        if(random)
+        {
+            for(int i= 0; i < dataList.size(); i++)
+            {
+                dataList.set(i,dataList.get(0));
+            }
+        }
+
         String[][] evolutionTable;
         if(easyDisplay)
         {
@@ -179,6 +191,16 @@ public class EvolutionEditor
 
         for(int row= 0; row < dataList.size(); row++)
         {
+            String name;
+            try
+            {
+                name= nameData[row];
+            }
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                name= "p" + row;
+            }
+
             if(easyDisplay)
             {
                 for (int col = 0; col < evolutionTable[0].length; col++)
@@ -280,7 +302,7 @@ public class EvolutionEditor
             else
             {
                 int current= 0;
-//                System.out.println(nameData[row]);
+                System.out.println(name);
                 for (int col = 0; col < 7; col++)
                 {
                     int evolutionMethodID = dataList.get(row).getEvolutionMethod()[col];
@@ -318,12 +340,33 @@ public class EvolutionEditor
                     }
                     else if (evolutionMethodID == 21)
                     {
-                        evolutionTable[row][current]= nameData[requirementNumber];
+                        String requireName;
+                        try
+                        {
+                            requireName= nameData[requirementNumber];
+                        }
+                        catch (ArrayIndexOutOfBoundsException e)
+                        {
+                            requireName= "p" + requirementNumber;
+                        }
+
+                        evolutionTable[row][current]= requireName;
                     }
                     System.out.println("    " + evolutionTable[row][current]);
                     current++;
 
-                    evolutionTable[row][current]= nameData[evolvedID];
+                    String evolvedName;
+                    try
+                    {
+                        evolvedName= nameData[evolvedID];
+                    }
+                    catch (ArrayIndexOutOfBoundsException e)
+                    {
+                        evolvedName= "p" + evolvedID;
+                    }
+
+
+                    evolutionTable[row][current]= evolvedName;
                     System.out.println("    " + evolutionTable[row][current]);
                     current++;
                 }
@@ -344,7 +387,17 @@ public class EvolutionEditor
         String line;
         for(int row= 0; row < dataList.size(); row++)
         {
-            line= dataList.get(row).getNum() + "," + nameData[row] + ",";
+            String name;
+            try
+            {
+                name= nameData[row];
+            }
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                name= "p" + row;
+            }
+
+            line= dataList.get(row).getNum() + "," + name + ",";
             for(int col= 0; col < evolutionTable[0].length; col++)
             {
                 line+=evolutionTable[row][col] + ",";
@@ -374,6 +427,7 @@ public class EvolutionEditor
         for(int i= 0; i < evolutionCsv.length; i++)
         {
             Object[] thisLine= evolutionCsv[i];
+            System.out.println(i + ": " + Arrays.toString(thisLine));
             BinaryWriter writer= new BinaryWriter(outputPath + File.separator + i + ".bin");
             for(int e= 0; e < thisLine.length; e+= 3)
             {

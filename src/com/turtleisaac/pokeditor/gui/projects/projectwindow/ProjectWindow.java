@@ -51,6 +51,7 @@ import turtleisaac.GoogleSheetsAPI;
  */
 public class ProjectWindow extends JFrame
 {
+    private final JFrame mainMenu;
 
     private Project project;
     private GoogleSheetsAPI api;
@@ -63,11 +64,12 @@ public class ProjectWindow extends JFrame
 
     private ConsoleWindow console;
 
-    public ProjectWindow(String xmlPath) throws IOException
+    public ProjectWindow(String xmlPath, JFrame mainMenu, ConsoleWindow console) throws IOException
     {
         initComponents();
 
-        console= new ConsoleWindow();
+        this.mainMenu= mainMenu;
+        this.console= console;
 
         project= Project.readFromXml(xmlPath);
         projectPath= project.getProjectPath().toString();
@@ -327,10 +329,40 @@ public class ProjectWindow extends JFrame
                     cleanupDirs(new File(dirPath));
                     exportRom(dirPath,backupPath + File.separator + date + " " + time.substring(0,time.lastIndexOf(".")) + ".nds",false);
 
-                    Point location= getLocation();
-                    String xLocation= "" + location.getX();
-                    String yLocation= "" + location.getY();
-                    PokEditor.main(new String[] {xLocation, yLocation});
+
+                    boolean framesActive= false;
+                    for(Frame frame : Frame.getFrames())
+                    {
+                        if(frame.isVisible())
+                        {
+                            framesActive= true;
+                            break;
+                        }
+                    }
+
+
+
+                    if(framesActive)
+                    {
+                        switch(JOptionPane.showConfirmDialog(this,"Do you want to return to the main menu?","PokEditor",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE))
+                        {
+                            case 0: //yes
+                                mainMenu.setEnabled(true);
+                                mainMenu.setVisible(true);
+                                mainMenu.setLocationRelativeTo(this);
+                                break;
+
+                            case 1: //no
+                                setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        mainMenu.setEnabled(true);
+                        mainMenu.setVisible(true);
+                        mainMenu.setLocationRelativeTo(this);
+                    }
                     break;
 
                 case 1: //no
@@ -341,10 +373,9 @@ public class ProjectWindow extends JFrame
         else
         {
             dispose();
-            Point location= getLocation();
-            String xLocation= "" + location.getX();
-            String yLocation= "" + location.getY();
-            PokEditor.main(new String[] {xLocation, yLocation});
+            mainMenu.setEnabled(true);
+            mainMenu.setVisible(true);
+            mainMenu.setLocationRelativeTo(this);
         }
 
     }
@@ -625,7 +656,7 @@ public class ProjectWindow extends JFrame
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try
                 {
-                    ProjectWindow projectWindow= new ProjectWindow(fc.getSelectedFile().getAbsolutePath());
+                    ProjectWindow projectWindow= new ProjectWindow(fc.getSelectedFile().getAbsolutePath(), mainMenu,console);
                     projectWindow.setLocationRelativeTo(this);
                 }
                 catch (IOException ignored)

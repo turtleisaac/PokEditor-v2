@@ -16,6 +16,7 @@ import com.jackhack96.dspre.nitro.rom.ROMUtils;
 import com.jackhack96.jNdstool.main.JNdstool;
 import com.turtleisaac.pokeditor.gui.MyFilter;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.ProjectWindow;
+import com.turtleisaac.pokeditor.gui.projects.projectwindow.console.ConsoleWindow;
 import com.turtleisaac.pokeditor.project.Project;
 import net.miginfocom.swing.*;
 
@@ -37,12 +38,16 @@ public class NewProject extends JPanel {
     private boolean baseRomGood;
     private boolean directoryGood;
 
-    public NewProject(JFrame parent) {
+    private ConsoleWindow console;
+
+    public NewProject(JFrame parent, ConsoleWindow console) {
         initComponents();
 
         this.parent= parent;
         baseRomGood= false;
         directoryGood= false;
+
+        this.console= console;
 
         Dimension minimum= new Dimension();
         minimum.setSize(600,240);
@@ -334,7 +339,7 @@ public class NewProject extends JPanel {
 
     private void createButtonActionPerformed(ActionEvent e)
     {
-        File directory= new File(projectLocationTextField.getText());
+        File directory= new File(projectLocationTextField.getText().trim());
         if(!directory.exists())
         {
             if(!directory.mkdir())
@@ -344,31 +349,31 @@ public class NewProject extends JPanel {
             }
         }
 
-        Project project= new Project(projectNameTextField.getText(),projectLocationTextField.getText(),"pokeditor");
+        Project project= new Project(projectNameTextField.getText().trim(),projectLocationTextField.getText(),"pokeditor");
         project.setLanguage("ENG");
         project.setBaseRom(Project.parseBaseRom(baseRomConfirmLabel.getText().split(", ")[1]));
         project.setBaseRomGameCode(baseRomConfirmLabel.getText().split(", ")[1]);
 
-        String backupPath= project.getProjectPath().getAbsolutePath() + File.separator + "backups";
+        String backupPath= projectLocationTextField.getText().trim() + File.separator + "backups";
         File backupDir= new File(backupPath);
+//
+//        if(!backupDir.exists())
+//        {
+//            if(!backupDir.mkdir())
+//            {
+//                System.err.println("Path: " + backupPath);
+//                throw new RuntimeException("Unable to create directory. Check write perms");
+//            }
+//        }
 
-        if(!backupDir.exists())
-        {
-            if(!backupDir.mkdir())
-            {
-                System.err.println("Path: " + backupPath);
-                throw new RuntimeException("Unable to create directory. Check write perms");
-            }
-        }
-
-        try
-        {
-            Files.copy(Paths.get(baseRomTextField.getText()),Paths.get(backupPath + File.separator + "original.nds"));
-        }
-        catch (IOException exception)
-        {
-            exception.printStackTrace();
-        }
+//        try
+//        {
+//            Files.copy(Paths.get(baseRomTextField.getText()),Paths.get(backupPath + File.separator + "original.nds"));
+//        }
+//        catch (IOException exception)
+//        {
+//            exception.printStackTrace();
+//        }
 
 
         try
@@ -394,7 +399,7 @@ public class NewProject extends JPanel {
 
         try
         {
-            ProjectWindow projectWindow= new ProjectWindow(projectLocationTextField.getText() + File.separator + projectNameTextField.getText() + ".pokeditor");
+            ProjectWindow projectWindow= new ProjectWindow(projectLocationTextField.getText() + File.separator + projectNameTextField.getText() + ".pokeditor", parent,console);
             projectWindow.setLocationRelativeTo(parent);
         }
         catch (IOException exception)
@@ -403,8 +408,8 @@ public class NewProject extends JPanel {
         }
 
 
-
-        parent.dispose();
+        parent.setEnabled(false);
+        parent.setVisible(false);
         frame.dispose();
     }
 
