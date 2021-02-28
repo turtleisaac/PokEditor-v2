@@ -4,12 +4,13 @@ import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.utilities.images.nclr.NclrReader;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class ImageDecrypter
 {
+    private static final int width= 160;
+    private static final int height= 80;
 
     public static PokemonSprites getSprites(String path, int species, boolean primary)
     {
@@ -20,22 +21,23 @@ public class ImageDecrypter
         {
             palette= NclrReader.readFile(path + (species + 4) + ".nclr").getPalette().getPalettes()[0];
             shinyPalette= NclrReader.readFile(path + (species + 5) + ".nclr").getPalette().getPalettes()[0];
-        } catch (IOException exception)
+        }
+        catch (IOException exception)
         {
             exception.printStackTrace();
         }
 
-        BufferedImage[] femaleBack= primary ? decryptPrimary(path + species + ".ncgr",palette) : decryptSecondary(path + species + ".ncgr",palette);
-        BufferedImage[] shinyFemaleBack= primary ? decryptPrimary(path + species + ".ncgr",shinyPalette) : decryptSecondary(path + species + ".ncgr",shinyPalette);
+        SpriteImage[] femaleBack= primary ? decryptPrimary(path + species + ".ncgr",palette) : decryptSecondary(path + species + ".ncgr",palette);
+        SpriteImage[] shinyFemaleBack= primary ? decryptPrimary(path + species + ".ncgr",shinyPalette) : decryptSecondary(path + species + ".ncgr",shinyPalette);
 
-        BufferedImage[] maleBack= primary ? decryptPrimary(path + (species + 1) + ".ncgr",palette) : decryptSecondary(path + (species + 1) + ".ncgr",palette);
-        BufferedImage[] shinyMaleBack= primary ? decryptPrimary(path + (species + 1) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 1) + ".ncgr",shinyPalette);
+        SpriteImage[] maleBack= primary ? decryptPrimary(path + (species + 1) + ".ncgr",palette) : decryptSecondary(path + (species + 1) + ".ncgr",palette);
+        SpriteImage[] shinyMaleBack= primary ? decryptPrimary(path + (species + 1) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 1) + ".ncgr",shinyPalette);
 
-        BufferedImage[] femaleFront= primary ? decryptPrimary(path + (species + 2) + ".ncgr",palette) : decryptSecondary(path + (species + 2) + ".ncgr",palette);
-        BufferedImage[] shinyFemaleFront= primary ? decryptPrimary(path + (species + 2) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 2) + ".ncgr",shinyPalette);
+        SpriteImage[] femaleFront= primary ? decryptPrimary(path + (species + 2) + ".ncgr",palette) : decryptSecondary(path + (species + 2) + ".ncgr",palette);
+        SpriteImage[] shinyFemaleFront= primary ? decryptPrimary(path + (species + 2) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 2) + ".ncgr",shinyPalette);
 
-        BufferedImage[] maleFront= primary ? decryptPrimary(path + (species + 3) + ".ncgr",palette) : decryptSecondary(path + (species + 3) + ".ncgr",palette);
-        BufferedImage[] shinyMaleFront= primary ? decryptPrimary(path + (species + 3) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 3) + ".ncgr",shinyPalette);
+        SpriteImage[] maleFront= primary ? decryptPrimary(path + (species + 3) + ".ncgr",palette) : decryptSecondary(path + (species + 3) + ".ncgr",palette);
+        SpriteImage[] shinyMaleFront= primary ? decryptPrimary(path + (species + 3) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 3) + ".ncgr",shinyPalette);
 
 
         Color[] finalPalette = palette;
@@ -43,49 +45,49 @@ public class ImageDecrypter
         return new PokemonSprites()
         {
             @Override
-            public BufferedImage[] getFemaleBack()
+            public SpriteImage[] getFemaleBack()
             {
                 return femaleBack;
             }
 
             @Override
-            public BufferedImage[] getShinyFemaleBack()
+            public SpriteImage[] getShinyFemaleBack()
             {
                 return shinyFemaleBack;
             }
 
             @Override
-            public BufferedImage[] getMaleBack()
+            public SpriteImage[] getMaleBack()
             {
                 return maleBack;
             }
 
             @Override
-            public BufferedImage[] getShinyMaleBack()
+            public SpriteImage[] getShinyMaleBack()
             {
                 return shinyMaleBack;
             }
 
             @Override
-            public BufferedImage[] getFemaleFront()
+            public SpriteImage[] getFemaleFront()
             {
                 return femaleFront;
             }
 
             @Override
-            public BufferedImage[] getShinyFemaleFront()
+            public SpriteImage[] getShinyFemaleFront()
             {
                 return shinyFemaleFront;
             }
 
             @Override
-            public BufferedImage[] getMaleFront()
+            public SpriteImage[] getMaleFront()
             {
                 return maleFront;
             }
 
             @Override
-            public BufferedImage[] getShinyMaleFront()
+            public SpriteImage[] getShinyMaleFront()
             {
                 return shinyMaleFront;
             }
@@ -104,22 +106,17 @@ public class ImageDecrypter
         };
     }
 
-
-
-
     /**
      * Decrypts the encrypted NCGR files used in Platinum, HeartGold, and SoulSilver
      * @param file the path to the NCGR file to decrypt
      * @param palette a Color[] which contains the colors to assign to the images being constructed
-     * @return a BufferedImage[] of length two - index 0 being the "normal" frame, and index 1 being the second frame used for animation
+     * @return a SpriteImage[] of length two - index 0 being the "normal" frame, and index 1 being the second frame used for animation
      */
-    public static BufferedImage[] decryptPrimary(String file, Color[] palette)
+    public static SpriteImage[] decryptPrimary(String file, Color[] palette)
     {
-        final int width= 160;
-        final int height= 80;
         final int[] data= initialize(file,width,height);
-        final BufferedImage frame1= new BufferedImage(width/2,height,BufferedImage.TYPE_INT_RGB);
-        final BufferedImage frame2= new BufferedImage(width/2,height,BufferedImage.TYPE_INT_RGB);
+        SpriteImage frame1= new SpriteImage(palette);
+        SpriteImage frame2= new SpriteImage(palette);
 
         if(data != null)
         {
@@ -150,26 +147,23 @@ public class ImageDecrypter
                 }
             }
 
-
-            for(int row= 0; row < frame1.getHeight(); row++)
+            byte[][] table1= new byte[80][80];
+            for(int row= 0; row < table1.length; row++)
             {
-                for(int col= 0; col < frame1.getWidth(); col++)
-                {
-                    frame1.setRGB(col,row,palette[pixelTable[row][col]].getRGB());
-                }
+                System.arraycopy(pixelTable[row], 0, table1[row], 0, table1[row].length);
             }
 
-
-            for(int row= 0; row < frame2.getHeight(); row++)
+            byte[][] table2= new byte[80][80];
+            for(int row= 0; row < table2.length; row++)
             {
-                for(int col= 80; col < width; col++)
-                {
-                    frame2.setRGB(col-80,row,palette[pixelTable[row][col]].getRGB());
-                }
+                System.arraycopy(pixelTable[row], 80, table2[row], 0, table2[row].length);
             }
+
+            frame1= new SpriteImage(table1,palette);
+            frame2= new SpriteImage(table2,palette);
         }
 
-        return new BufferedImage[] {frame1, frame2};
+        return new SpriteImage[] {frame1, frame2};
     }
 
     /**
@@ -177,16 +171,14 @@ public class ImageDecrypter
      * This encryption uses an algorithm identical to that used in Platinum, excpet that the tiles are stored in inverse order
      * @param file the path to the NCGR file to decrypt
      * @param palette a Color[] which contains the colors to assign to the images being constructed
-     * @return a BufferedImage[] of length two - index 0 being the "normal" frame, and index 1 being the second frame used for animation
+     * @return a SpriteImage[] of length two - index 0 being the "normal" frame, and index 1 being the second frame used for animation
      */
-    public static BufferedImage[] decryptSecondary(String file, Color[] palette)
+    public static SpriteImage[] decryptSecondary(String file, Color[] palette)
     {
-        final int width= 160;
-        final int height= 80;
         final int[] data= initialize(file,width,height);
+        SpriteImage frame1= new SpriteImage(palette);
+        SpriteImage frame2= new SpriteImage(palette);
 
-        final BufferedImage frame1= new BufferedImage(width/2,height,BufferedImage.TYPE_INT_RGB);
-        final BufferedImage frame2= new BufferedImage(width/2,height,BufferedImage.TYPE_INT_RGB);
         if(data != null)
         {
             int num= data[width*height];
@@ -217,29 +209,25 @@ public class ImageDecrypter
                 }
             }
 
-
-            for(int row= 0; row < frame1.getHeight(); row++)
+            byte[][] table1= new byte[80][80];
+            for(int row= 0; row < table1.length; row++)
             {
-                for(int col= 0; col < frame1.getWidth(); col++)
-                {
-                    frame1.setRGB(col,row,palette[pixelTable[row][col]].getRGB());
-                }
+                System.arraycopy(pixelTable[row], 0, table1[row], 0, table1[row].length);
             }
 
-
-            for(int row= 0; row < frame2.getHeight(); row++)
+            byte[][] table2= new byte[80][80];
+            for(int row= 0; row < table2.length; row++)
             {
-                for(int col= 80; col < width; col++)
-                {
-                    frame2.setRGB(col-80,row,palette[pixelTable[row][col]].getRGB());
-                }
+                System.arraycopy(pixelTable[row], 80, table2[row], 0, table2[row].length);
             }
+
+            frame1= new SpriteImage(table1,palette);
+            frame2= new SpriteImage(table1,palette);
         }
 
-        return new BufferedImage[] {frame1, frame2};
+        return new SpriteImage[] {frame1, frame2};
 
     }
-
 
     private static int[] initialize(String file, int width, int height)
     {
@@ -263,5 +251,18 @@ public class ImageDecrypter
         }
 
         return data;
+    }
+
+    private static boolean backgroundDuplicated(Color[] palette)
+    {
+        Color background= palette[0];
+        for(int i= 1; i < palette.length; i++)
+        {
+            if(palette[i].equals(background))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

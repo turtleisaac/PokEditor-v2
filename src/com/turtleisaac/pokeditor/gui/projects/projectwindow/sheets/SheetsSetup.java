@@ -232,6 +232,14 @@ public class SheetsSetup extends JFrame {
     {
         dispose();
         parent.setApi(api);
+        try
+        {
+            parent.getTrainerPanel1().setApi(api);
+        } catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+
     }
 
     private void sheetsLinkLabelMouseClicked(MouseEvent e)

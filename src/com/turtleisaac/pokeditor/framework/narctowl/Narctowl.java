@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.editors.narctowl;
+package com.turtleisaac.pokeditor.framework.narctowl;
 
 import com.turtleisaac.pokeditor.framework.BLZCoder;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;

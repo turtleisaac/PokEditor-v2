@@ -2,7 +2,7 @@ package com.turtleisaac.pokeditor.editors.text;
 
 import com.jackhack96.dspre.handlers.gen4.text.MessageFile;
 import com.jackhack96.jNdstool.io.jBinaryStream;
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
 

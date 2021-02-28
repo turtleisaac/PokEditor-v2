@@ -15,7 +15,7 @@ import com.turtleisaac.pokeditor.Config;
 import com.turtleisaac.pokeditor.framework.BLZCoder;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.gui.MyFilter;
 import com.turtleisaac.pokeditor.gui.Theme;
 import com.turtleisaac.pokeditor.gui.projects.newproject.NewProject;
@@ -305,7 +305,6 @@ public class PokEditor extends JDialog
                 {
                     ProjectWindow projectWindow= new ProjectWindow(fc.getSelectedFile().getAbsolutePath(), frame,console);
                     projectWindow.setLocationRelativeTo(this);
-                    frame.setEnabled(false);
                     frame.setVisible(false);
                 }
                 catch (IOException ignored)

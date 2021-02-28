@@ -14,7 +14,7 @@ import com.turtleisaac.pokeditor.editors.evolutions.gen4.EvolutionEditor;
 import com.turtleisaac.pokeditor.editors.items.ItemEditorGen4;
 import com.turtleisaac.pokeditor.editors.learnsets.LearnsetEditor;
 import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;

@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.editors.narctowl;
+package com.turtleisaac.pokeditor.framework.narctowl;
 
 public interface NarcSubFile
 {

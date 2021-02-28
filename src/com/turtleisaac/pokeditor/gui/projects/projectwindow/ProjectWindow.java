@@ -25,7 +25,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.jackhack96.dspre.nitro.rom.ROMUtils;
 import com.jackhack96.jNdstool.main.JNdstool;
 import com.jidesoft.swing.ComboBoxSearchable;
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
 import com.turtleisaac.pokeditor.editors.positions.SpriteDataProcessor;
@@ -1582,5 +1582,10 @@ public class ProjectWindow extends JFrame
                 return true;
         }
         return false;
+    }
+
+    public TrainerPanel getTrainerPanel1()
+    {
+        return trainerPanel1;
     }
 }

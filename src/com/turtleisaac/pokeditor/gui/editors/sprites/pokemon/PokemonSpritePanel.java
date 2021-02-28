@@ -16,9 +16,10 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.colorchooser.ColorSelectionModel;
+import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.positions.SpriteData;
 import com.turtleisaac.pokeditor.editors.positions.SpriteDataProcessor;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
@@ -28,6 +29,7 @@ import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.images.ImageDecrypter;
 import com.turtleisaac.pokeditor.utilities.images.ImageEncrypter;
 import com.turtleisaac.pokeditor.utilities.images.PokemonSprites;
+import com.turtleisaac.pokeditor.utilities.images.SpriteImage;
 import net.miginfocom.swing.*;
 
 import java.awt.image.BufferedImage;
@@ -55,6 +57,15 @@ public class PokemonSpritePanel extends JPanel
     private final JButton[] normalPaletteButtons;
     private final JButton[] shinyPaletteButtons;
 
+    private SpriteDataProcessor.ShadowType shadowType;
+    private int femaleBackMod;
+    private int femaleFrontMod;
+    private int maleBackMod;
+    private int maleFrontMod;
+
+    private boolean canAdjust= false;
+    boolean frameToggled;
+
 
     public PokemonSpritePanel()
     {
@@ -65,7 +76,13 @@ public class PokemonSpritePanel extends JPanel
         mockupPanel.setVisible(true);
 
         ComboBoxSearchable speciesSearchable= new ComboBoxSearchable(speciesChooserComboBox);
-        speciesChooserComboBox.setMaximumRowCount(5);
+        speciesChooserComboBox.setMaximumRowCount(8);
+
+        shadowSizeComboBox.addItem(SpriteDataProcessor.ShadowType.None);
+        shadowSizeComboBox.addItem(SpriteDataProcessor.ShadowType.Small);
+        shadowSizeComboBox.addItem(SpriteDataProcessor.ShadowType.Medium);
+        shadowSizeComboBox.addItem(SpriteDataProcessor.ShadowType.Large);
+
 
 
         normalMaleFrontButton.setTransferHandler(new TransferHandler("icon"));
@@ -217,17 +234,17 @@ public class PokemonSpritePanel extends JPanel
     
     private void paletteButtonAction(int num, boolean shiny)
     {
-        int frameNum= frameToggleButton.isSelected() ? 1 : 0;
+        int frameNum= frameToggled ? 1 : 0;
 
         Color original= shiny ? shinyPalette[num] : palette[num];
         JColorChooser colorChooser= new JColorChooser(original);
 
 
         PreviewPanel previewPanel= new PreviewPanel(colorChooser,
-                resizeImage(shiny ? sprites.getShinyMaleFront()[frameNum] : sprites.getMaleFront()[frameNum],160,160),
-                resizeImage(shiny ? sprites.getShinyMaleBack()[frameNum] : sprites.getMaleBack()[frameNum],160,160),
-                resizeImage(shiny ? sprites.getShinyFemaleFront()[frameNum] : sprites.getFemaleFront()[frameNum],160,160),
-                resizeImage(shiny ? sprites.getShinyFemaleBack()[frameNum] : sprites.getFemaleBack()[frameNum],160,160));
+                shiny ? sprites.getShinyMaleFront()[frameNum] : sprites.getMaleFront()[frameNum],
+                shiny ? sprites.getShinyMaleBack()[frameNum] : sprites.getMaleBack()[frameNum],
+                shiny ? sprites.getShinyFemaleFront()[frameNum] : sprites.getFemaleFront()[frameNum],
+                shiny ? sprites.getShinyFemaleBack()[frameNum] : sprites.getFemaleBack()[frameNum]);
 
         final Color[] toApply = new Color[1];
         ColorSelectionModel model = colorChooser.getSelectionModel();
@@ -243,20 +260,12 @@ public class PokemonSpritePanel extends JPanel
             b= Math.min(b,248);
             newColor= new Color(r,g,b);
 
-            for(int row= 0; row < previewPanel.maleFront.getHeight(); row++)
-            {
-                for(int col= 0; col < previewPanel.maleFront.getWidth(); col++)
-                {
-                    if(previewPanel.maleFrontMatches[row][col])
-                        previewPanel.maleFront.setRGB(col,row,newColor.getRGB());
-                    if(previewPanel.maleBackMatches[row][col])
-                        previewPanel.maleBack.setRGB(col,row,newColor.getRGB());
-                    if(previewPanel.femaleFrontMatches[row][col])
-                        previewPanel.femaleFront.setRGB(col,row,newColor.getRGB());
-                    if(previewPanel.femaleBackMatches[row][col])
-                        previewPanel.femaleBack.setRGB(col,row,newColor.getRGB());
-                }
-            }
+            previewPanel.femaleBack.updateColor(num,newColor);
+            previewPanel.maleBack.updateColor(num,newColor);
+            previewPanel.femaleFront.updateColor(num,newColor);
+            previewPanel.maleFront.updateColor(num,newColor);
+            previewPanel.repaint();
+
             previewPanel.currentColor= newColor;
 
             colorChooser.setColor(newColor);
@@ -269,17 +278,17 @@ public class PokemonSpritePanel extends JPanel
         colorChooser.setPreferredSize(new Dimension(700,480));
 
 
-        final BufferedImage[][] shinyFemaleBack = {new BufferedImage[2]};
-        final BufferedImage[][] shinyFemaleFront = {new BufferedImage[2]};
+        final SpriteImage[][] shinyFemaleBack = {new SpriteImage[2]};
+        final SpriteImage[][] shinyFemaleFront = {new SpriteImage[2]};
 
-        final BufferedImage[][] shinyMaleBack = {new BufferedImage[2]};
-        final BufferedImage[][] shinyMaleFront = {new BufferedImage[2]};
+        final SpriteImage[][] shinyMaleBack = {new SpriteImage[2]};
+        final SpriteImage[][] shinyMaleFront = {new SpriteImage[2]};
 
-        final BufferedImage[][] femaleBack = {new BufferedImage[2]};
-        final BufferedImage[][] femaleFront = {new BufferedImage[2]};
+        final SpriteImage[][] femaleBack = {new SpriteImage[2]};
+        final SpriteImage[][] femaleFront = {new SpriteImage[2]};
 
-        final BufferedImage[][] maleBack = {new BufferedImage[2]};
-        final BufferedImage[][] maleFront = {new BufferedImage[2]};
+        final SpriteImage[][] maleBack = {new SpriteImage[2]};
+        final SpriteImage[][] maleFront = {new SpriteImage[2]};
 
         JDialog dialog= JColorChooser.createDialog(this, "Species " + speciesChooserComboBox.getSelectedIndex() + " - " + (shiny ? "Shiny" : "Normal") + " Palette - Color " + num, true, colorChooser,
                 e -> //OK
@@ -294,11 +303,11 @@ public class PokemonSpritePanel extends JPanel
                         shinyPalette[num]= finalColor;
 
 
-                        shinyFemaleBack[0] = new BufferedImage[] {updateColor(sprites.getShinyFemaleBack()[0],original,finalColor),updateColor(sprites.getShinyFemaleBack()[1],original,finalColor)};
-                        shinyFemaleFront[0] = new BufferedImage[] {updateColor(sprites.getShinyFemaleFront()[0],original,finalColor),updateColor(sprites.getShinyFemaleFront()[1],original,finalColor)};
+                        shinyFemaleBack[0] = new SpriteImage[] {sprites.getShinyFemaleBack()[0].updateColor(num,finalColor),sprites.getShinyFemaleBack()[1].updateColor(num,finalColor)};
+                        shinyFemaleFront[0] = new SpriteImage[] {sprites.getShinyFemaleFront()[0].updateColor(num,finalColor),sprites.getShinyFemaleFront()[1].updateColor(num,finalColor)};
 
-                        shinyMaleBack[0]= new BufferedImage[] {updateColor(sprites.getShinyMaleBack()[0],original,finalColor),updateColor(sprites.getShinyMaleBack()[1],original,finalColor)};
-                        shinyMaleFront[0]= new BufferedImage[] {updateColor(sprites.getShinyMaleFront()[0],original,finalColor),updateColor(sprites.getShinyMaleFront()[1],original,finalColor)};
+                        shinyMaleBack[0]= new SpriteImage[] {sprites.getShinyMaleBack()[0].updateColor(num,finalColor),sprites.getShinyMaleBack()[1].updateColor(num,finalColor)};
+                        shinyMaleFront[0]= new SpriteImage[] {sprites.getShinyMaleFront()[0].updateColor(num,finalColor),sprites.getShinyMaleFront()[1].updateColor(num,finalColor)};
 
 
                         femaleBack[0]= Arrays.copyOf(sprites.getFemaleBack(),2);
@@ -312,11 +321,11 @@ public class PokemonSpritePanel extends JPanel
                         normalPaletteButtons[num].setIcon(new ImageIcon(getPaletteImage(finalColor)));
                         palette[num]= finalColor;
 
-                        femaleBack[0]= new BufferedImage[] {updateColor(sprites.getFemaleBack()[0],original,finalColor),updateColor(sprites.getFemaleBack()[1],original,finalColor)};
-                        femaleFront[0]= new BufferedImage[] {updateColor(sprites.getFemaleFront()[0],original,finalColor),updateColor(sprites.getFemaleFront()[1],original,finalColor)};
+                        femaleBack[0]= new SpriteImage[] {sprites.getFemaleBack()[0].updateColor(num,finalColor),sprites.getFemaleBack()[1].updateColor(num,finalColor)};
+                        femaleFront[0]= new SpriteImage[] {sprites.getFemaleFront()[0].updateColor(num,finalColor),sprites.getFemaleFront()[1].updateColor(num,finalColor)};
 
-                        maleBack[0]= new BufferedImage[] {updateColor(sprites.getMaleBack()[0],original,finalColor),updateColor(sprites.getMaleBack()[1],original,finalColor)};
-                        maleFront[0]= new BufferedImage[] {updateColor(sprites.getMaleFront()[0],original,finalColor),updateColor(sprites.getMaleFront()[1],original,finalColor)};
+                        maleBack[0]= new SpriteImage[] {sprites.getMaleBack()[0].updateColor(num,finalColor),sprites.getMaleBack()[1].updateColor(num,finalColor)};
+                        maleFront[0]= new SpriteImage[] {sprites.getMaleFront()[0].updateColor(num,finalColor),sprites.getMaleFront()[1].updateColor(num,finalColor)};
 
 
                         shinyFemaleBack[0]= Arrays.copyOf(sprites.getShinyFemaleBack(),2);
@@ -328,49 +337,49 @@ public class PokemonSpritePanel extends JPanel
                     sprites= new PokemonSprites()
                     {
                         @Override
-                        public BufferedImage[] getFemaleBack()
+                        public SpriteImage[] getFemaleBack()
                         {
                             return femaleBack[0];
                         }
 
                         @Override
-                        public BufferedImage[] getShinyFemaleBack()
+                        public SpriteImage[] getShinyFemaleBack()
                         {
                             return shinyFemaleBack[0];
                         }
 
                         @Override
-                        public BufferedImage[] getMaleBack()
+                        public SpriteImage[] getMaleBack()
                         {
                             return maleBack[0];
                         }
 
                         @Override
-                        public BufferedImage[] getShinyMaleBack()
+                        public SpriteImage[] getShinyMaleBack()
                         {
                             return shinyMaleBack[0];
                         }
 
                         @Override
-                        public BufferedImage[] getFemaleFront()
+                        public SpriteImage[] getFemaleFront()
                         {
                             return femaleFront[0];
                         }
 
                         @Override
-                        public BufferedImage[] getShinyFemaleFront()
+                        public SpriteImage[] getShinyFemaleFront()
                         {
                             return shinyFemaleFront[0];
                         }
 
                         @Override
-                        public BufferedImage[] getMaleFront()
+                        public SpriteImage[] getMaleFront()
                         {
                             return maleFront[0];
                         }
 
                         @Override
-                        public BufferedImage[] getShinyMaleFront()
+                        public SpriteImage[] getShinyMaleFront()
                         {
                             return shinyMaleFront[0];
                         }
@@ -387,16 +396,18 @@ public class PokemonSpritePanel extends JPanel
                             return shinyPalette;
                         }
                     };
+                    positionAdjustmentMade();
 
-                    normalFemaleFrontButton.setIcon(new ImageIcon(sprites.getFemaleFront()[0]));
-                    normalFemaleBackButton.setIcon(new ImageIcon(sprites.getFemaleBack()[0]));
-                    shinyFemaleFrontButton.setIcon(new ImageIcon(sprites.getShinyFemaleFront()[0]));
-                    shinyFemaleBackButton.setIcon(new ImageIcon(sprites.getShinyFemaleBack()[0]));
 
-                    normalMaleFrontButton.setIcon(new ImageIcon(sprites.getMaleFront()[0]));
-                    normalMaleBackButton.setIcon(new ImageIcon(sprites.getMaleBack()[0]));
-                    shinyMaleFrontButton.setIcon(new ImageIcon(sprites.getShinyMaleFront()[0]));
-                    shinyMaleBackButton.setIcon(new ImageIcon(sprites.getShinyMaleBack()[0]));
+                    normalFemaleFrontButton.setIcon(new ImageIcon(sprites.getFemaleFront()[0].getImage()));
+                    normalFemaleBackButton.setIcon(new ImageIcon(sprites.getFemaleBack()[0].getImage()));
+                    shinyFemaleFrontButton.setIcon(new ImageIcon(sprites.getShinyFemaleFront()[0].getImage()));
+                    shinyFemaleBackButton.setIcon(new ImageIcon(sprites.getShinyFemaleBack()[0].getImage()));
+
+                    normalMaleFrontButton.setIcon(new ImageIcon(sprites.getMaleFront()[0].getImage()));
+                    normalMaleBackButton.setIcon(new ImageIcon(sprites.getMaleBack()[0].getImage()));
+                    shinyMaleFrontButton.setIcon(new ImageIcon(sprites.getShinyMaleFront()[0].getImage()));
+                    shinyMaleBackButton.setIcon(new ImageIcon(sprites.getShinyMaleBack()[0].getImage()));
 
 
                     for(int i= 0; i < normalPaletteButtons.length; i++)
@@ -404,24 +415,6 @@ public class PokemonSpritePanel extends JPanel
                         normalPaletteButtons[i].setIcon(new ImageIcon(getPaletteImage(palette[i])));
                         shinyPaletteButtons[i].setIcon(new ImageIcon(getPaletteImage(shinyPalette[i])));
                     }
-
-                    byte frontModifier;
-                    byte backModifier;
-                    if(femaleToggleButton.isSelected())
-                    {
-                        frontModifier= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Front);
-                        backModifier= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Back);
-                    }
-                    else
-                    {
-                        frontModifier= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Front);
-                        backModifier= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Back);
-                    }
-
-                    int frameValue= frameToggleButton.isSelected() ? 1 : 0;
-                    int femaleValue= femaleToggleButton.isSelected() ? 1 : 0;
-                    System.out.println(speciesChooserComboBox.getSelectedItem());
-                    mockupPanel.setSprites(femaleValue == 1 ? sprites.getFemaleFront()[frameValue] : sprites.getMaleFront()[frameValue], femaleValue == 1 ? sprites.getFemaleBack()[frameValue] : sprites.getMaleBack()[frameValue],palette[0],spriteData[speciesChooserComboBox.getSelectedIndex()],frontModifier,backModifier);
                 },
 
                 e -> //Cancel
@@ -434,16 +427,6 @@ public class PokemonSpritePanel extends JPanel
 
     private void saveChangesButtonActionPerformed(ActionEvent e)
     {
-        BufferedImage[] femaleBack= Arrays.copyOf(sprites.getFemaleBack(),2);
-        BufferedImage[] shinyFemaleBack= Arrays.copyOf(sprites.getShinyFemaleBack(),2);
-        BufferedImage[] femaleFront= Arrays.copyOf(sprites.getFemaleFront(),2);
-        BufferedImage[] shinyFemaleFront= Arrays.copyOf(sprites.getShinyFemaleFront(),2);
-
-        BufferedImage[] maleBack= Arrays.copyOf(sprites.getMaleBack(),2);
-        BufferedImage[] shinyMaleBack= Arrays.copyOf(sprites.getShinyMaleBack(),2);
-        BufferedImage[] maleFront= Arrays.copyOf(sprites.getMaleFront(),2);
-        BufferedImage[] shinyMaleFront= Arrays.copyOf(sprites.getShinyMaleFront(),2);
-
         palette= Arrays.copyOf(sprites.getPalette(),16);
         shinyPalette= Arrays.copyOf(sprites.getShinyPalette(),16);
 
@@ -516,16 +499,17 @@ public class PokemonSpritePanel extends JPanel
 
     private void speciesChooserComboBoxActionPerformed(ActionEvent e)
     {
+        canAdjust= false;
         frameToggleButton.setSelected(false);
+        genderToggleButton.setSelected(false);
+        shinyToggleButton.setSelected(false);
         String dataPath= project.getDataPath();
         int selected= speciesChooserComboBox.getSelectedIndex()*6;
-
-        boolean primary= false;
 
         File pokegraNarcPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra.narc" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra.narc" :  File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "4"));
         File pokegraDirPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra" : File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "4_"));
 
-        primary= Project.isPrimary(project);
+        boolean primary= Project.isPrimary(project);
 
         try
         {
@@ -549,104 +533,183 @@ public class PokemonSpritePanel extends JPanel
         shinyPalette= Arrays.copyOf(sprites.getShinyPalette(),16);
 
 
-        normalFemaleFrontButton.setIcon(new ImageIcon(sprites.getFemaleFront()[0]));
-        normalFemaleBackButton.setIcon(new ImageIcon(sprites.getFemaleBack()[0]));
-        shinyFemaleFrontButton.setIcon(new ImageIcon(sprites.getShinyFemaleFront()[0]));
-        shinyFemaleBackButton.setIcon(new ImageIcon(sprites.getShinyFemaleBack()[0]));
+        normalFemaleFrontButton.setIcon(new ImageIcon(sprites.getFemaleFront()[0].getImage()));
+        normalFemaleBackButton.setIcon(new ImageIcon(sprites.getFemaleBack()[0].getImage()));
+        shinyFemaleFrontButton.setIcon(new ImageIcon(sprites.getShinyFemaleFront()[0].getImage()));
+        shinyFemaleBackButton.setIcon(new ImageIcon(sprites.getShinyFemaleBack()[0].getImage()));
 
-        normalMaleFrontButton.setIcon(new ImageIcon(sprites.getMaleFront()[0]));
-        normalMaleBackButton.setIcon(new ImageIcon(sprites.getMaleBack()[0]));
-        shinyMaleFrontButton.setIcon(new ImageIcon(sprites.getShinyMaleFront()[0]));
-        shinyMaleBackButton.setIcon(new ImageIcon(sprites.getShinyMaleBack()[0]));
+        normalMaleFrontButton.setIcon(new ImageIcon(sprites.getMaleFront()[0].getImage()));
+        normalMaleBackButton.setIcon(new ImageIcon(sprites.getMaleBack()[0].getImage()));
+        shinyMaleFrontButton.setIcon(new ImageIcon(sprites.getShinyMaleFront()[0].getImage()));
+        shinyMaleBackButton.setIcon(new ImageIcon(sprites.getShinyMaleBack()[0].getImage()));
 
 
-        byte frontModifier;
-        byte backModifier;
-        if(femaleToggleButton.isSelected())
-        {
-            frontModifier= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Front);
-            backModifier= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Back);
-        }
-        else
-        {
-            frontModifier= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Front);
-            backModifier= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Back);
-        }
 
-        int frameValue= frameToggleButton.isSelected() ? 1 : 0;
-        int femaleValue= femaleToggleButton.isSelected() ? 1 : 0;
-        System.out.println(speciesChooserComboBox.getSelectedItem());
-        mockupPanel.setSprites(femaleValue == 1 ? sprites.getFemaleFront()[frameValue] : sprites.getMaleFront()[frameValue], femaleValue == 1 ? sprites.getFemaleBack()[frameValue] : sprites.getMaleBack()[frameValue],palette[0],spriteData[speciesChooserComboBox.getSelectedIndex()],frontModifier,backModifier);
+        femaleBackMod= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Back);
+        femaleFrontMod= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Front);
+        maleBackMod= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Back);
+        maleFrontMod= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Front);
+
+
+        SpriteData spriteData1= spriteData[speciesChooserComboBox.getSelectedIndex()];
+        globalFrontYSpinner.setValue((int) spriteData1.getSpriteYOffset());
+        shadowXSpinner.setValue((int) spriteData1.getShadowXOffset());
+        movementEffectSpinner.setValue(spriteData1.getMovement());
+        shadowSizeComboBox.setSelectedItem(spriteData1.getShadowType());
+        femaleBackYSpinner.setValue(femaleBackMod);
+        maleBackYSpinner.setValue(maleBackMod);
+        femaleFrontYSpinner.setValue(femaleFrontMod);
+        maleFrontYSpinner.setValue(maleFrontMod);
+
+        canAdjust= true;
+
+        positionAdjustmentMade();
 
         for(int i= 0; i < normalPaletteButtons.length; i++)
         {
             normalPaletteButtons[i].setIcon(new ImageIcon(getPaletteImage(palette[i])));
             shinyPaletteButtons[i].setIcon(new ImageIcon(getPaletteImage(shinyPalette[i])));
         }
-
-        //        ImageIO.write(image,"png",new File(System.getProperty("user.dir") + File.separator + "cynthia.png"));
-
     }
 
     private void frameToggleButtonActionPerformed(ActionEvent e)
     {
-        int frameValue= frameToggleButton.isSelected() ? 1 : 0;
+        frameToggled= ((JToggleButton) e.getSource()).isSelected();
+
+        if((e.getSource()) != frameToggleButton)
+            frameToggleButton.setSelected(frameToggled);
+        else
+            frameToggleButton2.setSelected(frameToggled);
+
+        int frameValue= frameToggled ? 1 : 0;
         frameToggleLabel.setText("" + frameValue);
 
 
-        normalFemaleFrontButton.setIcon(new ImageIcon(sprites.getFemaleFront()[frameValue]));
-        normalFemaleBackButton.setIcon(new ImageIcon(sprites.getFemaleBack()[frameValue]));
-        shinyFemaleFrontButton.setIcon(new ImageIcon(sprites.getShinyFemaleFront()[frameValue]));
-        shinyFemaleBackButton.setIcon(new ImageIcon(sprites.getShinyFemaleBack()[frameValue]));
+        normalFemaleFrontButton.setIcon(new ImageIcon(sprites.getFemaleFront()[frameValue].getImage()));
+        normalFemaleBackButton.setIcon(new ImageIcon(sprites.getFemaleBack()[frameValue].getImage()));
+        shinyFemaleFrontButton.setIcon(new ImageIcon(sprites.getShinyFemaleFront()[frameValue].getImage()));
+        shinyFemaleBackButton.setIcon(new ImageIcon(sprites.getShinyFemaleBack()[frameValue].getImage()));
 
-        normalMaleFrontButton.setIcon(new ImageIcon(sprites.getMaleFront()[frameValue]));
-        normalMaleBackButton.setIcon(new ImageIcon(sprites.getMaleBack()[frameValue]));
-        shinyMaleFrontButton.setIcon(new ImageIcon(sprites.getShinyMaleFront()[frameValue]));
-        shinyMaleBackButton.setIcon(new ImageIcon(sprites.getShinyMaleBack()[frameValue]));
+        normalMaleFrontButton.setIcon(new ImageIcon(sprites.getMaleFront()[frameValue].getImage()));
+        normalMaleBackButton.setIcon(new ImageIcon(sprites.getMaleBack()[frameValue].getImage()));
+        shinyMaleFrontButton.setIcon(new ImageIcon(sprites.getShinyMaleFront()[frameValue].getImage()));
+        shinyMaleBackButton.setIcon(new ImageIcon(sprites.getShinyMaleBack()[frameValue].getImage()));
 
-        byte frontModifier;
-        byte backModifier;
-
-        if(femaleToggleButton.isSelected())
-        {
-            frontModifier= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Front);
-            backModifier= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Back);
-        }
-        else
-        {
-            frontModifier= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Front);
-            backModifier= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Back);
-        }
-
-        int femaleValue= femaleToggleButton.isSelected() ? 1 : 0;
-        System.out.println(speciesChooserComboBox.getSelectedItem());
-        mockupPanel.setSprites(femaleValue == 1 ? sprites.getFemaleFront()[frameValue] : sprites.getMaleFront()[frameValue], femaleValue == 1 ? sprites.getFemaleBack()[frameValue] : sprites.getMaleBack()[frameValue],palette[0],spriteData[speciesChooserComboBox.getSelectedIndex()],frontModifier,backModifier);
+        positionAdjustmentMade();
     }
 
     private void importSpriteButtonActionPerformed(ActionEvent e) {
         // TODO add your code here
     }
 
-    private void femaleToggleButtonActionPerformed(ActionEvent e)
+    private void femaleToggleButtonActionPerformed(ActionEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void shinyToggleButtonActionPerformed(ActionEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void globalFrontYSpinnerStateChanged(ChangeEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void shadowXSpinnerStateChanged(ChangeEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void femaleBackYSpinnerStateChanged(ChangeEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void maleBackYSpinnerStateChanged(ChangeEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void femaleFrontYSpinnerStateChanged(ChangeEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void maleFrontYSpinnerStateChanged(ChangeEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void movementEffectSpinnerStateChanged(ChangeEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void shadowSizeComboBoxActionPerformed(ActionEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void positionAdjustmentMade()
     {
-        int frameValue= frameToggleButton.isSelected() ? 1 : 0;
-
-        byte frontModifier;
-        byte backModifier;
-        if(femaleToggleButton.isSelected())
+        if(canAdjust)
         {
-            frontModifier= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Front);
-            backModifier= SpriteDataProcessor.getHeightModifier(project,speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Female_Back);
-        }
-        else
-        {
-            frontModifier= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Front);
-            backModifier= SpriteDataProcessor.getHeightModifier(project, speciesChooserComboBox.getSelectedIndex(), SpriteDataProcessor.SpriteType.Male_Back);
-        }
+            int frameValue= frameToggled ? 1 : 0;
+            int femaleValue= genderToggleButton.isSelected() ? 1 : 0;
+            boolean isShiny= shinyToggleButton.isSelected();
 
-        int femaleValue= femaleToggleButton.isSelected() ? 1 : 0;
-        System.out.println(speciesChooserComboBox.getSelectedItem());
-        mockupPanel.setSprites(femaleValue == 1 ? sprites.getFemaleFront()[frameValue] : sprites.getMaleFront()[frameValue], femaleValue == 1 ? sprites.getFemaleBack()[frameValue] : sprites.getMaleBack()[frameValue],palette[0],spriteData[speciesChooserComboBox.getSelectedIndex()],frontModifier,backModifier);
+            femaleBackMod= (Integer) femaleBackYSpinner.getValue();
+            maleBackMod= (Integer) maleBackYSpinner.getValue();
+            femaleFrontMod= (Integer) femaleFrontYSpinner.getValue();
+            maleFrontMod= (Integer) maleFrontYSpinner.getValue();
+            shadowType= (SpriteDataProcessor.ShadowType) shadowSizeComboBox.getSelectedItem();
+
+            if(shadowType == null)
+            {
+                shadowSizeComboBox.removeAllItems();
+                shadowSizeComboBox.addItem(SpriteDataProcessor.ShadowType.None);
+                shadowSizeComboBox.addItem(SpriteDataProcessor.ShadowType.Small);
+                shadowSizeComboBox.addItem(SpriteDataProcessor.ShadowType.Medium);
+                shadowSizeComboBox.addItem(SpriteDataProcessor.ShadowType.Large);
+                shadowType= SpriteDataProcessor.ShadowType.None;
+            }
+
+
+            int frontModifier;
+            int backModifier;
+            if(genderToggleButton.isSelected())
+            {
+                backModifier= femaleBackMod;
+                frontModifier= femaleFrontMod;
+            }
+            else
+            {
+                backModifier= maleBackMod;
+                frontModifier= maleFrontMod;
+            }
+
+            SpriteImage front;
+            try
+            {
+                front= isShiny ? femaleValue == 1 ? sprites.getShinyFemaleFront()[frameValue] : sprites.getShinyMaleFront()[frameValue] : femaleValue == 1 ? sprites.getFemaleFront()[frameValue] : sprites.getMaleFront()[frameValue];
+            }
+            catch (NullPointerException exception)
+            {
+                front= new SpriteImage(palette);
+            }
+
+
+            SpriteImage back;
+            try
+            {
+                back= isShiny ? femaleValue == 1 ? sprites.getShinyFemaleBack()[frameValue] : sprites.getShinyMaleBack()[frameValue] : femaleValue == 1 ? sprites.getFemaleBack()[frameValue] : sprites.getMaleBack()[frameValue];
+            }
+            catch (NullPointerException exception)
+            {
+                back= new SpriteImage(palette);
+            }
+
+            int globalYValue= (Integer) globalFrontYSpinner.getValue();
+            int shadowXValue= (Integer) shadowXSpinner.getValue();
+
+            mockupPanel.setSprites(front,back,(byte) (globalYValue & 0xff),(byte) (shadowXValue & 0xff),shadowType,frontModifier,backModifier,genderToggleButton.isSelected());
+        }
+    }
+
+    private void savePositionChangesButtonActionPerformed(ActionEvent e) {
+        // TODO add your code here
     }
 
     private void initComponents() {
@@ -654,6 +717,7 @@ public class PokemonSpritePanel extends JPanel
         speciesChooserComboBox = new JComboBox();
         saveChangesButton = new JButton();
         revertChangesButton = new JButton();
+        button1 = new JButton();
         battleSpritePanel = new JPanel();
         importSpriteButton = new JButton();
         frameToggleLabel = new JLabel();
@@ -713,8 +777,32 @@ public class PokemonSpritePanel extends JPanel
         shinyPaletteButton14 = new JButton();
         shinyPaletteButton15 = new JButton();
         battlePanel = new JPanel();
-        femaleToggleButton = new JToggleButton();
         mockupPanel = new PokemonSpritePanel.BattleMockupPanel();
+        genderToggleButton = new JToggleButton();
+        shinyToggleButton = new JToggleButton();
+        frameToggleButton2 = new JToggleButton();
+        panel1 = new JPanel();
+        separator4 = new JSeparator();
+        globalFrontYLabel = new JLabel();
+        globalFrontYSpinner = new JSpinner();
+        shadowXLabel = new JLabel();
+        shadowXSpinner = new JSpinner();
+        separator2 = new JSeparator();
+        femaleBackYLabel = new JLabel();
+        femaleBackYSpinner = new JSpinner();
+        maleBackYLabel = new JLabel();
+        maleBackYSpinner = new JSpinner();
+        femaleFrontYLabel = new JLabel();
+        femaleFrontYSpinner = new JSpinner();
+        maleFrontYLabel = new JLabel();
+        maleFrontYSpinner = new JSpinner();
+        separator3 = new JSeparator();
+        movementEffectLabel = new JLabel();
+        movementEffectSpinner = new JSpinner();
+        shadowSizeTextField = new JLabel();
+        shadowSizeComboBox = new JComboBox<>();
+        separator5 = new JSeparator();
+        savePositionChangesButton = new JButton();
 
         //======== this ========
         setLayout(new MigLayout(
@@ -743,6 +831,10 @@ public class PokemonSpritePanel extends JPanel
         revertChangesButton.setText("Revert");
         revertChangesButton.addActionListener(e -> revertChangesButtonActionPerformed(e));
         add(revertChangesButton, "cell 2 0");
+
+        //---- button1 ----
+        button1.setText("New Sprite");
+        add(button1, "cell 2 0");
 
         //======== battleSpritePanel ========
         {
@@ -1028,17 +1120,131 @@ public class PokemonSpritePanel extends JPanel
                 "[]" +
                 "[]" +
                 "[]" +
-                "[]"));
-
-            //---- femaleToggleButton ----
-            femaleToggleButton.setText("Female");
-            femaleToggleButton.addActionListener(e -> femaleToggleButtonActionPerformed(e));
-            battlePanel.add(femaleToggleButton, "cell 0 0 2 1");
+                "[]" +
+                "[grow]" +
+                "[grow]"));
 
             //---- mockupPanel ----
-            mockupPanel.setBorder(new TitledBorder("text"));
+            mockupPanel.setBorder(new TitledBorder("Battle Mockup"));
             mockupPanel.setMinimumSize(new Dimension(256, 192));
-            battlePanel.add(mockupPanel, "cell 0 1 2 1,grow");
+            battlePanel.add(mockupPanel, "cell 0 0 2 1,grow");
+
+            //---- genderToggleButton ----
+            genderToggleButton.setText("Toggle Gender");
+            genderToggleButton.addActionListener(e -> femaleToggleButtonActionPerformed(e));
+            battlePanel.add(genderToggleButton, "cell 0 1 2 1,growx");
+
+            //---- shinyToggleButton ----
+            shinyToggleButton.setText("Toggle Shiny");
+            shinyToggleButton.addActionListener(e -> shinyToggleButtonActionPerformed(e));
+            battlePanel.add(shinyToggleButton, "cell 0 1 2 1,growx");
+
+            //---- frameToggleButton2 ----
+            frameToggleButton2.setText("Toggle Frame");
+            frameToggleButton2.addActionListener(e -> frameToggleButtonActionPerformed(e));
+            battlePanel.add(frameToggleButton2, "cell 0 2 2 1");
+
+            //======== panel1 ========
+            {
+                panel1.setLayout(new MigLayout(
+                    "hidemode 3",
+                    // columns
+                    "[grow,fill]" +
+                    "[fill]",
+                    // rows
+                    "[grow]" +
+                    "[grow]" +
+                    "[grow]" +
+                    "[grow]" +
+                    "[grow]" +
+                    "[grow]" +
+                    "[grow]" +
+                    "[grow]" +
+                    "[grow]" +
+                    "[]" +
+                    "[]" +
+                    "[]"));
+                panel1.add(separator4, "cell 0 0 2 1");
+
+                //---- globalFrontYLabel ----
+                globalFrontYLabel.setText("Global Front Y");
+                panel1.add(globalFrontYLabel, "cell 0 1");
+
+                //---- globalFrontYSpinner ----
+                globalFrontYSpinner.setModel(new SpinnerNumberModel(0, -128, 127, 1));
+                globalFrontYSpinner.addChangeListener(e -> globalFrontYSpinnerStateChanged(e));
+                panel1.add(globalFrontYSpinner, "cell 1 1");
+
+                //---- shadowXLabel ----
+                shadowXLabel.setText("Shadow X");
+                panel1.add(shadowXLabel, "cell 0 2");
+
+                //---- shadowXSpinner ----
+                shadowXSpinner.setModel(new SpinnerNumberModel(0, -128, 127, 1));
+                shadowXSpinner.addChangeListener(e -> shadowXSpinnerStateChanged(e));
+                panel1.add(shadowXSpinner, "cell 1 2");
+                panel1.add(separator2, "cell 0 3 2 1");
+
+                //---- femaleBackYLabel ----
+                femaleBackYLabel.setText("Female Back -Y");
+                panel1.add(femaleBackYLabel, "cell 0 4");
+
+                //---- femaleBackYSpinner ----
+                femaleBackYSpinner.setModel(new SpinnerNumberModel(0, -255, 0, 1));
+                femaleBackYSpinner.addChangeListener(e -> femaleBackYSpinnerStateChanged(e));
+                panel1.add(femaleBackYSpinner, "cell 1 4");
+
+                //---- maleBackYLabel ----
+                maleBackYLabel.setText("Male Back -Y");
+                panel1.add(maleBackYLabel, "cell 0 5");
+
+                //---- maleBackYSpinner ----
+                maleBackYSpinner.setModel(new SpinnerNumberModel(0, -255, 0, 1));
+                maleBackYSpinner.addChangeListener(e -> maleBackYSpinnerStateChanged(e));
+                panel1.add(maleBackYSpinner, "cell 1 5");
+
+                //---- femaleFrontYLabel ----
+                femaleFrontYLabel.setText("Female Front -Y");
+                panel1.add(femaleFrontYLabel, "cell 0 6");
+
+                //---- femaleFrontYSpinner ----
+                femaleFrontYSpinner.setModel(new SpinnerNumberModel(0, -255, 0, 1));
+                femaleFrontYSpinner.addChangeListener(e -> femaleFrontYSpinnerStateChanged(e));
+                panel1.add(femaleFrontYSpinner, "cell 1 6");
+
+                //---- maleFrontYLabel ----
+                maleFrontYLabel.setText("Male Front -Y");
+                panel1.add(maleFrontYLabel, "cell 0 7");
+
+                //---- maleFrontYSpinner ----
+                maleFrontYSpinner.setModel(new SpinnerNumberModel(0, -255, 0, 1));
+                maleFrontYSpinner.addChangeListener(e -> maleFrontYSpinnerStateChanged(e));
+                panel1.add(maleFrontYSpinner, "cell 1 7");
+                panel1.add(separator3, "cell 0 8 2 1");
+
+                //---- movementEffectLabel ----
+                movementEffectLabel.setText("Movement Effect");
+                panel1.add(movementEffectLabel, "cell 0 9");
+
+                //---- movementEffectSpinner ----
+                movementEffectSpinner.addChangeListener(e -> movementEffectSpinnerStateChanged(e));
+                panel1.add(movementEffectSpinner, "cell 1 9");
+
+                //---- shadowSizeTextField ----
+                shadowSizeTextField.setText("Shadow Size");
+                panel1.add(shadowSizeTextField, "cell 0 10");
+
+                //---- shadowSizeComboBox ----
+                shadowSizeComboBox.addActionListener(e -> shadowSizeComboBoxActionPerformed(e));
+                panel1.add(shadowSizeComboBox, "cell 1 10");
+                panel1.add(separator5, "cell 0 11 2 1");
+            }
+            battlePanel.add(panel1, "cell 0 3 2 2,growy");
+
+            //---- savePositionChangesButton ----
+            savePositionChangesButton.setText("Save Position Changes");
+            savePositionChangesButton.addActionListener(e -> savePositionChangesButtonActionPerformed(e));
+            battlePanel.add(savePositionChangesButton, "cell 0 5 2 1,aligny bottom,growy 0");
         }
         add(battlePanel, "cell 1 1 2 1,grow");
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
@@ -1048,6 +1254,7 @@ public class PokemonSpritePanel extends JPanel
     private JComboBox speciesChooserComboBox;
     private JButton saveChangesButton;
     private JButton revertChangesButton;
+    private JButton button1;
     private JPanel battleSpritePanel;
     private JButton importSpriteButton;
     private JLabel frameToggleLabel;
@@ -1107,8 +1314,32 @@ public class PokemonSpritePanel extends JPanel
     private JButton shinyPaletteButton14;
     private JButton shinyPaletteButton15;
     private JPanel battlePanel;
-    private JToggleButton femaleToggleButton;
     private PokemonSpritePanel.BattleMockupPanel mockupPanel;
+    private JToggleButton genderToggleButton;
+    private JToggleButton shinyToggleButton;
+    private JToggleButton frameToggleButton2;
+    private JPanel panel1;
+    private JSeparator separator4;
+    private JLabel globalFrontYLabel;
+    private JSpinner globalFrontYSpinner;
+    private JLabel shadowXLabel;
+    private JSpinner shadowXSpinner;
+    private JSeparator separator2;
+    private JLabel femaleBackYLabel;
+    private JSpinner femaleBackYSpinner;
+    private JLabel maleBackYLabel;
+    private JSpinner maleBackYSpinner;
+    private JLabel femaleFrontYLabel;
+    private JSpinner femaleFrontYSpinner;
+    private JLabel maleFrontYLabel;
+    private JSpinner maleFrontYSpinner;
+    private JSeparator separator3;
+    private JLabel movementEffectLabel;
+    private JSpinner movementEffectSpinner;
+    private JLabel shadowSizeTextField;
+    private JComboBox<SpriteDataProcessor.ShadowType> shadowSizeComboBox;
+    private JSeparator separator5;
+    private JButton savePositionChangesButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     public void setProject(Project project) throws IOException
@@ -1184,37 +1415,15 @@ public class PokemonSpritePanel extends JPanel
         folder.delete();
     }
 
-    public BufferedImage updateColor(BufferedImage image, Color originalColor, Color newColor)
-    {
-        BufferedImage newImage= new BufferedImage(image.getWidth(),image.getHeight(),BufferedImage.TYPE_INT_RGB);
-
-        for(int row= 0; row < image.getHeight(); row++)
-        {
-            for(int col= 0; col < image.getWidth(); col++)
-            {
-                if(image.getRGB(col,row) == originalColor.getRGB())
-                    newImage.setRGB(col,row,newColor.getRGB());
-                else
-                    newImage.setRGB(col,row,image.getRGB(col,row));
-            }
-        }
-
-        return newImage;
-    }
-
-    static class PreviewPanel extends JComponent
+    static class PreviewPanel extends JPanel
     {
         Color currentColor;
-        BufferedImage maleFront;
-        BufferedImage femaleFront;
-        BufferedImage maleBack;
-        BufferedImage femaleBack;
-        boolean[][] maleFrontMatches;
-        boolean[][] femaleFrontMatches;
-        boolean[][] maleBackMatches;
-        boolean[][] femaleBackMatches;
+        SpriteImage maleFront;
+        SpriteImage femaleFront;
+        SpriteImage maleBack;
+        SpriteImage femaleBack;
 
-        public PreviewPanel(JColorChooser chooser, BufferedImage maleFront, BufferedImage maleBack, BufferedImage femaleFront, BufferedImage femaleBack)
+        public PreviewPanel(JColorChooser chooser, SpriteImage maleFront, SpriteImage maleBack, SpriteImage femaleFront, SpriteImage femaleBack)
         {
             currentColor= chooser.getColor();
             this.maleFront= maleFront;
@@ -1222,25 +1431,6 @@ public class PokemonSpritePanel extends JPanel
             this.femaleFront = femaleFront;
             this.femaleBack= femaleBack;
             setPreferredSize(new Dimension(700,200));
-
-            maleFrontMatches = new boolean[maleFront.getHeight()][maleFront.getWidth()];
-            maleBackMatches = new boolean[maleFront.getHeight()][maleFront.getWidth()];
-            femaleFrontMatches = new boolean[femaleFront.getHeight()][femaleFront.getWidth()];
-            femaleBackMatches = new boolean[femaleFront.getHeight()][femaleFront.getWidth()];
-            for(int row= 0; row < maleFrontMatches.length; row++)
-            {
-                for(int col= 0; col < maleFrontMatches[row].length; col++)
-                {
-                    if(maleFront.getRGB(col,row) == currentColor.getRGB())
-                        maleFrontMatches[row][col]= true;
-                    if(femaleFront.getRGB(col,row) == currentColor.getRGB())
-                        femaleFrontMatches[row][col]= true;
-                    if(maleBack.getRGB(col,row) == currentColor.getRGB())
-                        maleBackMatches[row][col]= true;
-                    if(femaleBack.getRGB(col,row) == currentColor.getRGB())
-                        femaleBackMatches[row][col]= true;
-                }
-            }
         }
 
         @Override
@@ -1250,10 +1440,10 @@ public class PokemonSpritePanel extends JPanel
             g.drawString("Male",getWidth()/4 - 15,195);
             g.drawString("Female",(getWidth()/4)*3 - 20,195);
             g.setColor(currentColor);
-            g.drawImage(maleFront,getWidth()/2 - maleFront.getWidth()*2 - 20,20,this);
-            g.drawImage(maleBack, getWidth()/2 - maleBack.getWidth() - 10,20,this);
-            g.drawImage(femaleFront,getWidth()/2 + 10,20,this);
-            g.drawImage(femaleBack, getWidth()/2 + femaleBack.getWidth() + 20,20,this);
+            g.drawImage(maleFront.getResizedImage(),getWidth()/2 - maleFront.getResizedImage().getWidth()*2 - 20,20,this);
+            g.drawImage(maleBack.getResizedImage(), getWidth()/2 - maleBack.getResizedImage().getWidth() - 10,20,this);
+            g.drawImage(femaleFront.getResizedImage(),getWidth()/2 + 10,20,this);
+            g.drawImage(femaleBack.getResizedImage(), getWidth()/2 + femaleBack.getResizedImage().getWidth() + 20,20,this);
         }
     }
 
@@ -1271,11 +1461,18 @@ public class PokemonSpritePanel extends JPanel
         static BufferedImage backSprite;
 
         static Image shadow;
+        static Image genderIcon;
 
 
-        static SpriteData spriteData;
+        static byte frontYOffset;
+        static byte shadowXOffset;
+        static SpriteDataProcessor.ShadowType shadowType;
+
+
         static int frontModifier;
         static int backModifier;
+
+        static boolean isFemale;
 
         public BattleMockupPanel()
         {
@@ -1287,6 +1484,7 @@ public class PokemonSpritePanel extends JPanel
             playerHealth= new ImageIcon(BattleMockupPanel.class.getResource("/icons/health_you.png")).getImage();
             enemyHealth= new ImageIcon(BattleMockupPanel.class.getResource("/icons/health_opponent.png")).getImage();
 
+
             Dimension dimension= new Dimension(256,192);
             setPreferredSize(dimension);
             setMinimumSize(dimension);
@@ -1297,48 +1495,63 @@ public class PokemonSpritePanel extends JPanel
         @Override
         public void paint(Graphics g)
         {
-            //The origin (top left) is 0, 0
-
-            Graphics2D g2d= (Graphics2D) g;
-            g2d.drawImage(background,0,0, null);
-            g2d.drawImage(enemyPlatform,129,72,null);
-            g2d.drawImage(playerPlatform,-42,122,null);
-
-            if(spriteData.getShadowType() == SpriteDataProcessor.ShadowType.Small)
+            try
             {
-                g2d.drawImage(shadow,179 + spriteData.getShadowXOffset(), 83, null);
+                //The origin (top left) is 0, 0
+                Graphics2D g2d= (Graphics2D) g;
+                g2d.drawImage(background,0,0, null);
+                g2d.drawImage(enemyPlatform,129,72,null);
+                g2d.drawImage(playerPlatform,-42,122,null);
+
+
+                if(shadowType == SpriteDataProcessor.ShadowType.Small)
+                {
+                    g2d.drawImage(shadow,179 + shadowXOffset, 83, null);
+                }
+                else if(shadowType == SpriteDataProcessor.ShadowType.Medium)
+                {
+                    g2d.drawImage(shadow,174 + shadowXOffset, 83, null);
+                }
+                else if(shadowType == SpriteDataProcessor.ShadowType.Large)
+                {
+                    g2d.drawImage(shadow,167 + shadowXOffset, 82, null);
+                }
+
+
+                if(frontSprite != null)
+                {
+                    g2d.drawImage(frontSprite,152,10 - frontYOffset - frontModifier,null);
+                    g2d.drawImage(backSprite,23,72 - backModifier,null);
+                }
+
+                g2d.drawImage(playerHealth,129,95, null);
+                g2d.drawImage(enemyHealth,0,18, null);
+
+                g2d.drawImage(genderIcon,217,103,null);
+                g2d.drawImage(genderIcon,65,25, null);
+
+                g2d.drawImage(textBar,0,getHeight()-48, null);
+                g2d.dispose();
             }
-            else if(spriteData.getShadowType() == SpriteDataProcessor.ShadowType.Medium)
+            catch (NullPointerException exception)
             {
-                g2d.drawImage(shadow,174 + spriteData.getShadowXOffset(), 83, null);
-            }
-            else if(spriteData.getShadowType() == SpriteDataProcessor.ShadowType.Large)
-            {
-                g2d.drawImage(shadow,167 + spriteData.getShadowXOffset(), 82, null);
+                exception.printStackTrace();
             }
 
-            if(frontSprite != null)
-            {
-                g2d.drawImage(frontSprite,152,10 - spriteData.getSpriteYOffset() + frontModifier,null);
-                g2d.drawImage(backSprite,23,72 + backModifier,null);
-            }
-
-            g2d.drawImage(playerHealth,129,95, null);
-            g2d.drawImage(enemyHealth,0,18, null);
-
-            g2d.drawImage(textBar,0,getHeight()-48, null);
-            g2d.dispose();
         }
 
-        public void setSprites(BufferedImage newFront, BufferedImage newBack, Color background, SpriteData newPositionData, int frontMod, int backMod)
+        public void setSprites(SpriteImage newFront, SpriteImage newBack, byte newFrontYOffset, byte newShadowXOffset, SpriteDataProcessor.ShadowType newShadowType, int frontMod, int backMod, boolean female)
         {
-            frontSprite = makeTransparent(newFront, background);
-            backSprite = makeTransparent(newBack, background);
-            spriteData = newPositionData;
-            frontModifier= frontMod & 0xff;
-            backModifier= backMod & 0xff;
+            frontSprite= newFront.getTransparentImage();
+            backSprite= newBack.getTransparentImage();
+            frontYOffset= newFrontYOffset;
+            shadowXOffset= newShadowXOffset;
+            shadowType= newShadowType;
 
-            switch (spriteData.getShadowType())
+            frontModifier= frontMod;
+            backModifier= backMod;
+
+            switch (newShadowType)
             {
                 case None:
                     shadow= null;
@@ -1357,77 +1570,17 @@ public class PokemonSpritePanel extends JPanel
                     break;
             }
 
+            isFemale= female;
 
-            System.out.println("pl_poke_data.narc Front Mod: " + spriteData.getSpriteYOffset());
-            System.out.println("Height.narc Front Mod: " + frontModifier);
-            System.out.println("Height.narc Back Mod: " + backModifier);
-            System.out.println("Movement: " + spriteData.getMovement() + "\n");
-
+            if(female)
+            {
+                genderIcon= new ImageIcon(BattleMockupPanel.class.getResource("/icons/symbol_female.png")).getImage();
+            }
+            else
+            {
+                genderIcon= new ImageIcon(BattleMockupPanel.class.getResource("/icons/symbol_male.png")).getImage();
+            }
             repaint();
         }
-
-        private BufferedImage makeTransparent(BufferedImage sprite, Color background)
-        {
-            BufferedImage newSprite= new BufferedImage(sprite.getWidth(),sprite.getHeight(),BufferedImage.TYPE_INT_ARGB);
-            for(int row= 0; row < sprite.getHeight(); row++)
-            {
-                for(int col= 0; col < sprite.getWidth(); col++)
-                {
-                    if(sprite.getRGB(col,row) != background.getRGB())
-                        newSprite.setRGB(col,row,sprite.getRGB(col,row));
-                }
-            }
-
-            return newSprite;
-        }
-
     }
-
-
-
-
-    private static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
-        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics2D = resizedImage.createGraphics();
-        graphics2D.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
-        graphics2D.dispose();
-        return resizedImage;
-    }
-
-
-
-
-//    private static void testIndexedColor() throws IOException {
-//        File in = new File("test.png");
-//        File out = new File("test_result.png");
-//
-//        try (ImageInputStream input = ImageIO.createImageInputStream(in);
-//             ImageOutputStream output = ImageIO.createImageOutputStream(out)) {
-//            ImageReader reader = ImageIO.getImageReaders(input).next(); // Will fail if no reader
-//            reader.setInput(input);
-//
-//            ImageWriter writer = ImageIO.getImageWriter(reader); // Will obtain a writer that understands the metadata from the reader
-//            writer.setOutput(output);  // Will fail if no writer
-//
-//            // Now, the important part, we'll read the pixel AND metadata all in one go
-//            IIOImage image = reader.readAll(0, null); // PNGs only have a single image, so index 0 is safe
-//
-//            // You can now access and modify the image data using:
-//            BufferedImage bi = (BufferedImage) image.getRenderedImage();
-//            FastBitmap fb = new FastBitmap(bi);
-//
-//            // ...do stuff...
-//
-//            Graphics2D g = bi.createGraphics();
-//            try {
-//                g.drawImage(fb.toBufferedImage(), 0, 0, null);
-//            }
-//            finally {
-//                g.dispose();
-//            }
-//
-//            // Write pixel and metadata back
-//            writer.write(null, image, writer.getDefaultWriteParam());
-//        }
-//    }
 }

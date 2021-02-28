@@ -5,17 +5,17 @@ import java.awt.image.BufferedImage;
 
 public interface PokemonSprites
 {
-    BufferedImage[] getFemaleBack();
-    BufferedImage[] getShinyFemaleBack();
+    SpriteImage[] getFemaleBack();
+    SpriteImage[] getShinyFemaleBack();
 
-    BufferedImage[] getMaleBack();
-    BufferedImage[] getShinyMaleBack();
+    SpriteImage[] getMaleBack();
+    SpriteImage[] getShinyMaleBack();
 
-    BufferedImage[] getFemaleFront();
-    BufferedImage[] getShinyFemaleFront();
+    SpriteImage[] getFemaleFront();
+    SpriteImage[] getShinyFemaleFront();
 
-    BufferedImage[] getMaleFront();
-    BufferedImage[] getShinyMaleFront();
+    SpriteImage[] getMaleFront();
+    SpriteImage[] getShinyMaleFront();
 
 
     Color[] getPalette();

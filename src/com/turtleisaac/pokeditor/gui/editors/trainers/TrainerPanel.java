@@ -15,7 +15,7 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;

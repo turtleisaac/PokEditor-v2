@@ -1,6 +1,6 @@
 package com.turtleisaac.pokeditor.editors.positions;
 
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
 
@@ -117,7 +117,7 @@ public class SpriteDataProcessor
         return dataList.toArray(new SpriteData[0]);
     }
 
-    public static byte getHeightModifier(Project project, int species, SpriteType spriteType)
+    public static int getHeightModifier(Project project, int species, SpriteType spriteType)
     {
         toDelete= new ArrayList<>();
         String dataPath= project.getDataPath();
@@ -166,17 +166,16 @@ public class SpriteDataProcessor
         Buffer buffer= new Buffer(positionDirPath.getAbsolutePath() + File.separator + (selected + spriteType.value) + ".bin");
 
 
-        byte ret;
+        int ret;
 
         try
         {
-            ret= buffer.readBytes(1)[0];
+            ret= -(buffer.readByte() & 0xff);
         }
         catch (RuntimeException e)
         {
             ret= 0;
         }
-
 
         return ret;
     }

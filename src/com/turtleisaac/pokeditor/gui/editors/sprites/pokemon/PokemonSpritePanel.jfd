@@ -30,6 +30,12 @@ new FormModel {
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 2 0"
 			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "New Sprite"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 2 0"
+			} )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "hidemode 3"
 				"$columnConstraints": "[fill][grow,fill][grow,fill][grow,fill][grow,fill]"
@@ -393,23 +399,178 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 				"$layoutConstraints": "hidemode 3"
 				"$columnConstraints": "[grow,fill][grow,fill]"
-				"$rowConstraints": "[][][][]"
+				"$rowConstraints": "[][][][][grow][grow]"
 			} ) {
 				name: "battlePanel"
 				"border": new javax.swing.border.TitledBorder( "" )
-				add( new FormComponent( "javax.swing.JToggleButton" ) {
-					name: "femaleToggleButton"
-					"text": "Female"
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "femaleToggleButtonActionPerformed", true ) )
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 0 2 1"
-				} )
 				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.sprites.pokemon.PokemonSpritePanel$BattleMockupPanel" ) {
 					name: "mockupPanel"
-					"border": new javax.swing.border.TitledBorder( "text" )
+					"border": new javax.swing.border.TitledBorder( "Battle Mockup" )
 					"minimumSize": new java.awt.Dimension( 256, 192 )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 1 2 1,grow"
+					"value": "cell 0 0 2 1,grow"
+				} )
+				add( new FormComponent( "javax.swing.JToggleButton" ) {
+					name: "genderToggleButton"
+					"text": "Toggle Gender"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "femaleToggleButtonActionPerformed", true ) )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1 2 1,growx"
+				} )
+				add( new FormComponent( "javax.swing.JToggleButton" ) {
+					name: "shinyToggleButton"
+					"text": "Toggle Shiny"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shinyToggleButtonActionPerformed", true ) )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 1 2 1,growx"
+				} )
+				add( new FormComponent( "javax.swing.JToggleButton" ) {
+					name: "frameToggleButton2"
+					"text": "Toggle Frame"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "frameToggleButtonActionPerformed", true ) )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 2 2 1"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[grow,fill][fill]"
+					"$rowConstraints": "[grow][grow][grow][grow][grow][grow][grow][grow][grow][][][]"
+				} ) {
+					name: "panel1"
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator4"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0 2 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "globalFrontYLabel"
+						"text": "Global Front Y"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1"
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "globalFrontYSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 0, -128, 127, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "globalFrontYSpinnerStateChanged", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "shadowXLabel"
+						"text": "Shadow X"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2"
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "shadowXSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 0, -128, 127, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "shadowXSpinnerStateChanged", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 2"
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator2"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 3 2 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "femaleBackYLabel"
+						"text": "Female Back -Y"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 4"
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "femaleBackYSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 0, -255, 0, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "femaleBackYSpinnerStateChanged", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 4"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "maleBackYLabel"
+						"text": "Male Back -Y"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 5"
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "maleBackYSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 0, -255, 0, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "maleBackYSpinnerStateChanged", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 5"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "femaleFrontYLabel"
+						"text": "Female Front -Y"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 6"
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "femaleFrontYSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 0, -255, 0, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "femaleFrontYSpinnerStateChanged", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 6"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "maleFrontYLabel"
+						"text": "Male Front -Y"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 7"
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "maleFrontYSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 0, -255, 0, 1 )
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "maleFrontYSpinnerStateChanged", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 7"
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator3"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 8 2 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "movementEffectLabel"
+						"text": "Movement Effect"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 9"
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "movementEffectSpinner"
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "movementEffectSpinnerStateChanged", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 9"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "shadowSizeTextField"
+						"text": "Shadow Size"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 10"
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "shadowSizeComboBox"
+						auxiliary() {
+							"JavaCodeGenerator.typeParameters": "SpriteDataProcessor.ShadowType"
+						}
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shadowSizeComboBoxActionPerformed", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 10"
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator5"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 11 2 1"
+					} )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 3 2 2,growy"
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "savePositionChangesButton"
+					"text": "Save Position Changes"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "savePositionChangesButtonActionPerformed", true ) )
+				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+					"value": "cell 0 5 2 1,aligny bottom,growy 0"
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 1 2 1,grow"

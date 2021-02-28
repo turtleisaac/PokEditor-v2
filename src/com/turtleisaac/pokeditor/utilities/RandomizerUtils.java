@@ -3,7 +3,7 @@ package com.turtleisaac.pokeditor.utilities;
 import com.turtleisaac.pokeditor.editors.encounters.johto.JohtoEncounterEditor;
 import com.turtleisaac.pokeditor.editors.encounters.johto.JohtoEncounterReturn;
 import com.turtleisaac.pokeditor.editors.evolutions.gen4.EvolutionEditor;
-import com.turtleisaac.pokeditor.editors.narctowl.Narctowl;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerReturnGen4;
 import com.turtleisaac.pokeditor.project.Game;
@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Random;
 
 public class RandomizerUtils
 {

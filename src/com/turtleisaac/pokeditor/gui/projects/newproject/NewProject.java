@@ -407,8 +407,6 @@ public class NewProject extends JPanel {
             exception.printStackTrace();
         }
 
-
-        parent.setEnabled(false);
         parent.setVisible(false);
         frame.dispose();
     }

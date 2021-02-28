@@ -41,10 +41,10 @@ public class ImageEncrypter
     /**
      * Encrypts the primary and secondary frames and outputs a byte[] representing an NCGR file
      * Uses the encryption method for Platinum/ HeartGold/ SoulSilver
-     * @param images a BufferedImage[] containing the primary frame at index 0 and the secondary frame at index 1
+     * @param images a SpriteImage[] containing the primary frame at index 0 and the secondary frame at index 1
      * @return a byte[] representing an NCGR file to be written later
      */
-    public static byte[] encryptPrimary(BufferedImage[] images, Color[] palette)
+    public static byte[] encryptPrimary(SpriteImage[] images, Color[] palette)
     {
         final short[] data= initialize(images,palette);
 
@@ -62,10 +62,10 @@ public class ImageEncrypter
     /**
      * Encrypts the primary and secondary frames and outputs a byte[] representing an NCGR file
      * Uses the encryption method for Diamond/ Pearl
-     * @param images a BufferedImage[] containing the primary frame at index 0 and the secondary frame at index 1
+     * @param images a SpriteImage[] containing the primary frame at index 0 and the secondary frame at index 1
      * @return a byte[] representing an NCGR file to be written later
      */
-    public static byte[] encryptSecondary(BufferedImage[] images, Color[] palette)
+    public static byte[] encryptSecondary(SpriteImage[] images, Color[] palette)
     {
         final short[] data= initialize(images,palette);
 
@@ -113,28 +113,18 @@ public class ImageEncrypter
 
 
 
-    private static short[] initialize(BufferedImage[] images, Color[] palette)
+    private static short[] initialize(SpriteImage[] images, Color[] palette)
     {
-        BufferedImage image= new BufferedImage(images[0].getWidth()*2,images[0].getHeight(),BufferedImage.TYPE_INT_RGB);
-        Graphics2D g= (Graphics2D) image.getGraphics();
-        g.drawImage(images[0],0,0,null);
-        g.drawImage(images[1],images[0].getWidth(),0,null);
-
-        try
-        {
-            ImageIO.write(image,"png", new File(System.getProperty("user.dir") + File.separator + "testImage.png"));
-        } catch (IOException exception)
-        {
-            exception.printStackTrace();
-        }
+        SpriteImage image= SpriteImage.getCompositeImage(images[0],images[1]);
 
         int idx= 0;
         int[] data= new int[image.getHeight()*image.getWidth()];
+
         for(int row= 0; row < image.getHeight(); row++)
         {
             for(int col= 0; col < image.getWidth(); col++)
             {
-               data[idx++]= indexOf(palette,image.getRGB(col,row));
+               data[idx++]= image.getCoordinateValue(col,row);
             }
         }
 
@@ -145,15 +135,5 @@ public class ImageEncrypter
         }
 
         return arr;
-    }
-
-    private static int indexOf(Color[] arr, int color)
-    {
-        for(int i= 0; i < arr.length; i++)
-        {
-            if(arr[i].getRGB() == color)
-                return i;
-        }
-        return 0;
     }
 }

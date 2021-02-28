@@ -1,8 +1,8 @@
 package com.turtleisaac.pokeditor.utilities.images.ncer;
 
-import com.sun.glass.ui.Size;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.utilities.images.ImageActions;
+import com.turtleisaac.pokeditor.utilities.images.Size;
 
 import java.io.IOException;
 import java.util.ArrayList;

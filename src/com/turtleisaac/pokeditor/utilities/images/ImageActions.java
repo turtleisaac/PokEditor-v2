@@ -1,6 +1,5 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
-import com.sun.glass.ui.Size;
 import com.turtleisaac.pokeditor.utilities.images.ncer.NcerData;
 import com.turtleisaac.pokeditor.utilities.images.nclr.NclrData;
 
