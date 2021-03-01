@@ -718,7 +718,10 @@ public class PokemonSpritePanel extends JPanel
         }
         else
         {
-            SpriteImage image= getImageFromClipboard();
+            SpriteImage newImage= getImageFromClipboard();
+            SpriteImage sourceImage= sprites.getMaleFront()[frameToggled ? 1 : 0].indexSelf(this);
+
+            Color[] paletteGuide= sourceImage.getPalette();
 
             SpriteImage[] femaleBack= sprites.getFemaleBack();
             SpriteImage[] maleBack= sprites.getMaleBack();
@@ -730,20 +733,20 @@ public class PokemonSpritePanel extends JPanel
             SpriteImage[] shinyFemaleFront= sprites.getShinyFemaleFront();
             SpriteImage[] shinyMaleFront= sprites.getShinyMaleFront();
 
-            Color[] palette= image.getPalette();
-            Color[] shinyPalette= sprites.getShinyPalette();
+            palette= newImage.getPalette();
+            shinyPalette= sprites.getShinyPalette();
 
 
-            femaleBack[0].setPalette(image.getPalette());
-            femaleBack[1].setPalette(image.getPalette());
-            maleBack[0].setPalette(image.getPalette());
-            maleBack[1].setPalette(image.getPalette());
-            femaleFront[0].setPalette(image.getPalette());
-            femaleFront[1].setPalette(image.getPalette());
-            maleFront[0].setPalette(image.getPalette());
-            maleFront[1].setPalette(image.getPalette());
+            femaleBack[0].replacePalette(paletteGuide,palette,this);
+            femaleBack[1].replacePalette(paletteGuide,palette,this);
+            maleBack[0].replacePalette(paletteGuide,palette,this);
+            maleBack[1].replacePalette(paletteGuide,palette,this);
+            femaleFront[0].replacePalette(paletteGuide,palette,this);
+            femaleFront[1].replacePalette(paletteGuide,palette,this);
+            maleFront[0].replacePalette(paletteGuide,palette,this);
+            maleFront[1].replacePalette(paletteGuide,palette,this);
 
-            maleFront[frameToggled ? 1 : 0]= image;
+            maleFront[frameToggled ? 1 : 0]= newImage;
 
             sprites= new PokemonSprites()
             {
@@ -820,7 +823,10 @@ public class PokemonSpritePanel extends JPanel
         }
         else
         {
-            SpriteImage image= getImageFromClipboard();
+            SpriteImage newImage= getImageFromClipboard();
+            SpriteImage sourceImage= sprites.getMaleBack()[frameToggled ? 1 : 0];
+
+            Color[] paletteGuide= sourceImage.getPalette();
 
             SpriteImage[] femaleBack= sprites.getFemaleBack();
             SpriteImage[] maleBack= sprites.getMaleBack();
@@ -832,20 +838,20 @@ public class PokemonSpritePanel extends JPanel
             SpriteImage[] shinyFemaleFront= sprites.getShinyFemaleFront();
             SpriteImage[] shinyMaleFront= sprites.getShinyMaleFront();
 
-            Color[] palette= image.getPalette();
-            Color[] shinyPalette= sprites.getShinyPalette();
+            palette= newImage.getPalette();
+            shinyPalette= sprites.getShinyPalette();
 
 
-            femaleBack[0].setPalette(image.getPalette());
-            femaleBack[1].setPalette(image.getPalette());
-            maleBack[0].setPalette(image.getPalette());
-            maleBack[1].setPalette(image.getPalette());
-            femaleFront[0].setPalette(image.getPalette());
-            femaleFront[1].setPalette(image.getPalette());
-            maleFront[0].setPalette(image.getPalette());
-            maleFront[1].setPalette(image.getPalette());
+            femaleBack[0].replacePalette(paletteGuide,palette,this);
+            femaleBack[1].replacePalette(paletteGuide,palette,this);
+            maleBack[0].replacePalette(paletteGuide,palette,this);
+            maleBack[1].replacePalette(paletteGuide,palette,this);
+            femaleFront[0].replacePalette(paletteGuide,palette,this);
+            femaleFront[1].replacePalette(paletteGuide,palette,this);
+            maleFront[0].replacePalette(paletteGuide,palette,this);
+            maleFront[1].replacePalette(paletteGuide,palette,this);
 
-            maleBack[frameToggled ? 1 : 0]= image;
+            maleBack[frameToggled ? 1 : 0]= newImage;
 
             sprites= new PokemonSprites()
             {
@@ -921,7 +927,10 @@ public class PokemonSpritePanel extends JPanel
         }
         else
         {
-            SpriteImage image= getImageFromClipboard();
+            SpriteImage newImage= getImageFromClipboard();
+            SpriteImage sourceImage= sprites.getFemaleFront()[frameToggled ? 1 : 0];
+
+            Color[] paletteGuide= sourceImage.getPalette();
 
             SpriteImage[] femaleBack= sprites.getFemaleBack();
             SpriteImage[] maleBack= sprites.getMaleBack();
@@ -933,20 +942,20 @@ public class PokemonSpritePanel extends JPanel
             SpriteImage[] shinyFemaleFront= sprites.getShinyFemaleFront();
             SpriteImage[] shinyMaleFront= sprites.getShinyMaleFront();
 
-            Color[] palette= image.getPalette();
-            Color[] shinyPalette= sprites.getShinyPalette();
+            palette= newImage.getPalette();
+            shinyPalette= sprites.getShinyPalette();
 
 
-            femaleBack[0].setPalette(image.getPalette());
-            femaleBack[1].setPalette(image.getPalette());
-            maleBack[0].setPalette(image.getPalette());
-            maleBack[1].setPalette(image.getPalette());
-            femaleFront[0].setPalette(image.getPalette());
-            femaleFront[1].setPalette(image.getPalette());
-            maleFront[0].setPalette(image.getPalette());
-            maleFront[1].setPalette(image.getPalette());
+            femaleBack[0].replacePalette(paletteGuide,palette,this);
+            femaleBack[1].replacePalette(paletteGuide,palette,this);
+            maleBack[0].replacePalette(paletteGuide,palette,this);
+            maleBack[1].replacePalette(paletteGuide,palette,this);
+            femaleFront[0].replacePalette(paletteGuide,palette,this);
+            femaleFront[1].replacePalette(paletteGuide,palette,this);
+            maleFront[0].replacePalette(paletteGuide,palette,this);
+            maleFront[1].replacePalette(paletteGuide,palette,this);
 
-            femaleFront[frameToggled ? 1 : 0]= image;
+            femaleFront[frameToggled ? 1 : 0]= newImage;
 
             sprites= new PokemonSprites()
             {
@@ -1022,7 +1031,10 @@ public class PokemonSpritePanel extends JPanel
         }
         else
         {
-            SpriteImage image= getImageFromClipboard();
+            SpriteImage newImage= getImageFromClipboard();
+            SpriteImage sourceImage= sprites.getFemaleBack()[frameToggled ? 1 : 0];
+
+            Color[] paletteGuide= sourceImage.getPalette();
 
             SpriteImage[] femaleBack= sprites.getFemaleBack();
             SpriteImage[] maleBack= sprites.getMaleBack();
@@ -1034,20 +1046,20 @@ public class PokemonSpritePanel extends JPanel
             SpriteImage[] shinyFemaleFront= sprites.getShinyFemaleFront();
             SpriteImage[] shinyMaleFront= sprites.getShinyMaleFront();
 
-            Color[] palette= image.getPalette();
-            Color[] shinyPalette= sprites.getShinyPalette();
+            palette= newImage.getPalette();
+            shinyPalette= sprites.getShinyPalette();
 
 
-            femaleBack[0].setPalette(image.getPalette());
-            femaleBack[1].setPalette(image.getPalette());
-            maleBack[0].setPalette(image.getPalette());
-            maleBack[1].setPalette(image.getPalette());
-            femaleFront[0].setPalette(image.getPalette());
-            femaleFront[1].setPalette(image.getPalette());
-            maleFront[0].setPalette(image.getPalette());
-            maleFront[1].setPalette(image.getPalette());
+            femaleBack[0].replacePalette(paletteGuide,palette,this);
+            femaleBack[1].replacePalette(paletteGuide,palette,this);
+            maleBack[0].replacePalette(paletteGuide,palette,this);
+            maleBack[1].replacePalette(paletteGuide,palette,this);
+            femaleFront[0].replacePalette(paletteGuide,palette,this);
+            femaleFront[1].replacePalette(paletteGuide,palette,this);
+            maleFront[0].replacePalette(paletteGuide,palette,this);
+            maleFront[1].replacePalette(paletteGuide,palette,this);
 
-            femaleBack[frameToggled ? 1 : 0]= image;
+            femaleBack[frameToggled ? 1 : 0]= newImage;
 
             sprites= new PokemonSprites()
             {
@@ -1123,7 +1135,10 @@ public class PokemonSpritePanel extends JPanel
         }
         else
         {
-            SpriteImage image= getImageFromClipboard();
+            SpriteImage newImage= getImageFromClipboard();
+            SpriteImage sourceImage= sprites.getShinyFemaleFront()[frameToggled ? 1 : 0];
+
+            Color[] paletteGuide= sourceImage.getPalette();
 
             SpriteImage[] femaleBack= sprites.getFemaleBack();
             SpriteImage[] maleBack= sprites.getMaleBack();
@@ -1135,20 +1150,20 @@ public class PokemonSpritePanel extends JPanel
             SpriteImage[] shinyFemaleFront= sprites.getShinyFemaleFront();
             SpriteImage[] shinyMaleFront= sprites.getShinyMaleFront();
 
-            Color[] palette= sprites.getPalette();
-            Color[] shinyPalette= image.getPalette();
+            palette= sprites.getPalette();
+            shinyPalette= newImage.getPalette();
 
-            shinyFemaleBack[0].setPalette(image.getPalette());
-            shinyFemaleBack[1].setPalette(image.getPalette());
-            shinyMaleBack[0].setPalette(image.getPalette());
-            shinyMaleBack[1].setPalette(image.getPalette());
-            shinyFemaleFront[0].setPalette(image.getPalette());
-            shinyFemaleFront[1].setPalette(image.getPalette());
-            shinyMaleFront[0].setPalette(image.getPalette());
-            shinyMaleFront[1].setPalette(image.getPalette());
+            shinyFemaleBack[0].replacePalette(paletteGuide,palette,this);
+            shinyFemaleBack[1].replacePalette(paletteGuide,palette,this);
+            shinyMaleBack[0].replacePalette(paletteGuide,palette,this);
+            shinyMaleBack[1].replacePalette(paletteGuide,palette,this);
+            shinyFemaleFront[0].replacePalette(paletteGuide,palette,this);
+            shinyFemaleFront[1].replacePalette(paletteGuide,palette,this);
+            shinyMaleFront[0].replacePalette(paletteGuide,palette,this);
+            shinyMaleFront[1].replacePalette(paletteGuide,palette,this);
 
 
-            shinyFemaleFront[frameToggled ? 1 : 0]= image;
+            shinyFemaleFront[frameToggled ? 1 : 0]= newImage;
 
             sprites= new PokemonSprites()
             {
@@ -1224,7 +1239,10 @@ public class PokemonSpritePanel extends JPanel
         }
         else
         {
-            SpriteImage image= getImageFromClipboard();
+            SpriteImage newImage= getImageFromClipboard();
+            SpriteImage sourceImage= sprites.getShinyFemaleBack()[frameToggled ? 1 : 0];
+
+            Color[] paletteGuide= sourceImage.getPalette();
 
             SpriteImage[] femaleBack= sprites.getFemaleBack();
             SpriteImage[] maleBack= sprites.getMaleBack();
@@ -1236,20 +1254,20 @@ public class PokemonSpritePanel extends JPanel
             SpriteImage[] shinyFemaleFront= sprites.getShinyFemaleFront();
             SpriteImage[] shinyMaleFront= sprites.getShinyMaleFront();
 
-            Color[] palette= sprites.getPalette();
-            Color[] shinyPalette= image.getPalette();
+            palette= sprites.getPalette();
+            shinyPalette= newImage.getPalette();
 
-            shinyFemaleBack[0].setPalette(image.getPalette());
-            shinyFemaleBack[1].setPalette(image.getPalette());
-            shinyMaleBack[0].setPalette(image.getPalette());
-            shinyMaleBack[1].setPalette(image.getPalette());
-            shinyFemaleFront[0].setPalette(image.getPalette());
-            shinyFemaleFront[1].setPalette(image.getPalette());
-            shinyMaleFront[0].setPalette(image.getPalette());
-            shinyMaleFront[1].setPalette(image.getPalette());
+            shinyFemaleBack[0].replacePalette(paletteGuide,palette,this);
+            shinyFemaleBack[1].replacePalette(paletteGuide,palette,this);
+            shinyMaleBack[0].replacePalette(paletteGuide,palette,this);
+            shinyMaleBack[1].replacePalette(paletteGuide,palette,this);
+            shinyFemaleFront[0].replacePalette(paletteGuide,palette,this);
+            shinyFemaleFront[1].replacePalette(paletteGuide,palette,this);
+            shinyMaleFront[0].replacePalette(paletteGuide,palette,this);
+            shinyMaleFront[1].replacePalette(paletteGuide,palette,this);
 
 
-            shinyFemaleBack[frameToggled ? 1 : 0]= image;
+            shinyFemaleBack[frameToggled ? 1 : 0]= newImage;
 
             sprites= new PokemonSprites()
             {
@@ -1325,7 +1343,10 @@ public class PokemonSpritePanel extends JPanel
         }
         else
         {
-            SpriteImage image= getImageFromClipboard();
+            SpriteImage newImage= getImageFromClipboard();
+            SpriteImage sourceImage= sprites.getShinyMaleFront()[frameToggled ? 1 : 0];
+
+            Color[] paletteGuide= sourceImage.getPalette();
 
             SpriteImage[] femaleBack= sprites.getFemaleBack();
             SpriteImage[] maleBack= sprites.getMaleBack();
@@ -1337,20 +1358,20 @@ public class PokemonSpritePanel extends JPanel
             SpriteImage[] shinyFemaleFront= sprites.getShinyFemaleFront();
             SpriteImage[] shinyMaleFront= sprites.getShinyMaleFront();
 
-            Color[] palette= sprites.getPalette();
-            Color[] shinyPalette= image.getPalette();
+            palette= sprites.getPalette();
+            shinyPalette= newImage.getPalette();
 
-            shinyFemaleBack[0].setPalette(image.getPalette());
-            shinyFemaleBack[1].setPalette(image.getPalette());
-            shinyMaleBack[0].setPalette(image.getPalette());
-            shinyMaleBack[1].setPalette(image.getPalette());
-            shinyFemaleFront[0].setPalette(image.getPalette());
-            shinyFemaleFront[1].setPalette(image.getPalette());
-            shinyMaleFront[0].setPalette(image.getPalette());
-            shinyMaleFront[1].setPalette(image.getPalette());
+            shinyFemaleBack[0].replacePalette(paletteGuide,palette,this);
+            shinyFemaleBack[1].replacePalette(paletteGuide,palette,this);
+            shinyMaleBack[0].replacePalette(paletteGuide,palette,this);
+            shinyMaleBack[1].replacePalette(paletteGuide,palette,this);
+            shinyFemaleFront[0].replacePalette(paletteGuide,palette,this);
+            shinyFemaleFront[1].replacePalette(paletteGuide,palette,this);
+            shinyMaleFront[0].replacePalette(paletteGuide,palette,this);
+            shinyMaleFront[1].replacePalette(paletteGuide,palette,this);
 
 
-            shinyMaleFront[frameToggled ? 1 : 0]= image;
+            shinyMaleFront[frameToggled ? 1 : 0]= newImage;
 
             sprites= new PokemonSprites()
             {
@@ -1426,7 +1447,10 @@ public class PokemonSpritePanel extends JPanel
         }
         else
         {
-            SpriteImage image= getImageFromClipboard();
+            SpriteImage newImage= getImageFromClipboard();
+            SpriteImage sourceImage= sprites.getShinyMaleBack()[frameToggled ? 1 : 0];
+
+            Color[] paletteGuide= sourceImage.getPalette();
 
             SpriteImage[] femaleBack= sprites.getFemaleBack();
             SpriteImage[] maleBack= sprites.getMaleBack();
@@ -1438,20 +1462,20 @@ public class PokemonSpritePanel extends JPanel
             SpriteImage[] shinyFemaleFront= sprites.getShinyFemaleFront();
             SpriteImage[] shinyMaleFront= sprites.getShinyMaleFront();
 
-            Color[] palette= sprites.getPalette();
-            Color[] shinyPalette= image.getPalette();
+            palette= sprites.getPalette();
+            shinyPalette= newImage.getPalette();
 
-            shinyFemaleBack[0].setPalette(image.getPalette());
-            shinyFemaleBack[1].setPalette(image.getPalette());
-            shinyMaleBack[0].setPalette(image.getPalette());
-            shinyMaleBack[1].setPalette(image.getPalette());
-            shinyFemaleFront[0].setPalette(image.getPalette());
-            shinyFemaleFront[1].setPalette(image.getPalette());
-            shinyMaleFront[0].setPalette(image.getPalette());
-            shinyMaleFront[1].setPalette(image.getPalette());
+            shinyFemaleBack[0].replacePalette(paletteGuide,palette,this);
+            shinyFemaleBack[1].replacePalette(paletteGuide,palette,this);
+            shinyMaleBack[0].replacePalette(paletteGuide,palette,this);
+            shinyMaleBack[1].replacePalette(paletteGuide,palette,this);
+            shinyFemaleFront[0].replacePalette(paletteGuide,palette,this);
+            shinyFemaleFront[1].replacePalette(paletteGuide,palette,this);
+            shinyMaleFront[0].replacePalette(paletteGuide,palette,this);
+            shinyMaleFront[1].replacePalette(paletteGuide,palette,this);
 
 
-            shinyMaleBack[frameToggled ? 1 : 0]= image;
+            shinyMaleBack[frameToggled ? 1 : 0]= newImage;
 
             sprites= new PokemonSprites()
             {
@@ -1536,6 +1560,8 @@ public class PokemonSpritePanel extends JPanel
             normalPaletteButtons[i].setIcon(new ImageIcon(getPaletteImage(palette[i])));
             shinyPaletteButtons[i].setIcon(new ImageIcon(getPaletteImage(shinyPalette[i])));
         }
+
+        positionAdjustmentMade();
     }
 
     private void exportSpriteAction(BufferedImage image)
@@ -1577,6 +1603,7 @@ public class PokemonSpritePanel extends JPanel
             spriteEditor= (File) objectInputStream.readObject();
 
             File spriteTemp= File.createTempFile("temp_sprite_pokeditor",".png");
+            spriteTemp.deleteOnExit();
             ImageIO.write(image,"png",spriteTemp);
 
             if(System.getProperty("os.name").toLowerCase().contains("mac"))
@@ -2018,13 +2045,13 @@ public class PokemonSpritePanel extends JPanel
             //---- genderToggleButton ----
             genderToggleButton.setText("Toggle Gender");
             genderToggleButton.addActionListener(e -> femaleToggleButtonActionPerformed(e));
-            battlePanel.add(genderToggleButton, "cell 0 1 2 1");
+            battlePanel.add(genderToggleButton, "cell 0 1 2 1,growy");
 
             //---- shinyToggleButton ----
             shinyToggleButton.setText("Toggle Shiny");
             shinyToggleButton.setMinimumSize(new Dimension(124, 30));
             shinyToggleButton.addActionListener(e -> shinyToggleButtonActionPerformed(e));
-            battlePanel.add(shinyToggleButton, "cell 0 1 2 1");
+            battlePanel.add(shinyToggleButton, "cell 0 1 2 1,growy");
 
             //---- frameToggleButton2 ----
             frameToggleButton2.setText("Toggle Frame");

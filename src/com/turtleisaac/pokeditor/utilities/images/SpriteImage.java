@@ -76,6 +76,13 @@ public class SpriteImage
             JOptionPane.showMessageDialog(parent,"This image is not indexed to 16 colors","PokEditor",JOptionPane.ERROR_MESSAGE);
             return;
         }
+        else
+        {
+            while(colorList.size() < 16)
+            {
+                colorList.add(Color.MAGENTA);
+            }
+        }
 
         indexGuide= new byte[80][80];
 
@@ -88,6 +95,7 @@ public class SpriteImage
         }
 
         palette= colorList.toArray(new Color[0]);
+        update= true;
     }
 
     /**
@@ -153,6 +161,65 @@ public class SpriteImage
         return resizedImage;
     }
 
+    public SpriteImage indexSelf(JPanel parent)
+    {
+        SpriteImage newSprite= new SpriteImage(getImage(),parent);
+        indexGuide= newSprite.getIndexGuide();
+        setPalette(newSprite.getPalette());
+        return this;
+    }
+
+    public SpriteImage updateColor(int index, Color replacement)
+    {
+        palette[index]= replacement;
+        update= true;
+        return this;
+    }
+
+    public SpriteImage replaceColor(Color toReplace, Color replacement)
+    {
+        for(int i= 0; i < palette.length; i++)
+        {
+            if(palette[i].equals(toReplace))
+            {
+                palette[i]= replacement;
+                break;
+            }
+        }
+        return this;
+    }
+
+    public SpriteImage replacePalette(Color[] paletteGuide, Color[] newPalette, JPanel parent)
+    {
+        indexSelf(parent);
+
+        ArrayList<Color> colorGuideList= new ArrayList<>(Arrays.asList(paletteGuide));
+
+        for(int i= 0; i < palette.length; i++)
+        {
+            for(int row= 0; row < indexGuide.length; row++)
+            {
+                for(int col= 0; col < indexGuide[row].length; col++)
+                {
+                    if(indexGuide[row][col] == i)
+                        indexGuide[row][col]= (byte) -colorGuideList.indexOf(palette[i]);
+                }
+            }
+        }
+
+        for(int row= 0; row < indexGuide.length; row++)
+        {
+            for(int col= 0; col < indexGuide[row].length; col++)
+            {
+                indexGuide[row][col]= (byte) Math.abs(indexGuide[row][col]);
+            }
+        }
+
+        palette= newPalette;
+        update= true;
+        return this;
+    }
+
     public int getWidth()
     {
         return indexGuide[0].length;
@@ -178,13 +245,6 @@ public class SpriteImage
     public byte[][] getIndexGuide()
     {
         return indexGuide;
-    }
-
-    public SpriteImage updateColor(int index, Color replacement)
-    {
-        palette[index]= replacement;
-        update= true;
-        return this;
     }
 
     public int getCoordinateValue(int x, int y)

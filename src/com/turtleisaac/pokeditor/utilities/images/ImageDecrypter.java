@@ -27,6 +27,22 @@ public class ImageDecrypter
             exception.printStackTrace();
         }
 
+        if(palette != null)
+        {
+            while(backgroundDuplicated(palette))
+            {
+                palette[0]= new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+            }
+        }
+
+        if(shinyPalette != null)
+        {
+            while(backgroundDuplicated(shinyPalette))
+            {
+                shinyPalette[0]= new Color((int) (Math.random() * 255), (int) (Math.random() * 255), (int) (Math.random() * 255));
+            }
+        }
+
         SpriteImage[] femaleBack= primary ? decryptPrimary(path + species + ".ncgr",palette) : decryptSecondary(path + species + ".ncgr",palette);
         SpriteImage[] shinyFemaleBack= primary ? decryptPrimary(path + species + ".ncgr",shinyPalette) : decryptSecondary(path + species + ".ncgr",shinyPalette);
 
