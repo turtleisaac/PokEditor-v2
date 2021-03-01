@@ -60,12 +60,20 @@ public class EvolutionEditor
                 break;
         }
 
-        System.out.println();
-        for(int i= 0; i < itemData.length; i++)
-        {
-            System.out.println(i + ": " + itemData[i]);
-        }
-        System.out.println();
+        int oldLength= nameData.length;;
+        nameData= Arrays.copyOf(nameData,oldLength + 12);
+        nameData[oldLength++]= "Deoxys (A)";
+        nameData[oldLength++]= "Deoxys (D)";
+        nameData[oldLength++]= "Deoxys (S)";
+        nameData[oldLength++]= "Wormadam (S)";
+        nameData[oldLength++]= "Wormadam (T)";
+        nameData[oldLength++]= "Giratina (O)";
+        nameData[oldLength++]= "Shaymin (S)";
+        nameData[oldLength++]= "Rotom (Heat)";
+        nameData[oldLength++]= "Rotom (Wash)";
+        nameData[oldLength++]= "Rotom (Frost)";
+        nameData[oldLength++]= "Rotom (Fan)";
+        nameData[oldLength]= "Rotom (Mow)";
 
         BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "EvolutionMethodsGen4.txt"));
         String line;
@@ -95,7 +103,6 @@ public class EvolutionEditor
         sort(files); //sorts files numerically (0.bin, 1.bin, 2.bin, etc...)
         File file;
 
-        CsvReader csvReader= new CsvReader(defaultsPath + "evolution4.csv");
         int count= 0;
 
         for(int i= 0; i < files.length; i++)
@@ -106,7 +113,6 @@ public class EvolutionEditor
                 throw new RuntimeException("This is not an evolution file");
             }
             evolutionBuffer= new Buffer(file.toString());
-            initializeIndex(csvReader.next());
             int finalCount= count;
             count++;
 
@@ -116,25 +122,10 @@ public class EvolutionEditor
             int[] evolvedIDs= new int[7];
             for(int e= 0; e < 7; e++)
             {
-                if(autoFix)
-                {
-                    evolutionMethods[e]= evolutionBuffer.readSelectiveByte(evolutionMethodArr.length-1,getEvolutionMethod(next()));
-                }
-                else
-                {
-                    evolutionMethods[e]= evolutionBuffer.readByte();
-                }
+                evolutionMethods[e]= evolutionBuffer.readByte();
                 padding[e]= evolutionBuffer.readByte();
                 requirementNumbers[e]= evolutionBuffer.readShort();
-                if(autoFix)
-                {
-                    evolvedIDs[e]= evolutionBuffer.readSelectiveShort(nameData.length-1, (short) getPokemon(next()));
-                }
-                else
-                {
-                    evolvedIDs[e]= evolutionBuffer.readShort();
-                }
-
+                evolvedIDs[e]= evolutionBuffer.readShort();
             }
 
             dataList.add(new EvolutionData() {

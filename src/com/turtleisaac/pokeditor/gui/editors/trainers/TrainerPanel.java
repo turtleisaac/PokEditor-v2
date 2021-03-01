@@ -230,7 +230,7 @@ public class TrainerPanel extends JPanel
         }
         else
         {
-            while(trainerPokemonTabbedPane.getTabCount() != numberPokemonSlider.getValue())
+            while(trainerPokemonTabbedPane.getTabCount() != numberPokemonSlider.getValue() && trainerPokemonTabbedPane.getTabCount() > 0)
             {
                 trainerPokemonTabbedPane.removeTabAt(trainerPokemonTabbedPane.getTabCount()-1);
             }

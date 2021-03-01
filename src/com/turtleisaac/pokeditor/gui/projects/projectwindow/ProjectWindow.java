@@ -28,7 +28,7 @@ import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
-import com.turtleisaac.pokeditor.editors.positions.SpriteDataProcessor;
+import com.turtleisaac.pokeditor.editors.spritepositions.SpriteDataProcessor;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.gui.JCheckboxTree;
 import com.turtleisaac.pokeditor.gui.MyFilter;
@@ -401,37 +401,7 @@ public class ProjectWindow extends JFrame
 
     private void applyToRomButtonActionPerformed(ActionEvent e)
     {
-        List<List<Object>> onlineSheetValues;
-
-        try
-        {
-            onlineSheetValues= api.getSpecifiedSheet(sheetName);
-        }
-        catch(IOException | NullPointerException exception)
-        {
-            onlineSheetValues= null;
-        }
-
-        if(!getTableData().equals(onlineSheetValues))
-        {
-            if(JOptionPane.showOptionDialog(this, "The data contained in the online version of this sheet differs from your local version. Which is the most recent?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new String[]{"Local", "Online"}, "Local") == 1)
-            {
-                System.out.println("Most recent data changed to online");
-                sheetChooserComboBoxActionPerformed(e);
-            }
-            else
-            {
-                try
-                {
-                    api.updateSheet((String) sheetChooserComboBox.getSelectedItem(),getTableData());
-                }
-                catch (IOException exception)
-                {
-                    JOptionPane.showMessageDialog(this,"Upload failed","Error",JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
-        else if(JOptionPane.showConfirmDialog(this,"Any changes that you have made to the ROM that do not exist in the sheets you apply will be lost. Continue?","Alert",JOptionPane.YES_NO_OPTION) == 0)
+        if(JOptionPane.showConfirmDialog(this,"Any changes that you have made to the ROM that do not exist in the sheets you apply will be lost. Continue?","Alert",JOptionPane.YES_NO_OPTION) == 0)
         {
             SheetApplier editApplier= new SheetApplier(project, projectPath, api, this);
             editApplier.setLocationRelativeTo(this);
@@ -597,7 +567,7 @@ public class ProjectWindow extends JFrame
         if(e.getSource() == exportRomButton)
             JOptionPane.showMessageDialog(this,"Make sure that you have applied the data that you want applied to your ROM with the \"Apply to ROM\" button.","Warning",JOptionPane.WARNING_MESSAGE);
 
-        JFileChooser fc= new JFileChooser(System.getProperty("user.dir"));
+        JFileChooser fc= new JFileChooser(project.getProjectPath());
         fc.addChoosableFileFilter(new MyFilter("Nintendo DS ROM",".nds"));
         fc.setAcceptAllFileFilterUsed(false);
 

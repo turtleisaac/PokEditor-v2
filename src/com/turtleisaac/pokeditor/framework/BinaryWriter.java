@@ -86,9 +86,9 @@ public class BinaryWriter {
         raf.write(b);
     }
 
-    public void writeByte(int b)
+    public void writeByte(int b) throws IOException
     {
-        writeByte(b);
+        writeByte((byte) b);
     }
 
     public void writeBytes(int... bytes) throws IOException {
@@ -109,7 +109,7 @@ public class BinaryWriter {
         }
     }
 
-    public void write(byte[] bytes) throws IOException {
+    public void write(byte... bytes) throws IOException {
         raf.write(bytes);
     }
 

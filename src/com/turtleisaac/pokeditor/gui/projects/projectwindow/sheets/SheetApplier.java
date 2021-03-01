@@ -325,16 +325,6 @@ public class SheetApplier extends JFrame
                         }
                     }
                     break;
-
-                case Black:
-                case White:
-
-                    break;
-
-                case Black2:
-                case White2:
-
-                    break;
             }
 
 
@@ -354,6 +344,7 @@ public class SheetApplier extends JFrame
             JOptionPane.showMessageDialog(this,"You haven't selected anything to apply!","Error",JOptionPane.ERROR_MESSAGE);
         else if(!contains(selected,"Tutor Move"))
         {
+            System.out.println("Sheets applied to ROM");
             parent.toFront();
             parent.setEnabled(true);
             dispose();
@@ -447,14 +438,17 @@ public class SheetApplier extends JFrame
 
     public static void clearDirs(File folder)
     {
-        for(File f : Objects.requireNonNull(folder.listFiles()))
+        if(folder.exists())
         {
-            if(f.isDirectory())
-                clearDirs(f);
-            else
-                f.delete();
+            for(File f : Objects.requireNonNull(folder.listFiles()))
+            {
+                if(f.isDirectory())
+                    clearDirs(f);
+                else
+                    f.delete();
+            }
+            folder.delete();
         }
-        folder.delete();
     }
 
     public static void makeVolatile(File folder)

@@ -43,13 +43,6 @@ new FormModel {
 			} ) {
 				name: "battleSpritePanel"
 				"border": new javax.swing.border.TitledBorder( "" )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "importSpriteButton"
-					"text": "Import"
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "importSpriteButtonActionPerformed", true ) )
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 0 4 1"
-				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "frameToggleLabel"
 					"text": "0"
@@ -84,28 +77,28 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "normalMaleFrontButton"
 					"toolTipText": "Male Front Sprite"
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "normalFrontButtonActionPerformed", true ) )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "normalMaleFrontButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 3,alignx center,growx 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "normalMaleBackButton"
 					"toolTipText": "Male Back Sprite"
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "normalBackButtonActionPerformed", true ) )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "normalMaleBackButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 2 3,alignx center,growx 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "shinyMaleFrontButton"
 					"toolTipText": "Shiny Male Front Sprite"
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shinyFrontButtonActionPerformed", true ) )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shinyMaleFrontButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 3 3,alignx center,growx 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "shinyMaleBackButton"
 					"toolTipText": "Shiny Male Back Sprite"
-					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shinyBackButtonActionPerformed", true ) )
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shinyMaleBackButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 4 3,alignx center,growx 0"
 				} )
@@ -118,24 +111,28 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "normalFemaleFrontButton"
 					"toolTipText": "Female Front Sprite"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "normalFemaleFrontButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 4,alignx center,growx 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "normalFemaleBackButton"
 					"toolTipText": "Female Back Sprite"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "normalFemaleBackButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 2 4,alignx center,growx 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "shinyFemaleFrontButton"
 					"toolTipText": "Shiny Female Front Sprite"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shinyFemaleFrontButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 3 4,alignx center,growx 0"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "shinyFemaleBackButton"
 					"toolTipText": "Shiny Female Back Sprite"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shinyFemaleBackButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 4 4,alignx center,growx 0"
 				} )
@@ -415,18 +412,20 @@ new FormModel {
 					"text": "Toggle Gender"
 					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "femaleToggleButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 1 2 1,growx"
+					"value": "cell 0 1 2 1"
 				} )
 				add( new FormComponent( "javax.swing.JToggleButton" ) {
 					name: "shinyToggleButton"
 					"text": "Toggle Shiny"
+					"minimumSize": new java.awt.Dimension( 124, 30 )
 					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shinyToggleButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 1 2 1,growx"
+					"value": "cell 0 1 2 1"
 				} )
 				add( new FormComponent( "javax.swing.JToggleButton" ) {
 					name: "frameToggleButton2"
 					"text": "Toggle Frame"
+					"minimumSize": new java.awt.Dimension( 124, 30 )
 					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "frameToggleButtonActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 2 2 1"
@@ -532,7 +531,13 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "movementEffectLabel"
-						"text": "Movement Effect"
+						"text": "Movement"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 9"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "movementRadioButton"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "movementRadioButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 9"
 					} )
@@ -577,7 +582,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 915, 690 )
+			"size": new java.awt.Dimension( 915, 745 )
 		} )
 	}
 }

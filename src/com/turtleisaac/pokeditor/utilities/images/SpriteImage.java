@@ -1,13 +1,18 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SpriteImage
 {
     private byte[][] indexGuide;
     private Color[] palette;
+
+    private BufferedImage storedImage;
+    boolean update;
 
     public SpriteImage(Color[] palette)
     {
@@ -17,6 +22,8 @@ public class SpriteImage
         Arrays.fill(indexGuide,arr);
 
         this.palette= palette;
+
+        update= true;
     }
 
     /**
@@ -28,6 +35,59 @@ public class SpriteImage
     {
         this.indexGuide = indexGuide;
         this.palette= palette;
+
+        update= true;
+    }
+
+    public SpriteImage(Image image, JPanel parent)
+    {
+        if(image.getWidth(null) != image.getHeight(null) && image.getWidth(null) != 80)
+        {
+            JOptionPane.showMessageDialog(parent,"This image is not 80x80","PokEditor",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        BufferedImage bufferedImage;
+        if(image instanceof BufferedImage)
+        {
+            bufferedImage= (BufferedImage) image;
+        }
+        else
+        {
+            bufferedImage= new BufferedImage(image.getWidth(null),image.getHeight(null),BufferedImage.TYPE_INT_RGB);
+            Graphics2D bGr = bufferedImage.createGraphics();
+            bGr.drawImage(image, 0, 0, null);
+            bGr.dispose();
+        }
+
+        ArrayList<Color> colorList= new ArrayList<>();
+        for(int row= 0; row < bufferedImage.getHeight(); row++)
+        {
+            for(int col= 0; col < bufferedImage.getWidth(); col++)
+            {
+                Color color= new Color(bufferedImage.getRGB(col,row));
+                if(!colorList.contains(color))
+                    colorList.add(color);
+            }
+        }
+
+        if(colorList.size() > 16)
+        {
+            JOptionPane.showMessageDialog(parent,"This image is not indexed to 16 colors","PokEditor",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        indexGuide= new byte[80][80];
+
+        for(int row= 0; row < indexGuide.length; row++)
+        {
+            for(int col= 0; col < indexGuide[row].length; col++)
+            {
+                indexGuide[row][col]= (byte) colorList.indexOf(new Color(bufferedImage.getRGB(col,row)));
+            }
+        }
+
+        palette= colorList.toArray(new Color[0]);
     }
 
     /**
@@ -36,16 +96,20 @@ public class SpriteImage
      */
     public BufferedImage getImage()
     {
-        BufferedImage ret= new BufferedImage(indexGuide[0].length, indexGuide.length,BufferedImage.TYPE_INT_RGB);
-        for(int row= 0; row < indexGuide.length; row++)
+        if(update)
         {
-            for(int col= 0; col < indexGuide[row].length; col++)
+            storedImage= new BufferedImage(indexGuide[0].length, indexGuide.length,BufferedImage.TYPE_INT_RGB);
+            for(int row= 0; row < indexGuide.length; row++)
             {
-                ret.setRGB(col,row,palette[indexGuide[row][col]].getRGB());
+                for(int col= 0; col < indexGuide[row].length; col++)
+                {
+                    storedImage.setRGB(col,row,palette[indexGuide[row][col]].getRGB());
+                }
             }
+            update= false;
         }
 
-        return ret;
+        return storedImage;
     }
 
     /**
@@ -107,6 +171,7 @@ public class SpriteImage
     public SpriteImage setPalette(Color[] palette)
     {
         this.palette = palette;
+        update= true;
         return this;
     }
 
@@ -118,6 +183,7 @@ public class SpriteImage
     public SpriteImage updateColor(int index, Color replacement)
     {
         palette[index]= replacement;
+        update= true;
         return this;
     }
 

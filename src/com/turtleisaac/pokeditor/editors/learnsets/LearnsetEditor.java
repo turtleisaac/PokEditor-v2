@@ -55,6 +55,21 @@ public class LearnsetEditor
                 throw new RuntimeException("Invalid rom: " + baseRom);
         }
 
+        int oldLength= nameData.length;;
+        nameData= Arrays.copyOf(nameData,oldLength + 12);
+        nameData[oldLength++]= "Deoxys (A)";
+        nameData[oldLength++]= "Deoxys (D)";
+        nameData[oldLength++]= "Deoxys (S)";
+        nameData[oldLength++]= "Wormadam (S)";
+        nameData[oldLength++]= "Wormadam (T)";
+        nameData[oldLength++]= "Giratina (O)";
+        nameData[oldLength++]= "Shaymin (S)";
+        nameData[oldLength++]= "Rotom (Heat)";
+        nameData[oldLength++]= "Rotom (Wash)";
+        nameData[oldLength++]= "Rotom (Frost)";
+        nameData[oldLength++]= "Rotom (Fan)";
+        nameData[oldLength]= "Rotom (Mow)";
+
         switch (baseRom)
         {
             case Pearl:

@@ -314,7 +314,7 @@ public class RomApplier extends JFrame
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_");
                         PersonalReturnGen4 personalReturn= editor.personalToSheet(File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_");
                         toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_"));
-                        api.updateSheet("TM Learnsets",personalReturn.getTMData());
+                        api.updateSheet("Personal",personalReturn.getPersonalData());
                     }
 
                     if(contains(selected, "TM Learnsets"))
@@ -409,18 +409,6 @@ public class RomApplier extends JFrame
                             api.updateSheet("Trainer Pokemon",trainerReturn.getTrainerPokemon());
                     }
                     break;
-
-
-
-                case Black:
-                case White:
-
-                    break;
-
-                case Black2:
-                case White2:
-
-                    break;
             }
 
 
@@ -439,6 +427,7 @@ public class RomApplier extends JFrame
             JOptionPane.showMessageDialog(this,"You haven't selected anything to apply!","Error",JOptionPane.ERROR_MESSAGE);
         else if(!contains(selected,"Tutor Move"))
         {
+            System.out.println("ROM applied to sheets");
             parent.toFront();
             parent.setEnabled(true);
             dispose();
@@ -530,14 +519,17 @@ public class RomApplier extends JFrame
 
     public static void clearDirs(File folder)
     {
-        for(File f : Objects.requireNonNull(folder.listFiles()))
+        if(folder.exists())
         {
-            if(f.isDirectory())
-                clearDirs(f);
-            else
-                f.delete();
+            for(File f : Objects.requireNonNull(folder.listFiles()))
+            {
+                if(f.isDirectory())
+                    clearDirs(f);
+                else
+                    f.delete();
+            }
+            folder.delete();
         }
-        folder.delete();
     }
 
     public static void makeVolatile(File folder)

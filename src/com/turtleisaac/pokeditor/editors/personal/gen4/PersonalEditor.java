@@ -60,6 +60,21 @@ public class PersonalEditor
                 break;
         }
 
+        int oldLength= nameData.length;;
+        nameData= Arrays.copyOf(nameData,oldLength + 12);
+        nameData[oldLength++]= "Deoxys (A)";
+        nameData[oldLength++]= "Deoxys (D)";
+        nameData[oldLength++]= "Deoxys (S)";
+        nameData[oldLength++]= "Wormadam (S)";
+        nameData[oldLength++]= "Wormadam (T)";
+        nameData[oldLength++]= "Giratina (O)";
+        nameData[oldLength++]= "Shaymin (S)";
+        nameData[oldLength++]= "Rotom (Heat)";
+        nameData[oldLength++]= "Rotom (Wash)";
+        nameData[oldLength++]= "Rotom (Frost)";
+        nameData[oldLength++]= "Rotom (Fan)";
+        nameData[oldLength]= "Rotom (Mow)";
+
         BufferedReader reader= new BufferedReader(new FileReader(resourcePath + "TmList.txt"));
         String line;
         ArrayList<Object> tmList= new ArrayList<>();
@@ -122,7 +137,6 @@ public class PersonalEditor
         sort(files); //sorts files numerically (0.bin, 1.bin, 2.bin, etc...)
         File file;
 
-        CsvReader csvReader= new CsvReader(defaultsPath + "personal4.csv");
 
         int count= 0;
 
@@ -132,7 +146,6 @@ public class PersonalEditor
             System.out.println(nameData[i]);
             file= files[i];
             personalBuffer= new Buffer(file.toString());
-            initializeIndex(csvReader.next());
 
             int hp= personalBuffer.readByte();
             int atk= personalBuffer.readByte();
@@ -140,18 +153,8 @@ public class PersonalEditor
             int spe= personalBuffer.readByte();
             int spAtk= personalBuffer.readByte();
             int spDef= personalBuffer.readByte();
-            int type1;
-            int type2;
-            if(autoFix)
-            {
-                type1= personalBuffer.readSelectiveByte(typeArr.length-1,getType(next()));
-                type2= personalBuffer.readSelectiveByte(typeArr.length-1,getType(next()));
-            }
-            else
-            {
-                type1= personalBuffer.readByte();
-                type2= personalBuffer.readByte();
-            }
+            int type1= personalBuffer.readByte();
+            int type2= personalBuffer.readByte();
             int catchRate= personalBuffer.readByte();
             int baseExp= personalBuffer.readByte();
 
@@ -164,42 +167,18 @@ public class PersonalEditor
             int spDefYield= getSpDef(evYields);
             int evPadded= getPadded(evYields);
 
-            int uncommonItem;
-            int rareItem;
-            if(autoFix)
-            {
-                uncommonItem= personalBuffer.readSelectiveShort(itemData.length-1, (short) getItem(next()));
-                rareItem= personalBuffer.readSelectiveShort(itemData.length-1, (short) getItem(next()));
-            }
-            else
-            {
-                uncommonItem= personalBuffer.readShort();
-                rareItem= personalBuffer.readShort();
-            }
+            int uncommonItem= personalBuffer.readShort();
+            int rareItem= personalBuffer.readShort();
+
             int genderRatio= personalBuffer.readByte();
             int hatchMultiplier= personalBuffer.readByte();
             int baseHappiness= personalBuffer.readByte();
-            int expRate;
-            int eggGroup1;
-            int eggGroup2;
-            int ability1;
-            int ability2;
-            if (autoFix)
-            {
-                expRate = personalBuffer.readSelectiveByte(growthTableIdArr.length-1,getGrowthRate(next()));
-                eggGroup1= personalBuffer.readSelectiveByte(eggGroupArr.length-1,getEggGroup(next()));
-                eggGroup2= personalBuffer.readSelectiveByte(eggGroupArr.length-1,getEggGroup(next()));
-                ability1= personalBuffer.readSelectiveByte(abilityData.length-1,getAbility(next()));
-                ability2= personalBuffer.readSelectiveByte(abilityData.length-1,getAbility(next()));
-            }
-            else
-            {
-                expRate= personalBuffer.readByte();
-                eggGroup1= personalBuffer.readByte();
-                eggGroup2= personalBuffer.readByte();
-                ability1= personalBuffer.readByte();
-                ability2= personalBuffer.readByte();
-            }
+            int expRate= personalBuffer.readByte();
+            int eggGroup1= personalBuffer.readByte();
+            int eggGroup2= personalBuffer.readByte();
+            int ability1= personalBuffer.readByte();
+            int ability2= personalBuffer.readByte();
+
             int runChance= personalBuffer.readByte();
             int dexColor= personalBuffer.readByte();
             personalBuffer.readShort(); // 2 bytes padding

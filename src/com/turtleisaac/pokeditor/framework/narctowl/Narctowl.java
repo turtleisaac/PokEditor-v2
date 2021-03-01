@@ -338,9 +338,9 @@ public class Narctowl
 
 
 
-    public void pack(String directory, String name, String targetDirectory) throws IOException
+    public void pack(String directory, String name, String targetFile) throws IOException
     {
-        outputNarcPath= targetDirectory;
+        outputNarcPath= targetFile;
 
 //        if (new File(outputNarcPath + name).exists()) //if a narc matching parameter name exists
 //        {

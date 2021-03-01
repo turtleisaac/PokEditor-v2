@@ -1,5 +1,6 @@
-package com.turtleisaac.pokeditor.editors.positions;
+package com.turtleisaac.pokeditor.editors.spritepositions;
 
+import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
@@ -14,7 +15,9 @@ public class SpriteDataProcessor
 
     public static SpriteData[] getPositionData(Project project) throws IOException
     {
-        toDelete= new ArrayList<>();
+        if(toDelete == null)
+            toDelete= new ArrayList<>();
+
         String dataPath= project.getDataPath();
 
         File positionNarcPath;
@@ -56,8 +59,9 @@ public class SpriteDataProcessor
 
         for(int i= 0; i < buffer.getLength()/89; i++)
         {
+            int unknownByte= buffer.readByte();
             int movement= buffer.readByte();
-            byte[] unknown= buffer.readBytes(85);
+            byte[] unknownSection= buffer.readBytes(84);
             byte yOffset= (byte) buffer.readByte();
             byte xOffset= (byte) buffer.readByte();
             int shadowSize= buffer.readByte();
@@ -83,6 +87,12 @@ public class SpriteDataProcessor
             dataList.add(new SpriteData()
             {
                 @Override
+                public int getUnknownByte()
+                {
+                    return unknownByte;
+                }
+
+                @Override
                 public int getMovement()
                 {
                     return movement;
@@ -91,7 +101,7 @@ public class SpriteDataProcessor
                 @Override
                 public byte[] getUnknownSection()
                 {
-                    return unknown;
+                    return unknownSection;
                 }
 
                 @Override
@@ -113,13 +123,75 @@ public class SpriteDataProcessor
                 }
             });
         }
+        buffer.close();
 
         return dataList.toArray(new SpriteData[0]);
     }
 
+    public static void applyPositionChanges(Project project, SpriteData[] spritePositionData) throws IOException
+    {
+        String dataPath= project.getDataPath();
+
+        File positionNarcPath;
+        File positionDirPath;
+
+        switch (project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "poke_data.narc");
+                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "poke_data");
+                throw new RuntimeException("Invalid game: " + project.getBaseRom());
+
+            case Platinum:
+                positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "pl_poke_data.narc");
+                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "pl_poke_data");
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                positionNarcPath= new File(dataPath + File.separator + "a" + File.separator + "1" + File.separator + "8" + File.separator + "0");
+                positionDirPath= new File(dataPath + File.separator + "a" + File.separator + "1" + File.separator + "8" + File.separator + "0_");
+                break;
+
+            default:
+                throw new RuntimeException("Invalid game: " + project.getBaseRom());
+        }
+
+        BinaryWriter writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + "0.bin");
+
+        int idx= 0;
+        for (SpriteData spriteData : spritePositionData)
+        {
+            System.out.println(idx++);
+            int unknownByte= spriteData.getUnknownByte();
+            int movement= spriteData.getMovement();
+            byte[] unknownSection= spriteData.getUnknownSection();
+            byte yOffset= spriteData.getSpriteYOffset();
+            byte xOffset= spriteData.getShadowXOffset();
+            int shadowType= spriteData.getShadowType().value;
+
+            writer.writeByte(unknownByte);
+            writer.writeByte(movement);
+            writer.write(unknownSection);
+            writer.writeByte(yOffset);
+            writer.writeByte(xOffset);
+            writer.writeByte(shadowType);
+        }
+        writer.close();
+
+        Narctowl narctowl= new Narctowl(true);
+        narctowl.pack(positionDirPath.getAbsolutePath(),"",positionNarcPath.getAbsolutePath());
+    }
+
+
+
+
     public static int getHeightModifier(Project project, int species, SpriteType spriteType)
     {
-        toDelete= new ArrayList<>();
+        if(toDelete == null)
+            toDelete= new ArrayList<>();
+
         String dataPath= project.getDataPath();
         int selected= species*4;
 
@@ -149,11 +221,8 @@ public class SpriteDataProcessor
         {
             try
             {
-                if(!Project.isHGSS(project))
-                {
-                    Narctowl narctowl= new Narctowl(true);
-                    narctowl.unpack(positionNarcPath.getAbsolutePath(),positionDirPath.getAbsolutePath());
-                }
+                Narctowl narctowl= new Narctowl(true);
+                narctowl.unpack(positionNarcPath.getAbsolutePath(),positionDirPath.getAbsolutePath());
             }
             catch (IOException e)
             {
@@ -178,6 +247,64 @@ public class SpriteDataProcessor
         }
 
         return ret;
+    }
+
+    public static void applyHeightChanges(Project project, int species, int femaleBack, int maleBack, int femaleFront, int maleFront) throws IOException
+    {
+        String dataPath= project.getDataPath();
+        int selected= species*4;
+
+        File positionNarcPath;
+        File positionDirPath;
+
+        switch (project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+            case Platinum:
+                positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "pokegra" + File.separator + "height.narc");
+                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "pokegra" + File.separator + "height");
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                positionNarcPath= new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "5");
+                positionDirPath= new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "5_");
+                break;
+
+            default:
+                throw new RuntimeException("Invalid game: " + project.getBaseRom());
+        }
+
+
+        BinaryWriter writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + selected + ".bin");
+        if(femaleBack != 0)
+        {
+            writer.writeByte(femaleBack);
+        }
+
+        writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 1) + ".bin");
+        if(maleBack != 0)
+        {
+            writer.writeByte(maleBack);
+        }
+
+        writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 2) + ".bin");
+        if(femaleFront != 0)
+        {
+            writer.writeByte(femaleFront);
+        }
+
+        writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 3) + ".bin");
+        if(maleFront != 0)
+        {
+            writer.writeByte(maleFront);
+        }
+
+        writer.close();
+
+        Narctowl narctowl= new Narctowl(true);
+        narctowl.pack(positionDirPath.getAbsolutePath(),"",positionNarcPath.getAbsolutePath());
     }
 
     private void sort (File arr[])
@@ -207,9 +334,13 @@ public class SpriteDataProcessor
 
     public enum ShadowType
     {
-        None,
-        Small,
-        Medium,
-        Large
+        None(0),
+        Small(1),
+        Medium(2),
+        Large(3);
+
+        final int value;
+
+        ShadowType(int value) {this.value= value;}
     }
 }

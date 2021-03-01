@@ -667,7 +667,7 @@ public class TrainerEditorGen4
             thisTrainer[idx++]= trainerNames[i];
             thisTrainer[idx++]= Boolean.toString((trainerData.getFlag() & 0x1) == 1); //defined moveset
             thisTrainer[idx++]= Boolean.toString(((trainerData.getFlag() >> 1) & 0x1) == 1); //defined held items
-            thisTrainer[idx++]= trainerClassData[trainerData.getTrainerClass()];
+            thisTrainer[idx++]= "" + trainerData.getTrainerClass();
             thisTrainer[idx++]= "" + trainerData.getBattleType();
             thisTrainer[idx++]= "" + trainerData.getNumPokemon();
             thisTrainer[idx++]= itemData[trainerData.getItem1()];
@@ -967,7 +967,7 @@ public class TrainerEditorGen4
             @Override
             public short getTrainerClass()
             {
-                return (short) TrainerEditorGen4.getTrainerClass((String) arr[4]);
+                return Short.parseShort((String) arr[4]);
             }
 
             @Override
@@ -1048,7 +1048,7 @@ public class TrainerEditorGen4
 
         thisTrainer[idx++]= Boolean.toString((trainerData.getFlag() & 0x1) == 1); //defined moveset
         thisTrainer[idx++]= Boolean.toString(((trainerData.getFlag() >> 1) & 0x1) == 1); //defined held items
-        thisTrainer[idx++]= trainerClassData[trainerData.getTrainerClass()];
+        thisTrainer[idx++]= "" + trainerData.getTrainerClass();
         thisTrainer[idx++]= "" + trainerData.getBattleType();
         thisTrainer[idx++]= "" + trainerData.getNumPokemon();
         thisTrainer[idx++]= itemData[trainerData.getItem1()];
