@@ -6,10 +6,16 @@ Multifunctional in-depth editor for Pokémon Gen 4 game data
 
 Written entirely in Java and is completely OS-agnostic. Java 8 or greater is required.
 
+Special thanks to JackHack96, Jay, Drayano, Vendor, FrankieD, and Mikelan98
+
 **Note:** Code from the [Universal Pokemon Randomizer ZX](https://github.com/Ajarmar/universal-pokemon-randomizer-zx) is adapted for LZ decompression purposes under the rights provided by the GNU General Public License v3.0. If there are any complaints related to this, please create a new Issue in the Issues tab here on GitHub.
 
 ![PokEditor Personal Editor](https://i.imgur.com/YyBOyCY.png)
-![image](https://user-images.githubusercontent.com/7987859/103450927-61359a00-4c8b-11eb-93c3-6494cdfff0f2.png)
+![image](https://user-images.githubusercontent.com/7987859/110886228-5401e080-82b6-11eb-8bea-40a5dfaa8120.png)
+![image](https://user-images.githubusercontent.com/7987859/110886253-5b28ee80-82b6-11eb-92e0-ef36e24cece4.png)
+![image](https://user-images.githubusercontent.com/7987859/110886289-6aa83780-82b6-11eb-86f7-d5867584b841.png)
+![image](https://user-images.githubusercontent.com/7987859/110886399-8f9caa80-82b6-11eb-991a-b052f54c1cc3.png)
+![image](https://user-images.githubusercontent.com/7987859/110886318-73990900-82b6-11eb-8f81-8a17c37ee2e4.png)
 
 # Usage
 
@@ -47,7 +53,7 @@ Double click on the JAR file to launch the program
 
 * Opening Cinematic Cutscene Editor
 
-* Sprite Position Editor
+* Sprite Editor
 
 * Narc Packer/ Unpacker
 
