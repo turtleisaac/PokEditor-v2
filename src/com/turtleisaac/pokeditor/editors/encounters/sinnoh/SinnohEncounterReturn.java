@@ -2,13 +2,15 @@ package com.turtleisaac.pokeditor.editors.encounters.sinnoh;
 
 public interface SinnohEncounterReturn
 {
-    public Object[][] getField();
+    Object[][] getField();
 
-    public Object[][] getWater();
+    Object[][] getWater();
 
-    public Object[][] getSwarm();
+    Object[][] getSwarm();
 
-    public Object[][] getRadar();
+    Object[][] getRadar();
 
-    public Object[][] getDualSlot();
+    Object[][] getDualSlot();
+
+    Object[][] getFormProbabilityTable();
 }

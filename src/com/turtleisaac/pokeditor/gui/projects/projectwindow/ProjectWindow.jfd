@@ -111,6 +111,21 @@ new FormModel {
 				}, new FormLayoutConstraints( null ) {
 					"title": "Trainer Editor"
 				} )
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.encounters.sinnoh.SinnohEncounterPanel" ) {
+					name: "sinnohEncounterPanel"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Encounter Editor"
+				} )
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.encounters.johto.JohtoEncounterPanel" ) {
+					name: "johtoEncounterPanel"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Encounter Editor"
+				} )
+				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.sprites.pokemon.PokemonSpritePanel" ) {
+					name: "pokemonSpritePanel"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Pokémon Sprites"
+				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "hidemode 3"
 					"$columnConstraints": "[fill][fill]"
@@ -125,21 +140,7 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Starters"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-					"$layoutConstraints": "hidemode 3"
-					"$columnConstraints": "[fill][fill]"
-					"$rowConstraints": "[][][]"
-				} ) {
-					name: "introPanel"
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label2"
-						"text": "You were expecting an intro cutscene editor, but it was me, Dio!"
-					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 0"
-					} )
-				}, new FormLayoutConstraints( null ) {
-					"title": "Intro Cutscene"
+					"enabled": false
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "hidemode 3"
@@ -154,26 +155,24 @@ new FormModel {
 						"value": "cell 0 0"
 					} )
 				}, new FormLayoutConstraints( null ) {
-					"title": "Opening Cutscene"
-				} )
-				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.sprites.pokemon.PokemonSpritePanel" ) {
-					name: "pokemonSpritePanel"
-				}, new FormLayoutConstraints( null ) {
-					"title": "Pokémon Sprites"
+					"title": "Cutscenes"
+					"enabled": false
 				} )
 				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.sprites.trainers.TrainerSpritePanel" ) {
-					name: "panel1"
+					name: "trainerSpritePanel"
 				}, new FormLayoutConstraints( null ) {
 					"title": "Trainer Sprites"
+					"enabled": false
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "hidemode 3"
 					"$columnConstraints": "[fill][fill]"
 					"$rowConstraints": "[][][]"
 				} ) {
-					name: "panel2"
+					name: "overworldSpritePanel"
 				}, new FormLayoutConstraints( null ) {
 					"title": "Overworld Sprites"
+					"enabled": false
 				} )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 0 1"
@@ -316,3 +315,4 @@ new FormModel {
 		} )
 	}
 }
+

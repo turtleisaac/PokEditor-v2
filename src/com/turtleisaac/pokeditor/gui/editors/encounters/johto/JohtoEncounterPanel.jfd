@@ -1,0 +1,493 @@
+JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.9" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "hidemode 3"
+			"$columnConstraints": "[fill][124,fill][80,fill][45,fill][150,fill][fill][45,fill][154,fill][fill]"
+			"$rowConstraints": "[][][][][][grow]"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "encounterFileLabel"
+				"text": "Encounter FIle"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0,alignx center,growx 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "speciesSearchLabel"
+				"text": "Search by Species"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 4 0,alignx center,growx 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "locationSearchLabel"
+				"text": "Search by Location"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 7 0,alignx center,growx 0"
+			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "encounterFileComboBox"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 1"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "saveButton"
+				"text": "Save"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 2 1"
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+				name: "hSpacer1"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 3 1"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "speciesSearchTextField"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 4 1"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "speciesSearchButton"
+				"text": "Search"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 5 1"
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+				name: "hSpacer2"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 6 1"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "locationSearchTextField"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 7 1"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "locationSearchButton"
+				"text": "Search"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 8 1"
+			} )
+			add( new FormComponent( "javax.swing.JSeparator" ) {
+				name: "separator1"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 2 8 1"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "This encounter file is used in:"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 3 8 1,alignx center,growx 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label3"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 4 8 1,alignx center,growx 0"
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane1"
+				"border": new javax.swing.border.TitledBorder( "" )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][274,fill][grow,fill]"
+					"$rowConstraints": "[][][grow]"
+				} ) {
+					name: "fieldEncounterPanel"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][140,fill]"
+						"$rowConstraints": "[][][][][][][][][][][][][]"
+					} ) {
+						name: "fieldPanel"
+						"border": new javax.swing.border.TitledBorder( "Field" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "encounterRateLabel"
+							"text": "Encounter Rate:"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "encounterRateSpinner"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label6"
+							"text": "20%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field20ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label7"
+							"text": "20%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field20ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label8"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field10ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 3"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label9"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field10ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 4"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label10"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field10ComboBox3"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label11"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field10ComboBox4"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label12"
+							"text": "5%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field5ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 7"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label13"
+							"text": "5%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 8,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field5ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 8"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label14"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 9,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field4ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 9"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label15"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 10,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field4ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 10"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label16"
+							"text": "1%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 11,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field1ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 11"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label17"
+							"text": "1%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 12,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field1ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 12"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0 1 2"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][140,fill]"
+						"$rowConstraints": "[][][][][][][][][][][]"
+					} ) {
+						name: "swarmDayNightPanel"
+						"border": new javax.swing.border.TitledBorder( "Swarm/ Day/ Night" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label18"
+							"text": "Swarm"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label19"
+							"text": "20%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "swarm20ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label20"
+							"text": "20%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label21"
+							"text": "Day"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "swarm20ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label22"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "day10ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label23"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "day10ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator3"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label24"
+							"text": "Night"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 8"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label25"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 9,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "night10ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 9"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label26"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 10,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "night10ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 10"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0 2 1,alignx left,growx 0"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][grow,fill]"
+						"$rowConstraints": "[][][][]"
+					} ) {
+						name: "pokeRadarPanel"
+						"border": new javax.swing.border.TitledBorder( "Poké Radar" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label27"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "radar10ComboBox1"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label28"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "radar10ComboBox2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label29"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "radar10ComboBox3"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label30"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "radar10ComboBox4"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 3"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0 2 1,aligny top,grow 100 0"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][86,fill][110,grow,fill][fill][fill][fill][grow,fill][fill]"
+						"$rowConstraints": "[][]0[]"
+					} ) {
+						name: "encounterCalculatorPanel"
+						"border": new javax.swing.border.TitledBorder( "Encounter Slot Calculator" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label33"
+							"text": "Time of day (0-23)"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "textField2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0"
+						} )
+						add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+							name: "hSpacer3"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 0"
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "checkBox1"
+							"text": "Swarm"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 0"
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "checkBox2"
+							"text": "Poké Radar"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 4 0"
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "checkBox3"
+							"text": "Dual-Slot Mode"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 5 0"
+						} )
+						add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+							name: "hSpacer4"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 6 0"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "button3"
+							"text": "Calculate"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 7 0"
+						} )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane1"
+							add( new FormComponent( "javax.swing.JTable" ) {
+								name: "table1"
+								"autoResizeMode": 3
+							} )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1 8 1,grow"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2 3 1,growy"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Field Encounters"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][fill]"
+					"$rowConstraints": "[][][]"
+				} ) {
+					name: "waterEncounterPanel"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Water Encounters"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 5 8 1,grow"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 880, 955 )
+		} )
+	}
+}

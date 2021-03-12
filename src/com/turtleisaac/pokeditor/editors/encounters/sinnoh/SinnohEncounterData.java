@@ -12,6 +12,8 @@ public interface SinnohEncounterData
 
     int[] getRadarEncounters();
 
+    byte[][] getFormProbabilities();
+
     int[] getRuby();
     int[] getSapphire();
     int[] getEmerald();

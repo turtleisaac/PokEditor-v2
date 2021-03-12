@@ -2,9 +2,11 @@ package com.turtleisaac.pokeditor.editors.personal.gen4;
 
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.*;
 
@@ -137,6 +139,8 @@ public class PersonalEditor
         sort(files); //sorts files numerically (0.bin, 1.bin, 2.bin, etc...)
         File file;
 
+        if(files.length > nameData.length)
+            nameData= ArrayModifier.accommodateLength(nameData,files.length);
 
         int count= 0;
 
@@ -369,16 +373,16 @@ public class PersonalEditor
             pokeTable[row][15]= "" + dataList.get(row).getDefEv();
             pokeTable[row][16]= "" + dataList.get(row).getSpAtkEv();
             pokeTable[row][17]= "" + dataList.get(row).getSpDefEv();
-            pokeTable[row][18]= itemData[dataList.get(row).getUncommonItem()];
-            pokeTable[row][19]= itemData[dataList.get(row).getRareItem()];
+            pokeTable[row][18]= "='Formatting (DO NOT TOUCH)'!A" + (dataList.get(row).getUncommonItem()+1);
+            pokeTable[row][19]= "='Formatting (DO NOT TOUCH)'!A" + (dataList.get(row).getRareItem()+1);
             pokeTable[row][20]= "" + dataList.get(row).getGenderRatio();
             pokeTable[row][21]= "" + dataList.get(row).getHatchMultiplier();
             pokeTable[row][22]= "" + dataList.get(row).getBaseHappiness();
             pokeTable[row][23]= growthTableIdArr[dataList.get(row).getExpRate()];
             pokeTable[row][24]= eggGroupArr[dataList.get(row).getEggGroup1()];
             pokeTable[row][25]= eggGroupArr[dataList.get(row).getEggGroup2()];
-            pokeTable[row][26]= abilityData[dataList.get(row).getAbility1()];
-            pokeTable[row][27]= abilityData[dataList.get(row).getAbility2()];
+            pokeTable[row][26]= "='Formatting (DO NOT TOUCH)'!C" + (dataList.get(row).getAbility1()+1);
+            pokeTable[row][27]= "='Formatting (DO NOT TOUCH)'!C" + (dataList.get(row).getAbility2()+1);
             pokeTable[row][28]= "" + dataList.get(row).getRunChance();
             pokeTable[row][29]= "" + dataList.get(row).getDexColor();
         }
@@ -424,7 +428,7 @@ public class PersonalEditor
         processor.newLine();
         for(int row= 0; row < dataList.size(); row++)
         {
-            line= dataList.get(row).getNum() + "," + nameData[row] + ",";
+            line= dataList.get(row).getNum() + ",=Personal!B" + (row+2) + ",";
             for(int col= 0; col < tmTable[0].length; col++)
             {
                 line+= tmTable[row][col] + ",";
@@ -458,6 +462,9 @@ public class PersonalEditor
     public void csvToPersonal(Object[][] personalCsv, Object[][] tmLearnsetCsv, String outputDir) throws IOException
     {
         String outputPath= dataPath + File.separator + outputDir;
+
+        Object[] nameColumn= Arrays.copyOfRange(ArrayModifier.getColumn(personalCsv,1),1,personalCsv.length);
+        Object[] tmList= Arrays.copyOfRange(tmLearnsetCsv[1],2,tmLearnsetCsv[1].length);
 
         personalCsv= ArrayModifier.trim(personalCsv,1,2);
         tmLearnsetCsv= ArrayModifier.trim(tmLearnsetCsv,2,2);
@@ -513,8 +520,6 @@ public class PersonalEditor
             int ability2= getAbility(next());
             int runChance= Integer.parseInt(next());
             int dexColor= Integer.parseInt(next());
-
-
 
             personalData.add(new PersonalData() {
                 @Override
@@ -719,309 +724,49 @@ public class PersonalEditor
             System.out.println(i + ":   " + tmLearnsetData[i]);
             writer.write(tmLearnsetData[i].toBytes());
         }
+
+
+        int nameBank;
+        String predictedOutputNarc;
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                nameBank= 362;
+                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
+                break;
+
+            case Platinum:
+                nameBank= 412;
+                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameBank= 237;
+                predictedOutputNarc= dataPath + File.separator + outputDir.substring(0,outputDir.length()-1);
+                break;
+
+            default:
+                throw new RuntimeException("Invalid base rom: " + baseRom);
+        }
+
+        boolean canTrim= true;
+        if(new File(predictedOutputNarc).exists())
+        {
+            int numOriginalFiles= Narctowl.getNumFiles(predictedOutputNarc);
+
+            if(personalData.size() > numOriginalFiles)
+            {
+                canTrim= false;
+            }
+
+        }
+
+        TextEditor.writeBank(project,nameColumn,nameBank,canTrim);
     }
 
-//    public void csvToPersonal2(String personalCsv, String tmLearnsetCsv, String outputDir) throws IOException
-//    {
-//        String personalPath= path + personalCsv;
-//        String tmPath= path + tmLearnsetCsv;
-//
-//        String outputPath;
-//        if(outputDir.contains("Recompile"))
-//        {
-//            outputPath= path + "temp" + File.separator+ outputDir;
-//        }
-//        else
-//        {
-//            outputPath= path + File.separator + outputDir;
-//        }
-//
-//        int xValue;
-//        int yValue;
-//
-//        if(!personalCsv.substring(personalCsv.length()-4).equals(".csv"))
-//        {
-//            throw new RuntimeException("The provided personal data file is not a .csv");
-//        }
-//        if(!tmLearnsetCsv.substring(tmLearnsetCsv.length()-4).equals(".csv"))
-//        {
-//            throw new RuntimeException("The provided TM learnset data file is not a .csv");
-//        }
-//
-//        if(!new File(outputPath).exists() && !new File(outputPath).mkdirs())
-//        {
-//            throw new RuntimeException("Could not create output directory");
-//        }
-//
-//        ArrayList<PersonalData> personalList= new ArrayList<>();
-//        CsvReader personalReader= new CsvReader(personalPath);
-//
-//        long[][] tmLongs= new long[personalReader.length()][2];
-//        CsvReader tmReader= new CsvReader(tmPath);
-//        for(int i= 0; i < personalReader.length(); i++)
-//        {
-//            String[] mon= personalReader.next();
-//            String[] tmLearnset= tmReader.next();
-//            int finalI = i;
-//            personalList.add(new PersonalData() {
-//                @Override
-//                public int getNum() {
-//                    return finalI;
-//                }
-//
-//                @Override
-//                public int getHP() {
-//                    return Integer.parseInt(mon[0]);
-//                }
-//
-//                @Override
-//                public int getAtk() {
-//                    return Integer.parseInt(mon[1]);
-//                }
-//
-//                @Override
-//                public int getDef() {
-//                    return Integer.parseInt(mon[2]);
-//                }
-//
-//                @Override
-//                public int getSpe() {
-//                    return Integer.parseInt(mon[3]);
-//                }
-//
-//                @Override
-//                public int getSpAtk() {
-//                    return Integer.parseInt(mon[4]);
-//                }
-//
-//                @Override
-//                public int getSpDef() {
-//                    return Integer.parseInt(mon[5]);
-//                }
-//
-//                @Override
-//                public int getType1() {
-//                    return getType(mon[6]);
-//                }
-//
-//                @Override
-//                public int getType2() {
-//                    return getType(mon[7]);
-//                }
-//
-//                @Override
-//                public int getCatchRate() {
-//                    return Integer.parseInt(mon[8]);
-//                }
-//
-//                @Override
-//                public int getBaseExp() {
-//                    return Integer.parseInt(mon[9]);
-//                }
-//
-//                @Override
-//                public int getHpEv() {
-//                    return Integer.parseInt(mon[10]);
-//                }
-//
-//                @Override
-//                public int getSpeEv() {
-//                    return Integer.parseInt(mon[11]);
-//                }
-//
-//                @Override
-//                public int getAtkEv() {
-//                    return Integer.parseInt(mon[12]);
-//                }
-//
-//                @Override
-//                public int getDefEv() {
-//                    return Integer.parseInt(mon[13]);
-//                }
-//
-//                @Override
-//                public int getSpAtkEv() {
-//                    return Integer.parseInt(mon[14]);
-//                }
-//
-//                @Override
-//                public int getSpDefEv() {
-//                    return Integer.parseInt(mon[15]);
-//                }
-//
-//                @Override
-//                public int getPadding() {
-//                    return 0;
-//                }
-//
-//                @Override
-//                public int getUncommonItem() {
-//                    return getItem(mon[16]);
-//                }
-//
-//                @Override
-//                public int getRareItem() {
-//                    return getItem(mon[17]);
-//                }
-//
-//                @Override
-//                public int getGenderRatio() {
-//                    return Integer.parseInt(mon[18]);
-//                }
-//
-//                @Override
-//                public int getHatchMultiplier() {
-//                    return Integer.parseInt(mon[19]);
-//                }
-//
-//                @Override
-//                public int getBaseHappiness() {
-//                    return Integer.parseInt(mon[20]);
-//                }
-//
-//                @Override
-//                public int getExpRate() {
-//                    return getGrowthRate(mon[21]);
-//                }
-//
-//                @Override
-//                public int getEggGroup1() {
-//                    return getEggGroup(mon[22]);
-//                }
-//
-//                @Override
-//                public int getEggGroup2() {
-//                    return getEggGroup(mon[23]);
-//                }
-//
-//                @Override
-//                public int getAbility1() {
-//                    return getAbility(mon[24]);
-//                }
-//
-//                @Override
-//                public int getAbility2() {
-//                    return getAbility(mon[25]);
-//                }
-//
-//                @Override
-//                public int getRunChance() {
-//                    return Integer.parseInt(mon[26]);
-//                }
-//
-//                @Override
-//                public int getDexColor() {
-//                    return Integer.parseInt(mon[27]);
-//                }
-//
-//                @Override
-//                public boolean getTm(int idx) {
-//                    assert idx >= 0 && idx < 128;
-//                    return tmLearnset[idx].toLowerCase().equals("true");
-//                }
-//            });
-//
-//            StringBuilder tmString= new StringBuilder("0000000000000000000000000000");
-//            for(int tm= 100; tm != -1; tm--)
-//            {
-//                if(personalList.get(i).getTm(tm))
-//                {
-//                    tmString.append("1");
-//                }
-//                else
-//                {
-//                    tmString.append("0");
-//                }
-//            }
-//            tmLongs[i][0]= Long.parseLong(tmString.substring(0,64),2);
-//            tmLongs[i][1]= Long.parseLong(tmString.substring(64),2);
-//        }
-//
-//        BinaryWriter writer;
-//        for(int i= 0; i < personalList.size(); i++)
-//        {
-//            writer= new BinaryWriter(outputPath + File.separator + i + ".bin");
-//            PersonalData personalData= personalList.get(i);
-//
-//            writer.writeBytes(personalData.getHP(),personalData.getAtk(),personalData.getDef(),personalData.getSpe(),personalData.getSpAtk(),personalData.getSpDef(),personalData.getType1(),personalData.getType2(),personalData.getCatchRate(),personalData.getBaseExp());
-//            writer.writeShort(parseShort(Integer.toBinaryString(personalData.getHpEv()),Integer.toBinaryString(personalData.getSpeEv()),Integer.toBinaryString(personalData.getAtkEv()),Integer.toBinaryString(personalData.getDefEv()),Integer.toBinaryString(personalData.getSpAtkEv()),Integer.toBinaryString(personalData.getSpDefEv()),"0000"));
-//            writer.writeShorts(personalData.getUncommonItem(),personalData.getRareItem());
-//            writer.writeBytes();
-//        }
-//    }
 
-//    public void csvReformat(String tmLearnsetCsv) throws IOException
-//    {
-//        ArrayList<String[][]> reformat= new ArrayList<>();
-//        CsvReader csvReader= new CsvReader(path + tmLearnsetCsv);
-//
-//        for(int i= 0; i < csvReader.length(); i++)
-//        {
-//            String[][] edited= new String[4][25];
-//            String[] mon= csvReader.next();
-//            int idx= 0;
-//            for(int row= 0; row < 4; row++)
-//            {
-//                if(row == 1)
-//                {
-//                    idx= 1;
-//                }
-//                if(row == 2)
-//                {
-//                    idx= 2;
-//                }
-//                if(row == 3)
-//                {
-//                    idx= 3;
-//                }
-//                for(int col= 0; col < 25; col++)
-//                {
-//                    edited[row][col]= mon[idx+=4];
-//                }
-//            }
-//            reformat.add(edited);
-//        }
-//
-//        BufferedWriter writer= new BufferedWriter(new FileWriter(path + "Reformatted TM Learnset.csv"));
-//        writer.write("Dex Number,Pokémon\n");
-//        for(int i= 0; i < reformat.size(); i++)
-//        {
-//            String[][] mon= reformat.get(i);
-//            writer.write(i + "," + nameData[i] + ",");
-//            int idx= 1;
-//            int hm= 1;
-//            for(int row= 0; row < mon.length; row++)
-//            {
-//                for(int col= 0; col < mon[0].length; col++)
-//                {
-//                    if(idx < 10)
-//                    {
-//                        writer.write(mon[row][col] + "," + "TM0" + idx + ",");
-//                        idx++;
-//                    }
-//                    else if(idx <= 92)
-//                    {
-//                        writer.write(mon[row][col] + "," + "TM" + idx + ",");
-//                        idx++;
-//                    }
-//                    else
-//                    {
-//                        writer.write(mon[row][col] + "," + "HM0" + hm + ",");
-//                        hm++;
-//                    }
-//                }
-//                if(hm != 8)
-//                {
-//                    writer.write("\n, ,");
-//                }
-//                else
-//                {
-//                    writer.write("\n");
-//                }
-//            }
-//        }
-//        writer.close();
-//    }
 
 
     private void sort (File arr[])

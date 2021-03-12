@@ -1,6 +1,7 @@
 package com.turtleisaac.pokeditor.utilities;
 
 import com.turtleisaac.pokeditor.editors.overlays.OverlayData;
+import com.turtleisaac.pokeditor.framework.BLZCoder;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
@@ -22,12 +23,15 @@ import java.util.ArrayList;
  */
 public class TableLocator
 {
+    private Project project;
+
     private ArrayList<OverlayData> overlayEntries;
     String romDataPath;
 
     public TableLocator(Project project)
     {
-        romDataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + File.separator;
+        this.project= project;
+        romDataPath= new File(project.getDataPath()).getParent() + File.separator;
         readOverlays();
     }
 
@@ -56,16 +60,36 @@ public class TableLocator
      * @param entryLength (if applicable) the length of each entry
      * @return a byte[] containing the table
      */
-    public byte[] obtainTableArr(TablePointer pointerLocation, int numEntries, int entryLength) throws IOException
+    public byte[] obtainTableArr(TablePointer pointerLocation, int numEntries, int entryLength)
     {
-        Buffer buffer= new Buffer(romDataPath + pointerLocation.file);
+        String pointerFilePath= romDataPath + pointerLocation.file;
+
+        if(Project.isHGSS(project))
+        {
+            BLZCoder coder= new BLZCoder();
+            byte[] decoded= coder.BLZ_DecodePub(Buffer.readFile(pointerFilePath),"file");
+
+            try
+            {
+                File tempFile= File.createTempFile("pokeditor_file_",".bin");
+                tempFile.deleteOnExit();
+                BinaryWriter.writeFile(tempFile,decoded);
+                pointerFilePath= tempFile.getAbsolutePath();
+            }
+            catch (IOException exception)
+            {
+                exception.printStackTrace();
+            }
+        }
+
+        Buffer buffer= new Buffer(pointerFilePath);
         buffer.skipTo(pointerLocation.pointerOffset);
         long offset= buffer.readUInt32();
 
         int bytesToRead= 0;
         if(pointerLocation.countOffset != 0)
         {
-            buffer= new Buffer(romDataPath + pointerLocation.file);
+            buffer= new Buffer(pointerFilePath);
             buffer.skipTo(pointerLocation.countOffset);
             switch (pointerLocation.countPointerLength)
             {
@@ -91,7 +115,29 @@ public class TableLocator
         System.out.println("Table Offset: 0x" + Long.toHexString(tableLocation.getOffset()));
         System.out.println("Bytes/ Entries to read: " + bytesToRead);
 
-        buffer= new Buffer(tableLocation.getFile());
+
+        String tableFilePath= tableLocation.getFile();
+
+        if(Project.isHGSS(project))
+        {
+            BLZCoder coder= new BLZCoder();
+            byte[] decoded= coder.BLZ_DecodePub(Buffer.readFile(tableFilePath),"file");
+
+            try
+            {
+                File tempFile= File.createTempFile("pokeditor_table_",".bin");
+                tempFile.deleteOnExit();
+                BinaryWriter.writeFile(tempFile,decoded);
+                tableFilePath= tempFile.getAbsolutePath();
+
+            }
+            catch (IOException exception)
+            {
+                exception.printStackTrace();
+            }
+        }
+
+        buffer= new Buffer(tableFilePath);
         buffer.skipTo(tableLocation.getOffset());
         byte[] ret= buffer.readBytes(bytesToRead);
 

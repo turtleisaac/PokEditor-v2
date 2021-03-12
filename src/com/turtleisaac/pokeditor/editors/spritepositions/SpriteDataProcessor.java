@@ -280,25 +280,25 @@ public class SpriteDataProcessor
         BinaryWriter writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + selected + ".bin");
         if(femaleBack != 0)
         {
-            writer.writeByte(femaleBack);
+            writer.writeByte(Math.abs(femaleBack));
         }
 
         writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 1) + ".bin");
         if(maleBack != 0)
         {
-            writer.writeByte(maleBack);
+            writer.writeByte(Math.abs(maleBack));
         }
 
         writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 2) + ".bin");
         if(femaleFront != 0)
         {
-            writer.writeByte(femaleFront);
+            writer.writeByte(Math.abs(femaleFront));
         }
 
         writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 3) + ".bin");
         if(maleFront != 0)
         {
-            writer.writeByte(maleFront);
+            writer.writeByte(Math.abs(maleFront));
         }
 
         writer.close();

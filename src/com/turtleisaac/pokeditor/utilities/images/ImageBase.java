@@ -10,12 +10,12 @@ import java.util.Arrays;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
-import com.turtleisaac.pokeditor.utilities.images.ncer.NcerData;
-import com.turtleisaac.pokeditor.utilities.images.ncer.NcerReader;
-import com.turtleisaac.pokeditor.utilities.images.ncgr.NcgrData;
-import com.turtleisaac.pokeditor.utilities.images.ncgr.NcgrReader;
-import com.turtleisaac.pokeditor.utilities.images.nclr.NclrData;
-import com.turtleisaac.pokeditor.utilities.images.nclr.NclrReader;
+import com.turtleisaac.pokeditor.utilities.images.formats.ncer.NcerData;
+import com.turtleisaac.pokeditor.utilities.images.formats.ncer.NcerReader;
+import com.turtleisaac.pokeditor.utilities.images.formats.ncgr.NcgrData;
+import com.turtleisaac.pokeditor.utilities.images.formats.ncgr.NcgrReader;
+import com.turtleisaac.pokeditor.utilities.images.formats.nclr.NclrData;
+import com.turtleisaac.pokeditor.utilities.images.formats.nclr.NclrReader;
 
 import javax.imageio.ImageIO;
 
@@ -67,7 +67,7 @@ public class ImageBase
         }
     }
 
-    public ImageBase(Project project, String ncgr, String nclr, String ncer) throws IOException
+    public ImageBase(Project project, String ncgr, String nclr, String ncer)
     {
         this.project= project;
         String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + "/data";
@@ -173,7 +173,7 @@ public class ImageBase
         else
             img_tiles = tiles;
 
-        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height,0);
     }
 
     public Image getImage()
@@ -198,10 +198,10 @@ public class ImageBase
         else
             img_tiles = tiles;
 
-        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height,0);
     }
 
-    public Image getImageTransparent(Color transparent, int height, int width)
+    public BufferedImage getImageTransparent(Color transparent, int height, int width, int paletteNum)
     {
         Color[][] pal_colors= nclr.getPalette().getPalettes();
         this.height= height;
@@ -237,14 +237,26 @@ public class ImageBase
         else
             img_tiles = tiles;
 
-        pal_colors[0][0]= transparent;
+        pal_colors[paletteNum][0]= transparent;
 
-        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+        BufferedImage image= ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height,paletteNum);
+
+        BufferedImage ret= new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+        for(int row= 0; row < image.getHeight(); row++)
+        {
+            for(int col= 0; col < image.getWidth(); col++)
+            {
+                if(image.getRGB(col,row) != transparent.getRGB())
+                    ret.setRGB(col,row,image.getRGB(col,row));
+            }
+        }
+
+        return ret;
     }
 
     public BufferedImage getImage(int num, Color background)
     {
-        return ImageActions.getImage(banks[num],blockSize,this, nclr.getPalette(), 80,80,true,1,null, background);
+        return ImageActions.getNcerImage(banks[num],blockSize,this, nclr.getPalette(), 80,80,true,1,null, background);
     }
 
     public BufferedImage[] getImages(Color background)
@@ -253,7 +265,7 @@ public class ImageBase
         ArrayList<BufferedImage> images= new ArrayList<>();
         for (int i= 0; i < banks.length; i++)
         {
-            BufferedImage image= ImageActions.getImage(banks[i], blockSize, this, nclr.getPalette(), 80, 80, true, 1, null, background);
+            BufferedImage image= ImageActions.getNcerImage(banks[i], blockSize, this, nclr.getPalette(), 80, 80, true, 1, null, background);
 
             int value= 0;
             for(int row= 0; row < image.getHeight(); row++)
@@ -287,7 +299,7 @@ public class ImageBase
         else
             img_tiles = tiles;
 
-        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+        return ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height,0);
     }
 
     public Image getPalette()
@@ -336,7 +348,7 @@ public class ImageBase
                     img_tiles = tiles;
 
 
-                BufferedImage image= ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+                BufferedImage image= ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height,0);
                 try
                 {
                     ImageIO.write(oamIndex,"png",new File(System.getProperty("user.dir") + File.separator + i + "_" + j + ".png"));
@@ -428,7 +440,7 @@ public class ImageBase
 
                 img_tiles= ImageActions.getOAMData(oam,img_tiles,format);
 
-                ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height);
+                ImageActions.getImage(img_tiles, tilePal, pal_colors, format, width, height,0);
             }
         }
 
@@ -482,9 +494,6 @@ public class ImageBase
         this.tile_size = tile_size;
         this.width= width;
         this.height= height;
-
-        width = width;
-        height = height;
 
         zoom = 1;
         //startByte = 0;

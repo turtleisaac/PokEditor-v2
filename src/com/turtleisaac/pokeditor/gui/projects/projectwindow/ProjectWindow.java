@@ -32,6 +32,8 @@ import com.turtleisaac.pokeditor.editors.spritepositions.SpriteDataProcessor;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.gui.JCheckboxTree;
 import com.turtleisaac.pokeditor.gui.MyFilter;
+import com.turtleisaac.pokeditor.gui.editors.encounters.johto.*;
+import com.turtleisaac.pokeditor.gui.editors.encounters.sinnoh.SinnohEncounterPanel;
 import com.turtleisaac.pokeditor.gui.main.PokEditor;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.console.ConsoleWindow;
 import com.turtleisaac.pokeditor.gui.editors.sprites.pokemon.PokemonSpritePanel;
@@ -214,6 +216,22 @@ public class ProjectWindow extends JFrame
 
 //        Application.getApplication().setDefaultMenuBar(menuBar);
         pokemonSpritePanel.setProject(project);
+
+        switch (baseRom)
+        {
+            case Diamond:
+            case Pearl:
+            case Platinum:
+                tabbedPane1.remove(johtoEncounterPanel);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                tabbedPane1.remove(sinnohEncounterPanel);
+                break;
+        }
+
+        sinnohEncounterPanel.setProject(project,api);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -221,7 +239,7 @@ public class ProjectWindow extends JFrame
         switch(JOptionPane.showConfirmDialog(this,"PokEditor is an open source tool developed by Turtleisaac. By continuing, I authorize PokEditor to gain full viewing and editing access to any Google Sheet document that I provide it the link for. Continue?","Confirmation",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE))
         {
             case 1: //no
-                JOptionPane.showMessageDialog(this,"You can manually download your modified sheets as csv files or use Excel to continue without Google Sheets Integration. If security is such a big concern to you, it is recommended that you make a new Google account just for this or other throwaway purposes. Thank you.","PokEditor",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Unfortunately, PokEditor is no longer supporting its original csv file-based configuration. If security is such a big concern to you, it is recommended that you make a new Google account just for this or other throwaway purposes. Thank you.","PokEditor",JOptionPane.INFORMATION_MESSAGE);
                 break;
 
             case 0: //yes
@@ -259,6 +277,8 @@ public class ProjectWindow extends JFrame
                     for(File file : trainerPanel1.toDelete)
                         clearDirs(file);
                     for(File file : SpriteDataProcessor.toDelete)
+                        clearDirs(file);
+                    for(File file : sinnohEncounterPanel.toDelete)
                         clearDirs(file);
 
                     TextEditor.cleanup(project);
@@ -577,6 +597,8 @@ public class ProjectWindow extends JFrame
             clearDirs(file);
         for(File file : SpriteDataProcessor.toDelete)
             clearDirs(file);
+        for(File file : sinnohEncounterPanel.toDelete)
+            clearDirs(file);
 
         TextEditor.cleanup(project);
         pokemonSpritePanel.toDelete= new ArrayList<>();
@@ -872,6 +894,10 @@ public class ProjectWindow extends JFrame
 
     }
 
+    private void createUIComponents() {
+        // TODO: add custom component creation code here
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         menuBar = new JMenuBar();
@@ -903,15 +929,15 @@ public class ProjectWindow extends JFrame
         sheetUploadChangesButton = new JButton();
         warningLabel = new JLabel();
         trainerPanel1 = new TrainerPanel();
+        sinnohEncounterPanel = new SinnohEncounterPanel();
+        johtoEncounterPanel = new JohtoEncounterPanel();
+        pokemonSpritePanel = new PokemonSpritePanel();
         starterPanel = new JPanel();
         label1 = new JLabel();
-        introPanel = new JPanel();
-        label2 = new JLabel();
         openingPanel = new JPanel();
         label3 = new JLabel();
-        pokemonSpritePanel = new PokemonSpritePanel();
-        panel1 = new TrainerSpritePanel();
-        panel2 = new JPanel();
+        trainerSpritePanel = new TrainerSpritePanel();
+        overworldSpritePanel = new JPanel();
         jtbMain = new JToolBar();
         openProjectButton = new JButton();
         exportRomButton = new JButton();
@@ -1108,6 +1134,9 @@ public class ProjectWindow extends JFrame
             }
             tabbedPane1.addTab("Main", mainPanel);
             tabbedPane1.addTab("Trainer Editor", trainerPanel1);
+            tabbedPane1.addTab("Encounter Editor", sinnohEncounterPanel);
+            tabbedPane1.addTab("Encounter Editor", johtoEncounterPanel);
+            tabbedPane1.addTab("Pok\u00e9mon Sprites", pokemonSpritePanel);
 
             //======== starterPanel ========
             {
@@ -1126,24 +1155,7 @@ public class ProjectWindow extends JFrame
                 starterPanel.add(label1, "cell 0 0");
             }
             tabbedPane1.addTab("Starters", starterPanel);
-
-            //======== introPanel ========
-            {
-                introPanel.setLayout(new MigLayout(
-                    "hidemode 3",
-                    // columns
-                    "[fill]" +
-                    "[fill]",
-                    // rows
-                    "[]" +
-                    "[]" +
-                    "[]"));
-
-                //---- label2 ----
-                label2.setText("You were expecting an intro cutscene editor, but it was me, Dio!");
-                introPanel.add(label2, "cell 0 0");
-            }
-            tabbedPane1.addTab("Intro Cutscene", introPanel);
+            tabbedPane1.setEnabledAt(5, false);
 
             //======== openingPanel ========
             {
@@ -1161,13 +1173,14 @@ public class ProjectWindow extends JFrame
                 label3.setText("You were expecting an opening cutscene editor, but it was me, Dio!");
                 openingPanel.add(label3, "cell 0 0");
             }
-            tabbedPane1.addTab("Opening Cutscene", openingPanel);
-            tabbedPane1.addTab("Pok\u00e9mon Sprites", pokemonSpritePanel);
-            tabbedPane1.addTab("Trainer Sprites", panel1);
+            tabbedPane1.addTab("Cutscenes", openingPanel);
+            tabbedPane1.setEnabledAt(6, false);
+            tabbedPane1.addTab("Trainer Sprites", trainerSpritePanel);
+            tabbedPane1.setEnabledAt(7, false);
 
-            //======== panel2 ========
+            //======== overworldSpritePanel ========
             {
-                panel2.setLayout(new MigLayout(
+                overworldSpritePanel.setLayout(new MigLayout(
                     "hidemode 3",
                     // columns
                     "[fill]" +
@@ -1177,7 +1190,8 @@ public class ProjectWindow extends JFrame
                     "[]" +
                     "[]"));
             }
-            tabbedPane1.addTab("Overworld Sprites", panel2);
+            tabbedPane1.addTab("Overworld Sprites", overworldSpritePanel);
+            tabbedPane1.setEnabledAt(8, false);
         }
         contentPane.add(tabbedPane1, "cell 0 1");
 
@@ -1265,15 +1279,15 @@ public class ProjectWindow extends JFrame
     private JButton sheetUploadChangesButton;
     private JLabel warningLabel;
     private TrainerPanel trainerPanel1;
+    private SinnohEncounterPanel sinnohEncounterPanel;
+    private JohtoEncounterPanel johtoEncounterPanel;
+    private PokemonSpritePanel pokemonSpritePanel;
     private JPanel starterPanel;
     private JLabel label1;
-    private JPanel introPanel;
-    private JLabel label2;
     private JPanel openingPanel;
     private JLabel label3;
-    private PokemonSpritePanel pokemonSpritePanel;
-    private TrainerSpritePanel panel1;
-    private JPanel panel2;
+    private TrainerSpritePanel trainerSpritePanel;
+    private JPanel overworldSpritePanel;
     private JToolBar jtbMain;
     private JButton openProjectButton;
     private JButton exportRomButton;

@@ -37,8 +37,6 @@ public class GoogleSheetsAPI
 
         SPREADSHEET_ID= spreadsheetLink.split("/")[5];
         sheetsService= getSheetsService();
-
-
     }
 
     private Credential authorize() throws IOException, GeneralSecurityException

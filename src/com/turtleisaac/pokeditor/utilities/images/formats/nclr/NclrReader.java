@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.utilities.images.nclr;
+package com.turtleisaac.pokeditor.utilities.images.formats.nclr;
 
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.utilities.images.ColorFormat;

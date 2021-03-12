@@ -107,6 +107,9 @@ public class LearnsetEditor
         sort(files); //sorts files numerically (0.bin, 1.bin, 2.bin, etc...)
         File file;
 
+        if(files.length > nameData.length)
+            nameData= ArrayModifier.accommodateLength(nameData,files.length);
+
         for(int i= 0; i < files.length; i++)
         {
             file= files[i];
@@ -197,7 +200,7 @@ public class LearnsetEditor
             ArrayList<MoveLearnsetData> thisLearnset= dataList.get(row);
             for(int col= 0; col < thisLearnset.size(); col++)
             {
-                learnsetTable[row][idx++]= moveData[thisLearnset.get(col).getID()];
+                learnsetTable[row][idx++]= "='Formatting (DO NOT TOUCH)'!I" + (thisLearnset.get(col).getID()+1);
                 learnsetTable[row][idx++]= "" + thisLearnset.get(col).getLevel();
             }
         }
@@ -213,15 +216,13 @@ public class LearnsetEditor
         String line;
         for(int row= 0; row < dataList.size(); row++)
         {
-            line= row + "," + nameData[row] + ",";
+            line= row + ",=Personal!B" + (row+2) + ",";
             for(int col= 0; col < learnsetTable[0].length; col++)
             {
                 line+= learnsetTable[row][col] + ",";
             }
             processor.append(line);
-
             processor.newLine();
-
         }
 
         return processor.getTable();

@@ -1,7 +1,7 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
-import com.turtleisaac.pokeditor.utilities.images.ncer.NcerData;
-import com.turtleisaac.pokeditor.utilities.images.nclr.NclrData;
+import com.turtleisaac.pokeditor.utilities.images.formats.ncer.NcerData;
+import com.turtleisaac.pokeditor.utilities.images.formats.nclr.NclrData;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -243,12 +243,12 @@ public class ImageActions
         return image;
     }
 
-    public static BufferedImage getImage(byte[] tiles, byte[] tile_pal, Color[][] palette, ColorFormat format, int width, int height)
+    public static BufferedImage getImage(byte[] tiles, byte[] tile_pal, Color[][] palette, ColorFormat format, int width, int height, int palOverride)
     {
-        return getImage(tiles,tile_pal,palette,format,width,height,8);
+        return getImage(tiles,tile_pal,palette,format,width,height,0,palOverride);
     }
 
-    public static BufferedImage getImage(byte[] tiles, byte[] tile_pal, Color[][] palette, ColorFormat format, int width, int height, int start)
+    public static BufferedImage getImage(byte[] tiles, byte[] tile_pal, Color[][] palette, ColorFormat format, int width, int height, int start, int palOverride)
     {
         if (tiles.length == 0)
             return new BufferedImage(1, 1,format.value);
@@ -263,50 +263,32 @@ public class ImageActions
             width= 64;
             height= 96;
             image= new BufferedImage(width,height,format.value);
-//            e.printStackTrace();
         }
 
 
-        int pos = start;
-        for (int h = 0; h < height; h++)
+        int pos= start;
+        for (int row= 0; row < height; row++)
         {
-            for (int w = 0; w < width; w++)
+            for (int col= 0; col < width; col++)
             {
                 int num_pal = 0;
-                if (tile_pal.length > w + h * width)
-                    num_pal = tile_pal[w + h * width];
+                if(tile_pal.length > col + row * width)
+                {
+                    num_pal = tile_pal[col + row * width];
+                }
 
-                if (num_pal >= palette.length)
+                if(num_pal >= palette.length)
+                {
                     num_pal = 0;
+                }
 
+                if(palOverride != 0)
+                    num_pal= palOverride;
 
                 Color color = getColor(tiles, palette[num_pal], format, pos++);
-
-                image.setRGB(w, h, color.getRGB());
+                image.setRGB(col, row, color.getRGB());
             }
         }
-
-
-        BufferedImage leftAll= image.getSubimage(0,0,width-8,height);
-        BufferedImage right8= image.getSubimage(width-8,0,8,height);
-
-        image= new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);
-//        image= insertImage(image,right8,0,0);
-//        image= insertImage(image,leftAll,8,0);
-
-        Graphics2D g= (Graphics2D) image.getGraphics();
-        g.drawImage(right8,0,0,null);
-        g.drawImage(leftAll,8,0,null);
-
-
-//        try
-//        {
-//            ImageIO.write(left8,"png",new File(System.getProperty("user.dir") + File.separator + "left8_" + System.currentTimeMillis() + ".png"));
-//            ImageIO.write(right8,"png",new File(System.getProperty("user.dir") + File.separator + "right8_"  + System.currentTimeMillis() + ".png"));
-//        } catch (IOException exception)
-//        {
-//            exception.printStackTrace();
-//        }
 
         return image;
     }
@@ -1134,7 +1116,7 @@ public class ImageActions
         return imageSize;
     }
 
-    public static BufferedImage getImage(NcerData.Bank bank, long blockSize, ImageBase img, NclrData.Palette pal, int max_width, int max_height, boolean image, int zoom, int[] index, Color background)
+    public static BufferedImage getNcerImage(NcerData.Bank bank, long blockSize, ImageBase img, NclrData.Palette pal, int max_width, int max_height, boolean image, int zoom, int[] index, Color background)
     {
         Size size = new Size(max_width * zoom, max_height * zoom);
         NcerData.OAM[] oams= bank.getOAMs();

@@ -444,11 +444,11 @@ public class JohtoEncounterEditor
             {
                 area[row][0]= fieldRateArr[idx] + "";
 //                System.out.print(area[row][0] + ", ");
-                area[row][1]= nameData[encounterData.getFieldMorning()[idx]];
+                area[row][1]= "=Evolutions!B" + (encounterData.getFieldMorning()[idx]+2);
 //                System.out.print(area[row][1] + ", ");
-                area[row][2]= nameData[encounterData.getFieldDay()[idx]];
+                area[row][2]= "=Evolutions!B" + (encounterData.getFieldDay()[idx]+2);
 //                System.out.print(area[row][2] + ", ");
-                area[row][3]= nameData[encounterData.getFieldNight()[idx]];
+                area[row][3]= "=Evolutions!B" + (encounterData.getFieldNight()[idx]+2);
 //                System.out.print(area[row][3] + ", ");
                 area[row][4]= "" + encounterData.getFieldLevels()[idx++];
 //                System.out.println(area[row][4] + "\n");
@@ -472,25 +472,25 @@ public class JohtoEncounterEditor
             {
                 area[row][0]= waterRateArr[idx] + "";
     //            System.out.print(area[row][0] + ", ");
-                area[row][1]= nameData[encounterData.getSurfs()[idx]];
+                area[row][1]= "=Evolutions!B" + (encounterData.getSurfs()[idx]+2);
     //            System.out.print(area[row][1] + ", ");
                 area[row][2]= "" + encounterData.getSurfMins()[idx];
     //            System.out.print(area[row][2] + ", ");
                 area[row][3]= "" + encounterData.getSurfMaxs()[idx];
     //            System.out.print(area[row][3] + ", ");
-                area[row][4]= nameData[encounterData.getOlds()[idx]];
+                area[row][4]= "=Evolutions!B" + (encounterData.getOlds()[idx]+2);
     //            System.out.print(area[row][4] + ", ");
                 area[row][5]= "" + encounterData.getOldMins()[idx];
     //            System.out.print(area[row][5] + ", ");
                 area[row][6]= "" + encounterData.getOldMaxs()[idx];
     //            System.out.print(area[row][6] + ", ");
-                area[row][7]= nameData[encounterData.getGoods()[idx]];
+                area[row][7]= "=Evolutions!B" + (encounterData.getGoods()[idx]+2);
     //            System.out.print(area[row][7] + ", ");
                 area[row][8]= "" + encounterData.getGoodMins()[idx];
     //            System.out.print(area[row][8] + ", ");
                 area[row][9]= "" + encounterData.getGoodMaxs()[idx];
     //            System.out.print(area[row][9] + ", ");
-                area[row][10]= nameData[encounterData.getSupers()[idx]];
+                area[row][10]= "=Evolutions!B" + (encounterData.getSupers()[idx]+2);
     //            System.out.print(area[row][10] + ", ");
                 area[row][11]= "" + encounterData.getSuperMins()[idx];
     //            System.out.print(area[row][11] + ", ");
@@ -516,7 +516,7 @@ public class JohtoEncounterEditor
             {
                 area[row][0]= smashRateArr[idx] + "";
     //            System.out.print(area[row][0] + ", ");
-                area[row][1]= nameData[encounterData.getSmashes()[idx]];
+                area[row][1]= "=Evolutions!B" + (encounterData.getSmashes()[idx]+2);
     //            System.out.print(area[row][1] + ", ");
                 area[row][2]= "" + encounterData.getSmashMins()[idx];
     //            System.out.print(area[row][2] + ", ");
@@ -533,10 +533,10 @@ public class JohtoEncounterEditor
             String[] area= new String[4];
             Arrays.fill(area,"");
 
-            area[0]= nameData[encounterData.getFieldSwarm()];
-            area[1]= nameData[encounterData.getSurfSwarm()];
-            area[2]= nameData[encounterData.getGoodSwarm()];
-            area[3]= nameData[encounterData.getSuperSwarm()];
+            area[0]= "=Evolutions!B" + (encounterData.getFieldSwarm()+2);
+            area[1]= "=Evolutions!B" + (encounterData.getSurfSwarm()+2);
+            area[2]= "=Evolutions!B" + (encounterData.getGoodSwarm()+2);
+            area[3]= "=Evolutions!B" + (encounterData.getSuperSwarm()+2);
             massOutbreakEncounterTable.add(area);
         }
 
@@ -553,8 +553,8 @@ public class JohtoEncounterEditor
             int idx= 0;
             for(int row= 0; row < area.length; row++)
             {
-                area[row][0]= nameData[encounterData.getHoenn()[idx]];
-                area[row][1]= nameData[encounterData.getSinnoh()[idx++]];
+                area[row][0]= "=Evolutions!B" + (encounterData.getHoenn()[idx]+2);
+                area[row][1]= "=Evolutions!B" + (encounterData.getSinnoh()[idx++]+2);
             }
             soundTable.add(area);
         }

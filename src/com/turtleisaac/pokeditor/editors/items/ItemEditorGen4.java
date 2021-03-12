@@ -2,6 +2,7 @@ package com.turtleisaac.pokeditor.editors.items;
 
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 
@@ -60,6 +61,9 @@ public class ItemEditorGen4
                 abilityData= TextEditor.getBank(project,720);
                 break;
         }
+
+        for(String item : itemData)
+            System.out.println(item);
 
         ArrayList<String> itemList= new ArrayList<>(Arrays.asList(itemData));
         itemList.removeIf(s -> s.equals("???"));
@@ -144,11 +148,14 @@ public class ItemEditorGen4
         sort(files); //sorts files numerically (0.bin, 1.bin, 2.bin, etc...)
         File file;
 
+        if(files.length > itemData.length)
+            itemData= ArrayModifier.accommodateLength(itemData,files.length);
+
         for(int i= 0; i < files.length; i++)
         {
             file= files[i];
             buffer= new Buffer(file.toString());
-            System.out.println(itemData[i] + ": " + i);
+            //System.out.println(itemData[i] + ": " + i);
 
             int price= buffer.readUInt16();
             int equipmentEffect= buffer.readByte();
@@ -157,40 +164,40 @@ public class ItemEditorGen4
             int flingEffect= buffer.readByte();
             int flingPower= buffer.readByte();
             int naturalGiftPower= buffer.readByte();
-            System.out.println("Price: " + price);
-            System.out.println("Equipment Effect: " + equipmentEffect);
-            System.out.println("Power: " + power);
-            System.out.println("Pluck Effect: " + pluckFlingEffects[pluckEffect]);
-            System.out.println("Fling Effect: " + pluckFlingEffects[flingEffect]);
-            System.out.println("Fling Power: " + flingPower);
-            System.out.println("Natural Gift Power: " + naturalGiftPower);
+            //System.out.println("Price: " + price);
+            //System.out.println("Equipment Effect: " + equipmentEffect);
+            //System.out.println("Power: " + power);
+            //System.out.println("Pluck Effect: " + pluckFlingEffects[pluckEffect]);
+            //System.out.println("Fling Effect: " + pluckFlingEffects[flingEffect]);
+            //System.out.println("Fling Power: " + flingPower);
+            //System.out.println("Natural Gift Power: " + naturalGiftPower);
 
             int bitField1= buffer.readShort();
             byte naturalGiftType= (byte)(bitField1 & 0x1f);
             try
             {
-                System.out.println("Natural Gift Type: " + typeArr[naturalGiftType]);
+                //System.out.println("Natural Gift Type: " + typeArr[naturalGiftType]);
             }
             catch (ArrayIndexOutOfBoundsException e)
             {
-                System.out.println("Natural Gift Type: None");
+                //System.out.println("Natural Gift Type: None");
             }
             boolean discardUnable= (((byte)(bitField1 >> 5) & 0x01) == 1);
             boolean canRegister= (((byte)(bitField1 >> 6) & 0x01) == 1);
             byte fieldBag= (byte) ((bitField1 >> 7) & 0xf);
             byte battleBag= (byte) ((bitField1 >> 11) & 0x1f);
-            System.out.println("Unable to Discard: " + discardUnable);
-            System.out.println("Can Register: " + canRegister);
-            System.out.println("Field Bag: " + fieldBagPockets[fieldBag]);
-            System.out.println("Battle Bag: " + battleBagPockets[battleBag]);
+            //System.out.println("Unable to Discard: " + discardUnable);
+            //System.out.println("Can Register: " + canRegister);
+            //System.out.println("Field Bag: " + fieldBagPockets[fieldBag]);
+            //System.out.println("Battle Bag: " + battleBagPockets[battleBag]);
 
             int fieldFunction= buffer.readByte();
             int battleFunction= buffer.readByte();
             int workType= buffer.readByte();
             buffer.skipBytes(1);
-            System.out.println("Field Function: " + fieldFunctions[fieldFunction]);
-            System.out.println("Battle Function: " + battleFunctions[battleFunction]);
-            System.out.println("Item Usage Type: " + workTypes[workType]);
+            //System.out.println("Field Function: " + fieldFunctions[fieldFunction]);
+            //System.out.println("Battle Function: " + battleFunctions[battleFunction]);
+            //System.out.println("Item Usage Type: " + workTypes[workType]);
 
             int recovery= buffer.readByte();
             boolean sleepRecovery= (recovery & 0x01) == 1;
@@ -201,14 +208,14 @@ public class ItemEditorGen4
             boolean confuseRecovery= ((recovery >> 5) & 0x01) == 1;
             boolean attractRecovery= ((recovery >> 6) & 0x01) == 1;
             boolean guardSpec= ((recovery >> 7) & 0x01) == 1;
-            System.out.println("Sleep Recovery: " + sleepRecovery);
-            System.out.println("Poison Recovery:" + poisonRecovery);
-            System.out.println("Burn Recovery: " + burnRecovery);
-            System.out.println("Freeze Recovery: " + freezeRecovery);
-            System.out.println("Paralyze Recovery: " + paralyzeRecovery);
-            System.out.println("Confuse Recovery: " + confuseRecovery);
-            System.out.println("Attract Recovery: " + attractRecovery);
-            System.out.println("Guard Spec Effect: " + guardSpec);
+            //System.out.println("Sleep Recovery: " + sleepRecovery);
+            //System.out.println("Poison Recovery:" + poisonRecovery);
+            //System.out.println("Burn Recovery: " + burnRecovery);
+            //System.out.println("Freeze Recovery: " + freezeRecovery);
+            //System.out.println("Paralyze Recovery: " + paralyzeRecovery);
+            //System.out.println("Confuse Recovery: " + confuseRecovery);
+            //System.out.println("Attract Recovery: " + attractRecovery);
+            //System.out.println("Guard Spec Effect: " + guardSpec);
 
             int utilityInfo= buffer.readByte();
             boolean revive= (utilityInfo & 0x01) == 1;
@@ -216,23 +223,23 @@ public class ItemEditorGen4
             boolean rareCandy= ((utilityInfo >> 2) & 0x01) == 1;
             boolean evolution= ((utilityInfo >> 3) & 0x01) == 1;
             byte atkUp= (byte)((utilityInfo >> 4) & 0xf);
-            System.out.println("revive: " + revive);
-            System.out.println("revive all: " + reviveAll);
-            System.out.println("rare candy: " + rareCandy);
-            System.out.println("Evolution Stone: " + evolution);
-            System.out.println("Attack Stat Boost: " + atkUp);
+            //System.out.println("revive: " + revive);
+            //System.out.println("revive all: " + reviveAll);
+            //System.out.println("rare candy: " + rareCandy);
+            //System.out.println("Evolution Stone: " + evolution);
+            //System.out.println("Attack Stat Boost: " + atkUp);
 
             int battleBoost1= buffer.readByte();
             byte defUp= (byte)(battleBoost1 & 0xf);
             byte spAtkUp= (byte)((battleBoost1 >> 4) & 0xf);
-            System.out.println("Defense Stat Boost: " + defUp);
-            System.out.println("Special Attack Stat Boost: " + spAtkUp);
+            //System.out.println("Defense Stat Boost: " + defUp);
+            //System.out.println("Special Attack Stat Boost: " + spAtkUp);
 
             int battleBoost2= buffer.readByte();
             byte spDefUp= (byte)(battleBoost2 & 0xf);
             byte speedUp= (byte)((battleBoost2 >> 4) & 0xf);
-            System.out.println("Special Defense Stat Boost: " + spDefUp);
-            System.out.println("Speed Stat Boost: " + speedUp);
+            //System.out.println("Special Defense Stat Boost: " + spDefUp);
+            //System.out.println("Speed Stat Boost: " + speedUp);
 
 
             int battleBoost3= buffer.readByte();
@@ -240,10 +247,10 @@ public class ItemEditorGen4
             byte critUp= (byte)((battleBoost3 >> 4) & 0x3);
             boolean ppUp= ((battleBoost3 >> 6) & 0x1) == 1;
             boolean ppUp3= ((battleBoost3 >> 7) & 0x1) == 1;
-            System.out.println("Accuracy Stat Boost: " + accuracyUp);
-            System.out.println("Critical Hit Chance Boost: " + critUp);
-            System.out.println("pp up effect: " + ppUp);
-            System.out.println("pp max effect: " + ppUp3);
+            //System.out.println("Accuracy Stat Boost: " + accuracyUp);
+            //System.out.println("Critical Hit Chance Boost: " + critUp);
+            //System.out.println("pp up effect: " + ppUp);
+            //System.out.println("pp max effect: " + ppUp3);
 
             int recovery2= buffer.readByte();
             boolean ppRecovery= (recovery2 & 0x1) == 1;
@@ -254,24 +261,24 @@ public class ItemEditorGen4
             boolean defEv= ((recovery2 >> 5) & 0x01) == 1;
             boolean speedEv= ((recovery2 >> 6) & 0x01) == 1;
             boolean spAtkEv= ((recovery2 >> 7) & 0x01) == 1;
-            System.out.println("PP Recovery: " + ppRecovery);
-            System.out.println("All PP Recovery: " + ppRecoveryAll);
-            System.out.println("HP Recovery: " + hpRecovery);
-            System.out.println("HP EV: " + hpEv);
-            System.out.println("Attack EV: " + atkEv);
-            System.out.println("Defense EV: " + defEv);
-            System.out.println("Speed EV: " + speedEv);
-            System.out.println("Special Attack EV: " + spAtkEv);
+            //System.out.println("PP Recovery: " + ppRecovery);
+            //System.out.println("All PP Recovery: " + ppRecoveryAll);
+            //System.out.println("HP Recovery: " + hpRecovery);
+            //System.out.println("HP EV: " + hpEv);
+            //System.out.println("Attack EV: " + atkEv);
+            //System.out.println("Defense EV: " + defEv);
+            //System.out.println("Speed EV: " + speedEv);
+            //System.out.println("Special Attack EV: " + spAtkEv);
 
             int bitField2= buffer.readByte();
             boolean spDefEv= (bitField2 & 0x1) == 1;
             boolean friendExp1= ((bitField2 >> 1) & 0x01) == 1;
             boolean friendExp2= ((bitField2 >> 2) & 0x01) == 1;
             boolean friendExp3= ((bitField2 >> 3) & 0x01) == 1;
-            System.out.println("Special Defense EV: " + spDefEv);
-            System.out.println("Friendship points 1: " + friendExp1);
-            System.out.println("Friendship points 2: " + friendExp2);
-            System.out.println("Friendship points 3: " + friendExp3);
+            //System.out.println("Special Defense EV: " + spDefEv);
+            //System.out.println("Friendship points 1: " + friendExp1);
+            //System.out.println("Friendship points 2: " + friendExp2);
+            //System.out.println("Friendship points 3: " + friendExp3);
 
             byte hpEvChange= (byte)buffer.readByte();
             byte atkEvChange= (byte)buffer.readByte();
@@ -284,19 +291,19 @@ public class ItemEditorGen4
             byte friendExpChange1= (byte)buffer.readByte();
             byte friendExpChange2= (byte)buffer.readByte();
             byte friendExpChange3= (byte)buffer.readByte();
-            System.out.println("HP EV Change: " + hpEvChange);
-            System.out.println("Attack EV Change: " + atkEvChange);
-            System.out.println("Defense EV Change: " + defEvChange);
-            System.out.println("Speed EV Change: " + speedEvChange);
-            System.out.println("Special Attack EV Change: " + spAtkEvChange);
-            System.out.println("Special Defense EV Change: " + spDefEvChange);
-            System.out.println("HP Recovery Amount: " + hpRecoveryAmount);
-            System.out.println("PP Recovery Amount: " + ppRecoveryAmount);
-            System.out.println("Friendship Point Change 1: " + friendExpChange1);
-            System.out.println("Friendship Point Change 2: " + friendExpChange2);
-            System.out.println("Friendship Point Change 3: " + friendExpChange3);
+            //System.out.println("HP EV Change: " + hpEvChange);
+            //System.out.println("Attack EV Change: " + atkEvChange);
+            //System.out.println("Defense EV Change: " + defEvChange);
+            //System.out.println("Speed EV Change: " + speedEvChange);
+            //System.out.println("Special Attack EV Change: " + spAtkEvChange);
+            //System.out.println("Special Defense EV Change: " + spDefEvChange);
+            //System.out.println("HP Recovery Amount: " + hpRecoveryAmount);
+            //System.out.println("PP Recovery Amount: " + ppRecoveryAmount);
+            //System.out.println("Friendship Point Change 1: " + friendExpChange1);
+            //System.out.println("Friendship Point Change 2: " + friendExpChange2);
+            //System.out.println("Friendship Point Change 3: " + friendExpChange3);
 
-            System.out.println();
+            //System.out.println();
 
             dataList.add(new ItemData() {
                 @Override
@@ -697,7 +704,7 @@ public class ItemEditorGen4
     }
 
 
-    public void sheetToItems(Object[][] itemCsv, String outputDir) throws IOException
+    public void sheetToItems(Object[][] itemSheet, String outputDir) throws IOException
     {
         String outputPath= projectPath + outputDir;
 
@@ -707,13 +714,14 @@ public class ItemEditorGen4
         }
         outputPath+= File.separator;
 
-        itemCsv= ArrayModifier.trim(itemCsv,1,2);
+        Object[] nameColumn= Arrays.copyOfRange(ArrayModifier.getColumn(itemSheet,1),1,itemSheet.length);
+        itemSheet= ArrayModifier.trim(itemSheet,1,2);
 
         BinaryWriter writer;
-        for(int i= 0; i < itemCsv.length; i++)
+        for(int i= 0; i < itemSheet.length; i++)
         {
             System.out.println(itemData[i]);
-            Object[] thisLine= itemCsv[i];
+            Object[] thisLine= itemSheet[i];
             initializeIndex(thisLine);
 
             writer= new BinaryWriter(outputPath + i + ".bin");
@@ -798,6 +806,52 @@ public class ItemEditorGen4
             writer.writeByteNumTimes((byte) 0,2);
             writer.close();
         }
+
+        int itemNameBank;
+        String predictedOutputNarc;
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                itemNameBank= 344;
+                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
+                break;
+
+            case Platinum:
+                itemNameBank= 392;
+                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                itemNameBank= 222;
+                predictedOutputNarc= dataPath + File.separator + outputDir.substring(0,outputDir.length()-1);
+                break;
+
+            default:
+                throw new RuntimeException("Invalid base rom: " + baseRom);
+        }
+
+        ArrayList<Object> itemNames= new ArrayList<>(Arrays.asList(nameColumn));
+        for(int i= 0; i < 22; i++)
+        {
+            itemNames.add(113,"???");
+        }
+
+        nameColumn= itemNames.toArray(itemNames.toArray(new Object[0]));
+
+        boolean canTrim= true;
+        if(new File(predictedOutputNarc).exists())
+        {
+            int numOriginalFiles= Narctowl.getNumFiles(predictedOutputNarc);
+
+            if(itemSheet.length > numOriginalFiles)
+            {
+                canTrim= false;
+            }
+        }
+
+        TextEditor.writeBank(project,nameColumn,itemNameBank,canTrim);
     }
 
 

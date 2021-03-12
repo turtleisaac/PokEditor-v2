@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.utilities.images.ncer;
+package com.turtleisaac.pokeditor.utilities.images.formats.ncer;
 
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.utilities.images.ImageActions;
@@ -6,7 +6,6 @@ import com.turtleisaac.pokeditor.utilities.images.Size;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class NcerReader
 {

@@ -4,13 +4,20 @@ import java.io.File;
 
 public enum TablePointer
 {
-
     /**
      * Platinum
      */
     //CPUE
     PrizeMoney_CPUE("overlay" + File.separator + "overlay_0016.bin",0x816c,0x00,0), //Trainer Class Prize Money Table
-    ClassGender_CPUE("arm9.bin",0x793B4,0x00,0) //Trainer Class Gender Table
+    ClassGender_CPUE("arm9.bin",0x793b4,0x00,0), //Trainer Class Gender Table
+    PokemonIconPalette_CPUE("arm9.bin",0x079f80,0,0), //Pokemon Party Icon Palette Index Table
+
+
+    /**
+     * HeartGold
+     */
+    //IPGE
+    PokemonIconPalette_IPKE("arm9.bin",0,0,0), //Pokemon Party Icon Palette Index Table
     ;
 
 

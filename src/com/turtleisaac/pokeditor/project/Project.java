@@ -251,4 +251,9 @@ public class Project implements Serializable
     {
         return project.getBaseRom() == Game.Diamond || project.getBaseRom() == Game.Pearl || project.getBaseRom() == Game.Platinum;
     }
+
+    public static boolean isPlatinum(Project project)
+    {
+        return project.getBaseRom() == Game.Platinum;
+    }
 }

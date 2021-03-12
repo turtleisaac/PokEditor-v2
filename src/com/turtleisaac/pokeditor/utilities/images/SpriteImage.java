@@ -220,6 +220,36 @@ public class SpriteImage
         return this;
     }
 
+    public SpriteImage alignPalette(Color[] paletteGuide, JPanel parent)
+    {
+        indexSelf(parent);
+
+        ArrayList<Color> colorGuideList= new ArrayList<>(Arrays.asList(paletteGuide));
+
+        for(int i= 0; i < palette.length; i++)
+        {
+            for(int row= 0; row < indexGuide.length; row++)
+            {
+                for(int col= 0; col < indexGuide[row].length; col++)
+                {
+                    if(indexGuide[row][col] == i)
+                        indexGuide[row][col]= (byte) -colorGuideList.indexOf(palette[i]);
+                }
+            }
+        }
+
+        for(int row= 0; row < indexGuide.length; row++)
+        {
+            for(int col= 0; col < indexGuide[row].length; col++)
+            {
+                indexGuide[row][col]= (byte) Math.abs(indexGuide[row][col]);
+            }
+        }
+
+        update= true;
+        return this;
+    }
+
     public int getWidth()
     {
         return indexGuide[0].length;

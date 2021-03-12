@@ -24,6 +24,7 @@ import com.turtleisaac.pokeditor.editors.spritepositions.SpriteDataProcessor;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.gui.ComboBoxItem;
 import com.turtleisaac.pokeditor.gui.MyFilter;
+import com.turtleisaac.pokeditor.gui.editors.sprites.SpriteEditor;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.images.ImageDecrypter;
@@ -715,6 +716,7 @@ public class PokemonSpritePanel extends JPanel
         if(JOptionPane.showOptionDialog(this,"Choose an option","PokEditor",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE,null,new String[] {"Import","Export"},0) == 1)
         {
             exportSpriteAction(sprites.getMaleFront()[frameToggled ? 1 : 0].getImage());
+            SpriteEditor spriteEditor= new SpriteEditor(sprites.getMaleFront()[0]);
         }
         else
         {
@@ -1596,34 +1598,35 @@ public class PokemonSpritePanel extends JPanel
 
 
 
-        Runtime runtime= Runtime.getRuntime();
-        try
-        {
-            ObjectInputStream objectInputStream= new ObjectInputStream(new FileInputStream(spriteEditor));
-            spriteEditor= (File) objectInputStream.readObject();
-
-            File spriteTemp= File.createTempFile("temp_sprite_pokeditor",".png");
-            spriteTemp.deleteOnExit();
-            ImageIO.write(image,"png",spriteTemp);
-
-            if(System.getProperty("os.name").toLowerCase().contains("mac"))
-            {
-                System.out.println(spriteEditor.getAbsolutePath());
-                System.out.println(spriteTemp.getAbsolutePath());
-                runtime.exec(spriteEditor.getAbsolutePath() + "/Contents/MacOS/gimp " + spriteTemp.getAbsolutePath());
-            }
-            else if(System.getProperty("os.name").toLowerCase().contains("windows"))
-            {
-                runtime.exec(spriteEditor.getAbsolutePath() + " " + spriteTemp.getAbsolutePath());
-            }
-
-            CopyImageToClipboard clipboard= new CopyImageToClipboard();
-            clipboard.copyImage(image);
-        }
-        catch (IOException | ClassNotFoundException fileNotFoundException)
-        {
-            fileNotFoundException.printStackTrace();
-        }
+//        Runtime runtime= Runtime.getRuntime();
+//        Process process;
+//        try
+//        {
+//            ObjectInputStream objectInputStream= new ObjectInputStream(new FileInputStream(spriteEditor));
+//            spriteEditor= (File) objectInputStream.readObject();
+//
+//            File spriteTemp= File.createTempFile("temp_sprite_pokeditor",".png");
+//            spriteTemp.deleteOnExit();
+//            ImageIO.write(image,"png",spriteTemp);
+//
+//            if(System.getProperty("os.name").toLowerCase().contains("mac"))
+//            {
+//                System.out.println(spriteEditor.getAbsolutePath());
+//                System.out.println(spriteTemp.getAbsolutePath());
+//                runtime.exec(spriteEditor.getAbsolutePath() + "/Contents/MacOS/gimp " + spriteTemp.getAbsolutePath());
+//            }
+//            else if(System.getProperty("os.name").toLowerCase().contains("windows"))
+//            {
+//                process= runtime.exec(spriteEditor.getAbsolutePath() + " " + spriteTemp.getAbsolutePath());
+//            }
+//
+//            CopyImageToClipboard clipboard= new CopyImageToClipboard();
+//            clipboard.copyImage(image);
+//        }
+//        catch (IOException | ClassNotFoundException fileNotFoundException)
+//        {
+//            fileNotFoundException.printStackTrace();
+//        }
     }
 
     private void initComponents() {
@@ -1689,6 +1692,9 @@ public class PokemonSpritePanel extends JPanel
         shinyPaletteButton13 = new JButton();
         shinyPaletteButton14 = new JButton();
         shinyPaletteButton15 = new JButton();
+        button2 = new JButton();
+        button3 = new JButton();
+        button4 = new JButton();
         battlePanel = new JPanel();
         mockupPanel = new PokemonSpritePanel.BattleMockupPanel();
         genderToggleButton = new JToggleButton();
@@ -1873,6 +1879,8 @@ public class PokemonSpritePanel extends JPanel
                     "[]" +
                     "[]" +
                     "[]" +
+                    "[]" +
+                    "[]" +
                     "[]"));
 
                 //---- label5 ----
@@ -2016,6 +2024,18 @@ public class PokemonSpritePanel extends JPanel
                 //---- shinyPaletteButton15 ----
                 shinyPaletteButton15.addActionListener(e -> shinyPaletteButton15ActionPerformed(e));
                 palettePanel.add(shinyPaletteButton15, "cell 6 8");
+
+                //---- button2 ----
+                button2.setText("Set to Shiny");
+                palettePanel.add(button2, "cell 0 9 2 1");
+
+                //---- button3 ----
+                button3.setText("Set to Normal");
+                palettePanel.add(button3, "cell 5 9 2 1");
+
+                //---- button4 ----
+                button4.setText("Swap Palettes");
+                palettePanel.add(button4, "cell 0 10 7 1");
             }
             battleSpritePanel.add(palettePanel, "cell 1 6 4 1,growx");
         }
@@ -2231,6 +2251,9 @@ public class PokemonSpritePanel extends JPanel
     private JButton shinyPaletteButton13;
     private JButton shinyPaletteButton14;
     private JButton shinyPaletteButton15;
+    private JButton button2;
+    private JButton button3;
+    private JButton button4;
     private JPanel battlePanel;
     private PokemonSpritePanel.BattleMockupPanel mockupPanel;
     private JToggleButton genderToggleButton;

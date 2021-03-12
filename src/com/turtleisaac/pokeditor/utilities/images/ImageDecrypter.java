@@ -1,7 +1,7 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
 import com.turtleisaac.pokeditor.framework.Buffer;
-import com.turtleisaac.pokeditor.utilities.images.nclr.NclrReader;
+import com.turtleisaac.pokeditor.utilities.images.formats.nclr.NclrReader;
 
 import java.awt.*;
 import java.io.File;

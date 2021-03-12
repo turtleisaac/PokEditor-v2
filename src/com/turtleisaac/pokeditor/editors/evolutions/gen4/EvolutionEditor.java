@@ -103,6 +103,9 @@ public class EvolutionEditor
         sort(files); //sorts files numerically (0.bin, 1.bin, 2.bin, etc...)
         File file;
 
+        if(files.length > nameData.length)
+            nameData= ArrayModifier.accommodateLength(nameData,files.length);
+
         int count= 0;
 
         for(int i= 0; i < files.length; i++)
@@ -293,7 +296,7 @@ public class EvolutionEditor
             else
             {
                 int current= 0;
-                System.out.println(name);
+//                System.out.println(name);
                 for (int col = 0; col < 7; col++)
                 {
                     int evolutionMethodID = dataList.get(row).getEvolutionMethod()[col];
@@ -319,7 +322,7 @@ public class EvolutionEditor
                     }
                     else if (evolutionMethodID == 6 || evolutionMethodID == 7 || (evolutionMethodID >= 16 && evolutionMethodID <= 19)) //all item-based evolutions (including trades)
                     {
-                        evolutionTable[row][current]= itemData[requirementNumber];
+                        evolutionTable[row][current]= "='Formatting (DO NOT TOUCH)'!A" + (requirementNumber+1);
                     }
                     else if (evolutionMethodID == 15) //max beauty
                     {
@@ -327,14 +330,15 @@ public class EvolutionEditor
                     }
                     else if (evolutionMethodID == 20) //attack known
                     {
-                        evolutionTable[row][current]= moveData[requirementNumber];
+                        evolutionTable[row][current]= "='Formatting (DO NOT TOUCH)'!I" + (requirementNumber+1);
                     }
                     else if (evolutionMethodID == 21)
                     {
                         String requireName;
                         try
                         {
-                            requireName= nameData[requirementNumber];
+//                            requireName= nameData[requirementNumber];
+                            requireName= "=Personal!B" + (requirementNumber+2);
                         }
                         catch (ArrayIndexOutOfBoundsException e)
                         {
@@ -349,7 +353,8 @@ public class EvolutionEditor
                     String evolvedName;
                     try
                     {
-                        evolvedName= nameData[evolvedID];
+//                        evolvedName= nameData[evolvedID];
+                        evolvedName= "=Personal!B" + (evolvedID+2);
                     }
                     catch (ArrayIndexOutOfBoundsException e)
                     {
@@ -381,12 +386,16 @@ public class EvolutionEditor
             String name;
             try
             {
-                name= nameData[row];
+//                name= nameData[row];
+                name= "=Personal!B" + (row+2);
             }
             catch (ArrayIndexOutOfBoundsException e)
             {
                 name= "p" + row;
             }
+
+            if(row == 505)
+                System.out.println("505");
 
             line= dataList.get(row).getNum() + "," + name + ",";
             for(int col= 0; col < evolutionTable[0].length; col++)
@@ -396,6 +405,9 @@ public class EvolutionEditor
             processor.newLine();
             processor.append(line);
         }
+        processor.newLine();
+
+        System.out.println();
 
         return processor.getTable();
     }

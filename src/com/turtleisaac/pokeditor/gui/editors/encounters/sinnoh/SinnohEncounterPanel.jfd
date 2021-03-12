@@ -1,0 +1,1731 @@
+JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.9" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "hidemode 3"
+			"$columnConstraints": "[fill][124,fill][80,fill][45,grow,fill][150,fill][fill][45,grow,fill][154,fill][fill]"
+			"$rowConstraints": "[][][][][][grow]"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "encounterFileLabel"
+				"text": "Encounter FIle"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 0,alignx center,growx 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "speciesSearchLabel"
+				"text": "Search by Species"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 4 0,alignx center,growx 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "locationSearchLabel"
+				"text": "Search by Location"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 7 0,alignx center,growx 0"
+			} )
+			add( new FormComponent( "javax.swing.JComboBox" ) {
+				name: "encounterFileComboBox"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "encounterFileComboBoxActionPerformed", true ) )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 1"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "saveButton"
+				"text": "Save"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveButtonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 2 1"
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+				name: "hSpacer1"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 3 1"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "speciesSearchTextField"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 4 1"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "speciesSearchButton"
+				"text": "Search"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "speciesSearchButtonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 5 1"
+			} )
+			add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+				name: "hSpacer2"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 6 1"
+			} )
+			add( new FormComponent( "javax.swing.JTextField" ) {
+				name: "locationSearchTextField"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 7 1"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "locationSearchButton"
+				"text": "Search"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "locationSearchButtonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 8 1"
+			} )
+			add( new FormComponent( "javax.swing.JSeparator" ) {
+				name: "separator1"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 2 8 1"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "This encounter file is used in:"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 3 8 1,alignx center,growx 0"
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label3"
+				"text": "MYSTERY ZONE"
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 4 8 1,alignx center,growx 0"
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane1"
+				"border": new javax.swing.border.TitledBorder( "" )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[grow,fill][274,grow,fill][grow,fill]"
+					"$rowConstraints": "[][][grow][]"
+				} ) {
+					name: "fieldEncounterPanel"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][140,grow,fill][right]"
+						"$rowConstraints": "[][][][][][][][][][][][][][][]"
+					} ) {
+						name: "fieldPanel"
+						"border": new javax.swing.border.TitledBorder( "Field" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label31"
+							"text": "Encounter Rate:"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "encounterRateSpinner"
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 255, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 0"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator8"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1 3 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label48"
+							"text": "Rate"
+							"font": new java.awt.Font( ".SF NS Text", 0, 11 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label47"
+							"text": "Species"
+							"font": new java.awt.Font( ".SF NS Text", 0, 11 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label33"
+							"text": "Level"
+							"font": new java.awt.Font( ".SF NS Text", 0, 11 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label6"
+							"text": "20%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field20ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 3"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field20LevelSpinner1"
+							"maximumSize": &Dimension0 new java.awt.Dimension( 70, 30 )
+							"minimumSize": &Dimension1 new java.awt.Dimension( 70, 30 )
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 3"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label7"
+							"text": "20%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field20ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 4"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field20LevelSpinner2"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 4"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label8"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field10ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field10LevelSpinner1"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 5"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label9"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field10ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field10LevelSpinner2"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 6"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label10"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field10ComboBox3"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 7"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field10LevelSpinner3"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 7"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label11"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 8,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field10ComboBox4"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 8"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field10LevelSpinner4"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 8"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label12"
+							"text": "5%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 9,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field5ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 9"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field5LevelSpinner1"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 9"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label13"
+							"text": "5%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 10,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field5ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 10"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field5LevelSpinner2"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 10"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label14"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 11,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field4ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 11"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field4LevelSpinner1"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 11"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label15"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 12,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field4ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 12"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field4LevelSpinner2"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 12"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label16"
+							"text": "1%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 13,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field1ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 13"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field1LevelSpinner1"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 13"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label17"
+							"text": "1%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 14,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "field1ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 14"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "field1LevelSpinner2"
+							"maximumSize": #Dimension0
+							"minimumSize": #Dimension1
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 14"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0 1 2,grow"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][140,grow,fill]"
+						"$rowConstraints": "[][][][][][][][][][][]"
+					} ) {
+						name: "swarmDayNightPanel"
+						"border": new javax.swing.border.TitledBorder( "Swarm/ Day/ Night" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label18"
+							"text": "Swarm"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label19"
+							"text": "20%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "swarm20ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 1,growx"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label20"
+							"text": "20%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label21"
+							"text": "Day"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "swarm20ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator2"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label45"
+							"text": "(10 am - 8 pm)"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label22"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "day10ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label23"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "day10ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator3"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label24"
+							"text": "Night"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 8,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label46"
+							"text": "(8 pm - 4 am)"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 8,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label25"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 9,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "night10ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 9"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label26"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 10,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "night10ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 10"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][grow,fill]"
+						"$rowConstraints": "[0][][][][][][][][][][][][][][][][][][]"
+					} ) {
+						name: "dualSlotPanel"
+						"border": new javax.swing.border.TitledBorder( "Dual-Slot Mode" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label5"
+							"text": "Ruby"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label1"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "rubyComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label2"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "rubyComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator4"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label36"
+							"text": "Sapphire"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label37"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "sapphireComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label38"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "sapphireComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator5"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label32"
+							"text": "Emerald"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 8,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label39"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 9,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "emeraldComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 9"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label40"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 10,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "emeraldComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 10"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator6"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 11 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label34"
+							"text": "FireRed"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 12,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label41"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 13,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "fireRedComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 13"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label42"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 14,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "fireRedComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 14"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator7"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 15 2 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label35"
+							"text": "LeafGreen"
+							"font": new java.awt.Font( ".SF NS Text", 0, 12 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 16,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label43"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 17,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "leafGreenComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 17"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label44"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 18,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "leafGreenComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 18"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 2 0 1 2,grow"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][grow,fill]"
+						"$rowConstraints": "[][][][]"
+					} ) {
+						name: "pokeRadarPanel"
+						"border": new javax.swing.border.TitledBorder( "Poké Radar" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label27"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "radar10ComboBox1"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label28"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "radar10ComboBox2"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label29"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "radar10ComboBox3"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label30"
+							"text": "10%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "radar10ComboBox4"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 3"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1,aligny top,growy 0"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][86,fill][110,grow,fill][fill][fill][fill]"
+						"$rowConstraints": "[][]0[]"
+					} ) {
+						name: "encounterCalculatorPanel"
+						"border": new javax.swing.border.TitledBorder( "Encounter Slot Display" )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "morningRadioButton"
+							"text": "Morning"
+							"selected": true
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "morningRadioButtonActionPerformed", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0"
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "dayRadioButton"
+							"text": "Day"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "dayRadioButtonActionPerformed", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0"
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "nightRadioButton"
+							"text": "Night"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "nightRadioButtonActionPerformed", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 0 2 1"
+						} )
+						add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+							name: "hSpacer3"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 0"
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "swarmCheckbox"
+							"text": "Swarm"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "swarmCheckboxActionPerformed", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 0"
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "radarCheckbox"
+							"text": "Poké Radar"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "radarCheckboxActionPerformed", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 4 0"
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "dualSlotCheckbox"
+							"text": "Dual-Slot Mode"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "dualSlotCheckboxActionPerformed", true ) )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 5 0"
+						} )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane1"
+							add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.encounters.sinnoh.SinnohEncounterPanel$ModifiedTable" ) {
+								name: "encounterSlotTable"
+								"autoResizeMode": 3
+								"model": new com.jformdesigner.model.SwingTableModel( new java.util.Vector {
+									add( new java.util.Vector {
+										add( null )
+										add( null )
+										add( null )
+										add( null )
+										add( "" )
+										add( null )
+										add( "" )
+										add( null )
+										add( "" )
+										add( "" )
+										add( null )
+										add( null )
+									} )
+								}, new java.util.Vector {
+									add( "20%" )
+									add( "20%" )
+									add( "10%" )
+									add( "10%" )
+									add( "10%" )
+									add( "10%" )
+									add( "5%" )
+									add( "5%" )
+									add( "4%" )
+									add( "4%" )
+									add( "1%" )
+									add( "1%" )
+								}, new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								}, new java.util.Vector {
+									add( false )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								}, new java.util.Vector {
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+									add( null )
+								} )
+								"rowSelectionAllowed": false
+								"toolTipText": "Displays what the encounters in this area will look like with these parameters active"
+								auxiliary() {
+									"JavaCodeGenerator.postInitCode": "encounterSlotTable.setRowHeight(54);"
+								}
+							} )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1 6 1,aligny top,grow 100 0"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2 3 1,growy"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Field Encounters"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[389:389,grow,fill][389,grow,fill]"
+					"$rowConstraints": "[][][grow]"
+				} ) {
+					name: "waterEncounterPanel"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][125:88,grow,fill][fill][fill]"
+						"$rowConstraints": "[][][][][][][][]"
+					} ) {
+						name: "surfPanel"
+						"border": new javax.swing.border.TitledBorder( "Surf Encounters" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label49"
+							"text": "Encounter Rate:"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0 3 1"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surfEncounterRateSpinner"
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 255, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 0"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator9"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1 4 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label58"
+							"text": "Rate"
+							"font": &Font0 new java.awt.Font( ".SF NS Text", 0, 11 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label57"
+							"text": "Species"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label55"
+							"text": "Min Level"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label56"
+							"text": "Max Level"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label50"
+							"text": "60%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "surf60ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 3,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf60MinLevelSpinner"
+							"model": &SpinnerNumberModel0 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 3,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf60MaxLevelSpinner"
+							"model": &SpinnerNumberModel1 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 3,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label51"
+							"text": "30%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "surf30ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 4,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf30MinLevelSpinner"
+							"model": &SpinnerNumberModel2 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf30MaxLevelSpinner"
+							"model": &SpinnerNumberModel3 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label52"
+							"text": "5%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf5MaxLevelSpinner"
+							"model": &SpinnerNumberModel4 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 5,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "surf5ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf5MinLevelSpinner"
+							"model": &SpinnerNumberModel5 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 5,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label53"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf4MaxLevelSpinner"
+							"model": &SpinnerNumberModel6 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 6,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "surf4ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf4MinLevelSpinner"
+							"model": &SpinnerNumberModel7 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 6,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label54"
+							"text": "1%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf1MaxLevelSpinner"
+							"model": &SpinnerNumberModel8 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 7,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "surf1ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 7,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "surf1MinLevelSpinner"
+							"model": &SpinnerNumberModel9 new javax.swing.SpinnerNumberModel( 0, 0, 100, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 7,alignx center,growx 0"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0,aligny top,grow 100 0"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][125:88,grow,fill][fill][fill]"
+						"$rowConstraints": "[][][][][][][][]"
+					} ) {
+						name: "oldRodPanel"
+						"border": new javax.swing.border.TitledBorder( "Old Rod Encounters" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label59"
+							"text": "Encounter Rate:"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0 3 1"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRodEncounterRateSpinner"
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 255, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 0"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator10"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1 4 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label60"
+							"text": "Rate"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label61"
+							"text": "Species"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label62"
+							"text": "Min Level"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label63"
+							"text": "Max Level"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label64"
+							"text": "60%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "oldRod60ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 3,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod60MinLevelSpinner"
+							"model": #SpinnerNumberModel0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 3,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod60MaxLevelSpinner"
+							"model": #SpinnerNumberModel1
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 3,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label65"
+							"text": "30%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "oldRod30ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 4,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod30MinLevelSpinner"
+							"model": #SpinnerNumberModel2
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod30MaxLevelSpinner"
+							"model": #SpinnerNumberModel3
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label66"
+							"text": "5%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod5MaxLevelSpinner"
+							"model": #SpinnerNumberModel4
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 5,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "oldRod5ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod5MinLevelSpinner"
+							"model": #SpinnerNumberModel5
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 5,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label67"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod4MaxLevelSpinner"
+							"model": #SpinnerNumberModel6
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 6,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "oldRod4ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod4MinLevelSpinner"
+							"model": #SpinnerNumberModel7
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 6,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label68"
+							"text": "1%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod1MaxLevelSpinner"
+							"model": #SpinnerNumberModel8
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 7,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "oldRod1ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 7,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "oldRod1MinLevelSpinner"
+							"model": #SpinnerNumberModel9
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 7,alignx center,growx 0"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 0,aligny top,grow 100 0"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][125:88,grow,fill][fill][fill]"
+						"$rowConstraints": "[][][][][][][][]"
+					} ) {
+						name: "goodRodPanel"
+						"border": new javax.swing.border.TitledBorder( "Good Rod Encounters" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label69"
+							"text": "Encounter Rate:"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0 3 1"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRodEncounterRateSpinner"
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 255, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 0"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator11"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1 4 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label70"
+							"text": "Rate"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label71"
+							"text": "Species"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label72"
+							"text": "Min Level"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label73"
+							"text": "Max Level"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label74"
+							"text": "60%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "goodRod60ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 3,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod60MinLevelSpinner"
+							"model": #SpinnerNumberModel0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 3,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod60MaxLevelSpinner"
+							"model": #SpinnerNumberModel1
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 3,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label75"
+							"text": "30%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "goodRod30ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 4,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod30MinLevelSpinner"
+							"model": #SpinnerNumberModel2
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod30MaxLevelSpinner"
+							"model": #SpinnerNumberModel3
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label76"
+							"text": "5%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod5MaxLevelSpinner"
+							"model": #SpinnerNumberModel4
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 5,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "goodRod5ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod5MinLevelSpinner"
+							"model": #SpinnerNumberModel5
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 5,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label77"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod4MaxLevelSpinner"
+							"model": #SpinnerNumberModel6
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 6,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "goodRod4ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod4MinLevelSpinner"
+							"model": #SpinnerNumberModel7
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 6,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label78"
+							"text": "1%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod1MaxLevelSpinner"
+							"model": #SpinnerNumberModel8
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 7,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "goodRod1ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 7,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "goodRod1MinLevelSpinner"
+							"model": #SpinnerNumberModel9
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 7,alignx center,growx 0"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1,aligny top,grow 100 0"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+						"$layoutConstraints": "hidemode 3"
+						"$columnConstraints": "[fill][125:88,grow,fill][fill][fill]"
+						"$rowConstraints": "[][][][][][][][]"
+					} ) {
+						name: "superRodPanel"
+						"border": new javax.swing.border.TitledBorder( "Super Rod Encounters" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label79"
+							"text": "Encounter Rate:"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 0 3 1"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRodEncounterRateSpinner"
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 255, 1 )
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 0"
+						} )
+						add( new FormComponent( "javax.swing.JSeparator" ) {
+							name: "separator12"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 1 4 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label80"
+							"text": "Rate"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label81"
+							"text": "Species"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label82"
+							"text": "Min Level"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label83"
+							"text": "Max Level"
+							"font": #Font0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 2,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label84"
+							"text": "60%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 3,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "superRod60ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 3,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod60MinLevelSpinner"
+							"model": #SpinnerNumberModel0
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 3,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod60MaxLevelSpinner"
+							"model": #SpinnerNumberModel1
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 3,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label85"
+							"text": "30%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 4,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "superRod30ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 4,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod30MinLevelSpinner"
+							"model": #SpinnerNumberModel2
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod30MaxLevelSpinner"
+							"model": #SpinnerNumberModel3
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 4,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label86"
+							"text": "5%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 5,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod5MaxLevelSpinner"
+							"model": #SpinnerNumberModel4
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 5,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "superRod5ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 5,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod5MinLevelSpinner"
+							"model": #SpinnerNumberModel5
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 5,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label87"
+							"text": "4%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 6,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod4MaxLevelSpinner"
+							"model": #SpinnerNumberModel6
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 6,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "superRod4ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 6,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod4MinLevelSpinner"
+							"model": #SpinnerNumberModel7
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 6,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label88"
+							"text": "1%"
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 0 7,alignx right,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod1MaxLevelSpinner"
+							"model": #SpinnerNumberModel8
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 3 7,alignx center,growx 0"
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "superRod1ComboBox"
+							auxiliary() {
+								"JavaCodeGenerator.typeParameters": "ComboBoxItem"
+							}
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 1 7,growx"
+						} )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "superRod1MinLevelSpinner"
+							"model": #SpinnerNumberModel9
+						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+							"value": "cell 2 7,alignx center,growx 0"
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 1,aligny top,grow 100 0"
+					} )
+					add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.encounters.sinnoh.SinnohEncounterPanel$OceanPanel" ) {
+						name: "oceanPreviewPanel"
+						"border": new javax.swing.border.TitledBorder( "text" )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2 2 1,grow"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Water Encounters"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][fill]"
+					"$rowConstraints": "[][][]"
+				} ) {
+					name: "alternateFormDataPanel"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Alternate Form Data"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 1 5 8 1,grow"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 880, 955 )
+		} )
+	}
+}

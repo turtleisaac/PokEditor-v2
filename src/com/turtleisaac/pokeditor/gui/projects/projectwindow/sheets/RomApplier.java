@@ -193,6 +193,8 @@ public class RomApplier extends JFrame
                             api.updateSheet("Poke Radar Encounters",encounterReturn.getRadar());
                         if(contains(selected,"Mode"))
                             api.updateSheet("Dual-Slot Mode Encounters",encounterReturn.getDualSlot());
+                        if(contains(selected,"Forms"))
+                            api.updateSheet("Alt Form Encounters",encounterReturn.getFormProbabilityTable());
                     }
 
                     if(contains(selected, "Trainer"))
@@ -289,6 +291,8 @@ public class RomApplier extends JFrame
                             api.updateSheet("Poke Radar Encounters",encounterReturn.getRadar());
                         if(contains(selected,"Mode"))
                             api.updateSheet("Dual-Slot Mode Encounters",encounterReturn.getDualSlot());
+                        if(contains(selected,"Forms"))
+                            api.updateSheet("Alt Form Encounters",encounterReturn.getFormProbabilityTable());
                     }
 
                     if(contains(selected, "Trainer"))

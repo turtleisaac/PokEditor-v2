@@ -16,7 +16,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.turtleisaac.pokeditor.editors.babies.BabyFormEditor;
 import com.turtleisaac.pokeditor.editors.encounters.johto.JohtoEncounterEditor;
+import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterEditor;
+import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterReturn;
 import com.turtleisaac.pokeditor.editors.evolutions.gen4.EvolutionEditor;
+import com.turtleisaac.pokeditor.editors.items.ItemEditorGen4;
 import com.turtleisaac.pokeditor.editors.learnsets.LearnsetEditor;
 import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
@@ -93,7 +96,7 @@ public class SheetApplier extends JFrame
         try
         {
             Narctowl narctowl= new Narctowl(true);
-            String dataPath= projectPath + File.separator + project.getName() + File.separator + "data";
+            String dataPath= project.getDataPath();
 
 
             switch (baseRom)
@@ -152,36 +155,41 @@ public class SheetApplier extends JFrame
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl","",dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl"));
                     }
-//
-//                    if(contains(selected,"Encounters"))
-//                    {
-//                        SinnohEncounterEditor editor= new SinnohEncounterEditor(dataPath);
-//                        SinnohEncounterReturn encounterReturn;
-//
-//                        if(baseRom == Game.Diamond) //Diamond
-//                        {
-//                            narctowl.unpack(dataPath + "/fielddata/encountdata/d_enc_data.narc",dataPath + "/fielddata/encountdata/d_enc_data");
-//                            encounterReturn= editor.encountersToSheet("/fielddata/encountdata/d_enc_data");
-//                            toDelete.add(new File(dataPath + "/fielddata/encountdata/d_enc_data"));
-//                        }
-//                        else //Pearl
-//                        {
-//                            narctowl.unpack(dataPath + "/fielddata/encountdata/p_enc_data.narc",dataPath + "/fielddata/encountdata/p_enc_data");
-//                            encounterReturn= editor.encountersToSheet("/fielddata/encountdata/p_enc_data");
-//                            toDelete.add(new File(dataPath + "/fielddata/encountdata/p_enc_data"));
-//                        }
-//
-//                        if(contains(selected,"Field"))
-//                            api.updateSheet("Field Encounters",encounterReturn.getField());
-//                        if(contains(selected,"Water"))
-//                            api.updateSheet("Water Encounters",encounterReturn.getWater());
-//                        if(contains(selected,"Swarm"))
-//                            api.updateSheet("Swarm/ Day/ Night Encounters",encounterReturn.getSwarm());
-//                        if(contains(selected,"Radar"))
-//                            api.updateSheet("Poke Radar Encounters",encounterReturn.getRadar());
-//                        if(contains(selected,"Mode"))
-//                            api.updateSheet("Dual-Slot Mode Encounters",encounterReturn.getDualSlot());
-//                    }
+
+                    if(contains(selected,"Items"))
+                    {
+                        String outputDir= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "item_data";
+                        String outputNarc= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "item_data.narc";
+
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
+                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir);
+
+                        narctowl.pack(dataPath + outputDir,"",dataPath + outputNarc);
+                        toDelete.add(new File(dataPath + outputDir));
+                    }
+
+                    if(contains(selected,"Encounters"))
+                    {
+                        SinnohEncounterEditor editor= new SinnohEncounterEditor(project,dataPath);
+
+                        String outputDir;
+                        String outputNarc;
+
+                        if(baseRom == Game.Diamond) //Diamond
+                        {
+                            outputDir= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "d_enc_data";
+                            outputNarc= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "d_enc_data.narc";
+                        }
+                        else //Pearl
+                        {
+                            outputDir= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "p_enc_data";
+                            outputNarc= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "p_enc_data.narc";
+                        }
+
+                        editor.sheetsToEncounters(api.getSpecifiedSheetArr("Field Encounters"),api.getSpecifiedSheetArr("Water Encounters"),api.getSpecifiedSheetArr("Swarm/ Day/ Night Encounters"),api.getSpecifiedSheetArr("Poke Radar Encounters"),api.getSpecifiedSheetArr("Dual-Slot Mode Encounters"),api.getSpecifiedSheetArr("Alt Form Encounters"),outputDir);
+                        narctowl.pack(dataPath + outputDir,"",dataPath + outputNarc);
+                        toDelete.add(new File(dataPath + outputDir));
+                    }
                     break;
 
                 case Platinum:
@@ -237,27 +245,30 @@ public class SheetApplier extends JFrame
                         narctowl.pack(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl","",dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl.narc");
                         toDelete.add(new File(dataPath + File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl"));
                     }
-//
-//                    Items
-//
-//                    if(contains(selected,"Encounters"))
-//                    {
-//                        SinnohEncounterEditor editor= new SinnohEncounterEditor(dataPath);
-//                        narctowl.unpack(dataPath + "/fielddata/encountdata/pl_enc_data.narc",dataPath + "/fielddata/encountdata/pl_enc_data");
-//                        SinnohEncounterReturn encounterReturn= editor.encountersToSheet("/fielddata/encountdata/pl_enc_data");
-//                        toDelete.add(new File(dataPath + "/fielddata/encountdata/pl_enc_data"));
-//
-//                        if(contains(selected,"Field"))
-//                            api.updateSheet("Field Encounters",encounterReturn.getField());
-//                        if(contains(selected,"Water"))
-//                            api.updateSheet("Water Encounters",encounterReturn.getWater());
-//                        if(contains(selected,"Swarm"))
-//                            api.updateSheet("Swarm/ Day/ Night Encounters",encounterReturn.getSwarm());
-//                        if(contains(selected,"Radar"))
-//                            api.updateSheet("Poke Radar Encounters",encounterReturn.getRadar());
-//                        if(contains(selected,"Mode"))
-//                            api.updateSheet("Dual-Slot Mode Encounters",encounterReturn.getDualSlot());
-//                    }
+
+                    if(contains(selected,"Items"))
+                    {
+                        String outputDir= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data";
+                        String outputNarc= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data.narc";
+
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
+                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir);
+
+                        narctowl.pack(dataPath + outputDir,"",dataPath + outputNarc);
+                        toDelete.add(new File(dataPath + outputDir));
+                    }
+
+                    if(contains(selected,"Encounters"))
+                    {
+                        SinnohEncounterEditor editor= new SinnohEncounterEditor(project,dataPath);
+
+                        String outputDir= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "pl_enc_data";
+                        String outputNarc= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "pl_enc_data.narc";
+
+                        editor.sheetsToEncounters(api.getSpecifiedSheetArr("Field Encounters"),api.getSpecifiedSheetArr("Water Encounters"),api.getSpecifiedSheetArr("Swarm/ Day/ Night Encounters"),api.getSpecifiedSheetArr("Poke Radar Encounters"),api.getSpecifiedSheetArr("Dual-Slot Mode Encounters"),api.getSpecifiedSheetArr("Alt Form Encounters"),outputDir);
+                        narctowl.pack(dataPath + outputDir,"",dataPath + outputNarc);
+                        toDelete.add(new File(dataPath + outputDir));
+                    }
                     break;
 
                 case HeartGold:
@@ -295,9 +306,9 @@ public class SheetApplier extends JFrame
 //                    if(contains(selected,"Moves"))
 //                    {
 //                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
-//                        narctowl.unpack(dataPath + "/a/0/1/1",dataPath + "/a/0/1/1");
-//                        toDelete.add(new File(dataPath + "/a/0/1/1"));
-//                        api.updateSheet("Moves",editor.movesToSheet("/a/0/1/1"));
+//                        narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1");
+//                        toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1"));
+//                        api.updateSheet("Moves",editor.movesToSheet(File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1"));
 //                    }
 //
                     if(contains(selected,"Encounters"))

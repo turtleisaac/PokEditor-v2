@@ -50,7 +50,7 @@ public class ArrayProcessor
     public void newLine()
     {
         String[] arr;
-        System.out.println(Arrays.toString(line.split(",")));
+//        System.out.println(Arrays.toString(line.split(",")));
         if(line.endsWith(","))
             line= line.substring(0,line.length()-1);
 

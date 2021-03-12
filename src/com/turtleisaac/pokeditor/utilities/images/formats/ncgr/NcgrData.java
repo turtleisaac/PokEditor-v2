@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.utilities.images.ncgr;
+package com.turtleisaac.pokeditor.utilities.images.formats.ncgr;
 
 import com.turtleisaac.pokeditor.utilities.images.ColorFormat;
 import com.turtleisaac.pokeditor.utilities.images.TileFormat;

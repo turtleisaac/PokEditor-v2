@@ -9,6 +9,11 @@ public class ComboBoxItem
         this.str= str;
     }
 
+    public ComboBoxItem(int num)
+    {
+        str= "" + num;
+    }
+
     @Override
     public String toString()
     {

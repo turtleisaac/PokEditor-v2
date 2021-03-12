@@ -2,6 +2,7 @@ package com.turtleisaac.pokeditor.editors.moves.gen4;
 
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
+import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
@@ -108,6 +109,9 @@ public class MoveEditorGen4
 
         File[] files = fileList.toArray(new File[0]); //creates an array of File objects using the contents of the modified List
         sort(files); //sorts files numerically (0.bin, 1.bin, 2.bin, etc...)
+
+        if(files.length > moveData.length)
+            moveData= ArrayModifier.accommodateLength(moveData,files.length);
 
         for (File file : files)
         {
@@ -280,7 +284,7 @@ public class MoveEditorGen4
         }
         outputPath+= File.separator;
 
-
+        Object[] nameColumn= Arrays.copyOfRange(ArrayModifier.getColumn(moveSheet,1),1,moveSheet.length);
         moveSheet= ArrayModifier.trim(moveSheet,1,2);
         BinaryWriter writer;
         BitStream bitStream;
@@ -332,6 +336,44 @@ public class MoveEditorGen4
             writer.writeBytes(0,0);
         }
 
+
+        int moveNameBank;
+        String predictedOutputNarc;
+        switch(project.getBaseRom())
+        {
+            case Diamond:
+            case Pearl:
+                moveNameBank= 588;
+                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
+                break;
+
+            case Platinum:
+                moveNameBank= 647;
+                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                moveNameBank= 750;
+                predictedOutputNarc= dataPath + File.separator + outputDir.substring(0,outputDir.length()-1);
+                break;
+
+            default:
+                throw new RuntimeException("Invalid base rom: " + project.getBaseRom());
+        }
+
+        boolean canTrim= true;
+        if(new File(predictedOutputNarc).exists())
+        {
+            int numOriginalFiles= Narctowl.getNumFiles(predictedOutputNarc);
+
+            if(moveSheet.length > numOriginalFiles)
+            {
+                canTrim= false;
+            }
+        }
+
+        TextEditor.writeBank(project,nameColumn,moveNameBank,canTrim);
     }
 
 

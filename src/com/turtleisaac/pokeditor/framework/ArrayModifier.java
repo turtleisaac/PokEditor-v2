@@ -28,4 +28,17 @@ public class ArrayModifier
 
         return ret;
     }
+
+    public static String[] accommodateLength(String[] arr, int targetLength)
+    {
+        arr= Arrays.copyOf(arr,targetLength);
+
+        for(int i= 0; i < arr.length; i++)
+        {
+            if(arr[i] == null)
+                arr[i]= "" + i;
+        }
+
+        return arr;
+    }
 }
