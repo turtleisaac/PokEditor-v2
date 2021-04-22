@@ -223,13 +223,16 @@ public class TextEditor
 
     private static void clearDirs(File folder)
     {
-        for(File f : Objects.requireNonNull(folder.listFiles()))
+        if(folder != null)
         {
-            if(f.isDirectory())
-                clearDirs(f);
-            else
-                f.delete();
+            for(File f : Objects.requireNonNull(folder.listFiles()))
+            {
+                if(f.isDirectory())
+                    clearDirs(f);
+                else
+                    f.delete();
+            }
+            folder.delete();
         }
-        folder.delete();
     }
 }

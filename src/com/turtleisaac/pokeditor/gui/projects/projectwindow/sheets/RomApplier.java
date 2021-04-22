@@ -93,9 +93,10 @@ public class RomApplier extends JFrame
         selectedString= selectedString.substring(0, selectedString.length()-1);
 
         String[] selected= selectedString.split(", ");
-
         try
         {
+            api.updateSheet("Formatting (DO NOT TOUCH)",FormatGenerator.updateFormatSheet(project));
+
             Narctowl narctowl= new Narctowl(true);
             String dataPath= projectPath + File.separator + project.getName() + File.separator + "data";
 
@@ -436,6 +437,13 @@ public class RomApplier extends JFrame
             parent.setEnabled(true);
             dispose();
         }
+    }
+
+    private void unpack(String inputNarc, String outputDir) throws IOException
+    {
+        Narctowl narctowl= new Narctowl(true);
+        narctowl.unpack(inputNarc,outputDir);
+        toDelete.add(new File(outputDir));
     }
 
     private void infoButtonActionPerformed(ActionEvent e)

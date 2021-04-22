@@ -2,11 +2,13 @@
 
 Author: Turtleisaac
 
-Multifunctional in-depth editor for Pokémon Gen 4 game data
+Multifunctional in-depth editor for Pokémon Gen IV game data
 
 Written entirely in Java and is completely OS-agnostic. Java 8 or greater is required.
 
-Special thanks to JackHack96, Jay, Drayano, Vendor, FrankieD, and Mikelan98
+**Note:** Works best on UNIX-based systems such as macOS or Linux
+
+Special thanks to [JackHack96](https://github.com/JackHack96), [Jay-San](https://www.youtube.com/channel/UCGs237E1PfrfIGsZ9eqF-lw), [Drayano](https://twitter.com/Drayano60), [Vendor](https://twitter.com/VendorPC), FrankieD, [Mikelan98](https://twitter.com/mikelan98?lang=en), and [HelloOO7](https://github.com/HelloOO7)
 
 **Note:** Code from the [Universal Pokemon Randomizer ZX](https://github.com/Ajarmar/universal-pokemon-randomizer-zx) is adapted for LZ decompression purposes under the rights provided by the GNU General Public License v3.0. If there are any complaints related to this, please create a new Issue in the Issues tab here on GitHub.
 
@@ -20,6 +22,8 @@ Special thanks to JackHack96, Jay, Drayano, Vendor, FrankieD, and Mikelan98
 # Usage
 
 Double click on the JAR file to launch the program
+
+**Note:** If you run into issues after opening a project, then run through CMD with the following arguments: *java -Dfile.encoding=UTF-8 -jar PokEditor-v2.jar*
 
 # List of Spreadsheet-Based Editors/ Tools
 
@@ -43,17 +47,9 @@ Double click on the JAR file to launch the program
 
 * Trainer Editor
 
-* Pokédex Editor
-
 # Other Editors/ Tools
 
-* Starter Editor
-
-* Intro Cutscene Editor
-
-* Opening Cinematic Cutscene Editor
-
-* Sprite Editor
+* Pokémon Sprite Editor
 
 * Narc Packer/ Unpacker
 

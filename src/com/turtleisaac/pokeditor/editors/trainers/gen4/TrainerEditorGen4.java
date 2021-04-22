@@ -1138,7 +1138,7 @@ public class TrainerEditorGen4
     {
         for(int i= 0; i < nameData.length; i++)
         {
-            if(pokemon.equals(nameData[i]))
+            if(pokemon.equalsIgnoreCase(nameData[i]))
             {
                 return i;
             }
@@ -1162,19 +1162,23 @@ public class TrainerEditorGen4
 
     private static int getItem(String item) {
         for (int i = 0; i < itemData.length; i++) {
-            if (item.equals(itemData[i])) {
+            if (item.equalsIgnoreCase(itemData[i])) {
                 return i;
             }
         }
         throw new RuntimeException("Invalid item entered: " + item);
     }
 
-    private static int getMove(String move) {
-        for (int i = 0; i < moveData.length; i++) {
-            if (move.equals(moveData[i])) {
+    private static int getMove(String move)
+    {
+        for (int i = 0; i < moveData.length; i++)
+        {
+            System.out.println(moveData[i]);
+            if (move.equalsIgnoreCase(moveData[i])) {
                 return i;
             }
         }
+
         throw new RuntimeException("Invalid move entered: " + move);
     }
 
@@ -1182,7 +1186,7 @@ public class TrainerEditorGen4
     {
         for(int i= 0; i < abilityData.length; i++)
         {
-            if(ability.equals(abilityData[i]))
+            if(ability.equalsIgnoreCase(abilityData[i]))
             {
                 return i;
             }
@@ -1192,7 +1196,7 @@ public class TrainerEditorGen4
 
     private static int getTrainerClass(String trainerClass) {
         for (int i = 0; i < trainerClassData.length; i++) {
-            if (trainerClass.equals(trainerClassData[i])) {
+            if (trainerClass.equalsIgnoreCase(trainerClassData[i])) {
                 return i;
             }
         }

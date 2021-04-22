@@ -184,7 +184,9 @@ public class GoogleSheetsAPI
     }
 
 
-
+    /**
+     * Gets the note contained in cell (0,0)
+     */
     public String getPokeditorSheetType(int sheetId) throws IOException
     {
         return sheetsService.spreadsheets().get(SPREADSHEET_ID)
@@ -202,31 +204,35 @@ public class GoogleSheetsAPI
                 .getNote();
     }
 
-    public void setPokeditorSheetType(String sheetName, String note)
-    {
-        try
-        {
-            List<Sheet> sheetList= sheetsService.spreadsheets().get(SPREADSHEET_ID).execute().getSheets();
+//    public void setPokeditorSheetType(String sheetName, String note)
+//    {
+//        try
+//        {
+//            List<Sheet> sheetList= sheetsService.spreadsheets().get(SPREADSHEET_ID).execute().getSheets();
+//
+//            int sheetIndex= indexOf(sheetList,sheetName);
+//            Integer sheetId= sheetList.get(sheetIndex).getProperties().getSheetId();
+//            System.out.println("Sheet ID: " + sheetId);
+//
+//            List<Request> requests= new ArrayList<>();
+//            requests.add(buildRequestAddNoteCell(0,0,0,0,sheetId,note));
+//
+//            BatchUpdateSpreadsheetRequest body= new BatchUpdateSpreadsheetRequest().setRequests(requests);
+//            sheetsService.spreadsheets().batchUpdate(SPREADSHEET_ID,body).execute();
+//        }
+//        catch (IOException | NullPointerException exception)
+//        {
+//            exception.printStackTrace();
+//        }
+//
+////        System.out.println(sheetsService.spreadsheets().developerMetadata().);
+//
+//    }
 
-            int sheetIndex= indexOf(sheetList,sheetName);
-            Integer sheetId= sheetList.get(sheetIndex).getProperties().getSheetId();
-            System.out.println("Sheet ID: " + sheetId);
-
-            List<Request> requests= new ArrayList<>();
-            requests.add(buildRequestAddNoteCell(0,0,0,0,sheetId,note));
-
-            BatchUpdateSpreadsheetRequest body= new BatchUpdateSpreadsheetRequest().setRequests(requests);
-            sheetsService.spreadsheets().batchUpdate(SPREADSHEET_ID,body).execute();
-        }
-        catch (IOException | NullPointerException exception)
-        {
-            exception.printStackTrace();
-        }
-
-//        System.out.println(sheetsService.spreadsheets().developerMetadata().);
-
-    }
-
+    /**
+     * Adds a note to cell(s)
+     * @return
+     */
     private Request buildRequestAddNoteCell(int startRow, int endRow, int startColumn, int endColumn, int sheetId, String note) {
         Request request = new Request();
         request.setRepeatCell(new RepeatCellRequest()
@@ -242,40 +248,82 @@ public class GoogleSheetsAPI
         return request;
     }
 
-    public void pokeditorSheetMetadataUpdater(String[] expectedNames) throws IOException
+    public List<List<java.awt.Color>> getSpecifiedSheetColors(int sheetIdx) throws IOException
     {
-        List<Sheet> sheetList= sheetsService.spreadsheets().get(SPREADSHEET_ID).execute().getSheets();
-        List<Request> requests= new ArrayList<>();
-        String[] sheetNames= getSheetNames();
-        boolean dataStart= false;
-
-        for(int i= 0; i < sheetNames.length; i++)
+        if(sheetIdx != -1)
         {
-            String sheetName= sheetNames[i];
-            if(sheetName.equals("Personal"))
-                dataStart= true;
-            if(sheetName.equals("Formatting (DO NOT TOUCH)"))
-                break;
+            Sheet s= sheetsService.spreadsheets().get(SPREADSHEET_ID)
+                    .setIncludeGridData(true)
+                    .setFields("sheets/data/rowData/values/effectiveFormat/backgroundColor")
+                    .execute()
+                    .getSheets()
+                    .get(sheetIdx);
 
-            Integer sheetId= sheetList.get(i).getProperties().getSheetId();
 
-            if(dataStart)
-                requests.add(buildRequestAddNoteCell(0,1,0,1,sheetId,expectedNames[i]));
+            List<List<java.awt.Color>> colorList= new ArrayList<>();
+            if(s != null)
+            {
+                GridData gd= s.getData().get(0);
+
+                for(RowData row : gd.getRowData())
+                {
+                        List<java.awt.Color> colors= new ArrayList<>();
+                        for(CellData cell : row.getValues())
+                        {
+                            CellFormat fmt= cell.getEffectiveFormat();
+                            if(fmt != null)
+                            {
+                                colors.add(convertColor(fmt.getBackgroundColor()));
+                            }
+                            else if((fmt= cell.getUserEnteredFormat()) != null)
+                            {
+                                colors.add(convertColor(fmt.getBackgroundColor()));
+                            }
+                            else
+                            {
+                                colors.add(java.awt.Color.GRAY);
+                            }
+
+                        }
+                        colorList.add(colors);
+                }
+            }
+
+            return colorList;
         }
 
-        BatchUpdateSpreadsheetRequest body= new BatchUpdateSpreadsheetRequest().setRequests(requests);
-            sheetsService.spreadsheets().batchUpdate(SPREADSHEET_ID,body).execute();
+        return null;
     }
+
+//    public void pokeditorSheetMetadataUpdater(String[] expectedNames) throws IOException
+//    {
+//        List<Sheet> sheetList= sheetsService.spreadsheets().get(SPREADSHEET_ID).execute().getSheets();
+//        List<Request> requests= new ArrayList<>();
+//        String[] sheetNames= getSheetNames();
+//        boolean dataStart= false;
+//
+//        for(int i= 0; i < sheetNames.length; i++)
+//        {
+//            String sheetName= sheetNames[i];
+//            if(sheetName.equals("Personal"))
+//                dataStart= true;
+//            if(sheetName.equals("Formatting (DO NOT TOUCH)"))
+//                break;
+//
+//            Integer sheetId= sheetList.get(i).getProperties().getSheetId();
+//
+//            if(dataStart)
+//                requests.add(buildRequestAddNoteCell(0,1,0,1,sheetId,expectedNames[i]));
+//        }
+//
+//        BatchUpdateSpreadsheetRequest body= new BatchUpdateSpreadsheetRequest().setRequests(requests);
+//            sheetsService.spreadsheets().batchUpdate(SPREADSHEET_ID,body).execute();
+//    }
 
 //    public void getMetadata(int id) throws IOException
 //    {
 //        System.out.println(sheetsService.spreadsheets().developerMetadata().get(SPREADSHEET_ID,id).get("Personal"));
 //    }
-
-    public void pokeditorSheetAutoUpdater()
-    {
-
-    }
 
     public String getAPPLICATION_NAME()
     {
@@ -339,5 +387,20 @@ public class GoogleSheetsAPI
                 return i;
         }
         return -1;
+    }
+
+    private java.awt.Color convertColor(Color color)
+    {
+        if(color != null)
+        {
+            int r= (int) (color.getRed() != null ? color.getRed()*255 : 0);
+            int g= (int) (color.getGreen() != null ? color.getGreen()*255 : 0);
+            int b= (int) (color.getBlue() != null ? color.getBlue()*255 : 0);
+
+            return new java.awt.Color(r,g,b);
+        }
+        else
+            return java.awt.Color.GRAY;
+
     }
 }

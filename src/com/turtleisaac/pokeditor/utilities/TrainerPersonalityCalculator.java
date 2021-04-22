@@ -15,7 +15,7 @@ public class TrainerPersonalityCalculator
 
         int pid= generatePid(trainerIdx,classIdx,male,speciesIdx,level,difficultyValue);
 
-        paraSet(difficultyValue*31/255, pid);
+        paraSet(difficultyValue*31.0/255, pid);
 
 //        System.out.println(calculateShiny(pid,30055,31231,128));
     }
@@ -47,7 +47,6 @@ public class TrainerPersonalityCalculator
 
         String result= Long.toHexString((int)rnd);
         System.out.println("PID: 0x00" + (result.length() == 6 ? result : "0" + result));
-        System.out.println("PID: " + rnd);
         System.out.println("Nature: " + natures[(int)(rnd%100)%25] + "\n");
 
         return (int)rnd;
@@ -56,12 +55,14 @@ public class TrainerPersonalityCalculator
     public static long rndFlagCall()
     {
         return (random() | (random() << 16));
+//        return ((random() << 16) | random());
     }
 
     public static long idSetCall(long id, int pid)
     {
         long tid;
         long sid;
+
         do
         {
             id= rndFlagCall();
@@ -93,50 +94,48 @@ public class TrainerPersonalityCalculator
         System.out.println("    SpDef IV: " + j);
     }
 
-    public static void paraSet(int difficulty, int pid)
+    public static void paraSet(double difficulty, int pid)
     {
-        long localSeed= seed;
-        for(int i= 5000; i < 10000; i++)
-        {
-            long id;
-            long tid;
-            long sid;
-            seed= localSeed;
-            int x;
-            for(x= 0; x < i; x++)
-            {
-                id= rndFlagCall();
-                tid= (id >> 16) & 0xffff;
-                sid= id & 0xffff;
-                if(tid == 55963)
-                {
-                    System.out.println(x + ": " + tid + ", " + sid);
-                }
-            }
-//            System.out.println(x + " times");
-        }
+//        long localSeed= seed;
+//
+//
+//        long id;
+//        long tid;
+//        long sid;
+//        seed= localSeed;
+//        int x;
+//        for(x= 0; x < i; x++)
+//        {
+//            id= rndFlagCall();
+//            tid= (id >> 16) & 0xffff;
+//            sid= id & 0xffff;
+//            if(tid == 55963)
+//            {
+//                System.out.println(x + ": " + tid + ", " + sid);
+//            }
+//        }
+
+
+
 
 //        pid= (int) rndFlagCall();
-//
-//        long id= idSetCall(0, pid);
-//
-//        System.out.println("    ID: 0x" + Long.toHexString(id));
-//        System.out.println("    " + id);
-//
-//        if(difficulty < 255)
-//        {
-//            System.out.println("    Hp IV: " + difficulty);
-//            System.out.println("    Atk IV: " + difficulty);
-//            System.out.println("    Def IV: " + difficulty);
-//            System.out.println("    Spe IV: " + difficulty);
-//            System.out.println("    SpAtk IV: " + difficulty);
-//            System.out.println("    SpDef IV: " + difficulty);
-//
-//        }
-//        else
-//        {
-//            ivCalculation();
-//        }
+
+        long id= idSetCall(0, pid);
+
+        if(difficulty <= 31)
+        {
+            System.out.println("    Hp IV: " + (int) difficulty);
+            System.out.println("    Atk IV: " + (int) difficulty);
+            System.out.println("    Def IV: " + (int) difficulty);
+            System.out.println("    Spe IV: " + (int) difficulty);
+            System.out.println("    SpAtk IV: " + (int) difficulty);
+            System.out.println("    SpDef IV: " + (int) difficulty);
+
+        }
+        else
+        {
+            ivCalculation();
+        }
 
     }
 
@@ -167,7 +166,7 @@ public class TrainerPersonalityCalculator
 
     public static long random()
     {
-        long result= 0x41c64e6d * seed + 0x00006073;
+        long result= 0x41c64e6d * seed + 0x6073;
         seed= result & 0xffffffffL;
         return result;
     }

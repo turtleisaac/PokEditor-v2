@@ -35,7 +35,7 @@ public class SinnohEncounterPanel extends JPanel
     private Project project;
     private GoogleSheetsAPI api;
 
-    public final ArrayList<File> toDelete;
+    public ArrayList<File> toDelete;
 
     private ArrayList<SinnohEncounterData> encounterData;
 

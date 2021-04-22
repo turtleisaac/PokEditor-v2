@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -46,6 +47,7 @@ import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.RandomizerUtils;
 import net.miginfocom.swing.*;
+import sun.swing.DefaultLookup;
 import turtleisaac.GoogleSheetsAPI;
 
 /**
@@ -63,6 +65,7 @@ public class ProjectWindow extends JFrame
     private String sheetName;
     private String sheetType;
     private List<List<Object>> sheetData;
+    private List<List<Color>> colorData;
 
     private ConsoleWindow console;
 
@@ -223,6 +226,7 @@ public class ProjectWindow extends JFrame
             case Pearl:
             case Platinum:
                 tabbedPane1.remove(johtoEncounterPanel);
+                sinnohEncounterPanel.setProject(project,api);
                 break;
 
             case HeartGold:
@@ -231,7 +235,10 @@ public class ProjectWindow extends JFrame
                 break;
         }
 
-        sinnohEncounterPanel.setProject(project,api);
+        tabbedPane1.remove(starterPanel);
+        tabbedPane1.remove(openingPanel);
+        tabbedPane1.remove(trainerSpritePanel);
+        tabbedPane1.remove(overworldSpritePanel);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -272,18 +279,7 @@ public class ProjectWindow extends JFrame
                 case 0: //yes
                     dispose();
 
-                    for(File file : pokemonSpritePanel.toDelete)
-                        clearDirs(file);
-                    for(File file : trainerPanel1.toDelete)
-                        clearDirs(file);
-                    for(File file : SpriteDataProcessor.toDelete)
-                        clearDirs(file);
-                    for(File file : sinnohEncounterPanel.toDelete)
-                        clearDirs(file);
-
-                    TextEditor.cleanup(project);
-                    pokemonSpritePanel.toDelete= new ArrayList<>();
-                    trainerPanel1.toDelete= new ArrayList<>();
+                    clearAllDirs();
 
                     String backupPath= project.getProjectPath().getAbsolutePath() + File.separator + "backups";
                     File backupDir= new File(backupPath);
@@ -501,6 +497,16 @@ public class ProjectWindow extends JFrame
             sheetPreviewTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         else
             sheetPreviewTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+        try
+        {
+            colorData= api.getSpecifiedSheetColors(sheetChooserComboBox.getSelectedIndex());
+        }
+        catch (IOException exception)
+        {
+            colorData= null;
+            exception.printStackTrace();
+        }
     }
 
     private void sheetRefreshChangesButtonActionPerformed(ActionEvent e)
@@ -591,19 +597,7 @@ public class ProjectWindow extends JFrame
         fc.addChoosableFileFilter(new MyFilter("Nintendo DS ROM",".nds"));
         fc.setAcceptAllFileFilterUsed(false);
 
-        for(File file : pokemonSpritePanel.toDelete)
-            clearDirs(file);
-        for(File file : trainerPanel1.toDelete)
-            clearDirs(file);
-        for(File file : SpriteDataProcessor.toDelete)
-            clearDirs(file);
-        for(File file : sinnohEncounterPanel.toDelete)
-            clearDirs(file);
-
-        TextEditor.cleanup(project);
-        pokemonSpritePanel.toDelete= new ArrayList<>();
-        trainerPanel1.toDelete= new ArrayList<>();
-
+        clearAllDirs();
 
 //        fc.setDialogTitle("Export ROM");
         int returnVal = fc.showOpenDialog(this);
@@ -618,6 +612,11 @@ public class ProjectWindow extends JFrame
 
     private void exportRom(String dirPath, String outputPath, boolean display)
     {
+        if(!outputPath.endsWith(".nds"))
+        {
+            outputPath+= ".nds";
+        }
+
         try
         {
             JNdstool.main("-b",dirPath,outputPath);
@@ -1110,6 +1109,12 @@ public class ProjectWindow extends JFrame
                     sheetPreviewTable.setEnabled(false);
                     sheetPreviewTable.setGridColor(Color.black);
                     sheetPreviewTable.setMaximumSize(new Dimension(2147483647, 2147483647));
+                    sheetPreviewTable.setRowSelectionAllowed(false);
+                    sheetPreviewTable.setCellSelectionEnabled(true);
+                    sheetPreviewTable.setDefaultRenderer(Object.class, new PaintTableCellRenderer());
+                    sheetPreviewTable.setIntercellSpacing(new Dimension(0,0));
+                    sheetPreviewTable.setRowMargin(0);
+                    sheetPreviewTable.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
                     sheetPreviewScrollPane.setViewportView(sheetPreviewTable);
                 }
                 mainPanel.add(sheetPreviewScrollPane, "cell 0 4 2 1,growx");
@@ -1528,33 +1533,65 @@ public class ProjectWindow extends JFrame
         return api;
     }
 
+    public void clearAllDirs()
+    {
+        clearAllDirs(pokemonSpritePanel.toDelete);
+        clearAllDirs(trainerPanel1.toDelete);
+        clearAllDirs(SpriteDataProcessor.toDelete);
+        clearAllDirs(sinnohEncounterPanel.toDelete);
+
+        TextEditor.cleanup(project);
+
+        pokemonSpritePanel.toDelete= new ArrayList<>();
+        trainerPanel1.toDelete= new ArrayList<>();
+        SpriteDataProcessor.toDelete= new ArrayList<>();
+        sinnohEncounterPanel.toDelete= new ArrayList<>();
+    }
+    
+    public static void clearAllDirs(List<File> folders)
+    {
+        if(folders != null)
+        {
+            for(File folder : folders)
+            {
+                clearDirs(folder);
+            }
+        }
+    }
+    
     public static void clearDirs(File folder)
     {
-        if(folder.exists())
+        if(folder != null)
         {
-            for(File f : Objects.requireNonNull(folder.listFiles()))
+            if(folder.exists())
             {
-                if(f.isDirectory())
-                    clearDirs(f);
-                else
-                    f.delete();
+                for(File f : Objects.requireNonNull(folder.listFiles()))
+                {
+                    if(f.isDirectory())
+                        clearDirs(f);
+                    else
+                        f.delete();
+                }
+                folder.delete();
             }
-            folder.delete();
         }
     }
 
     public static void cleanupDirs(File folder)
     {
-        if(folder.exists())
+        if(folder != null)
         {
-            for(File f : Objects.requireNonNull(folder.listFiles()))
+            if(folder.exists())
             {
-                if(f.isDirectory())
-                    cleanupDirs(f);
-                else if(f.isHidden())
-                    f.delete();
+                for(File f : Objects.requireNonNull(folder.listFiles()))
+                {
+                    if(f.isDirectory())
+                        cleanupDirs(f);
+                    else if(f.isHidden())
+                        f.delete();
+                }
+                folder.delete();
             }
-            folder.delete();
         }
     }
 
@@ -1571,5 +1608,79 @@ public class ProjectWindow extends JFrame
     public TrainerPanel getTrainerPanel1()
     {
         return trainerPanel1;
+    }
+
+    public class PaintTableCellRenderer extends DefaultTableCellRenderer
+    {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+        {
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            table.setShowVerticalLines(true);
+            table.setShowHorizontalLines(true);
+            table.setShowGrid(true);
+
+            Color fg;
+            Color bg;
+
+            table.getTableHeader().setBackground(colorData.get(0).get(0));
+            table.getTableHeader().setForeground(Color.BLACK);
+            table.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            if(colorData != null)
+            {
+                if(row < colorData.size() && column < colorData.get(row).size())
+                {
+                    fg= Color.BLACK;
+                    bg= colorData.get(row+1).get(column);
+
+                    setBackground(colorData.get(row).get(column));
+                    setForeground(Color.BLACK);
+                }
+                else
+                    return this;
+            }
+            else
+            {
+                fg= Color.BLACK;
+                bg= table.getBackground();
+
+                setBackground(table.getBackground());
+                setForeground(Color.BLACK);
+            }
+
+            if (isSelected) {
+                super.setForeground(fg == null ? Color.WHITE
+                        : fg);
+                super.setBackground(bg == null ? Color.BLUE
+                        : bg);
+            } else {
+                Color background= bg != null
+                        ? bg
+                        : table.getBackground();
+                if (background == null || background instanceof javax.swing.plaf.UIResource) {
+                    Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
+                    if (alternateColor != null && row % 2 != 0) {
+                        background = alternateColor;
+                    }
+                }
+                super.setForeground(fg != null
+                        ? fg
+                        : table.getForeground());
+                super.setBackground(background);
+            }
+
+            if(!isSelected)
+            {
+                setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
+            }
+            else
+            {
+                setBorder(BorderFactory.createLineBorder(Color.BLUE,2));
+            }
+
+            return this;
+        }
     }
 }

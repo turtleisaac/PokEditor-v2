@@ -75,6 +75,11 @@ new FormModel {
 							"enabled": false
 							"gridColor": new java.awt.Color( 0, 0, 0, 255 )
 							"maximumSize": new java.awt.Dimension( 2147483647, 2147483647 )
+							"rowSelectionAllowed": false
+							"cellSelectionEnabled": true
+							auxiliary() {
+								"JavaCodeGenerator.postInitCode": "sheetPreviewTable.setDefaultRenderer(Object.class, new PaintTableCellRenderer());\nsheetPreviewTable.setIntercellSpacing(new Dimension(0,0));\nsheetPreviewTable.setRowMargin(0);\nsheetPreviewTable.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));"
+							}
 						} )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 4 2 1,growx"
@@ -315,4 +320,3 @@ new FormModel {
 		} )
 	}
 }
-

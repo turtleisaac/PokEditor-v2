@@ -256,4 +256,9 @@ public class Project implements Serializable
     {
         return project.getBaseRom() == Game.Platinum;
     }
+
+    public static void saveProject(Project project, String path)
+    {
+
+    }
 }

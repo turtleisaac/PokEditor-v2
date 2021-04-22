@@ -449,6 +449,8 @@ public class TrainerPanel extends JPanel
 
     private void refreshButtonActionPerformed(ActionEvent e)
     {
+        int current= trainerSelectionComboBox.getSelectedIndex();
+
         try
         {
             setApi(api);
@@ -457,7 +459,7 @@ public class TrainerPanel extends JPanel
             exception.printStackTrace();
         }
 
-        trainerSelectionComboBox.setSelectedIndex(1);
+        trainerSelectionComboBox.setSelectedIndex(current);
         trainerSelectionComboBoxActionPerformed(null);
     }
 

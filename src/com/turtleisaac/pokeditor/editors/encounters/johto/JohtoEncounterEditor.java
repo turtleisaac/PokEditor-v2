@@ -164,9 +164,23 @@ public class JohtoEncounterEditor
             short super5= buffer.readShort();
             short fieldSwarm= buffer.readShort();
             short surfSwarm= buffer.readShort();
-            short goodSwarm= buffer.readShort();
-            short superSwarm= buffer.readShort();
 
+            short goodSwarm;
+            short superSwarm;
+            try
+            {
+                goodSwarm= buffer.readShort();
+                superSwarm= buffer.readShort();
+            }
+            catch (RuntimeException e)
+            {
+                goodSwarm= 0;
+                superSwarm= 0;
+            }
+
+
+            short finalGoodSwarm = goodSwarm;
+            short finalSuperSwarm = superSwarm;
             dataList.add(new EncounterData() {
                 @Override
                 public int getFieldRate() { return fieldRate; }
@@ -421,10 +435,10 @@ public class JohtoEncounterEditor
                 public short getSurfSwarm() { return surfSwarm; }
 
                 @Override
-                public short getGoodSwarm() { return goodSwarm; }
+                public short getGoodSwarm() { return finalGoodSwarm; }
 
                 @Override
-                public short getSuperSwarm() { return superSwarm; }
+                public short getSuperSwarm() { return finalSuperSwarm; }
 
             });
         }

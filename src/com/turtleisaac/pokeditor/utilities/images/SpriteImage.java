@@ -250,6 +250,26 @@ public class SpriteImage
         return this;
     }
 
+    /**
+     * Creates a copy of the provided image using the palette of the SpriteImage object this method is executed from
+     * @param image a SpriteImage to apply a palette to
+     * @return a SpriteImage identical to the provided one except with a different palette
+     */
+    public SpriteImage createCopyWithPalette(SpriteImage image)
+    {
+        return new SpriteImage(image.getIndexGuide(),palette);
+    }
+
+    /**
+     * Creates a copy of the provided image using the provided palette and the SpriteImage the method is executed from
+     * @param palette a Color[] to apply to the copy of this SpriteImage
+     * @return a SpriteImage with the image of the SpriteImage object this method is executed from but the provided palette applied
+     */
+    public SpriteImage createCopyWithImage(Color[] palette)
+    {
+        return new SpriteImage(indexGuide,palette);
+    }
+
     public int getWidth()
     {
         return indexGuide[0].length;

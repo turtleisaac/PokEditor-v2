@@ -258,7 +258,8 @@ public class LearnsetEditor
                 return;
             }
 
-            BinaryWriter writer= new BinaryWriter(outputPath + File.separator + i + ".bin");
+            ArrayList<MoveLearnsetData> levelLearnset= new ArrayList<>();
+
             for(int m= 0; m < thisLine.length; m+= 2)
             {
                 if(thisLine[m].equals(""))
@@ -267,7 +268,7 @@ public class LearnsetEditor
                 System.out.println("    " + thisLine[m]);
                 int moveID= getMove((String) thisLine[m]);
                 int level= Integer.parseInt((String) thisLine[m+1]);
-                MoveLearnsetData thisMove= new MoveLearnsetData() {
+                levelLearnset.add(new MoveLearnsetData() {
                     @Override
                     public int getID() {
                         return moveID;
@@ -277,20 +278,25 @@ public class LearnsetEditor
                     public int getLevel() {
                         return level;
                     }
-                };
+                });
+            }
+            levelLearnset= sortLearnset(levelLearnset);
 
-                if(!gen5) //gen 4
+            BinaryWriter writer= new BinaryWriter(outputPath + File.separator + i + ".bin");
+            for (MoveLearnsetData thisMove : levelLearnset)
+            {
+                if (!gen5) //gen 4
                 {
                     writer.writeShort((short) produceLearnData(thisMove));
-                }
-                else //gen 5
+                } else //gen 5
                 {
-                    writer.writeShort((short) moveID);
-                    writer.writeShort((short) level);
+                    writer.writeShort((short) thisMove.getID());
+                    writer.writeShort((short) thisMove.getLevel());
                 }
 
-                numBytes+= 2;
+                numBytes += 2;
             }
+
 
             if(!gen5) //gen 4
             {
@@ -333,6 +339,23 @@ public class LearnsetEditor
     private static int getLevelLearned (short x)
     {
         return (x >> 9) & 0x7F;
+    }
+
+    private static ArrayList<MoveLearnsetData> sortLearnset(ArrayList<MoveLearnsetData> learnsetData)
+    {
+        ArrayList<MoveLearnsetData> sortedLearnset= new ArrayList<>();
+        for(int i= 0; i < learnsetData.size(); i++)
+        {
+            for (MoveLearnsetData thisMove : learnsetData)
+            {
+                if(thisMove.getLevel() == i)
+                {
+                    sortedLearnset.add(thisMove);
+                }
+            }
+        }
+
+        return sortedLearnset;
     }
 
     private static int getMove(String move)
