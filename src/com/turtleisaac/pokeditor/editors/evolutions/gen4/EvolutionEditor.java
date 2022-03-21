@@ -92,7 +92,7 @@ public class EvolutionEditor
     {
         autoFix= false;
 
-        dataPath+= evolutionDir;
+        dataPath= evolutionDir;
         Buffer evolutionBuffer;
         ArrayList<EvolutionData> dataList= new ArrayList<>();
 
@@ -305,7 +305,7 @@ public class EvolutionEditor
 
 
                     evolutionTable[row][current]= evolutionMethodArr[evolutionMethodID];
-                    System.out.println("    " + evolutionTable[row][current]);
+//                    System.out.println("    " + evolutionTable[row][current]);
                     current++;
 
                     if (evolutionMethodID > 0 && evolutionMethodID <= 3) //all happiness evolutions
@@ -322,7 +322,7 @@ public class EvolutionEditor
                     }
                     else if (evolutionMethodID == 6 || evolutionMethodID == 7 || (evolutionMethodID >= 16 && evolutionMethodID <= 19)) //all item-based evolutions (including trades)
                     {
-                        evolutionTable[row][current]= "='Formatting (DO NOT TOUCH)'!A" + (requirementNumber+1);
+                        evolutionTable[row][current]= "='Formatting (DO NOT TOUCH)'!$A$" + (requirementNumber+1);
                     }
                     else if (evolutionMethodID == 15) //max beauty
                     {
@@ -330,7 +330,7 @@ public class EvolutionEditor
                     }
                     else if (evolutionMethodID == 20) //attack known
                     {
-                        evolutionTable[row][current]= "='Formatting (DO NOT TOUCH)'!I" + (requirementNumber+1);
+                        evolutionTable[row][current]= "='Formatting (DO NOT TOUCH)'!$I$" + (requirementNumber+1);
                     }
                     else if (evolutionMethodID == 21)
                     {
@@ -338,7 +338,7 @@ public class EvolutionEditor
                         try
                         {
 //                            requireName= nameData[requirementNumber];
-                            requireName= "=Personal!B" + (requirementNumber+2);
+                            requireName= "=Personal!$B$" + (requirementNumber+2);
                         }
                         catch (ArrayIndexOutOfBoundsException e)
                         {
@@ -347,14 +347,14 @@ public class EvolutionEditor
 
                         evolutionTable[row][current]= requireName;
                     }
-                    System.out.println("    " + evolutionTable[row][current]);
+//                    System.out.println("    " + evolutionTable[row][current]);
                     current++;
 
                     String evolvedName;
                     try
                     {
 //                        evolvedName= nameData[evolvedID];
-                        evolvedName= "=Personal!B" + (evolvedID+2);
+                        evolvedName= "=Personal!$B$" + (evolvedID+2);
                     }
                     catch (ArrayIndexOutOfBoundsException e)
                     {
@@ -363,10 +363,10 @@ public class EvolutionEditor
 
 
                     evolutionTable[row][current]= evolvedName;
-                    System.out.println("    " + evolutionTable[row][current]);
+//                    System.out.println("    " + evolutionTable[row][current]);
                     current++;
                 }
-                System.out.println("    Current: " + current);
+//                System.out.println("    Current: " + current);
             }
         }
 
@@ -377,7 +377,7 @@ public class EvolutionEditor
         }
         else
         {
-            processor.append("ID Number,Name,Method,Required,Result,Method,Required,Result,Method,Required,Result,Method,Required,Result,Method,Required,Result,Method,Required,Result,Method,Required,Result\n");
+            processor.append("ID Number,Name,Method,Required,Result,Method,Required,Result,Method,Required,Result,Method,Required,Result,Method,Required,Result,Method,Required,Result,Method,Required,Result");
         }
 
         String line;
@@ -387,40 +387,39 @@ public class EvolutionEditor
             try
             {
 //                name= nameData[row];
-                name= "=Personal!B" + (row+2);
+                name= "=Personal!$B$" + (row+2);
             }
             catch (ArrayIndexOutOfBoundsException e)
             {
                 name= "p" + row;
             }
 
-            if(row == 505)
-                System.out.println("505");
+//            if(row == 505)
+//                System.out.println("505");
 
             line= dataList.get(row).getNum() + "," + name + ",";
             for(int col= 0; col < evolutionTable[0].length; col++)
             {
-                line+=evolutionTable[row][col] + ",";
+                line+= evolutionTable[row][col] + ",";
             }
             processor.newLine();
             processor.append(line);
         }
         processor.newLine();
 
-        System.out.println();
+//        System.out.println();
 
         return processor.getTable();
     }
 
     public void sheetToEvolutions(Object[][] evolutionCsv, String outputDir) throws IOException
     {
-        String outputPath= dataPath + outputDir;
 
-        if(!new File(outputPath).exists())
+        if(!new File(outputDir).exists())
         {
-            if(!new File(outputPath).mkdir())
+            if(!new File(outputDir).mkdir())
             {
-                System.err.println(outputPath);
+                System.err.println(outputDir);
                 throw new RuntimeException("Could not create output directory. Check write permissions");
             }
         }
@@ -430,8 +429,8 @@ public class EvolutionEditor
         for(int i= 0; i < evolutionCsv.length; i++)
         {
             Object[] thisLine= evolutionCsv[i];
-            System.out.println(i + ": " + Arrays.toString(thisLine));
-            BinaryWriter writer= new BinaryWriter(outputPath + File.separator + i + ".bin");
+//            System.out.println(i + ": " + Arrays.toString(thisLine));
+            BinaryWriter writer= new BinaryWriter(outputDir + File.separator + i + ".bin");
             for(int e= 0; e < thisLine.length; e+= 3)
             {
                 int method= getEvolutionMethod((String) thisLine[e]);

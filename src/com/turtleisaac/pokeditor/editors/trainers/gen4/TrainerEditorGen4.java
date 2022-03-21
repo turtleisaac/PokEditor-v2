@@ -33,7 +33,7 @@ public class TrainerEditorGen4
         this.baseRom= baseRom;
         dataPath= projectPath;
         resourcePath= projectPath;
-        System.out.println(projectPath);
+//        System.out.println(projectPath);
         if(projectPath.endsWith(File.separator + "data"))
         {
             resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
@@ -76,7 +76,7 @@ public class TrainerEditorGen4
 
     public TrainerReturnGen4 trainersToSheets(String trainerDataDir, String trainerPokemonDir)
     {
-        dataPath+= trainerDataDir;
+        dataPath= trainerDataDir;
 
         Buffer buffer;
         ArrayList<TrainerDataGen4> trainerDataList = new ArrayList<>();
@@ -178,9 +178,9 @@ public class TrainerEditorGen4
 //            System.out.println("Trainer Class: " + trainerClass);
             max= Math.max(trainerClass,max);
         }
-        System.out.println("Highest trainer class value: " + max);
+//        System.out.println("Highest trainer class value: " + max);
 
-        dataPath= projectPath + trainerPokemonDir;
+        dataPath= trainerPokemonDir;
 
         ArrayList<ArrayList<TrainerPokemonData>> trainerPokemonList= new ArrayList<>();
 
@@ -194,7 +194,7 @@ public class TrainerEditorGen4
         for(int i= 0; i < files2.length; i++)
         {
             ArrayList<TrainerPokemonData> thisTrainer= new ArrayList<>();
-            System.out.print(i + ": ");
+//            System.out.print(i + ": ");
             file= files2[i];
             buffer= new Buffer(file.toString());
             TrainerDataGen4 trainerData= trainerDataList.get(i);
@@ -202,9 +202,9 @@ public class TrainerEditorGen4
             short numPokemon= trainerData.getNumPokemon();
 
 
-            System.out.println(trainerClassData[trainerData.getTrainerClass()] + " " + trainerNames[i]);
-            System.out.println(numPokemon + " Pokemon, Flag: " + flag);
-            System.out.println(trainerData.getTrainerClass());
+//            System.out.println(trainerClassData[trainerData.getTrainerClass()] + " " + trainerNames[i]);
+//            System.out.println(numPokemon + " Pokemon, Flag: " + flag);
+//            System.out.println(trainerData.getTrainerClass());
             if(flag == 0) //no defined moveset and no defined held items
             {
                 for(int x= 0; x < numPokemon; x++)
@@ -571,14 +571,14 @@ public class TrainerEditorGen4
                                 break;
                         }
 
-                        System.out.println(nameData[species] + ":");
-                        System.out.println("    Species Ability #: " + abilitySlot);
-                        System.out.println("    IVs: " + ivs);
-                        System.out.println("    Level: " + level);
-                        System.out.println("    Alternate Form #: " + altForm);
-                        System.out.println("    Item: " + itemData[item]);
-                        System.out.println("    Moves: " + moveData[move1] + ", " + moveData[move2] + ", " + moveData[move3] + ", " + moveData[move4]);
-                        System.out.println("    Ball Seal:  " + ballSeal);
+//                        System.out.println(nameData[species] + ":");
+//                        System.out.println("    Species Ability #: " + abilitySlot);
+//                        System.out.println("    IVs: " + ivs);
+//                        System.out.println("    Level: " + level);
+//                        System.out.println("    Alternate Form #: " + altForm);
+//                        System.out.println("    Item: " + itemData[item]);
+//                        System.out.println("    Moves: " + moveData[move1] + ", " + moveData[move2] + ", " + moveData[move3] + ", " + moveData[move4]);
+//                        System.out.println("    Ball Seal:  " + ballSeal);
 
                         short finalBallSeal = ballSeal;
                         thisTrainer.add(new TrainerPokemonData() {
@@ -649,7 +649,7 @@ public class TrainerEditorGen4
             {
                 throw new RuntimeException("Invalid file type declaration");
             }
-            System.out.println();
+//            System.out.println();
 
             trainerPokemonList.add(thisTrainer);
         }
@@ -671,10 +671,10 @@ public class TrainerEditorGen4
             thisTrainer[idx++]= "" + trainerData.getTrainerClass();
             thisTrainer[idx++]= "" + trainerData.getBattleType();
             thisTrainer[idx++]= "" + trainerData.getNumPokemon();
-            thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (trainerData.getItem1()+1);
-            thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (trainerData.getItem2()+1);
-            thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (trainerData.getItem3()+1);
-            thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (trainerData.getItem4()+1);
+            thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (trainerData.getItem1()+1);
+            thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (trainerData.getItem2()+1);
+            thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (trainerData.getItem3()+1);
+            thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (trainerData.getItem4()+1);
 
             for(int x= 0; x < 14; x++)
             {
@@ -719,11 +719,11 @@ public class TrainerEditorGen4
                 thisTrainer[idx++]= "" + pokemon.getLevel();
                 thisTrainer[idx++]= "=Evolutions!B" + (pokemon.getPokemon()+2);
                 thisTrainer[idx++]= "" + pokemon.getAltForm();
-                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (pokemon.getItem()+1);
-                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!I" + (pokemon.getMove1()+1);
-                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!I" + (pokemon.getMove2()+1);
-                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!I" + (pokemon.getMove3()+1);
-                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!I" + (pokemon.getMove4()+1);
+                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (pokemon.getItem()+1);
+                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove1()+1);
+                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove2()+1);
+                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove3()+1);
+                thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove4()+1);
                 thisTrainer[idx++]= "" + pokemon.getBallCapsule();
             }
 //            System.out.println();
@@ -750,7 +750,6 @@ public class TrainerEditorGen4
 
     public void sheetsToTrainers(Object[][] trainerCsv, Object[][] pokemonCsv, String outputDir) throws IOException
     {
-        String outputPath= dataPath + File.separator + outputDir;
 
         Object[] nameColumn= Arrays.copyOfRange(ArrayModifier.getColumn(trainerCsv,1),1,trainerCsv.length);
 
@@ -764,10 +763,6 @@ public class TrainerEditorGen4
         {
             case HeartGold:
             case SoulSilver:
-                dataName= "5_";
-                pokemonName= "6_";
-                break;
-
             case Platinum:
                 dataName= "trdata";
                 pokemonName= "trpoke";
@@ -778,8 +773,8 @@ public class TrainerEditorGen4
         }
 
 
-        new File(outputPath + File.separator + dataName).mkdir();
-        new File(outputPath + File.separator + pokemonName).mkdir();
+        new File(outputDir + File.separator + dataName).mkdir();
+        new File(outputDir + File.separator + pokemonName).mkdir();
 
         ArrayList<TrainerDataGen4> trainerData= new ArrayList<>();
         ArrayList<ArrayList<TrainerPokemonData>> teamData= new ArrayList<>();
@@ -796,7 +791,7 @@ public class TrainerEditorGen4
             TrainerDataGen4 trainer= trainerData.get(i);
             ArrayList<TrainerPokemonData> team= teamData.get(i);
 
-            writer= new BinaryWriter(outputPath + File.separator + dataName + File.separator + i + ".bin");
+            writer= new BinaryWriter(outputDir + File.separator + dataName + File.separator + i + ".bin");
 
             writer.writeBytes(trainer.getFlag(),trainer.getTrainerClass(),trainer.getBattleType(),trainer.getNumPokemon());
             writer.writeShort((short) trainer.getItem1());
@@ -806,7 +801,7 @@ public class TrainerEditorGen4
             writer.writeInt((int) trainer.getAI());
             writer.writeBytes(i == 0 ? 0 : trainer.getBattleType2(),trainer.getUnknown1(),trainer.getUnknown2(),trainer.getUnknown3());
 
-            writer= new BinaryWriter(outputPath + File.separator + pokemonName + File.separator + i + ".bin");
+            writer= new BinaryWriter(outputDir + File.separator + pokemonName + File.separator + i + ".bin");
 
             for(int x= 0; x < team.size(); x++)
             {
@@ -837,7 +832,7 @@ public class TrainerEditorGen4
                 writer.writeByteNumTimes(0,8);
             }
 
-            if(new File(outputPath + File.separator + pokemonName + File.separator + i + ".bin").length() % 4 != 0)
+            if(new File(outputDir + File.separator + pokemonName + File.separator + i + ".bin").length() % 4 != 0)
                 writer.writeByteNumTimes(0,2);
 
             writer.close();
@@ -847,12 +842,6 @@ public class TrainerEditorGen4
         String predictedOutputNarc;
         switch(project.getBaseRom())
         {
-            case Diamond:
-            case Pearl:
-                trainerNameBank= 559;
-                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
-                break;
-
             case Platinum:
                 trainerNameBank= 618;
                 predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
@@ -869,22 +858,28 @@ public class TrainerEditorGen4
         }
 
         boolean canTrim= true;
-        if(new File(predictedOutputNarc).exists())
-        {
-            int numOriginalFiles= Narctowl.getNumFiles(predictedOutputNarc);
+//        if(new File(predictedOutputNarc).exists())
+//        {
+//            int numOriginalFiles= Narctowl.getNumFiles(predictedOutputNarc);
+//
+//            if(trainerData.size() > numOriginalFiles)
+//            {
+//                canTrim= false;
+//            }
+//        }
 
-            if(trainerData.size() > numOriginalFiles)
-            {
-                canTrim= false;
-            }
-        }
-
-        TextEditor.writeBank(project,nameColumn,trainerNameBank,canTrim);
+        TextEditor.writeBank(project,nameColumn,trainerNameBank,false);
     }
 
     public ArrayList<TrainerPokemonData> parseTrainerTeam(Object[] arr, int num)
     {
         ArrayList<TrainerPokemonData> ret= new ArrayList<>();
+        if(arr.length < num*11) // making sure the predicted length matches the array length
+        {
+            num = num/11;
+            System.out.print("There was a mismatch between the defined number of pokemon on this team and the amount provided");
+        }
+
         for(int i= 0; i < num; i++)
         {
             ret.add(parseTrainerPokemon(Arrays.copyOfRange(arr,(i*11),(i+1)*11)));
@@ -983,13 +978,13 @@ public class TrainerEditorGen4
         arr[idx++]= "" + pokemon.getIvs();
         arr[idx++]= "" + pokemon.getAbility();
         arr[idx++]= "" + pokemon.getLevel();
-        arr[idx++]= "=Evolutions!B" + (pokemon.getPokemon()+2);
+        arr[idx++]= "=Evolutions!$B$" + (pokemon.getPokemon()+2);
         arr[idx++]= "" + pokemon.getAltForm();
-        arr[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (pokemon.getItem()+1);
-        arr[idx++]= "='Formatting (DO NOT TOUCH)'!I" + (pokemon.getMove1()+1);
-        arr[idx++]= "='Formatting (DO NOT TOUCH)'!I" + (pokemon.getMove2()+1);
-        arr[idx++]= "='Formatting (DO NOT TOUCH)'!I" + (pokemon.getMove3()+1);
-        arr[idx++]= "='Formatting (DO NOT TOUCH)'!I" + (pokemon.getMove4()+1);
+        arr[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (pokemon.getItem()+1);
+        arr[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove1()+1);
+        arr[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove2()+1);
+        arr[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove3()+1);
+        arr[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove4()+1);
         arr[idx]= "" + pokemon.getBallCapsule();
 
         return arr;
@@ -1092,10 +1087,10 @@ public class TrainerEditorGen4
         thisTrainer[idx++]= "" + trainerData.getTrainerClass();
         thisTrainer[idx++]= "" + trainerData.getBattleType();
         thisTrainer[idx++]= "" + trainerData.getNumPokemon();
-        thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (trainerData.getItem1()+1);
-        thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (trainerData.getItem2()+1);
-        thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (trainerData.getItem3()+1);
-        thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!A" + (trainerData.getItem4()+1);
+        thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (trainerData.getItem1()+1);
+        thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (trainerData.getItem2()+1);
+        thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (trainerData.getItem3()+1);
+        thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (trainerData.getItem4()+1);
 
         for(int x= 0; x < 14; x++)
         {
@@ -1173,7 +1168,7 @@ public class TrainerEditorGen4
     {
         for (int i = 0; i < moveData.length; i++)
         {
-            System.out.println(moveData[i]);
+//            System.out.println(moveData[i]);
             if (move.equalsIgnoreCase(moveData[i])) {
                 return i;
             }

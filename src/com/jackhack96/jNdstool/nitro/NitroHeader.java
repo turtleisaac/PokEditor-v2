@@ -196,8 +196,12 @@ public class NitroHeader {
 
         rom.writeInt(header.fntOffset);
         rom.writeInt(header.fntSize);
+        System.out.println("\nFAT Offset: " + header.fatOffset);
         rom.writeInt(header.fatOffset);
+        System.out.println("FAT Size: " + header.fatSize);
+        System.out.println("Num Files: " + header.fatSize/8);
         rom.writeInt(header.fatSize);
+
 
         rom.writeInt(header.arm9OverlayOffset);
         rom.writeInt(header.arm9OverlaySize);

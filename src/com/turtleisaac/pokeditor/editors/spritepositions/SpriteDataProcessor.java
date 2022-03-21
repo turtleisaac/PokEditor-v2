@@ -19,27 +19,22 @@ public class SpriteDataProcessor
             toDelete= new ArrayList<>();
 
         String dataPath= project.getDataPath();
+        String unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
 
         File positionNarcPath;
         File positionDirPath;
 
         switch (project.getBaseRom())
         {
-            case Diamond:
-            case Pearl:
-                positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "poke_data.narc");
-                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "poke_data");
-                throw new RuntimeException("Invalid game: " + project.getBaseRom());
-
             case Platinum:
                 positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "pl_poke_data.narc");
-                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "pl_poke_data");
+                positionDirPath= new File(unpackedFolderPath + "poke_data");
                 break;
 
             case HeartGold:
             case SoulSilver:
                 positionNarcPath= new File(dataPath + File.separator + "a" + File.separator + "1" + File.separator + "8" + File.separator + "0");
-                positionDirPath= new File(dataPath + File.separator + "a" + File.separator + "1" + File.separator + "8" + File.separator + "0_");
+                positionDirPath= new File(unpackedFolderPath + "poke_data");
                 break;
 
             default:
@@ -57,14 +52,17 @@ public class SpriteDataProcessor
         Buffer buffer= new Buffer(positionDirPath.getAbsolutePath() + File.separator + "0.bin");
         ArrayList<SpriteData> dataList= new ArrayList<>();
 
+        //the length of the data structure for each species entry is 89 bytes (offsets 0-88)
         for(int i= 0; i < buffer.getLength()/89; i++)
         {
-            int unknownByte= buffer.readByte();
-            int movement= buffer.readByte();
-            byte[] unknownSection= buffer.readBytes(84);
-            byte yOffset= (byte) buffer.readByte();
-            byte xOffset= (byte) buffer.readByte();
-            int shadowSize= buffer.readByte();
+            int unknownByte= buffer.readByte(); //byte 0
+            int movement= buffer.readByte(); //byte 1
+            byte[] unknownSection1= buffer.readBytes(42); //bytes 2-43
+            int backMovement= buffer.readByte(); //byte 44
+            byte[] unknownSection2= buffer.readBytes(41); //bytes 45-85
+            byte yOffset= (byte) buffer.readByte(); //byte 86
+            byte xOffset= (byte) buffer.readByte(); //byte 87
+            int shadowSize= buffer.readByte(); //byte 88
             ShadowType shadowType = null;
 
             switch (shadowSize)
@@ -99,9 +97,21 @@ public class SpriteDataProcessor
                 }
 
                 @Override
-                public byte[] getUnknownSection()
+                public byte[] getUnknownSection1()
                 {
-                    return unknownSection;
+                    return unknownSection1;
+                }
+
+                @Override
+                public int getBackMovement()
+                {
+                    return backMovement;
+                }
+
+                @Override
+                public byte[] getUnknownSection2()
+                {
+                    return unknownSection2;
                 }
 
                 @Override
@@ -131,27 +141,22 @@ public class SpriteDataProcessor
     public static void applyPositionChanges(Project project, SpriteData[] spritePositionData) throws IOException
     {
         String dataPath= project.getDataPath();
+        String unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
 
         File positionNarcPath;
         File positionDirPath;
 
         switch (project.getBaseRom())
         {
-            case Diamond:
-            case Pearl:
-                positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "poke_data.narc");
-                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "poke_data");
-                throw new RuntimeException("Invalid game: " + project.getBaseRom());
-
             case Platinum:
                 positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "pl_poke_data.narc");
-                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "poke_edit" + File.separator + "pl_poke_data");
+                positionDirPath= new File(unpackedFolderPath + "poke_data");
                 break;
 
             case HeartGold:
             case SoulSilver:
                 positionNarcPath= new File(dataPath + File.separator + "a" + File.separator + "1" + File.separator + "8" + File.separator + "0");
-                positionDirPath= new File(dataPath + File.separator + "a" + File.separator + "1" + File.separator + "8" + File.separator + "0_");
+                positionDirPath= new File(unpackedFolderPath + "poke_data");
                 break;
 
             default:
@@ -160,20 +165,22 @@ public class SpriteDataProcessor
 
         BinaryWriter writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + "0.bin");
 
-        int idx= 0;
         for (SpriteData spriteData : spritePositionData)
         {
-            System.out.println(idx++);
             int unknownByte= spriteData.getUnknownByte();
             int movement= spriteData.getMovement();
-            byte[] unknownSection= spriteData.getUnknownSection();
+            byte[] unknownSection1= spriteData.getUnknownSection1();
+            int backMovement= spriteData.getBackMovement();
+            byte[] unknownSection2= spriteData.getUnknownSection2();
             byte yOffset= spriteData.getSpriteYOffset();
             byte xOffset= spriteData.getShadowXOffset();
             int shadowType= spriteData.getShadowType().value;
 
             writer.writeByte(unknownByte);
             writer.writeByte(movement);
-            writer.write(unknownSection);
+            writer.write(unknownSection1);
+            writer.writeByte(backMovement);
+            writer.write(unknownSection2);
             writer.writeByte(yOffset);
             writer.writeByte(xOffset);
             writer.writeByte(shadowType);
@@ -193,6 +200,7 @@ public class SpriteDataProcessor
             toDelete= new ArrayList<>();
 
         String dataPath= project.getDataPath();
+        String unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
         int selected= species*4;
 
         File positionNarcPath;
@@ -204,13 +212,13 @@ public class SpriteDataProcessor
             case Pearl:
             case Platinum:
                 positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "pokegra" + File.separator + "height.narc");
-                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "pokegra" + File.separator + "height");
+                positionDirPath= new File(unpackedFolderPath + "height");
                 break;
 
             case HeartGold:
             case SoulSilver:
                 positionNarcPath= new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "5");
-                positionDirPath= new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "5_");
+                positionDirPath= new File(unpackedFolderPath + "height");
                 break;
 
             default:
@@ -252,6 +260,7 @@ public class SpriteDataProcessor
     public static void applyHeightChanges(Project project, int species, int femaleBack, int maleBack, int femaleFront, int maleFront) throws IOException
     {
         String dataPath= project.getDataPath();
+        String unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
         int selected= species*4;
 
         File positionNarcPath;
@@ -263,13 +272,13 @@ public class SpriteDataProcessor
             case Pearl:
             case Platinum:
                 positionNarcPath= new File(dataPath + File.separator +"poketool" + File.separator + "pokegra" + File.separator + "height.narc");
-                positionDirPath= new File(dataPath + File.separator +"poketool" + File.separator + "pokegra" + File.separator + "height");
+                positionDirPath= new File(unpackedFolderPath + "height");
                 break;
 
             case HeartGold:
             case SoulSilver:
                 positionNarcPath= new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "5");
-                positionDirPath= new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "5_");
+                positionDirPath= new File(unpackedFolderPath + "height");
                 break;
 
             default:

@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
@@ -20,9 +22,10 @@ import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterEditor
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.gui.ComboBoxItem;
+import com.turtleisaac.pokeditor.gui.editors.encounters.SearchResultsFrame;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.TableLocator;
-import com.turtleisaac.pokeditor.utilities.TablePointer;
+import com.turtleisaac.pokeditor.utilities.TablePointers;
 import com.turtleisaac.pokeditor.utilities.images.ImageBase;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
@@ -34,6 +37,8 @@ public class SinnohEncounterPanel extends JPanel
 {
     private Project project;
     private GoogleSheetsAPI api;
+
+    private static String unpackedFolderPath;
 
     public ArrayList<File> toDelete;
 
@@ -290,15 +295,15 @@ public class SinnohEncounterPanel extends JPanel
         try
         {
             String narcPath= Project.isDPPT(project) ? File.separator + "poketool" + File.separator + "icongra" + File.separator + (Project.isPlatinum(project) ? "pl_poke_icon.narc" : "poke_icon.narc") : File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "8";
-            String folderPath= Project.isDPPT(project) ? File.separator + "poketool" + File.separator + "icongra" + File.separator + (Project.isPlatinum(project) ? "pl_poke_icon" : "poke_icon") : File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "8_";
-            new File(dataPath + folderPath).deleteOnExit();
-            toDelete.add(new File(dataPath + folderPath));
+            String folderPath= unpackedFolderPath + "poke_icon";
+            new File(folderPath).deleteOnExit();
+            toDelete.add(new File(folderPath));
 
 
-            if(!new File(dataPath + folderPath).exists())
+            if(!new File(folderPath).exists())
             {
                 Narctowl narctowl= new Narctowl(true);
-                narctowl.unpack(dataPath + narcPath,dataPath + folderPath);
+                narctowl.unpack(dataPath + narcPath, folderPath);
             }
 
             ImageBase imageBase;
@@ -337,6 +342,7 @@ public class SinnohEncounterPanel extends JPanel
     //region Header
     private void encounterFileComboBoxActionPerformed(ActionEvent e)
     {
+        // TODO add support for alt form data editing
         if(encounterData != null)
         {
             SinnohEncounterData encounterData= this.encounterData.get(encounterFileComboBox.getSelectedIndex());
@@ -430,24 +436,333 @@ public class SinnohEncounterPanel extends JPanel
         displayEncounterPreviewAction(e);
     }
 
-    private void saveButtonActionPerformed(ActionEvent e)
+    private void saveButtonActionPerformed(ActionEvent e) // TODO finish
     {
-        // TODO add your code here
+        int fieldRate= (int) encounterRateSpinner.getValue();
+        int surfRate= (int) surfEncounterRateSpinner.getValue();
+        int oldRodRate= (int) oldRodEncounterRateSpinner.getValue();
+        int goodRodRate= (int) goodRodEncounterRateSpinner.getValue();
+        int superRodRate= (int) superRodEncounterRateSpinner.getValue();
+
+        int[] fieldLevelsNew= new int[fieldSlots.length];
+        int[] fieldSlotsNew= new int[fieldSlots.length];
+        for(int i= 0; i < fieldSlots.length; i++)
+        {
+            fieldLevelsNew[i]= (int) fieldLevels[i].getValue();
+            fieldSlotsNew[i]= fieldSlots[i].getSelectedIndex();
+        }
+
+        int[] swarmEncountersNew= new int[swarmSlots.length];
+        int[] dayEncountersNew= new int[daySlots.length];
+        int[] nightEncountersNew= new int[nightSlots.length];
+        for(int i= 0; i < swarmEncountersNew.length; i++)
+        {
+            swarmEncountersNew[i]= swarmSlots[i].getSelectedIndex();
+            dayEncountersNew[i]= daySlots[i].getSelectedIndex();
+            nightEncountersNew[i]= nightSlots[i].getSelectedIndex();
+        }
+
+        int[] radarEncountersNew= new int[radarSlots.length];
+        for(int i= 0; i < radarSlots.length; i++)
+        {
+            radarEncountersNew[i]= radarSlots[i].getSelectedIndex();
+        }
+
+        int[] rubyEncountersNew= new int[rubySlots.length];
+        int[] sapphireEncountersNew= new int[sapphireSlots.length];
+        int[] emeraldEncountersNew= new int[emeraldSlots.length];
+        int[] fireRedEncountersNew= new int[fireRedSlots.length];
+        int[] leafGreenEncountersNew= new int[leafGreenSlots.length];
+        for(int i= 0; i < rubySlots.length; i++)
+        {
+            rubyEncountersNew[i]= rubySlots[i].getSelectedIndex();
+            sapphireEncountersNew[i]= sapphireSlots[i].getSelectedIndex();
+            emeraldEncountersNew[i]= emeraldSlots[i].getSelectedIndex();
+            fireRedEncountersNew[i]= fireRedSlots[i].getSelectedIndex();
+            leafGreenEncountersNew[i]= leafGreenSlots[i].getSelectedIndex();
+        }
+
+        int[] surfEncountersNew= new int[surfSlots.length];
+        int[] surfMinNew= new int[surfMinLevels.length];
+        int[] surfMaxNew= new int[surfMaxLevels.length];
+        for(int i= 0; i < surfSlots.length; i++)
+        {
+            surfEncountersNew[i]= surfSlots[i].getSelectedIndex();
+            surfMinNew[i]= (int) surfMinLevels[i].getValue();
+            surfMaxNew[i]= (int) surfMaxLevels[i].getValue();
+        }
+
+        int[] oldRodEncountersNew= new int[oldRodSlots.length];
+        int[] oldRodMinNew= new int[oldRodMinLevels.length];
+        int[] oldRodMaxNew= new int[oldRodMaxLevels.length];
+        for(int i= 0; i < oldRodSlots.length; i++)
+        {
+            oldRodEncountersNew[i]= oldRodSlots[i].getSelectedIndex();
+            oldRodMinNew[i]= (int) oldRodMinLevels[i].getValue();
+            oldRodMaxNew[i]= (int) oldRodMaxLevels[i].getValue();
+        }
+
+        int[] goodRodEncountersNew= new int[goodRodSlots.length];
+        int[] goodRodMinNew= new int[goodRodMinLevels.length];
+        int[] goodRodMaxNew= new int[goodRodMaxLevels.length];
+        for(int i= 0; i < goodRodSlots.length; i++)
+        {
+            goodRodEncountersNew[i]= goodRodSlots[i].getSelectedIndex();
+            goodRodMinNew[i]= (int) goodRodMinLevels[i].getValue();
+            goodRodMaxNew[i]= (int) goodRodMaxLevels[i].getValue();
+        }
+
+        int[] superRodEncountersNew= new int[superRodSlots.length];
+        int[] superRodMinNew= new int[superRodMinLevels.length];
+        int[] superRodMaxNew= new int[superRodMaxLevels.length];
+        for(int i= 0; i < superRodSlots.length; i++)
+        {
+            superRodEncountersNew[i]= superRodSlots[i].getSelectedIndex();
+            superRodMinNew[i]= (int) superRodMinLevels[i].getValue();
+            superRodMaxNew[i]= (int) superRodMaxLevels[i].getValue();
+        }
+
+
+        SinnohEncounterData encounterData= new SinnohEncounterData()
+        {
+            @Override
+            public int getFieldRate()
+            {
+                return fieldRate;
+            }
+
+            @Override
+            public int[] getFieldLevels()
+            {
+                return fieldLevelsNew;
+            }
+
+            @Override
+            public int[] getFieldEncounters()
+            {
+                return fieldSlotsNew;
+            }
+
+            @Override
+            public int[] getSwarmEncounters()
+            {
+                return swarmEncountersNew;
+            }
+
+            @Override
+            public int[] getDayEncounters()
+            {
+                return dayEncountersNew;
+            }
+
+            @Override
+            public int[] getNightEncounters()
+            {
+                return nightEncountersNew;
+            }
+
+            @Override
+            public int[] getRadarEncounters()
+            {
+                return radarEncountersNew;
+            }
+
+            @Override
+            public byte[][] getFormProbabilities()
+            {
+                return new byte[0][];
+            }
+            // TODO replace with data from editor table
+
+            @Override
+            public int[] getRuby()
+            {
+                return rubyEncountersNew;
+            }
+
+            @Override
+            public int[] getSapphire()
+            {
+                return sapphireEncountersNew;
+            }
+
+            @Override
+            public int[] getEmerald()
+            {
+                return emeraldEncountersNew;
+            }
+
+            @Override
+            public int[] getFireRed()
+            {
+                return fireRedEncountersNew;
+            }
+
+            @Override
+            public int[] getLeafGreen()
+            {
+                return leafGreenEncountersNew;
+            }
+
+            @Override
+            public int getSurfRate()
+            {
+                return surfRate;
+            }
+
+            @Override
+            public int[] getSurfMaxs()
+            {
+                return surfMaxNew;
+            }
+
+            @Override
+            public int[] getSurfMins()
+            {
+                return surfMinNew;
+            }
+
+            @Override
+            public int[] getSurfEncounters()
+            {
+                return surfEncountersNew;
+            }
+
+            @Override
+            public int getOldRate()
+            {
+                return oldRodRate;
+            }
+
+            @Override
+            public int[] getOldMaxs()
+            {
+                return oldRodMaxNew;
+            }
+
+            @Override
+            public int[] getOldMins()
+            {
+                return oldRodMinNew;
+            }
+
+            @Override
+            public int[] getOldEncounters()
+            {
+                return oldRodEncountersNew;
+            }
+
+            @Override
+            public int getGoodRate()
+            {
+                return goodRodRate;
+            }
+
+            @Override
+            public int[] getGoodMaxs()
+            {
+                return goodRodMaxNew;
+            }
+
+            @Override
+            public int[] getGoodMins()
+            {
+                return goodRodMinNew;
+            }
+
+            @Override
+            public int[] getGoodEncounters()
+            {
+                return goodRodEncountersNew;
+            }
+
+            @Override
+            public int getSuperRate()
+            {
+                return superRodRate;
+            }
+
+            @Override
+            public int[] getSuperMaxs()
+            {
+                return superRodMaxNew;
+            }
+
+            @Override
+            public int[] getSuperMins()
+            {
+                return superRodMinNew;
+            }
+
+            @Override
+            public int[] getSuperEncounters()
+            {
+                return superRodEncountersNew;
+            }
+        };
+
+        // TODO write code for actually saving to google sheets
     }
 
     private void speciesSearchButtonActionPerformed(ActionEvent e)
     {
         // TODO add your code here
+
+        String searchTerm= speciesSearchTextField.getText();
+        int searchId= -1;
+
+        try
+        {
+            searchId= Integer.parseInt(searchTerm);
+        }
+        catch(NumberFormatException ignored)
+        {
+
+        }
+
+        ArrayList<String> searchResults= new ArrayList<>();
+
+        for(int i= 0; i < encounterData.size(); i++)
+        {
+            for(JComboBox<ComboBoxItem> fieldSlot : fieldSlots)
+            {
+                if(searchId != - 1)
+                {
+                    if(fieldSlot.getSelectedIndex() == searchId)
+                    {
+                        searchResults.add(i + ": LOCATION NAME");
+                        break;
+                    }
+                }
+                else
+                {
+                    if(nameData[fieldSlot.getSelectedIndex()].equalsIgnoreCase(searchTerm))
+                    {
+                        searchResults.add(i + ": LOCATION NAME");
+                        break;
+                    }
+                }
+            }
+        }
+
+        SearchResultsFrame searchResultsFrame= new SearchResultsFrame(true,this, searchResults);
     }
 
     private void locationSearchButtonActionPerformed(ActionEvent e)
     {
         // TODO add your code here
+        JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void changeSelectedEncounterData(int idx)
+    {
+        encounterFileComboBox.setSelectedIndex(idx);
     }
     //endregion
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        // Generated using JFormDesigner non-commercial license
         encounterFileLabel = new JLabel();
         speciesSearchLabel = new JLabel();
         locationSearchLabel = new JLabel();
@@ -1758,6 +2073,7 @@ public class SinnohEncounterPanel extends JPanel
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
     private JLabel encounterFileLabel;
     private JLabel speciesSearchLabel;
     private JLabel locationSearchLabel;
@@ -2008,6 +2324,8 @@ public class SinnohEncounterPanel extends JPanel
         this.project= project;
         this.api= api;
 
+        unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
+
         switch(project.getBaseRom())
         {
             case Diamond:
@@ -2028,17 +2346,23 @@ public class SinnohEncounterPanel extends JPanel
         }
 
         TableLocator tableLocator= new TableLocator(project);
-        switch(project.getBaseRom())
+        TablePointers.TablePointer pokemonIconPalettePointer;
+        boolean success= true;
+        try
         {
-            case Platinum:
-                paletteGuideTable= tableLocator.obtainTableArr(TablePointer.PokemonIconPalette_CPUE, nameData.length, 1);
-                break;
+            pokemonIconPalettePointer= TablePointers.getPointers().get(project.getBaseRomGameCode()).get("pokemonIconPalette");
+        }
+        catch (Exception e)
+        {
+            System.err.println("Error loading palette pointer table");
+            success= false;
+            pokemonIconPalettePointer= null;
+            e.printStackTrace();
+        }
 
-            case HeartGold:
-                break;
-
-            case SoulSilver:
-                break;
+        if(success)
+        {
+            paletteGuideTable= tableLocator.obtainTableArr(pokemonIconPalettePointer,nameData.length, 1);
         }
 
         fillComboBoxes(fieldSlots,nameData);
@@ -2067,24 +2391,65 @@ public class SinnohEncounterPanel extends JPanel
         Object[][] dualSlotTable;
         Object[][] formProbabilityTable;
 
-        fieldTable= api.getSpecifiedSheetArr("Field Encounters");
-        waterTable= api.getSpecifiedSheetArr("Water Encounters");
-        swarmTable= api.getSpecifiedSheetArr("Swarm/ Day/ Night Encounters");
-        radarTable= api.getSpecifiedSheetArr("Poke Radar Encounters");
-        dualSlotTable= api.getSpecifiedSheetArr("Dual-Slot Mode Encounters");
-        formProbabilityTable= api.getSpecifiedSheetArr("Alt Form Encounters");
 
-        for(int i= 0; i < fieldTable.length/13; i++)
+        if(api != null)
         {
-            encounterFileComboBox.addItem(new ComboBoxItem(i));
-        }
+            fieldTable= api.getSpecifiedSheetArr("Field Encounters");
+            waterTable= api.getSpecifiedSheetArr("Water Encounters");
+            swarmTable= api.getSpecifiedSheetArr("Swarm/ Day/ Night Encounters");
+            radarTable= api.getSpecifiedSheetArr("Poke Radar Encounters");
+            dualSlotTable= api.getSpecifiedSheetArr("Dual-Slot Mode Encounters");
+            formProbabilityTable= api.getSpecifiedSheetArr("Alt Form Encounters");
 
-        obtainEncounterData(fieldTable,waterTable,swarmTable,radarTable,dualSlotTable,formProbabilityTable);
+            for(int i= 0; i < fieldTable.length/13; i++)
+            {
+                encounterFileComboBox.addItem(new ComboBoxItem(i));
+            }
+
+            obtainEncounterData(fieldTable,waterTable,swarmTable,radarTable,dualSlotTable,formProbabilityTable);
+        }
+        else
+        {
+            setEnabled(false);
+        }
+    }
+
+    public void setApi(GoogleSheetsAPI api) throws IOException
+    {
+        this.api= api;
+
+        Object[][] fieldTable;
+        Object[][] waterTable;
+        Object[][] swarmTable;
+        Object[][] radarTable;
+        Object[][] dualSlotTable;
+        Object[][] formProbabilityTable;
+
+        if(api != null)
+        {
+            fieldTable= api.getSpecifiedSheetArr("Field Encounters");
+            waterTable= api.getSpecifiedSheetArr("Water Encounters");
+            swarmTable= api.getSpecifiedSheetArr("Swarm/ Day/ Night Encounters");
+            radarTable= api.getSpecifiedSheetArr("Poke Radar Encounters");
+            dualSlotTable= api.getSpecifiedSheetArr("Dual-Slot Mode Encounters");
+            formProbabilityTable= api.getSpecifiedSheetArr("Alt Form Encounters");
+
+            for(int i= 0; i < fieldTable.length/13; i++)
+            {
+                encounterFileComboBox.addItem(new ComboBoxItem(i));
+            }
+
+            obtainEncounterData(fieldTable,waterTable,swarmTable,radarTable,dualSlotTable,formProbabilityTable);
+        }
+        else
+        {
+            setEnabled(false);
+        }
     }
 
     private void obtainEncounterData(Object[][] fieldTable, Object[][] waterTable, Object[][] swarmTable, Object[][] radarTable, Object[][] dualSlotTable, Object[][] formProbabilityTable) throws IOException
     {
-        SinnohEncounterEditor encounterEditor= new SinnohEncounterEditor(project,project.getProjectPath().getAbsolutePath());
+        SinnohEncounterEditor encounterEditor= new SinnohEncounterEditor(project,project.getDataPath());
         encounterData= encounterEditor.parseEncounterData(fieldTable,waterTable,swarmTable,radarTable,dualSlotTable,formProbabilityTable);
     }
 
@@ -2101,7 +2466,6 @@ public class SinnohEncounterPanel extends JPanel
             }
         }
     }
-
 
     static class ModifiedTable extends JTable
     {
@@ -2150,13 +2514,13 @@ public class SinnohEncounterPanel extends JPanel
             try
             {
                 String narcPath= Project.isDPPT(project) ? File.separator + "poketool" + File.separator + "icongra" + File.separator + (Project.isPlatinum(project) ? "pl_poke_icon.narc" : "poke_icon.narc") : File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "8";
-                String folderPath= Project.isDPPT(project) ? File.separator + "poketool" + File.separator + "icongra" + File.separator + (Project.isPlatinum(project) ? "pl_poke_icon" : "poke_icon") : File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "8_";
-                new File(dataPath + folderPath).deleteOnExit();
+                String folderPath= unpackedFolderPath + "poke_icon";
+                new File(folderPath).deleteOnExit();
 
-                if(!new File(dataPath + folderPath).exists())
+                if(!new File(folderPath).exists())
                 {
                     Narctowl narctowl= new Narctowl(true);
-                    narctowl.unpack(dataPath + narcPath,dataPath + folderPath);
+                    narctowl.unpack(dataPath + narcPath,folderPath);
                 }
 
                 ImageBase imageBase;

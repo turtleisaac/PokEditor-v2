@@ -30,13 +30,13 @@ public class ItemEditorGen4
 
     private Game baseRom;
 
-    public ItemEditorGen4(String projectPath, Project project) throws IOException
+    public ItemEditorGen4(String dataPath, Project project) throws IOException
     {
         this.project= project;
         this.baseRom= project.getBaseRom();
-        this.projectPath= projectPath;
-        dataPath= projectPath;
-        resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
+        this.projectPath= dataPath;
+        this.dataPath = dataPath;
+        resourcePath= dataPath.substring(0,dataPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
         switch(project.getBaseRom())
@@ -61,9 +61,6 @@ public class ItemEditorGen4
                 abilityData= TextEditor.getBank(project,720);
                 break;
         }
-
-        for(String item : itemData)
-            System.out.println(item);
 
         ArrayList<String> itemList= new ArrayList<>(Arrays.asList(itemData));
         itemList.removeIf(s -> s.equals("???"));
@@ -136,7 +133,7 @@ public class ItemEditorGen4
 
     public Object[][] itemsToSheet(String itemDir) throws IOException
     {
-        dataPath+= itemDir;
+        dataPath= itemDir;
 
         Buffer buffer;
         ArrayList<ItemData> dataList= new ArrayList<>();
@@ -704,9 +701,9 @@ public class ItemEditorGen4
     }
 
 
-    public void sheetToItems(Object[][] itemSheet, String outputDir) throws IOException
+    public void sheetToItems(Object[][] itemSheet, String outputDir, String predictedOutputNarc) throws IOException
     {
-        String outputPath= projectPath + outputDir;
+        String outputPath= outputDir;
 
         if(!new File(outputPath).exists() && !new File(outputPath).mkdir())
         {
@@ -808,24 +805,20 @@ public class ItemEditorGen4
         }
 
         int itemNameBank;
-        String predictedOutputNarc;
         switch(project.getBaseRom())
         {
             case Diamond:
             case Pearl:
                 itemNameBank= 344;
-                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
                 break;
 
             case Platinum:
                 itemNameBank= 392;
-                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
                 break;
 
             case HeartGold:
             case SoulSilver:
                 itemNameBank= 222;
-                predictedOutputNarc= dataPath + File.separator + outputDir.substring(0,outputDir.length()-1);
                 break;
 
             default:
@@ -833,12 +826,10 @@ public class ItemEditorGen4
         }
 
         ArrayList<Object> itemNames= new ArrayList<>(Arrays.asList(nameColumn));
-        for(int i= 0; i < 22; i++)
-        {
-            itemNames.add(113,"???");
-        }
+        itemNames.removeAll(Collections.singleton("???"));
 
         nameColumn= itemNames.toArray(itemNames.toArray(new Object[0]));
+
 
         boolean canTrim= true;
         if(new File(predictedOutputNarc).exists())
@@ -851,7 +842,7 @@ public class ItemEditorGen4
             }
         }
 
-        TextEditor.writeBank(project,nameColumn,itemNameBank,canTrim);
+        TextEditor.writeBank(project,nameColumn,itemNameBank,false); //TODO return here and change this
     }
 
 

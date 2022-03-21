@@ -3,8 +3,8 @@ plugins {
     id 'application'
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
 version = '2.0'
 
 repositories {
@@ -14,10 +14,10 @@ repositories {
 dependencies
         {
             //Google Sheets API
-            compile 'com.google.api-client:google-api-client:1.30.4'
-            compile 'com.google.oauth-client:google-oauth-client-jetty:1.30.6'
-            compile 'com.google.apis:google-api-services-sheets:v4-rev581-1.25.0'
-            compile 'com.google.api-client:google-api-client:1.30.10'
+            compile 'com.google.api-client:google-api-client:+'
+            compile 'com.google.oauth-client:google-oauth-client-jetty:+'
+            compile 'com.google.apis:google-api-services-sheets:+'
+            compile 'com.google.api-client:google-api-client:+'
 
             //Jidesoft (For scrollable JComboBoxes)
             compile group: 'com.jidesoft', name: 'jide-oss', version: '3.6.18'
@@ -30,4 +30,7 @@ dependencies
             compile 'com.formdev:flatlaf:0.43'
             compile 'com.miglayout:miglayout:3.7.4'
             compile 'org.junit.jupiter:junit-jupiter:5.4.2'
+
+            //Miscellaneous IO
+            compile 'commons-io:commons-io:+'
         }

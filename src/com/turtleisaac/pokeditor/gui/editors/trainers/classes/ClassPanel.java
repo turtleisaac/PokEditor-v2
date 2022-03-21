@@ -9,7 +9,7 @@ import javax.swing.border.*;
 import net.miginfocom.swing.*;
 
 /**
- * @author Truck
+ * @author turtleisaac
  */
 public class ClassPanel extends JPanel {
     public ClassPanel() {

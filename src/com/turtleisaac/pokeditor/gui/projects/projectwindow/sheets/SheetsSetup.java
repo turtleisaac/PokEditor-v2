@@ -210,7 +210,7 @@ public class SheetsSetup extends JFrame {
         {
             if(new File(parent.getProject().getProjectPath().toString() + "/tokens").exists())
                 clearDirectory(new File(parent.getProject().getProjectPath().toString() + "/tokens"));
-            api= new GoogleSheetsAPI(enterLinkTextField.getText(), parent.getProject().getProjectPath().toString());
+            api= new GoogleSheetsAPI(enterLinkTextField.getText(), parent.getProject().getProjectPath().toString(), false);
             connectStatusLabel.setText("Connection Success!");
             connectStatusLabel.setForeground(new Color(45, 253, 0, 255));
             finishButton.setEnabled(true);

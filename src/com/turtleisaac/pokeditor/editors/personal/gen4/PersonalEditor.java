@@ -127,7 +127,7 @@ public class PersonalEditor
 //        autoFix= !scanner.nextLine().equalsIgnoreCase("n");
         autoFix= false;
 
-        dataPath+= personalDir;
+        dataPath= personalDir;
 
         Buffer personalBuffer;
         ArrayList<PersonalData> dataList= new ArrayList<>();
@@ -373,16 +373,16 @@ public class PersonalEditor
             pokeTable[row][15]= "" + dataList.get(row).getDefEv();
             pokeTable[row][16]= "" + dataList.get(row).getSpAtkEv();
             pokeTable[row][17]= "" + dataList.get(row).getSpDefEv();
-            pokeTable[row][18]= "='Formatting (DO NOT TOUCH)'!A" + (dataList.get(row).getUncommonItem()+1);
-            pokeTable[row][19]= "='Formatting (DO NOT TOUCH)'!A" + (dataList.get(row).getRareItem()+1);
+            pokeTable[row][18]= "='Formatting (DO NOT TOUCH)'!$A$" + (dataList.get(row).getUncommonItem()+1);
+            pokeTable[row][19]= "='Formatting (DO NOT TOUCH)'!$A$" + (dataList.get(row).getRareItem()+1);
             pokeTable[row][20]= "" + dataList.get(row).getGenderRatio();
             pokeTable[row][21]= "" + dataList.get(row).getHatchMultiplier();
             pokeTable[row][22]= "" + dataList.get(row).getBaseHappiness();
             pokeTable[row][23]= growthTableIdArr[dataList.get(row).getExpRate()];
             pokeTable[row][24]= eggGroupArr[dataList.get(row).getEggGroup1()];
             pokeTable[row][25]= eggGroupArr[dataList.get(row).getEggGroup2()];
-            pokeTable[row][26]= "='Formatting (DO NOT TOUCH)'!C" + (dataList.get(row).getAbility1()+1);
-            pokeTable[row][27]= "='Formatting (DO NOT TOUCH)'!C" + (dataList.get(row).getAbility2()+1);
+            pokeTable[row][26]= "='Formatting (DO NOT TOUCH)'!$C$" + (dataList.get(row).getAbility1()+1);
+            pokeTable[row][27]= "='Formatting (DO NOT TOUCH)'!$C$" + (dataList.get(row).getAbility2()+1);
             pokeTable[row][28]= "" + dataList.get(row).getRunChance();
             pokeTable[row][29]= "" + dataList.get(row).getDexColor();
         }
@@ -428,7 +428,7 @@ public class PersonalEditor
         processor.newLine();
         for(int row= 0; row < dataList.size(); row++)
         {
-            line= dataList.get(row).getNum() + ",=Personal!B" + (row+2) + ",";
+            line= dataList.get(row).getNum() + ",=Personal!$B$" + (row+2) + ",";
             for(int col= 0; col < tmTable[0].length; col++)
             {
                 line+= tmTable[row][col] + ",";
@@ -459,9 +459,9 @@ public class PersonalEditor
 
 
 
-    public void csvToPersonal(Object[][] personalCsv, Object[][] tmLearnsetCsv, String outputDir) throws IOException
+    public void csvToPersonal(Object[][] personalCsv, Object[][] tmLearnsetCsv, String outputDir, String predictedNarcOutput) throws IOException
     {
-        String outputPath= dataPath + File.separator + outputDir;
+        String outputPath= outputDir;
 
         Object[] nameColumn= Arrays.copyOfRange(ArrayModifier.getColumn(personalCsv,1),1,personalCsv.length);
         Object[] tmList= Arrays.copyOfRange(tmLearnsetCsv[1],2,tmLearnsetCsv[1].length);
@@ -469,7 +469,6 @@ public class PersonalEditor
         personalCsv= ArrayModifier.trim(personalCsv,1,2);
         tmLearnsetCsv= ArrayModifier.trim(tmLearnsetCsv,2,2);
 
-        CsvReader defaultReader= new CsvReader(resourcePath + "Defaults" + File.separator + "personal4.csv");
         BitStream[] tmLearnsetData = new BitStream[tmLearnsetCsv.length];
 
         if(!new File(outputPath).exists())
@@ -483,8 +482,7 @@ public class PersonalEditor
         ArrayList<PersonalData> personalData= new ArrayList<>();
         for(int row= 0; row < personalCsv.length; row++)
         {
-            String[] defaults= defaultReader.next();
-            System.out.println(nameData[row] + " (" + row + "): " + Arrays.toString(personalCsv[row]));
+//            System.out.println(nameData[row] + " (" + row + "): " + Arrays.toString(personalCsv[row]));
             initializeIndex(personalCsv[row]);
             int finalRow = row;
 
@@ -670,22 +668,7 @@ public class PersonalEditor
                 @Override
                 public int getDexColor()
                 {
-                    try
-                    {
-                        return dexColor;
-                    }
-                    catch (ArrayIndexOutOfBoundsException e)
-                    {
-
-                        if(autoFix)
-                        {
-                            return Integer.parseInt(defaults[9]);
-                        }
-                        else
-                        {
-                            throw new RuntimeException("There is a problem with the provided personalDataRecompile.csv. Please try exporting/ downloading it again. If this does not work, please open a new Issue on the GitHub or contact me on Discord (https://discord.gg/cTKQq5Y).\nAdditionally, if you are seeing this message on a non-Windows computer, please let me know as quickly as possible");
-                        }
-                    }
+                    return dexColor;
                 }
 
                 @Override
@@ -727,24 +710,15 @@ public class PersonalEditor
 
 
         int nameBank;
-        String predictedOutputNarc;
         switch(project.getBaseRom())
         {
-            case Diamond:
-            case Pearl:
-                nameBank= 362;
-                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
-                break;
-
             case Platinum:
                 nameBank= 412;
-                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
                 break;
 
             case HeartGold:
             case SoulSilver:
                 nameBank= 237;
-                predictedOutputNarc= dataPath + File.separator + outputDir.substring(0,outputDir.length()-1);
                 break;
 
             default:
@@ -752,9 +726,9 @@ public class PersonalEditor
         }
 
         boolean canTrim= true;
-        if(new File(predictedOutputNarc).exists())
+        if(new File(predictedNarcOutput).exists())
         {
-            int numOriginalFiles= Narctowl.getNumFiles(predictedOutputNarc);
+            int numOriginalFiles= Narctowl.getNumFiles(predictedNarcOutput);
 
             if(personalData.size() > numOriginalFiles)
             {
@@ -769,7 +743,7 @@ public class PersonalEditor
 
 
 
-    private void sort (File arr[])
+    private void sort (File[] arr)
     {
         Arrays.sort(arr, Comparator.comparingInt(PersonalEditor::fileToInt));
     }
@@ -863,7 +837,7 @@ public class PersonalEditor
     {
         for(int i= 0; i < abilityData.length; i++)
         {
-            if(ability.equals(abilityData[i]))
+            if(ability.trim().equals(abilityData[i].trim()))
             {
                 return i;
             }

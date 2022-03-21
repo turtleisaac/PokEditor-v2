@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.9" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.4.0.360" Java: "11.0.9" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -9,7 +9,7 @@ new FormModel {
 			"$rowConstraints": "[][][][]"
 		} ) {
 			name: "this"
-			add( new FormComponent( "javax.swing.JComboBox" ) {
+			add( new FormComponent( "com.turtleisaac.pokeditor.gui.EditorComboBox" ) {
 				name: "speciesChooserComboBox"
 				"autoscrolls": true
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "speciesChooserComboBoxActionPerformed", true ) )
@@ -455,7 +455,7 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "hidemode 3"
 					"$columnConstraints": "[grow,fill][fill]"
-					"$rowConstraints": "[grow][grow][grow][grow][grow][grow][grow][grow][grow][][][]"
+					"$rowConstraints": "[grow][grow][grow][grow][grow][grow][grow][grow][grow][][][][]"
 				} ) {
 					name: "panel1"
 					add( new FormComponent( "javax.swing.JSeparator" ) {
@@ -553,7 +553,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "movementEffectLabel"
-						"text": "Movement"
+						"text": "Front Movement"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 9"
 					} )
@@ -565,15 +565,38 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JSpinner" ) {
 						name: "movementEffectSpinner"
+						"model": new javax.swing.SpinnerNumberModel {
+							minimum: 0
+						}
 						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "movementEffectSpinnerStateChanged", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 9"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "backMovementEffectLabel"
+						"text": "Back Movement"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 10"
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "backMovementEffectRadioButton"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 10"
+					} )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "backMovementEffectSpinner"
+						"model": new javax.swing.SpinnerNumberModel {
+							minimum: 0
+						}
+						addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "backMovementEffectSpinnerStateChanged", true ) )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 1 10"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "shadowSizeTextField"
 						"text": "Shadow Size"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 10"
+						"value": "cell 0 11"
 					} )
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "shadowSizeComboBox"
@@ -582,12 +605,12 @@ new FormModel {
 						}
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "shadowSizeComboBoxActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 1 10"
+						"value": "cell 1 11"
 					} )
 					add( new FormComponent( "javax.swing.JSeparator" ) {
 						name: "separator5"
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 11 2 1"
+						"value": "cell 0 12 2 1"
 					} )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 3 2 2,growy"
@@ -604,7 +627,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 915, 805 )
+			"size": new java.awt.Dimension( 915, 935 )
 		} )
 	}
 }

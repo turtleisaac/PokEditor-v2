@@ -6,6 +6,7 @@ import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,28 +16,32 @@ import java.util.Objects;
 
 public class TextEditor
 {
+    private static String unpackedFolderPath;
+
     public static String[] getBank(Project project, int bank) throws IOException
     {
         String textNarcPath;
         String textDirPath;
 
+        unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
+
         switch (project.getBaseRom())
         {
             case Platinum:
                 textNarcPath= project.getDataPath() + File.separator + "msgdata" + File.separator + "pl_msg.narc";
-                textDirPath= project.getDataPath() + File.separator + "msgdata" + File.separator + "pl_msg";
+                textDirPath= unpackedFolderPath + "msg";
                 break;
 
             case HeartGold:
             case SoulSilver:
                 textNarcPath= project.getDataPath() + File.separator + "a" + File.separator + "0" + File.separator + "2" + File.separator + "7";
-                textDirPath= project.getDataPath() + File.separator + "a" + File.separator + "0" + File.separator + "2" + File.separator + "7_";
+                textDirPath= unpackedFolderPath + "msg";
                 break;
 
             case Diamond:
             case Pearl:
                 textNarcPath= project.getDataPath() + File.separator + "msgdata" + File.separator + "msg.narc";
-                textDirPath= project.getDataPath() + File.separator + "msgdata" + File.separator + "msg";
+                textDirPath= unpackedFolderPath + "msg";
                 break;
 
             default:
@@ -52,6 +57,7 @@ public class TextEditor
         jBinaryStream binaryStream= new jBinaryStream(buffer.readRemainder());
 
         MessageFile.decodeText(binaryStream);
+        buffer.close();
 
         return MessageFile.getTexts().toArray(new String[0]);
     }
@@ -81,19 +87,19 @@ public class TextEditor
         {
             case Platinum:
                 textNarcPath= project.getDataPath() + File.separator + "msgdata" + File.separator + "pl_msg.narc";
-                textDirPath= project.getDataPath() + File.separator + "msgdata" + File.separator + "pl_msg";
+                textDirPath= unpackedFolderPath + "msg";
                 break;
 
             case HeartGold:
             case SoulSilver:
                 textNarcPath= project.getDataPath() + File.separator + "a" + File.separator + "0" + File.separator + "2" + File.separator + "7";
-                textDirPath= project.getDataPath() + File.separator + "a" + File.separator + "0" + File.separator + "2" + File.separator + "7_";
+                textDirPath= unpackedFolderPath + "msg";
                 break;
 
             case Diamond:
             case Pearl:
                 textNarcPath= project.getDataPath() + File.separator + "msgdata" + File.separator + "msg.narc";
-                textDirPath= project.getDataPath() + File.separator + "msgdata" + File.separator + "msg";
+                textDirPath= unpackedFolderPath + "msg";
                 break;
 
             default:
@@ -122,6 +128,7 @@ public class TextEditor
             {
                 System.out.println("Text Bank Length Corrected");
             }
+            buffer.close();
 
             buffer= new Buffer(textDirPath + File.separator + bank + ".bin");
         }
@@ -136,6 +143,7 @@ public class TextEditor
         BinaryWriter writer= new BinaryWriter(textDirPath + File.separator + bank + ".bin");
         writer.write(binaryStream.readAll());
         writer.close();
+        buffer.close();
 
         narctowl.pack(textDirPath,"",textNarcPath);
     }
@@ -184,27 +192,7 @@ public class TextEditor
 
     public static void cleanup(Project project)
     {
-        File folder;
-
-        switch (project.getBaseRom())
-        {
-            case Platinum:
-                folder= new File(project.getDataPath() + File.separator + "msgdata" + File.separator + "pl_msg");
-                break;
-
-            case HeartGold:
-            case SoulSilver:
-                folder= new File(project.getDataPath() + File.separator + "a" + File.separator + "0" + File.separator + "2" + File.separator + "7_");
-                break;
-
-            case Diamond:
-            case Pearl:
-                folder= new File(project.getDataPath() + File.separator + "msgdata" + File.separator + "msg");
-                break;
-
-            default:
-                throw new RuntimeException("Invalid game: " + project.getBaseRom());
-        }
+        File folder= new File(unpackedFolderPath + "msg");
 
         if(folder.exists())
             clearDirs(folder);
@@ -223,16 +211,19 @@ public class TextEditor
 
     private static void clearDirs(File folder)
     {
-        if(folder != null)
+        try
         {
-            for(File f : Objects.requireNonNull(folder.listFiles()))
-            {
-                if(f.isDirectory())
-                    clearDirs(f);
-                else
-                    f.delete();
-            }
-            folder.delete();
+            FileUtils.deleteDirectory(folder);
+        }
+        catch(IOException e)
+        {
+            System.err.println("\tFailed to delete folder: " + folder.getAbsolutePath());
+            e.printStackTrace();
+        }
+
+        if(folder.exists())
+        {
+            System.err.println("\tFolder wasn't deleted?");
         }
     }
 }

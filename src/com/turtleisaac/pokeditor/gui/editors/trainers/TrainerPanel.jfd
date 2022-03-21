@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.9" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.4.0.360" Java: "11.0.9" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -9,7 +9,7 @@ new FormModel {
 			"$rowConstraints": "[][][grow,center]"
 		} ) {
 			name: "this"
-			add( new FormComponent( "javax.swing.JComboBox" ) {
+			add( new FormComponent( "com.turtleisaac.pokeditor.gui.EditorComboBox" ) {
 				name: "trainerSelectionComboBox"
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "trainerSelectionComboBoxActionPerformed", true ) )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
@@ -97,22 +97,22 @@ new FormModel {
 					} ) {
 						name: "itemPanel"
 						"border": new javax.swing.border.TitledBorder( "Items" )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
+						add( new FormComponent( "com.turtleisaac.pokeditor.gui.EditorComboBox" ) {
 							name: "itemComboBox1"
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 							"value": "cell 0 0,grow"
 						} )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
+						add( new FormComponent( "com.turtleisaac.pokeditor.gui.EditorComboBox" ) {
 							name: "itemComboBox2"
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 							"value": "cell 1 0,grow"
 						} )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
+						add( new FormComponent( "com.turtleisaac.pokeditor.gui.EditorComboBox" ) {
 							name: "itemComboBox3"
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 							"value": "cell 0 1,grow"
 						} )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
+						add( new FormComponent( "com.turtleisaac.pokeditor.gui.EditorComboBox" ) {
 							name: "itemComboBox4"
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 							"value": "cell 1 1,grow"
@@ -159,7 +159,7 @@ new FormModel {
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 							"value": "cell 0 0,grow"
 						} )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
+						add( new FormComponent( "com.turtleisaac.pokeditor.gui.EditorComboBox" ) {
 							name: "trainerClassSelectorComboBox"
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "trainerClassSelectorComboBoxActionPerformed", true ) )
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {

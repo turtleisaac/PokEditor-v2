@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.2.6.321" Java: "11.0.9" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.4.0.360" Java: "11.0.9" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -23,13 +23,13 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 					"$layoutConstraints": "hidemode 3"
 					"$columnConstraints": "[grow,fill][grow,fill]"
-					"$rowConstraints": "[54][][][][grow,fill][][bottom]"
+					"$rowConstraints": "[54,fill][fill][fill][fill][grow,fill][fill][bottom]"
 				} ) {
 					name: "mainPanel"
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "sheetsSetupButton"
-						"text": "Google Sheets Integration Setup"
-						"toolTipText": "This is how you configure a link between Google Sheets and PokEditor."
+						"text": "Sheets Setup"
+						"toolTipText": "Click this to configure a link with the Google Sheets API or a local sheet repository."
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sheetsSetupButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 0 2 1,grow"
@@ -52,7 +52,7 @@ new FormModel {
 						name: "applyToSheetButton"
 						"text": "Apply ROM to Sheets"
 						"enabled": false
-						"toolTipText": "Data from ROM is copied into Google Sheets."
+						"toolTipText": "Data from game files is copied into sheets."
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "applyToSheetButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 0 3"
@@ -61,7 +61,7 @@ new FormModel {
 						name: "applyToRomButton"
 						"text": "Apply Sheets to ROM"
 						"enabled": false
-						"toolTipText": "Data from Google Sheets is applied to ROM."
+						"toolTipText": "Data from sheets is applied to game files."
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "applyToRomButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 						"value": "cell 1 3"
@@ -78,29 +78,29 @@ new FormModel {
 							"rowSelectionAllowed": false
 							"cellSelectionEnabled": true
 							auxiliary() {
-								"JavaCodeGenerator.postInitCode": "sheetPreviewTable.setDefaultRenderer(Object.class, new PaintTableCellRenderer());\nsheetPreviewTable.setIntercellSpacing(new Dimension(0,0));\nsheetPreviewTable.setRowMargin(0);\nsheetPreviewTable.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));"
+								"JavaCodeGenerator.postInitCode": "//sheetPreviewTable.setDefaultRenderer(Object.class, new PaintTableCellRenderer());\nsheetPreviewTable.setIntercellSpacing(new Dimension(0,0));\nsheetPreviewTable.setRowMargin(0);\nsheetPreviewTable.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));"
 							}
 						} )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 4 2 1,growx"
+						"value": "cell 0 4 2 1,grow"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "sheetRefreshChangesButton"
-						"text": "Refresh Sheet from Google Sheets"
+						"text": "Reload Sheets"
 						"enabled": false
-						"toolTipText": "Online changes made since last download are reloaded."
+						"toolTipText": "Reloads sheets with the last saved data."
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sheetRefreshChangesButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 0 5"
+						"value": "cell 0 5,growx"
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "sheetUploadChangesButton"
-						"text": "Upload Changes to Google Sheets"
+						"text": "Save Sheet Changes"
 						"enabled": false
-						"toolTipText": "Applies local changes to Google Sheets."
+						"toolTipText": "Saves local changes made in the preview window"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sheetUploadChangesButtonActionPerformed", true ) )
 					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-						"value": "cell 1 5"
+						"value": "cell 1 5,growx"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "warningLabel"
@@ -113,6 +113,9 @@ new FormModel {
 				} )
 				add( new FormComponent( "com.turtleisaac.pokeditor.gui.editors.trainers.TrainerPanel" ) {
 					name: "trainerPanel1"
+					auxiliary() {
+						"JavaCodeGenerator.customCreateCode": "new TrainerPanel(this);"
+					}
 				}, new FormLayoutConstraints( null ) {
 					"title": "Trainer Editor"
 				} )
@@ -272,6 +275,40 @@ new FormModel {
 					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "sheetsMenu"
+					"text": "Sheets"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "integrationSetupItem"
+						"text": "Integration Setup"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "integrationSetupItemActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "migrationItem"
+						"text": "Migration Utility"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "migrationItemActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "applyToSheetItem"
+						"text": "Apply ROM to Sheets"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "applyToSheetItemActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "applyToRomItem"
+						"text": "Apply Sheets to ROM"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "applyToRomItemActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "sheetRefreshChangesItem"
+						"text": "Refresh Sheet from Google Sheets"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sheetRefreshChangesItemActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "sheetUploadChangesItem"
+						"text": "Upload Changes to Google Sheets"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "sheetUploadChangesItemActionPerformed", true ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "toolsMenu"
 					"text": "Tools"
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
@@ -311,6 +348,11 @@ new FormModel {
 						name: "aboutItem"
 						"text": "About"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aboutItemActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "tutorialItem"
+						"text": "Tutorial"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "tutorialItemActionPerformed", true ) )
 					} )
 				} )
 			}

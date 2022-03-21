@@ -1,0 +1,359 @@
+JFDML JFormDesigner: "7.0.4.0.360" Java: "11.0.9" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "hidemode 3"
+			"$columnConstraints": "[fill][fill]"
+			"$rowConstraints": "[grow,fill][][]"
+		} ) {
+			name: "this"
+			"title": "Tutorial"
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tutorialTabbedPane"
+				"tabPlacement": 2
+				"selectedIndex": 0
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][fill]"
+					"$rowConstraints": "[][][][][][][][][][][]"
+				} ) {
+					name: "introPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel1"
+						"text": "Welcome to PokEditor v2!"
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 2, false )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel2"
+						"text": "PokEditor v2 is a clean, advanced, and modern tool for hacking the 4th Generation of Pokémon games."
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel3"
+						"text": "What Does PokEditor v2 Do?"
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( null, 1, 2, false )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel4"
+						"text": "PokEditor lets you edit various types of data in these games such as:"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 3"
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "introScrollPane"
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						add( new FormComponent( "javax.swing.JTextArea" ) {
+							name: "introTextArea"
+							"text": "-Species Personal Data (stats, types, abilities, etc...)\n-Species TM Learnsets\n-Species Level-Up Learnsets\n-Species Evolutions\n-Species Baby Forms\n-Moves\n-Items\n-Encounter Data\n-Trainers\n-Sprites\nAnd more...."
+							"font": new java.awt.Font( ".AppleSystemUIFont", 0, 13 )
+							"editable": false
+							"background": new java.awt.Color( 60, 63, 65, 255 )
+							"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						} )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 4"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel5"
+						"text": "What Games Does PokEditor v2 Support?"
+						"font": #SwingDerivedFont0
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 5"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel6"
+						"text": "Pokémon Platinum, HeartGold, and SoulSilver are the titles supported by PokEditor v2."
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 6"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel7"
+						"text": "Who made PokEditor v2?"
+						"font": #SwingDerivedFont0
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 7"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel8"
+						"text": "PokEditor v2 was written by Turtleisaac, but it wouldn't have been possible without the efforts of many others."
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 8"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel9"
+						"text": "Special Thanks To (In no particular order):"
+						"font": #SwingDerivedFont0
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 9"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "introLabel10"
+						"text": "JackHack96, Jay-San, BagBoy, Nomura, AdAstra, Mikelan, Vendor, FrankieD, Hello007, PlatinumMaster, and more"
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 10"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Intro"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[grow,fill][fill]"
+					"$rowConstraints": "[][268][][][][][][][][][]"
+				} ) {
+					name: "mainPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label9"
+						"text": "Getting Started (ONLINE ONLY) (CURRENTLY BROKEN)"
+						"font": &SwingDerivedFont1 new com.jformdesigner.model.SwingDerivedFont( null, 1, 2, false )
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea1"
+						"font": &Font0 new java.awt.Font( ".AppleSystemUIFont", 0, 13 )
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": &Color0 new java.awt.Color( 60, 63, 65, 255 )
+						"text": "To get started in PokEditor v2, the first thing you are going to want to do is link your project with a Google Sheets spreadsheet utilizing the Google Sheets API. In order to do this, click the \"Google Sheets API Integration\" button in the \"Main\" tab of PokEditor v2. There will be a warning that pops up in a new window, so please read that and agree before proceeding.\n\nNow, follow the instructions on the API Integration Setup window that appears. If you haven't done so already, you are going to have to make a COPY of the provided template spreadsheet in your own Google Drive by going to \"File\" -> \"Make a copy.\" After you have done that, go to \"Share\" and set it so that \"Anyone with the link can edit.\" From here, just copy the share link it gives to you and paste it into the text field in the API Integration Setup window. Now you need to press \"Connect,\" and a webpage will open in your default web browser. Google flags PokEditor v2 as an  unverified program, so you have to press \"Advanced\" in the bottom left of the window and then press \"Continue to Quickstart (Unsafe).\" Now just give PokEditor v2 access to your sheet, and you can return to the API Integration Setup window and hit \"Finish.\"\n\nFrom here, a popup will appear that asks you if you want to update your sheets with the data from your game. See \"Apply ROM to Sheet\" for more info."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label10"
+						"text": "Apply ROM to Sheet"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea2"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "This function allows you to copy data from your ROM to your PokEditor sheets. What this will do is, for the sheets/ data you will select, copy the data in your ROM to to Google Sheets. This is so any changes you have possibly already made in another tool will sync to Google Sheets. If you have already been making edits to a PokEditor sheet and that data isn't present in your ROM, uploading that ROM data will overwrite whatever is present in the edited sheet, so be careful."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 3"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label11"
+						"text": "Apply Sheet to ROM"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 4"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea3"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "This function allows you to copy data from your PokEditor sheets to your local files. What this will do is, for the sheets/ data you will select, apply the changes you have made to the game. However, this isn't enough to produce an edited game file that you can now play. See \"Export ROM\" for more info."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 5"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label12"
+						"text": "Export ROM"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 6"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea4"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "This function allows you to export your changes as .nds file you can now play, use in another tool of your choice, or do whatever else you want to with."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 7"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label13"
+						"text": "The Sheet Preview Window"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 8"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea5"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "The Sheet Preview Window is exactly as its name implies. It allows you to PREVIEW your sheets from the PokEditor v2 GUI, but NOT to edit them. The PokEditor Google Sheets templates have been optimized and filled with features such as data validation, error correction, dropdown menus, and more, so they are BY FAR the best way to edit the majority of data with PokEditor v2."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 9"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Main - Online"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[grow,fill]"
+					"$rowConstraints": "[][][][][][][][][][]"
+				} ) {
+					name: "panel1"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label14"
+						"text": "Getting Started (OFFLINE ONLY)"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea6"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "To get started in PokEditor v2, the first thing you are going to want to do is set up your local sheet storage. In order to do this, click the \"Sheets Setup\" button in the \"Main\" tab of PokEditor v2. There will be a warning that pops up in a new window, so please read that and press \"No\".\n\nAfter this, PokEditor v2 will generate all of the spreadsheets that you need in order to edit data. You may have to restart PokEditor v2 after this step in order for the preview window to populate with data."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 1"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label15"
+						"text": "Apply ROM to Sheet"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 2"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea7"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "This function allows you to copy data from your ROM to your PokEditor sheets. What this will do is, for the sheets/ data you will select, copy the data in your ROM to your local sheets. This is so any changes you have possibly already made in another tool will be saved to your sheets. If you have already been making edits to a PokEditor sheet and that data isn't present in your ROM, uploading that ROM data will overwrite whatever is present in the edited sheet, so be careful."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 3"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label16"
+						"text": "Apply Sheet to ROM"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 4"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea8"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "This function allows you to copy data from your PokEditor sheets to your local files. What this will do is, for the sheets/ data you will select, apply the changes you have made to the game. However, this isn't enough to produce an edited game file that you can now play. See \"Export ROM\" for more info."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 5"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label17"
+						"text": "Export ROM"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 6"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea9"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "This function allows you to export your changes as .nds file you can now play, use in another tool of your choice, or do whatever else you want to with."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 7"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label18"
+						"text": "The Sheet Preview Window"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 8"
+					} )
+					add( new FormComponent( "javax.swing.JTextArea" ) {
+						name: "textArea10"
+						"font": #Font0
+						"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"background": #Color0
+						"text": "The Sheet Preview Window is exactly as its name implies - it allows you to PREVIEW your sheets from the PokEditor v2 GUI. You can also make edits here, but you will be missing out on a lot of features such as error correction, data validation, dropdown menus, and more. If an editor has a dedicated tab within PokEditor v2, you 100% should be using that to make edits instead of editing the sheet manually."
+						"wrapStyleWord": true
+						"lineWrap": true
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 9"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Main - Offline"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][fill]"
+					"$rowConstraints": "[][][]"
+				} ) {
+					name: "trainerPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label19"
+						"text": "Tutorial coming soon"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Trainers"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][fill]"
+					"$rowConstraints": "[][][]"
+				} ) {
+					name: "encounterPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label21"
+						"text": "Tutorial coming soon"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Encounters"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+					"$layoutConstraints": "hidemode 3"
+					"$columnConstraints": "[fill][fill]"
+					"$rowConstraints": "[][][]"
+				} ) {
+					name: "pokemonSpritesPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label20"
+						"text": "Tutorial coming soon"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+						"value": "cell 0 0"
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Sprites"
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 805, 785 )
+		} )
+	}
+}

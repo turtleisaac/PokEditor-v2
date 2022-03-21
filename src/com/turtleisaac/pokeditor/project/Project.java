@@ -202,6 +202,42 @@ public class Project implements Serializable
         }
     }
 
+    public String getBaseTitle()
+    {
+        switch (baseRomGameCode.substring(0,3))
+        {
+            case "ADA":
+                return "Pokemon Diamond";
+
+            case "APA":
+                return "Pokemon Pearl";
+
+            case "CPU":
+                return "Pokemon Platinum";
+
+            case "IPK":
+                return "Pokemon HeartGold";
+
+            case "IPG":
+                return "Pokemon SoulSilver";
+
+            case "IRB":
+                return "POKEMON B";
+
+            case "IRA":
+                return "POKEMON W";
+
+            case "IRO":
+                return "POKEMON B2";
+
+            case "IRD":
+                return "POKEMON W2";
+
+            default:
+                throw new RuntimeException("Invalid game");
+        }
+    }
+
     private boolean isDP(String gameCode)
     {
         return isPearl(gameCode) || isDiamond(gameCode);

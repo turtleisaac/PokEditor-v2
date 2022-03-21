@@ -14,22 +14,25 @@ import java.util.Objects;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.turtleisaac.pokeditor.editors.babies.BabyFormEditor;
 import com.turtleisaac.pokeditor.editors.encounters.johto.JohtoEncounterEditor;
 import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterEditor;
-import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterReturn;
 import com.turtleisaac.pokeditor.editors.evolutions.gen4.EvolutionEditor;
 import com.turtleisaac.pokeditor.editors.items.ItemEditorGen4;
 import com.turtleisaac.pokeditor.editors.learnsets.LearnsetEditor;
 import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerReturnGen4;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
-import com.turtleisaac.pokeditor.gui.*;
+import com.turtleisaac.pokeditor.gui.JCheckboxTree;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.ProjectWindow;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import net.miginfocom.swing.*;
+import org.apache.commons.io.FileDeleteStrategy;
+import org.apache.commons.io.FileUtils;
 import turtleisaac.GoogleSheetsAPI;
 
 /**
@@ -95,156 +98,54 @@ public class SheetApplier extends JFrame
 
         try
         {
-            api.updateSheet("Formatting (DO NOT TOUCH)",FormatGenerator.updateFormatSheet(project));
+            try
+            {
+                api.updateSheet("Formatting (DO NOT TOUCH)",FormatGenerator.updateFormatSheet(project));
+            }
+            catch(IOException exception)
+            {
+                System.err.println("Failure to perform automatic formatting sheet update and verification. Do you own this sheet?");
+            }
 
             Narctowl narctowl= new Narctowl(true);
             String dataPath= project.getDataPath();
+            String unpackedFolderPath = projectPath + File.separator + "temp" + File.separator;
 
 
             switch (baseRom)
             {
-                case Diamond:
-                case Pearl:
-                    if(contains(selected, "Personal"))
-                    {
-                        String outputDir= File.separator + "poketool" + File.separator + "personal" + File.separator + "personal";
-                        String outputNarc= File.separator + "poketool" + File.separator + "personal" + File.separator + "personal.narc";
-
-                        PersonalEditor editor= new PersonalEditor(dataPath, project);
-                        editor.csvToPersonal(api.getSpecifiedSheetArr("Personal"),api.getSpecifiedSheetArr("TM Learnsets"),outputDir);
-
-                        pack(dataPath + outputDir, dataPath + outputNarc);
-                    }
-
-                    if(contains(selected, "Learnsets"))
-                    {
-                        String outputDir= File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl";
-                        String outputNarc= File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl.narc";
-
-                        LearnsetEditor editor= new LearnsetEditor(dataPath, project);
-                        editor.sheetToLearnsets(api.getSpecifiedSheetArr("Level-Up Learnsets"),outputDir);
-
-                        pack(dataPath + outputDir, dataPath + outputNarc);
-                    }
-
-                    if(contains(selected,"Evolutions"))
-                    {
-                        String outputDir= File.separator + "poketool" + File.separator + "personal" + File.separator + "evo";
-                        String outputNarc= File.separator + "poketool" + File.separator + "personal" + File.separator + "evo.narc";
-
-                        EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
-                        editor.sheetToEvolutions(api.getSpecifiedSheetArr("Evolutions"),outputDir);
-
-                        pack(dataPath + outputDir, dataPath + outputNarc);
-                    }
-
-//                    if(contains(selected,"Tutor Move"))
-//                    {
-//                        JOptionPane.showMessageDialog(this,"Tutor Move editors not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
-//                    }
-//
-                    if(contains(selected,"Baby Forms"))
-                    {
-                        String outputNarc= File.separator + "poketool" + File.separator + "personal" + File.separator + "pms.narc";
-
-                        BabyFormEditor editor= new BabyFormEditor(dataPath);
-                        editor.sheetToBabyForms(api.getSpecifiedSheetArr("Baby Forms"),outputNarc);
-                    }
-
-                    if(contains(selected, "Trainers"))
-                    {
-                        String trainerDir= File.separator + "poketool" + File.separator + "trainer" + File.separator + "";
-
-                        String trdataDir= trainerDir + "trdata";
-                        String trdataNarc= trainerDir + "trdata.narc";
-                        String trpokeDir= trainerDir + "trpoke";
-                        String trpokeNarc= trainerDir + "trpoke.narc";
-
-                        TrainerEditorGen4 editor= new TrainerEditorGen4(project,dataPath,baseRom);
-                        editor.sheetsToTrainers(api.getSpecifiedSheetArr("Trainer Data"),api.getSpecifiedSheetArr("Trainer Pokemon"),trainerDir);
-
-                        pack(dataPath + trdataDir, dataPath + trdataNarc);
-                        pack(dataPath + trpokeDir, dataPath + trpokeNarc);
-                    }
-
-                    if(contains(selected,"Moves"))
-                    {
-                        String outputDir= File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl";
-                        String outputNarc= File.separator + "poketool" + File.separator + "waza" + File.separator + "waza_tbl.narc";
-
-                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
-                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),outputDir);
-
-                        pack(dataPath + outputDir, dataPath + outputNarc);
-                    }
-
-                    if(contains(selected,"Items"))
-                    {
-                        String outputDir= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "item_data";
-                        String outputNarc= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "item_data.narc";
-
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
-                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir);
-
-                        pack(dataPath + outputDir, dataPath + outputNarc);
-                    }
-
-                    if(contains(selected,"Encounters"))
-                    {
-                        SinnohEncounterEditor editor= new SinnohEncounterEditor(project,dataPath);
-
-                        String outputDir;
-                        String outputNarc;
-
-                        if(baseRom == Game.Diamond) //Diamond
-                        {
-                            outputDir= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "d_enc_data";
-                            outputNarc= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "d_enc_data.narc";
-                        }
-                        else //Pearl
-                        {
-                            outputDir= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "p_enc_data";
-                            outputNarc= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "p_enc_data.narc";
-                        }
-
-                        editor.sheetsToEncounters(api.getSpecifiedSheetArr("Field Encounters"),api.getSpecifiedSheetArr("Water Encounters"),api.getSpecifiedSheetArr("Swarm/ Day/ Night Encounters"),api.getSpecifiedSheetArr("Poke Radar Encounters"),api.getSpecifiedSheetArr("Dual-Slot Mode Encounters"),api.getSpecifiedSheetArr("Alt Form Encounters"),outputDir);
-
-                        pack(dataPath + outputDir, dataPath + outputNarc);
-                    }
-                    break;
-
                 case Platinum:
                     if(contains(selected, "Personal"))
                     {
-                        String outputDir= File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal";
+                        String outputDir= unpackedFolderPath + "pl_personal";
                         String outputNarc= File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal.narc";
 
                         PersonalEditor editor= new PersonalEditor(dataPath, project);
-                        editor.csvToPersonal(api.getSpecifiedSheetArr("Personal"),api.getSpecifiedSheetArr("TM Learnsets"),outputDir);
+                        editor.csvToPersonal(api.getSpecifiedSheetArr("Personal"),api.getSpecifiedSheetArr("TM Learnsets"),outputDir,dataPath + outputNarc);
 
-                        pack(dataPath + outputDir, dataPath + outputNarc);
+                        pack(outputDir, dataPath + outputNarc);
                     }
 
-                    if(contains(selected, "Learnsets"))
+                    if(contains(selected, "Level-Up Learnsets"))
                     {
-                        String outputDir= File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl";
+                        String outputDir= unpackedFolderPath + "wotbl";
                         String outputNarc= File.separator + "poketool" + File.separator + "personal" + File.separator + "wotbl.narc";
 
                         LearnsetEditor editor= new LearnsetEditor(dataPath, project);
                         editor.sheetToLearnsets(api.getSpecifiedSheetArr("Level-Up Learnsets"),outputDir);
 
-                        pack(dataPath + outputDir, dataPath + outputNarc);
+                        pack(outputDir, dataPath + outputNarc);
                     }
 
                     if(contains(selected,"Evolutions"))
                     {
-                        String outputDir= File.separator + "poketool" + File.separator + "personal" + File.separator + "evo";
+                        String outputDir= unpackedFolderPath + "evo";
                         String outputNarc= File.separator + "poketool" + File.separator + "personal" + File.separator + "evo.narc";
 
                         EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
                         editor.sheetToEvolutions(api.getSpecifiedSheetArr("Evolutions"),outputDir);
 
-                        pack(dataPath + outputDir, dataPath + outputNarc);
+                        pack(outputDir, dataPath + outputNarc);
                     }
 //
 //                    if(contains(selected,"Tutor Move"))
@@ -256,7 +157,7 @@ public class SheetApplier extends JFrame
                     {
                         String outputNarc= File.separator + "poketool" + File.separator + "personal" + File.separator + "pms.narc";
 
-                        BabyFormEditor editor= new BabyFormEditor(dataPath);
+                        BabyFormEditor editor= new BabyFormEditor(dataPath,project);
                         editor.sheetToBabyForms(api.getSpecifiedSheetArr("Baby Forms"),outputNarc);
                     }
 
@@ -264,49 +165,49 @@ public class SheetApplier extends JFrame
                     {
                         String trainerDir= File.separator + "poketool" + File.separator + "trainer" + File.separator + "";
 
-                        String trdataDir= trainerDir + "trdata";
+                        String trdataDir= unpackedFolderPath + "trdata";
                         String trdataNarc= trainerDir + "trdata.narc";
-                        String trpokeDir= trainerDir + "trpoke";
+                        String trpokeDir= unpackedFolderPath + "trpoke";
                         String trpokeNarc= trainerDir + "trpoke.narc";
 
                         TrainerEditorGen4 editor= new TrainerEditorGen4(project,dataPath,baseRom);
-                        editor.sheetsToTrainers(api.getSpecifiedSheetArr("Trainer Data"),api.getSpecifiedSheetArr("Trainer Pokemon"),trainerDir);
+                        editor.sheetsToTrainers(api.getSpecifiedSheetArr("Trainer Data"),api.getSpecifiedSheetArr("Trainer Pokemon"),unpackedFolderPath);
 
-                        pack(dataPath + trdataDir, dataPath + trdataNarc);
-                        pack(dataPath + trpokeDir, dataPath + trpokeNarc);
+                        pack(trdataDir, dataPath + trdataNarc);
+                        pack(trpokeDir, dataPath + trpokeNarc);
                     }
 
                     if(contains(selected,"Moves"))
                     {
-                        String outputDir= File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl";
+                        String outputDir= unpackedFolderPath + "pl_waza_tbl";
                         String outputNarc= File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl.narc";
 
                         MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
-                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),outputDir);
+                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),outputDir, outputNarc);
 
-                        pack(dataPath + outputDir, dataPath + outputNarc);
+                        pack(outputDir, dataPath + outputNarc);
                     }
 
                     if(contains(selected,"Items"))
                     {
-                        String outputDir= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data";
+                        String outputDir= unpackedFolderPath + "pl_item_data";
                         String outputNarc= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data.narc";
 
                         ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
-                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir);
+                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir,outputNarc);
 
-                        pack(dataPath + outputDir, dataPath + outputNarc);
+                        pack(outputDir, dataPath + outputNarc);
                     }
 
                     if(contains(selected,"Encounters"))
                     {
                         SinnohEncounterEditor editor= new SinnohEncounterEditor(project,dataPath);
 
-                        String outputDir= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "pl_enc_data";
+                        String outputDir= unpackedFolderPath + "pl_enc_data";
                         String outputNarc= File.separator + "fielddata" + File.separator + "encountdata" + File.separator + "pl_enc_data.narc";
 
                         editor.sheetsToEncounters(api.getSpecifiedSheetArr("Field Encounters"),api.getSpecifiedSheetArr("Water Encounters"),api.getSpecifiedSheetArr("Swarm/ Day/ Night Encounters"),api.getSpecifiedSheetArr("Poke Radar Encounters"),api.getSpecifiedSheetArr("Dual-Slot Mode Encounters"),api.getSpecifiedSheetArr("Alt Form Encounters"),outputDir);
-                        pack(dataPath + outputDir, dataPath + outputNarc);
+                        pack(outputDir, dataPath + outputNarc);
                     }
                     break;
 
@@ -314,42 +215,56 @@ public class SheetApplier extends JFrame
                 case SoulSilver:
                     if(contains(selected, "Personal"))
                     {
+                        String outputDir= unpackedFolderPath + "personal";
+                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2";
+
                         PersonalEditor editor= new PersonalEditor(dataPath, project);
-                        editor.csvToPersonal(api.getSpecifiedSheetArr("Personal"),api.getSpecifiedSheetArr("TM Learnsets"),File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_");
-                        narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2");
-                        toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "2_"));
+                        editor.csvToPersonal(api.getSpecifiedSheetArr("Personal"),api.getSpecifiedSheetArr("TM Learnsets"),outputDir,outputNarc);
+
+                        narctowl.pack(outputDir,"",dataPath + outputNarc);
+                        toDelete.add(new File(outputDir));
                     }
 
-                    if(contains(selected, "Learnsets"))
+                    if(contains(selected, "Level-Up Learnsets"))
                     {
+                        String outputDir= unpackedFolderPath + "wotbl";
+                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3";
+
                         LearnsetEditor editor= new LearnsetEditor(dataPath, project);
-                        editor.sheetToLearnsets(api.getSpecifiedSheetArr("Level-Up Learnsets"),File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_");
-                        narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3");
-                        toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "3_"));
+                        editor.sheetToLearnsets(api.getSpecifiedSheetArr("Level-Up Learnsets"),outputDir);
+
+                        narctowl.pack(outputDir,"",dataPath + outputNarc);
+                        toDelete.add(new File(outputDir));
                     }
 
                     if(contains(selected,"Evolutions"))
                     {
+                        String outputDir= unpackedFolderPath + "evo";
+                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4";
+
                         EvolutionEditor editor= new EvolutionEditor(project, dataPath, baseRom);
-                        editor.sheetToEvolutions(api.getSpecifiedSheetArr("Evolutions"),File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_");
-                        narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4");
-                        toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "4_"));
+                        editor.sheetToEvolutions(api.getSpecifiedSheetArr("Evolutions"),outputDir);
+                        narctowl.pack(outputDir,"",dataPath + outputNarc);
+                        toDelete.add(new File(outputDir));
                     }
 
                     if(contains(selected,"Baby Forms"))
                     {
-                        BabyFormEditor editor= new BabyFormEditor(dataPath);
+                        BabyFormEditor editor= new BabyFormEditor(dataPath,project);
                         editor.sheetToBabyForms(api.getSpecifiedSheetArr("Baby Forms"),File.separator + "poketool" + File.separator + "personal" + File.separator + "pms.narc");
                     }
 
-//                    if(contains(selected,"Moves"))
-//                    {
-//                        MoveEditorGen4 editor= new MoveEditorGen4(dataPath);
-//                        narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1");
-//                        toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1"));
-//                        api.updateSheet("Moves",editor.movesToSheet(File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1"));
-//                    }
-//
+                    if(contains(selected,"Moves"))
+                    {
+                        String outputDir= unpackedFolderPath + "item_data";
+                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1";
+
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
+                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),outputDir,outputNarc);
+
+                        pack(outputDir, dataPath + outputNarc);
+                    }
+
                     if(contains(selected,"Encounters"))
                     {
                         JohtoEncounterEditor editor= new JohtoEncounterEditor(project, dataPath);
@@ -359,20 +274,53 @@ public class SheetApplier extends JFrame
                         Object[][] outbreak= api.getSpecifiedSheetArr("Mass-Outbreak Encounters");
                         Object[][] sound= api.getSpecifiedSheetArr("Sound Encounters");
 
+                        String outputDir= unpackedFolderPath + "enc_data";
+                        String outputNarc;
+
 
                         if(baseRom == Game.HeartGold) //HG
                         {
-                            editor.sheetsToEncounters(field,water,smash,outbreak,sound,File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "7_");
-                            narctowl.pack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "7_","",dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "7");
-                            toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "7_"));
+                            outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "7";
 
+                            editor.sheetsToEncounters(field,water,smash,outbreak,sound,outputDir);
+                            narctowl.pack(outputDir,"",outputNarc);
                         }
                         else //SS
                         {
-                            editor.sheetsToEncounters(field,water,smash,outbreak,sound,File.separator + "a" + File.separator + "1" + File.separator + "3" + File.separator + "6_");
-                            narctowl.pack(dataPath + File.separator + "a" + File.separator + "1" + File.separator + "3" + File.separator + "6_","",dataPath + File.separator + "a" + File.separator + "1" + File.separator + "3" + File.separator + "6");
-                            toDelete.add(new File(dataPath + File.separator + "a" + File.separator + "1" + File.separator + "3" + File.separator + "6_"));
+                            outputNarc= File.separator + "a" + File.separator + "1" + File.separator + "3" + File.separator + "6";
+
+                            editor.sheetsToEncounters(field,water,smash,outbreak,sound,outputDir);
+                            narctowl.pack(outputDir,"",dataPath + outputNarc);
                         }
+
+                        toDelete.add(new File(outputDir));
+                    }
+
+                    if(contains(selected, "Trainer"))
+                    {
+                        String trainerDir= File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "";
+
+                        String trdataDir= unpackedFolderPath + "trdata";
+                        String trdataNarc= trainerDir + "5";
+                        String trpokeDir= unpackedFolderPath + "trpoke";
+                        String trpokeNarc= trainerDir + "6";
+
+                        TrainerEditorGen4 editor= new TrainerEditorGen4(project,dataPath,baseRom);
+                        editor.sheetsToTrainers(api.getSpecifiedSheetArr("Trainer Data"),api.getSpecifiedSheetArr("Trainer Pokemon"),unpackedFolderPath);
+
+                        pack(trdataDir, dataPath + trdataNarc);
+                        pack(trpokeDir, dataPath + trpokeNarc);
+                    }
+
+                    if(contains(selected,"Items"))
+                    {
+                        String outputDir= unpackedFolderPath + "item_data";
+                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7";
+
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
+                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir,outputNarc);
+
+                        pack(outputDir, dataPath + outputNarc);
                     }
                     break;
             }
@@ -382,6 +330,10 @@ public class SheetApplier extends JFrame
         catch (IOException exception)
         {
             exception.printStackTrace();
+            JOptionPane.showMessageDialog(this,"An error has occurred. Please check the cmd window for further details.","Error",JOptionPane.ERROR_MESSAGE);
+            dispose();
+            parent.toFront();
+            parent.setEnabled(true);
         }
 
         for(File file : toDelete)
@@ -394,10 +346,11 @@ public class SheetApplier extends JFrame
             JOptionPane.showMessageDialog(this,"You haven't selected anything to apply!","Error",JOptionPane.ERROR_MESSAGE);
         else if(!contains(selected,"Tutor Move"))
         {
+            JOptionPane.showMessageDialog(this,"Sheets applied to ROM!","Success",JOptionPane.INFORMATION_MESSAGE);
             System.out.println("Sheets applied to ROM");
+            dispose();
             parent.toFront();
             parent.setEnabled(true);
-            dispose();
         }
     }
 
@@ -493,18 +446,21 @@ public class SheetApplier extends JFrame
         return false;
     }
 
-    public static void clearDirs(File folder)
+    private static void clearDirs(File folder)
     {
+        try
+        {
+            FileUtils.deleteDirectory(folder);
+        }
+        catch(IOException e)
+        {
+            System.err.println("\tFailed to delete folder: " + folder.getAbsolutePath());
+            e.printStackTrace();
+        }
+
         if(folder.exists())
         {
-            for(File f : Objects.requireNonNull(folder.listFiles()))
-            {
-                if(f.isDirectory())
-                    clearDirs(f);
-                else
-                    f.delete();
-            }
-            folder.delete();
+            System.err.println("\tFolder wasn't deleted?");
         }
     }
 

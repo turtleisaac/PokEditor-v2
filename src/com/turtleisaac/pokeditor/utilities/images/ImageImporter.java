@@ -11,13 +11,6 @@ import java.util.zip.InflaterInputStream;
 
 public class ImageImporter
 {
-    public static void main(String[] args) throws IOException
-    {
-        SpriteImage image= importImage("/Users/Danny/Downloads/testImage5.png");
-
-        ImageExporter.exportImage("/Users/Danny/Downloads/testImage6.png",image);
-    }
-
     /**
      * Imports a PNG file (yes I know ImageIO.read() exists, this is just a much better way to do things for me)
      * @param file A path to an indexed PNG file
@@ -99,8 +92,13 @@ public class ImageImporter
         for(int i= 0; i < chunkLength/3; i++)
         {
             int r= buffer.readByte();
+            r-= r%8;
+
             int g= buffer.readByte();
+            g-= g%8;
+
             int b= buffer.readByte();
+            b-= b%8;
 
             colorList.add(new Color(r,g,b));
         }

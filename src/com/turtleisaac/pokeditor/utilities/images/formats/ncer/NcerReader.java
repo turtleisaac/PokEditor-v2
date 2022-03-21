@@ -148,7 +148,7 @@ public class NcerReader
                 NcerData.Obj1 obj1= getObj1(obj1Value,obj0.getRsFlag());
                 NcerData.Obj2 obj2= getObj2(obj2Value);
 
-                System.out.println("    (" + obj1.getXOffset() + "," + obj0.getYOffset() + ")\n");
+//                System.out.println("    (" + obj1.getXOffset() + "," + obj0.getYOffset() + ")\n");
 
 
                 Size size= ImageActions.getOAMSize(obj0.getShape(),obj1.getSize());
@@ -519,7 +519,7 @@ public class NcerReader
     
     private static NcerData.Obj0 getObj0(int value)
     {
-        System.out.println("Obj0: " + Integer.toHexString(value));
+//        System.out.println("Obj0: " + Integer.toHexString(value));
         return new NcerData.Obj0()
         {
             @Override
@@ -574,7 +574,7 @@ public class NcerReader
 
     private static NcerData.Obj1 getObj1(int value, boolean flag)
     {
-        System.out.println("Obj1: " + Integer.toHexString(value));
+//        System.out.println("Obj1: " + Integer.toHexString(value));
         return new NcerData.Obj1()
         {
             @Override
@@ -617,7 +617,7 @@ public class NcerReader
 
     private static NcerData.Obj2 getObj2(int value)
     {
-        System.out.println("Obj2: " + Integer.toHexString(value));
+//        System.out.println("Obj2: " + Integer.toHexString(value));
         return new NcerData.Obj2()
         {
             @Override

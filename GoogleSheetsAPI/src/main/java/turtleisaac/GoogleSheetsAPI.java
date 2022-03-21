@@ -6,7 +6,7 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
@@ -16,50 +16,87 @@ import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GoogleSheetsAPI
 {
-    private Sheets sheetsService;
+    private final Sheets sheetsService;
     private String APPLICATION_NAME= "PokEditor";
-    private String SPREADSHEET_ID;
-    private String SPREADSHEET_LINK;
-    private String projectPath;
+    private final String SPREADSHEET_ID;
+    private final String SPREADSHEET_LINK;
+    private final String projectPath;
 
-    public GoogleSheetsAPI(String spreadsheetLink, String projectPath) throws IOException, GeneralSecurityException
+    private final boolean local;
+
+    public GoogleSheetsAPI(String spreadsheetLink, String projectPath, boolean local) throws IOException, GeneralSecurityException
     {
-        if(!spreadsheetLink.contains("https://"))
-            spreadsheetLink= "https://" + spreadsheetLink;
-
-        SPREADSHEET_LINK= spreadsheetLink;
+        this.local= local;
         this.projectPath= projectPath;
 
-        SPREADSHEET_ID= spreadsheetLink.split("/")[5];
-        sheetsService= getSheetsService();
+        if(!local)
+        {
+            if(!spreadsheetLink.contains("https://"))
+                spreadsheetLink= "https://" + spreadsheetLink;
+
+            SPREADSHEET_LINK= spreadsheetLink;
+
+            SPREADSHEET_ID= spreadsheetLink.split("/")[5];
+            sheetsService= getSheetsService();
+        }
+        else
+        {
+            SPREADSHEET_ID = null;
+            SPREADSHEET_LINK = null;
+            sheetsService = null;
+        }
     }
 
     private Credential authorize() throws IOException, GeneralSecurityException
     {
-        InputStream in= GoogleSheetsAPI.class.getResourceAsStream("/credentials.json");
+        if(!local)
+        {
+            File userApiCredentials = new File(projectPath + File.separator + "credentials.json");
+            InputStream in;
 
-        GoogleClientSecrets clientSecrets= GoogleClientSecrets.load(JacksonFactory.getDefaultInstance(), new InputStreamReader(in));
+            System.out.println("Post - API Loader");
+            System.out.println(userApiCredentials.getAbsolutePath());
+            System.out.println("\tExists: " + userApiCredentials.exists());
 
-        List<String> scopes= Arrays.asList(SheetsScopes.SPREADSHEETS);
-        GoogleAuthorizationCodeFlow flow= new GoogleAuthorizationCodeFlow.Builder(GoogleNetHttpTransport.newTrustedTransport(),JacksonFactory.getDefaultInstance(),clientSecrets,scopes)
-                .setDataStoreFactory(new FileDataStoreFactory(new File(projectPath + "/tokens")))
-                .setAccessType("offline")
-                .build();
+            if(userApiCredentials.exists())
+            {
+                System.out.println("Loaded user self-credentials");
+                in = new FileInputStream(userApiCredentials);
+            }
+            else
+            {
+                in= GoogleSheetsAPI.class.getResourceAsStream("/credentials.json");
+            }
 
-        Credential credential= new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+            GoogleClientSecrets clientSecrets= GoogleClientSecrets.load(GsonFactory.getDefaultInstance(), new InputStreamReader(in));
 
-        return credential;
+            List<String> scopes= Arrays.asList(SheetsScopes.SPREADSHEETS);
+            GoogleAuthorizationCodeFlow flow= new GoogleAuthorizationCodeFlow.Builder(GoogleNetHttpTransport.newTrustedTransport(),GsonFactory.getDefaultInstance(),clientSecrets,scopes)
+                    .setDataStoreFactory(new FileDataStoreFactory(new File(projectPath + File.separator + "tokens")))
+                    .setAccessType("offline")
+                    .build();
+
+            Credential credential= new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+
+            return credential;
+        }
+        else
+        {
+            return null;
+        }
+
     }
 
     public Sheets getSheetsService() throws IOException, GeneralSecurityException
     {
         Credential credential= authorize();
-        return new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(),credential)
+        return new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance(),credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
@@ -75,25 +112,41 @@ public class GoogleSheetsAPI
 
     public List<List<Object>> getSpecifiedSheet(String subSheet) throws IOException
     {
-        ValueRange response= sheetsService.spreadsheets().values().get(SPREADSHEET_ID,subSheet).execute();
+        if(!local)
+        {
+            ValueRange response= sheetsService.spreadsheets().values().get(SPREADSHEET_ID,subSheet).execute();
 
-        List<List<Object>> values= response.getValues();
+            List<List<Object>> values= response.getValues();
 
-        System.out.println("Downloading sheet: " + subSheet + " (" + values.size() + " rows and " + values.get(0).size() + " columns)\n");
+            System.out.println("Downloading sheet: " + subSheet + " (" + values.size() + " rows and " + values.get(0).size() + " columns)\n");
 
-        return values;
+            return values;
+        }
+        else
+        {
+            List<List<Object>> values = Arrays.stream(SheetsInterceptor.interceptLoad(projectPath, subSheet)).map(row -> new ArrayList<>(Arrays.asList(row))).collect(Collectors.toList());
+            return values;
+        }
+
     }
 
     public Object[][] getSpecifiedSheetArr(String subSheet) throws IOException
     {
-        List<List<Object>> values= getSpecifiedSheet(subSheet);
+        if(!local)
+        {
+            List<List<Object>> values= getSpecifiedSheet(subSheet);
 
-        Object[][] ret= new Object[values.size()][];
+            Object[][] ret= new Object[values.size()][];
 
-        for(int i= 0; i < values.size(); i++)
-            ret[i]= values.get(i).toArray(new Object[0]);
+            for(int i= 0; i < values.size(); i++)
+                ret[i]= values.get(i).toArray(new Object[0]);
 
-        return ret;
+            return ret;
+        }
+        else
+        {
+            return SheetsInterceptor.interceptLoad(projectPath, subSheet);
+        }
     }
 
     public void appendSheet(String range) throws IOException
@@ -111,14 +164,21 @@ public class GoogleSheetsAPI
 
     public void updateSheet(String range, List<List<Object>> values) throws IOException
     {
-        ValueRange body= new ValueRange()
-                .setValues(values);
+        if(!local)
+        {
+            ValueRange body= new ValueRange()
+                    .setValues(values);
 
-        UpdateValuesResponse result= sheetsService.spreadsheets().values()
-                .update(SPREADSHEET_ID,range,body)
-                .setValueInputOption("USER_ENTERED")
-                .setIncludeValuesInResponse(false)
-                .execute();
+            UpdateValuesResponse result= sheetsService.spreadsheets().values()
+                    .update(SPREADSHEET_ID,range,body)
+                    .setValueInputOption("USER_ENTERED")
+                    .setIncludeValuesInResponse(false)
+                    .execute();
+        }
+        else
+        {
+            SheetsInterceptor.interceptWrite(values.stream().map(row -> row.toArray(new Object[0])).toArray(Object[][]::new), projectPath, range);
+        }
     }
 
     public void updateSheet(String range, Object[][] values) throws IOException
@@ -127,7 +187,7 @@ public class GoogleSheetsAPI
 
         for(Object[] arr : values)
         {
-            System.out.println(Arrays.toString(arr));
+//            System.out.println(Arrays.toString(arr));
             List<Object> row = new ArrayList<>(Arrays.asList(arr));
             data.add(row);
         }
@@ -164,23 +224,39 @@ public class GoogleSheetsAPI
 
     public String[] getSheetNames() throws IOException
     {
-        Spreadsheet response1= sheetsService.spreadsheets().get(SPREADSHEET_ID)
-                .setIncludeGridData(false)
-                .execute();
-
-        List<Sheet> sheetList = response1.getSheets();
-
-        List<String> sheetNames= new ArrayList<>();
-
-        System.out.println("\n----Sheet Names----");
-        for (Sheet sheet : sheetList)
+        if(!local)
         {
-            System.out.println(sheet.getProperties().getTitle());
-            sheetNames.add(sheet.getProperties().getTitle());
-        }
-        System.out.println("-------------------\n");
+            Spreadsheet response1= sheetsService.spreadsheets().get(SPREADSHEET_ID)
+                    .setIncludeGridData(false)
+                    .execute();
 
-        return sheetNames.toArray(new String[0]);
+            List<Sheet> sheetList = response1.getSheets();
+
+            List<String> sheetNames= new ArrayList<>();
+
+            System.out.println("\n----Sheet Names----");
+            for (Sheet sheet : sheetList)
+            {
+                System.out.println(sheet.getProperties().getTitle());
+                sheetNames.add(sheet.getProperties().getTitle());
+            }
+            System.out.println("-------------------\n");
+
+            return sheetNames.toArray(new String[0]);
+        }
+        else
+        {
+            if(new File(projectPath + File.separator + "local").exists())
+            {
+                return Arrays.stream(Objects.requireNonNull(new File(projectPath + File.separator + "local").listFiles())).filter(s -> s.getName().contains(".csv")).map(f -> f.getName().substring(0, f.getName().indexOf("."))).toArray(String[]::new);
+            }
+            else
+            {
+                return new String[] {};
+            }
+
+        }
+
     }
 
 
@@ -345,7 +421,12 @@ public class GoogleSheetsAPI
         this.APPLICATION_NAME = APPLICATION_NAME;
     }
 
-//    public static void main(String[] args) throws IOException, GeneralSecurityException
+    public boolean isLocal()
+    {
+        return local;
+    }
+
+    //    public static void main(String[] args) throws IOException, GeneralSecurityException
 //    {
 //        GoogleSheetsAPI googleSheets= new GoogleSheetsAPI("https://docs.google.com/spreadsheets/d/1XxVz-Y5kpStjsMtgrtALD7DMh1OAvbYsOJl5WtDPi2k/edit#gid=414420977");
 //        String subSheet= "Personal";

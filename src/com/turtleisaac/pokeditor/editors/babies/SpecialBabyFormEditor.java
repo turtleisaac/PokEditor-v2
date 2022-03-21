@@ -41,6 +41,7 @@ public class SpecialBabyFormEditor
 
     public SpecialBabyFormEditor(String gameCode) throws IOException
     {
+        //TODO make work with v2
         this.gameCode = gameCode;
         String entryPath = resourcePath + "EntryData.txt";
 

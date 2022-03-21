@@ -2,8 +2,8 @@ package com.turtleisaac.pokeditor.framework.narctowl;
 
 public interface NarcSubFile
 {
-    int getStartingOffset();
-    int getEndingOffset();
-    int getTrashBytes();
+    long getStartingOffset();
+    long getEndingOffset();
+    long getTrashBytes();
     String getName();
 }

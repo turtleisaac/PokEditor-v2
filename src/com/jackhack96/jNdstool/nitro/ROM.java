@@ -269,6 +269,7 @@ public class ROM {
         header.setFatOffset(rom.getPosition());
         FAT.writeFAT(rom, root, overlayStartOffsets, overlayEndOffsets);
         header.setFatSize(rom.getPosition() - header.getFatOffset());
+        System.out.println("Current Position: " + rom.getPosition());
         writePadding(rom);
 
         // The banner
@@ -298,8 +299,9 @@ public class ROM {
     static void writePadding(jBinaryWriter rom) throws IOException {
         int p = rom.getPosition();
         if (p % 4 != 0)
-            for (int i = 0; i < 4 - (p % 4); i++)
+            for (int i = 0; i < 4 - (p % 4); i++) {
                 rom.writeByte(0xff);
+            }
     }
 
     /**

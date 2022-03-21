@@ -106,14 +106,14 @@ class NitroDirectory implements Comparable<NitroDirectory> {
 
         while (((header = stream.readByte()) & 0x7f) != 0) { // Until we found a 0x00 or a 0xff header, we can go further
             String name = stream.readString(header & 0x7f, StandardCharsets.US_ASCII); // This could be a parent name or a file name
-            if (header > 0x7f) { // This is a directory
+            if (header <= 0x7f) { // This is a file
+                parent.fileList.add(new NitroFile(name, firstFileID, startOffset.get(firstFileID), endOffset.get(firstFileID) - startOffset.get(firstFileID), parent));
+                firstFileID++;
+            } else { // This is a directory
                 int newID = stream.readShort(); // This will be the next parent ID
                 NitroDirectory newDirectory = new NitroDirectory(name, newID, parent);
                 parent.directoryList.add(newDirectory);
                 loadDir(newDirectory, stream, origin, startOffset, endOffset);
-            } else { // This is a file
-                parent.fileList.add(new NitroFile(name, firstFileID, startOffset.get(firstFileID), endOffset.get(firstFileID) - startOffset.get(firstFileID), parent));
-                firstFileID++;
             }
         }
         stream.seek(position);
@@ -150,6 +150,18 @@ class NitroDirectory implements Comparable<NitroDirectory> {
         File[] dirList = currentPath.listFiles(File::isDirectory); // load the current directory list
         File[] fileList = currentPath.listFiles(File::isFile); // load the current file list
 
+        if (fileList != null) {
+            Arrays.sort(fileList, Comparator.comparing(a -> a.getName().toLowerCase()));
+            for (File file : fileList) { // for every file I create the correspondent NitroFile
+                parent.fileList.add(new NitroFile(file.getName(), fileID, currentOffset, (int) file.length(), parent));
+                fileID++;
+                currentOffset += (int) file.length();
+                // it's better to get 4-byte alignment of the offsets
+                if (currentOffset % 4 != 0)
+                    currentOffset += (4 - (currentOffset % 4));
+            }
+        }
+
         // it's important to sort the file lists alphabetically
         if (dirList != null) {
             Arrays.sort(dirList, Comparator.comparing(a -> a.getName().toLowerCase()));
@@ -164,17 +176,6 @@ class NitroDirectory implements Comparable<NitroDirectory> {
         }
         // remember that this part will be executed for every directory
         // the first execution will be the first path that will lead to files (like a/0/0/0 for Pokemon HG)
-        if (fileList != null) {
-            Arrays.sort(fileList, Comparator.comparing(a -> a.getName().toLowerCase()));
-            for (File file : fileList) { // for every file I create the correspondent NitroFile
-                parent.fileList.add(new NitroFile(file.getName(), fileID, currentOffset, (int) file.length(), parent));
-                fileID++;
-                currentOffset += (int) file.length();
-                // it's better to get 4-byte alignment of the offsets
-                if (currentOffset % 4 != 0)
-                    currentOffset += (4 - (currentOffset % 4));
-            }
-        }
     }
 
     /**
@@ -210,11 +211,9 @@ class NitroDirectory implements Comparable<NitroDirectory> {
      * @param rootDir    The current root directory
      * @throws IOException If a file is corrupted or something is wrong
      */
-    public static void repackFileTree(jBinaryWriter rom, Path currentDir, NitroDirectory rootDir) throws IOException {
-        // we scan for directories first, thus exploring a path in depth as in DFS algorithm
-        for (NitroDirectory d : rootDir.directoryList)
-            repackFileTree(rom, currentDir.resolve(d.getName()), d);
-        // then whenever we reach the end of a path we unpack the files
+    public static void repackFileTree(jBinaryWriter rom, Path currentDir, NitroDirectory rootDir) throws IOException
+    {
+        //files first
         for (NitroFile f : rootDir.fileList) {
             if (Files.exists(currentDir.resolve(f.getName()))) {
                 jBinaryReader tmp = new jBinaryReader(currentDir.resolve(f.getName()));
@@ -230,5 +229,8 @@ class NitroDirectory implements Comparable<NitroDirectory> {
             } else
                 throw new IOException(f.getName() + " file does not exist");
         }
+        // directories second
+        for (NitroDirectory d : rootDir.directoryList)
+            repackFileTree(rom, currentDir.resolve(d.getName()), d);
     }
 }

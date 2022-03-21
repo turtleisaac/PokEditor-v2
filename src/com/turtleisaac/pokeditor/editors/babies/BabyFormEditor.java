@@ -1,41 +1,48 @@
 package com.turtleisaac.pokeditor.editors.babies;
 
+import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.*;
+import com.turtleisaac.pokeditor.project.Game;
+import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.*;
 import java.util.*;
 
 public class BabyFormEditor
 {
-//    public static void main(String[] args) throws IOException
-//    {
-//        BabyFormEditor editor= new BabyFormEditor();
-//        editor.babyFormsToSheet("pms.narc");
-//    }
+    Project project;
+    Game baseRom;
 
     private static String projectPath;
     private String dataPath;
     private static String resourcePath;
     private static String[] nameData;
 
-    public BabyFormEditor(String projectPath) throws IOException
+    public BabyFormEditor(String dataPath, Project project) throws IOException
     {
-        this.projectPath= projectPath;
-        dataPath= projectPath;
-        resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
+        this.project= project;
+        this.baseRom= project.getBaseRom();
+        this.projectPath= dataPath;
+        this.dataPath = dataPath;
+        resourcePath= dataPath.substring(0,dataPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
-        String entryPath = resourcePath + "EntryData.txt";
-
-        BufferedReader reader = new BufferedReader(new FileReader(entryPath));
-        ArrayList<String> nameList = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null)
+        switch(project.getBaseRom())
         {
-            nameList.add(line);
+            case Diamond:
+            case Pearl:
+                nameData= TextEditor.getBank(project,362);
+                break;
+
+            case Platinum:
+                nameData= TextEditor.getBank(project,412);
+                break;
+
+            case HeartGold:
+            case SoulSilver:
+                nameData= TextEditor.getBank(project,237);
+                break;
         }
-        nameData = nameList.toArray(new String[0]);
-        reader.close();
     }
 
     public Object[][] babyFormsToSheet(String babyFormFile) throws IOException
@@ -68,7 +75,7 @@ public class BabyFormEditor
         String line;
         for (int col = 0; col < numPokemon; col++)
         {
-            line = col + "," + nameData[col] + "," + nameData[babyForms[col]];
+            line = col + ",=Personal!$B$" + (col+2) + ",=Personal!$B$" + (babyForms[col]+2);
             processor.append(line);
             processor.newLine();
         }
@@ -88,9 +95,9 @@ public class BabyFormEditor
 
         babyFormsCsv= ArrayModifier.trim(babyFormsCsv,1,2);
         BinaryWriter writer= new BinaryWriter(outputPath);
-        for (int i = 0; i < babyFormsCsv.length; i++)
+        for(Object[] row : babyFormsCsv)
         {
-            writer.writeShort(getPokemon((String) babyFormsCsv[i][0]));
+            writer.writeShort(getPokemon((String) row[0]));
         }
     }
 

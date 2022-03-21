@@ -28,6 +28,7 @@ public class SmogonFrame extends JFrame
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        // Generated using JFormDesigner non-commercial license
         scrollPane1 = new JScrollPane();
         teamTextArea = new JTextArea();
         applyButton = new JButton();
@@ -59,6 +60,7 @@ public class SmogonFrame extends JFrame
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
     private JScrollPane scrollPane1;
     private JTextArea teamTextArea;
     private JButton applyButton;

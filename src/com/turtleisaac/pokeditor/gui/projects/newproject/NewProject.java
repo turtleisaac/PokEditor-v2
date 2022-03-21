@@ -24,8 +24,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -401,6 +399,8 @@ public class NewProject extends JPanel {
         {
             ProjectWindow projectWindow= new ProjectWindow(projectLocationTextField.getText() + File.separator + projectNameTextField.getText() + ".pokeditor", parent,console);
             projectWindow.setLocationRelativeTo(parent);
+            projectWindow.getTutorial().setLocationRelativeTo(projectWindow);
+            projectWindow.getTutorial().setVisible(true);
         }
         catch (IOException exception)
         {
@@ -530,8 +530,7 @@ public class NewProject extends JPanel {
 
     private boolean isGood(String gameCode)
     {
-//        return gameCode.startsWith("CPU") || gameCode.startsWith("ADA") || gameCode.startsWith("APA") || gameCode.startsWith("IPK") || gameCode.startsWith("IPG") || gameCode.startsWith("IRB") || gameCode.startsWith("IRA") || gameCode.startsWith("IRD") || gameCode.startsWith("IRE");
-        return gameCode.startsWith("CPU") || gameCode.startsWith("ADA") || gameCode.startsWith("APA") || gameCode.startsWith("IPK") || gameCode.startsWith("IPG");
+        return gameCode.startsWith("CPU")  || gameCode.startsWith("IPK") || gameCode.startsWith("IPG");
 
     }
 }

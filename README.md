@@ -56,3 +56,7 @@ Double click on the JAR file to launch the program
 * File Compressor/ Decompressor
 
 * Randomizer
+
+# Notes
+
+PokEditor v2 includes an auto-backup system. Upon exiting a PokEditor project, your current changes will be used to build a ROM. Up to ten backups will be stored before PokEditor asks if you would like to delete the oldest one, and you can easily rebase your project on an older version of your changes by going to "File" -> "Import ROM."

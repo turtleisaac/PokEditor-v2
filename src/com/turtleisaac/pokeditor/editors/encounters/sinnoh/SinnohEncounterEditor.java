@@ -25,11 +25,11 @@ public class SinnohEncounterEditor
 //    private static String[] indoorData;
 
 
-    public SinnohEncounterEditor(Project project, String projectPath) throws IOException
+    public SinnohEncounterEditor(Project project, String gameDataPath) throws IOException
     {
-        this.projectPath= projectPath;
-        dataPath= projectPath;
-        resourcePath= projectPath.substring(0,projectPath.lastIndexOf(File.separator));
+        this.projectPath= gameDataPath;
+        dataPath= gameDataPath;
+        resourcePath= gameDataPath.substring(0,gameDataPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
 
         switch(project.getBaseRom())
@@ -91,7 +91,7 @@ public class SinnohEncounterEditor
 
     public SinnohEncounterReturn encountersToSheet(String encounterDir)
     {
-        dataPath+= encounterDir;
+        dataPath= encounterDir;
         ArrayList<SinnohEncounterData> dataList= new ArrayList<>();
 
         List<File> fileList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dataPath).listFiles()))); //creates a List of File objects representing every file in specified parameter directory
@@ -389,7 +389,7 @@ public class SinnohEncounterEditor
             for(int row= 0; row < area.length; row++)
             {
                 area[row][0]= fieldRateArr[row] + "%";
-                area[row][1]= "=Evolutions!B" + (encounterData.getFieldEncounters()[row]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getFieldEncounters()[row]+2);
                 area[row][2]= "" + encounterData.getFieldLevels()[row];
             }
             fieldEncounterTable.add(area);
@@ -407,9 +407,9 @@ public class SinnohEncounterEditor
 
             for(int row= 0; row < area.length; row++)
             {
-                area[row][0]= "=Evolutions!B" + (encounterData.getSwarmEncounters()[row]+2);
-                area[row][1]= "=Evolutions!B" + (encounterData.getDayEncounters()[row]+2);
-                area[row][2]= "=Evolutions!B" + (encounterData.getNightEncounters()[row]+2);
+                area[row][0]= "=Evolutions!$B$" + (encounterData.getSwarmEncounters()[row]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getDayEncounters()[row]+2);
+                area[row][2]= "=Evolutions!$B$" + (encounterData.getNightEncounters()[row]+2);
             }
             swarmDayNightTable.add(area);
         }
@@ -427,11 +427,11 @@ public class SinnohEncounterEditor
             for(int row= 0; row < area.length; row++)
             {
                 area[row][0]= "4%";
-                area[row][1]= "=Evolutions!B" + (encounterData.getRuby()[row]+2);
-                area[row][2]= "=Evolutions!B" + (encounterData.getSapphire()[row]+2);
-                area[row][3]= "=Evolutions!B" + (encounterData.getEmerald()[row]+2);
-                area[row][4]= "=Evolutions!B" + (encounterData.getFireRed()[row]+2);
-                area[row][5]= "=Evolutions!B" + (encounterData.getLeafGreen()[row]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getRuby()[row]+2);
+                area[row][2]= "=Evolutions!$B$" + (encounterData.getSapphire()[row]+2);
+                area[row][3]= "=Evolutions!$B$" + (encounterData.getEmerald()[row]+2);
+                area[row][4]= "=Evolutions!$B$" + (encounterData.getFireRed()[row]+2);
+                area[row][5]= "=Evolutions!$B$" + (encounterData.getLeafGreen()[row]+2);
             }
             dualSlotTable.add(area);
         }
@@ -444,10 +444,10 @@ public class SinnohEncounterEditor
             Arrays.fill(area,"");
 
             area[0]= "10%";
-            area[1]= "=Evolutions!B" + (encounterData.getRadarEncounters()[0]+2);
-            area[2]= "=Evolutions!B" + (encounterData.getRadarEncounters()[1]+2);
-            area[3]= "=Evolutions!B" + (encounterData.getRadarEncounters()[2]+2);
-            area[4]= "=Evolutions!B" + (encounterData.getRadarEncounters()[3]+2);
+            area[1]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[0]+2);
+            area[2]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[1]+2);
+            area[3]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[2]+2);
+            area[4]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[3]+2);
 
             radarTable.add(area);
         }
@@ -465,16 +465,16 @@ public class SinnohEncounterEditor
             for(int row= 0; row < area.length; row++)
             {
                 area[row][0]= waterRateArr[row] + "%";
-                area[row][1]= "=Evolutions!B" + (encounterData.getSurfEncounters()[row]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getSurfEncounters()[row]+2);
                 area[row][2]= "" + encounterData.getSurfMins()[row];
                 area[row][3]= "" + encounterData.getSurfMaxs()[row];
-                area[row][4]= "=Evolutions!B" + (encounterData.getOldEncounters()[row]+2);
+                area[row][4]= "=Evolutions!$B$" + (encounterData.getOldEncounters()[row]+2);
                 area[row][5]= "" + encounterData.getOldMins()[row];
                 area[row][6]= "" + encounterData.getOldMaxs()[row];
-                area[row][7]= "=Evolutions!B" + (encounterData.getGoodEncounters()[row]+2);
+                area[row][7]= "=Evolutions!$B$" + (encounterData.getGoodEncounters()[row]+2);
                 area[row][8]= "" + encounterData.getGoodMins()[row];
                 area[row][9]= "" + encounterData.getGoodMaxs()[row];
-                area[row][10]= "=Evolutions!B" + (encounterData.getSuperEncounters()[row]+2);
+                area[row][10]= "=Evolutions!$B$" + (encounterData.getSuperEncounters()[row]+2);
                 area[row][11]= "" + encounterData.getSuperMins()[row];
                 area[row][12]= "" + encounterData.getSuperMaxs()[row];
             }
@@ -702,11 +702,10 @@ public class SinnohEncounterEditor
 
     public void sheetsToEncounters(Object[][] fieldData, Object[][] waterData, Object[][] swarmData, Object[][] radarData, Object[][] dualSlotData, Object[][] formProbabilityData, String outputDir) throws IOException
     {
-        String outputPath= dataPath + File.separator + outputDir;
 
-        if(!new File(outputPath).exists() && !new File(outputPath).mkdir())
+        if(!new File(outputDir).exists() && !new File(outputDir).mkdir())
         {
-            System.err.println(outputPath);
+            System.err.println(outputDir);
             throw new RuntimeException("Could not create output directory. Check write permissions");
         }
 
@@ -716,7 +715,7 @@ public class SinnohEncounterEditor
         BinaryWriter writer;
         for(int i= 0; i < dataList.size(); i++) //recreating game files
         {
-            writer= new BinaryWriter(outputPath + separator + i + ".bin");
+            writer= new BinaryWriter(outputDir + separator + i + ".bin");
             SinnohEncounterData encounterData= dataList.get(i);
 
             writer.writeInt(encounterData.getFieldRate());

@@ -58,8 +58,8 @@ public class ImageBase
 
         try
         {
-            this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
-            this.nclr= NclrReader.readFile(dataPath + nclr);
+            this.ncgr= NcgrReader.readFile(ncgr,this);
+            this.nclr= NclrReader.readFile(nclr);
         }
         catch (IOException exception)
         {
@@ -74,9 +74,9 @@ public class ImageBase
 
         try
         {
-            this.ncgr= NcgrReader.readFile(dataPath + ncgr,this);
-            this.nclr= NclrReader.readFile(dataPath + nclr);
-            this.ncer= NcerReader.readFile(dataPath + ncer);
+            this.ncgr= NcgrReader.readFile(ncgr,this);
+            this.nclr= NclrReader.readFile(nclr);
+            this.ncer= NcerReader.readFile(ncer);
             banks= this.ncer.getCellBank().getBanks();
             blockSize= this.ncer.getCellBank().getBlockSize();
         }

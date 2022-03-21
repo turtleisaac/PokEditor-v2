@@ -22,16 +22,15 @@ import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.spritepositions.SpriteData;
 import com.turtleisaac.pokeditor.editors.spritepositions.SpriteDataProcessor;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
+import com.turtleisaac.pokeditor.gui.*;
 import com.turtleisaac.pokeditor.gui.ComboBoxItem;
 import com.turtleisaac.pokeditor.gui.MyFilter;
-import com.turtleisaac.pokeditor.gui.editors.sprites.SpriteEditor;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.images.*;
 import net.miginfocom.swing.*;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -67,6 +66,8 @@ public class PokemonSpritePanel extends JPanel
     boolean frameToggled;
 
     private boolean spriteEditDisabled= false;
+
+    private static String unpackedFolderPath;
 
 
     public PokemonSpritePanel()
@@ -415,17 +416,34 @@ public class PokemonSpritePanel extends JPanel
         palette= Arrays.copyOf(sprites.getPalette(),16);
         shinyPalette= Arrays.copyOf(sprites.getShinyPalette(),16);
 
+        unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
+
         String dataPath= project.getDataPath();
         int selected= speciesChooserComboBox.getSelectedIndex()*6;
 
         boolean primary= Project.isPrimary(project);
 
-        File narcPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra.narc" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra.narc" : "/a" + File.separator + "0" + File.separator + "0" + File.separator + "4"));
-        File pokegraPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra" : "/a" + File.separator + "0" + File.separator + "0" + File.separator + "4_"));
+        File pokegraNarcPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra.narc" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra.narc" : "/a" + File.separator + "0" + File.separator + "0" + File.separator + "4"));
+        File pokegraDirPath= new File(unpackedFolderPath + "pokegra");
 
         try
         {
-            ImageEncrypter.saveSprites(pokegraPath.getAbsolutePath(), sprites,selected,primary);
+            Narctowl narctowl = new Narctowl(true);
+            if(!pokegraDirPath.exists())
+            {
+                narctowl.unpack(pokegraNarcPath.getAbsolutePath(), pokegraDirPath.getAbsolutePath());
+            }
+            pokegraDirPath.deleteOnExit();
+
+            spriteData = SpriteDataProcessor.getPositionData(project);
+        }
+        catch (IOException ignored)
+        {
+        }
+
+        try
+        {
+            ImageEncrypter.saveSprites(pokegraDirPath.getAbsolutePath(), sprites,selected,primary);
         }
         catch (IOException exception)
         {
@@ -437,7 +455,7 @@ public class PokemonSpritePanel extends JPanel
         try
         {
             Narctowl narctowl = new Narctowl(true);
-            narctowl.pack(pokegraPath.getAbsolutePath(),"",narcPath.getAbsolutePath());
+            narctowl.pack(pokegraDirPath.getAbsolutePath(),"",pokegraNarcPath.getAbsolutePath());
         }
         catch (IOException ignored)
         {
@@ -451,6 +469,7 @@ public class PokemonSpritePanel extends JPanel
 
     private void speciesChooserComboBoxActionPerformed(ActionEvent e)
     {
+        System.out.println("Selected: " + speciesChooserComboBox.getSelectedIndex());
         canAdjust= false;
         frameToggleButton.setSelected(false);
         genderToggleButton.setSelected(false);
@@ -458,8 +477,10 @@ public class PokemonSpritePanel extends JPanel
         String dataPath= project.getDataPath();
         int selected= speciesChooserComboBox.getSelectedIndex()*6;
 
+        unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
+
         File pokegraNarcPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra.narc" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra.narc" :  File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "4"));
-        File pokegraDirPath= new File(dataPath + (Project.isDPPT(project) ? project.getBaseRom() == Game.Platinum ? File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pl_pokegra" : File.separator + "poketool" + File.separator + "pokegra" + File.separator + "pokegra" : File.separator + "a" + File.separator + "0" + File.separator + "0" + File.separator + "4_"));
+        File pokegraDirPath= new File(unpackedFolderPath + "pokegra");
 
         boolean primary= Project.isPrimary(project);
 
@@ -479,6 +500,11 @@ public class PokemonSpritePanel extends JPanel
         }
 
         toDelete.add(pokegraDirPath);
+        if(!ImageDecrypter.spriteExists(pokegraDirPath.getAbsolutePath(),selected))
+        {
+            JOptionPane.showMessageDialog(this,"The selected sprite does not exist.","Error",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         sprites= ImageDecrypter.getSprites(pokegraDirPath.getAbsolutePath(),selected,primary);
 
         palette= Arrays.copyOf(sprites.getPalette(),16);
@@ -494,6 +520,7 @@ public class PokemonSpritePanel extends JPanel
         globalFrontYSpinner.setValue((int) spriteData1.getSpriteYOffset());
         shadowXSpinner.setValue((int) spriteData1.getShadowXOffset());
         movementEffectSpinner.setValue(spriteData1.getMovement());
+        backMovementEffectSpinner.setValue(spriteData1.getBackMovement());
         shadowSizeComboBox.setSelectedItem(spriteData1.getShadowType());
         femaleBackYSpinner.setValue(femaleBackMod);
         maleBackYSpinner.setValue(maleBackMod);
@@ -565,6 +592,10 @@ public class PokemonSpritePanel extends JPanel
     }
 
     private void movementEffectSpinnerStateChanged(ChangeEvent e) {
+        positionAdjustmentMade();
+    }
+
+    private void backMovementEffectSpinnerStateChanged(ChangeEvent e) {
         positionAdjustmentMade();
     }
 
@@ -641,7 +672,8 @@ public class PokemonSpritePanel extends JPanel
     private void savePositionChangesButtonActionPerformed(ActionEvent e)
     {
         int unknownByte= spriteData[speciesChooserComboBox.getSelectedIndex()].getUnknownByte();
-        byte[] unknownSection= spriteData[speciesChooserComboBox.getSelectedIndex()].getUnknownSection();
+        byte[] unknownSection1= spriteData[speciesChooserComboBox.getSelectedIndex()].getUnknownSection1();
+        byte[] unknownSection2= spriteData[speciesChooserComboBox.getSelectedIndex()].getUnknownSection2();
 
         spriteData[speciesChooserComboBox.getSelectedIndex()]= new SpriteData()
         {
@@ -658,9 +690,21 @@ public class PokemonSpritePanel extends JPanel
             }
 
             @Override
-            public byte[] getUnknownSection()
+            public byte[] getUnknownSection1()
             {
-                return unknownSection;
+                return unknownSection1;
+            }
+
+            @Override
+            public int getBackMovement()
+            {
+                return (int) backMovementEffectSpinner.getValue();
+            }
+
+            @Override
+            public byte[] getUnknownSection2()
+            {
+                return unknownSection2;
             }
 
             @Override
@@ -773,7 +817,7 @@ public class PokemonSpritePanel extends JPanel
         }
 
         this.palette= palette;
-        this.shinyPalette= palette;
+        this.shinyPalette= shinyPalette;
 
         positionAdjustmentMade();
     }
@@ -1330,7 +1374,8 @@ public class PokemonSpritePanel extends JPanel
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        speciesChooserComboBox = new JComboBox();
+        // Generated using JFormDesigner non-commercial license
+        speciesChooserComboBox = new EditorComboBox();
         saveChangesButton = new JButton();
         revertChangesButton = new JButton();
         button1 = new JButton();
@@ -1418,6 +1463,9 @@ public class PokemonSpritePanel extends JPanel
         movementEffectLabel = new JLabel();
         movementRadioButton = new JRadioButton();
         movementEffectSpinner = new JSpinner();
+        backMovementEffectLabel = new JLabel();
+        backMovementEffectRadioButton = new JRadioButton();
+        backMovementEffectSpinner = new JSpinner();
         shadowSizeTextField = new JLabel();
         shadowSizeComboBox = new JComboBox<>();
         separator5 = new JSeparator();
@@ -1801,6 +1849,7 @@ public class PokemonSpritePanel extends JPanel
                     "[grow]" +
                     "[]" +
                     "[]" +
+                    "[]" +
                     "[]"));
                 panel1.add(separator4, "cell 0 0 2 1");
 
@@ -1861,7 +1910,7 @@ public class PokemonSpritePanel extends JPanel
                 panel1.add(separator3, "cell 0 8 2 1");
 
                 //---- movementEffectLabel ----
-                movementEffectLabel.setText("Movement");
+                movementEffectLabel.setText("Front Movement");
                 panel1.add(movementEffectLabel, "cell 0 9");
 
                 //---- movementRadioButton ----
@@ -1869,17 +1918,28 @@ public class PokemonSpritePanel extends JPanel
                 panel1.add(movementRadioButton, "cell 0 9");
 
                 //---- movementEffectSpinner ----
+                movementEffectSpinner.setModel(new SpinnerNumberModel(0, 0, null, 1));
                 movementEffectSpinner.addChangeListener(e -> movementEffectSpinnerStateChanged(e));
                 panel1.add(movementEffectSpinner, "cell 1 9");
 
+                //---- backMovementEffectLabel ----
+                backMovementEffectLabel.setText("Back Movement");
+                panel1.add(backMovementEffectLabel, "cell 0 10");
+                panel1.add(backMovementEffectRadioButton, "cell 0 10");
+
+                //---- backMovementEffectSpinner ----
+                backMovementEffectSpinner.setModel(new SpinnerNumberModel(0, 0, null, 1));
+                backMovementEffectSpinner.addChangeListener(e -> backMovementEffectSpinnerStateChanged(e));
+                panel1.add(backMovementEffectSpinner, "cell 1 10");
+
                 //---- shadowSizeTextField ----
                 shadowSizeTextField.setText("Shadow Size");
-                panel1.add(shadowSizeTextField, "cell 0 10");
+                panel1.add(shadowSizeTextField, "cell 0 11");
 
                 //---- shadowSizeComboBox ----
                 shadowSizeComboBox.addActionListener(e -> shadowSizeComboBoxActionPerformed(e));
-                panel1.add(shadowSizeComboBox, "cell 1 10");
-                panel1.add(separator5, "cell 0 11 2 1");
+                panel1.add(shadowSizeComboBox, "cell 1 11");
+                panel1.add(separator5, "cell 0 12 2 1");
             }
             battlePanel.add(panel1, "cell 0 3 2 2,growy");
 
@@ -1893,7 +1953,8 @@ public class PokemonSpritePanel extends JPanel
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private JComboBox speciesChooserComboBox;
+    // Generated using JFormDesigner non-commercial license
+    private EditorComboBox speciesChooserComboBox;
     private JButton saveChangesButton;
     private JButton revertChangesButton;
     private JButton button1;
@@ -1981,6 +2042,9 @@ public class PokemonSpritePanel extends JPanel
     private JLabel movementEffectLabel;
     private JRadioButton movementRadioButton;
     private JSpinner movementEffectSpinner;
+    private JLabel backMovementEffectLabel;
+    private JRadioButton backMovementEffectRadioButton;
+    private JSpinner backMovementEffectSpinner;
     private JLabel shadowSizeTextField;
     private JComboBox<SpriteDataProcessor.ShadowType> shadowSizeComboBox;
     private JSeparator separator5;

@@ -1,0 +1,39 @@
+JFDML JFormDesigner: "7.0.4.0.360" Java: "11.0.9" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
+			"$layoutConstraints": "hidemode 3"
+			"$columnConstraints": "[grow,fill]"
+			"$rowConstraints": "[grow][]"
+		} ) {
+			name: "this"
+			"title": "Search Results"
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JList" ) {
+					name: "searchResultsList"
+					"selectionMode": 0
+					"model": new javax.swing.DefaultListModel {
+						addElement( "Default1" )
+						addElement( "Default2" )
+						addElement( "Default3" )
+					}
+				} )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 0,grow"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "goToSelectionButton"
+				"text": "Jump to Selection"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "goToSelectionButtonActionPerformed", true ) )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 770, 705 )
+		} )
+	}
+}

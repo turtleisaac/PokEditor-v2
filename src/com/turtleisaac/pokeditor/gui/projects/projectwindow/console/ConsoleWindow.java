@@ -5,9 +5,7 @@
 package com.turtleisaac.pokeditor.gui.projects.projectwindow.console;
 
 import java.awt.*;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import javax.swing.*;
 import net.miginfocom.swing.*;
 
@@ -15,9 +13,22 @@ import net.miginfocom.swing.*;
  * @author turtleisaac
  */
 public class ConsoleWindow extends JFrame {
+
+    PrintStream originalOut;
+    PrintStream originalErr;
+    PrintStream newOut;
+    PrintStream newErr;
+    BufferedWriter consoleOut;
+
     public ConsoleWindow() {
         initComponents();
         setVisible(false);
+
+        originalOut = System.out;
+        originalErr = System.err;
+
+        consoleOut= new BufferedWriter(new OutputStreamWriter(originalOut));
+
 //        redirectSystemStreams();
 
         setPreferredSize(new Dimension(500,500));
@@ -54,16 +65,22 @@ public class ConsoleWindow extends JFrame {
     }
 
 
-    private void updateTextArea(final String text) {
+    private synchronized void updateTextArea(final String text) {
         SwingUtilities.invokeLater(() -> textArea1.append(text));
     }
 
-    private void redirectSystemStreams() {
+    private synchronized void redirectSystemStreams() {
         OutputStream out = new OutputStream() {
             @Override
             public void write(int b)
             {
                 updateTextArea(String.valueOf((char) b));
+//                try{
+//                    consoleOut.write(String.valueOf((char) b));
+//                }
+//                catch(IOException e) {
+//                    e.printStackTrace();
+//                }
             }
 
             @Override
@@ -77,8 +94,11 @@ public class ConsoleWindow extends JFrame {
             }
         };
 
-        System.setOut(new PrintStream(out, true));
-        System.setErr(new PrintStream(out, true));
+        newOut = new PrintStream(out, true);
+        newErr = new PrintStream(out, true);
+
+        System.setOut(newOut);
+        System.setErr(newErr);
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables

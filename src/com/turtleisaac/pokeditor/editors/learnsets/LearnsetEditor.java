@@ -95,7 +95,7 @@ public class LearnsetEditor
 
     public Object[][] learnsetToSheet(String learnsetDir)
     {
-        dataPath+= learnsetDir;
+        dataPath= learnsetDir;
 
         Buffer learnsetBuffer;
         ArrayList<ArrayList<MoveLearnsetData>> dataList= new ArrayList<>();
@@ -200,7 +200,7 @@ public class LearnsetEditor
             ArrayList<MoveLearnsetData> thisLearnset= dataList.get(row);
             for(int col= 0; col < thisLearnset.size(); col++)
             {
-                learnsetTable[row][idx++]= "='Formatting (DO NOT TOUCH)'!I" + (thisLearnset.get(col).getID()+1);
+                learnsetTable[row][idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (thisLearnset.get(col).getID()+1);
                 learnsetTable[row][idx++]= "" + thisLearnset.get(col).getLevel();
             }
         }
@@ -216,7 +216,7 @@ public class LearnsetEditor
         String line;
         for(int row= 0; row < dataList.size(); row++)
         {
-            line= row + ",=Personal!B" + (row+2) + ",";
+            line= row + ",=Personal!$B$" + (row+2) + ",";
             for(int col= 0; col < learnsetTable[0].length; col++)
             {
                 line+= learnsetTable[row][col] + ",";
@@ -230,11 +230,8 @@ public class LearnsetEditor
 
     public void sheetToLearnsets(Object[][] learnsetCsv, String outputDir) throws IOException
     {
-        String outputPath= projectPath + outputDir;
 
-
-
-        if(!new File(outputPath).exists() && !new File(outputPath).mkdir())
+        if(!new File(outputDir).exists() && !new File(outputDir).mkdir())
         {
             throw new RuntimeException("Could not create output directory. Check write permissions");
         }
@@ -282,7 +279,7 @@ public class LearnsetEditor
             }
             levelLearnset= sortLearnset(levelLearnset);
 
-            BinaryWriter writer= new BinaryWriter(outputPath + File.separator + i + ".bin");
+            BinaryWriter writer= new BinaryWriter(outputDir + File.separator + i + ".bin");
             for (MoveLearnsetData thisMove : levelLearnset)
             {
                 if (!gen5) //gen 4
@@ -344,7 +341,7 @@ public class LearnsetEditor
     private static ArrayList<MoveLearnsetData> sortLearnset(ArrayList<MoveLearnsetData> learnsetData)
     {
         ArrayList<MoveLearnsetData> sortedLearnset= new ArrayList<>();
-        for(int i= 0; i < learnsetData.size(); i++)
+        for(int i= 0; i <= 100; i++)
         {
             for (MoveLearnsetData thisMove : learnsetData)
             {

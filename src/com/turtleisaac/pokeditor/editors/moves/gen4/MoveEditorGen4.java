@@ -99,7 +99,7 @@ public class MoveEditorGen4
 
     public Object[][] movesToSheet(String moveDir) throws IOException
     {
-        dataPath+= moveDir;
+        dataPath= moveDir;
 
         Buffer buffer;
         ArrayList<MoveDataGen4> dataList= new ArrayList<>();
@@ -274,9 +274,9 @@ public class MoveEditorGen4
     }
 
 
-    public void sheetToMoves(Object[][] moveSheet, String outputDir) throws IOException
+    public void sheetToMoves(Object[][] moveSheet, String outputDir, String predictedOutputNarc) throws IOException
     {
-        String outputPath= dataPath + File.separator + outputDir;
+        String outputPath= outputDir;
 
         if(!new File(outputPath).exists() && !new File(outputPath).mkdir())
         {
@@ -288,6 +288,8 @@ public class MoveEditorGen4
         moveSheet= ArrayModifier.trim(moveSheet,1,2);
         BinaryWriter writer;
         BitStream bitStream;
+
+        //TODO add checks for out of bounds to all values (make new method in buffer which takes in the max value and returns 0 when the read value is greater.
 
         for(int i= 0; i < moveSheet.length; i++)
         {
@@ -338,24 +340,15 @@ public class MoveEditorGen4
 
 
         int moveNameBank;
-        String predictedOutputNarc;
         switch(project.getBaseRom())
         {
-            case Diamond:
-            case Pearl:
-                moveNameBank= 588;
-                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
-                break;
-
             case Platinum:
                 moveNameBank= 647;
-                predictedOutputNarc= dataPath + File.separator + outputDir + ".narc";
                 break;
 
             case HeartGold:
             case SoulSilver:
                 moveNameBank= 750;
-                predictedOutputNarc= dataPath + File.separator + outputDir.substring(0,outputDir.length()-1);
                 break;
 
             default:

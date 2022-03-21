@@ -90,7 +90,7 @@ public class JohtoEncounterEditor
 
     public JohtoEncounterReturn encountersToSheet(String encounterDir) throws IOException
     {
-        dataPath+= encounterDir;
+        dataPath= encounterDir;
         ArrayList<EncounterData> dataList= new ArrayList<>();
 
         List<File> fileList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(dataPath).listFiles()))); //creates a List of File objects representing every file in specified parameter directory
@@ -458,11 +458,11 @@ public class JohtoEncounterEditor
             {
                 area[row][0]= fieldRateArr[idx] + "";
 //                System.out.print(area[row][0] + ", ");
-                area[row][1]= "=Evolutions!B" + (encounterData.getFieldMorning()[idx]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getFieldMorning()[idx]+2);
 //                System.out.print(area[row][1] + ", ");
-                area[row][2]= "=Evolutions!B" + (encounterData.getFieldDay()[idx]+2);
+                area[row][2]= "=Evolutions!$B$" + (encounterData.getFieldDay()[idx]+2);
 //                System.out.print(area[row][2] + ", ");
-                area[row][3]= "=Evolutions!B" + (encounterData.getFieldNight()[idx]+2);
+                area[row][3]= "=Evolutions!$B$" + (encounterData.getFieldNight()[idx]+2);
 //                System.out.print(area[row][3] + ", ");
                 area[row][4]= "" + encounterData.getFieldLevels()[idx++];
 //                System.out.println(area[row][4] + "\n");
@@ -486,25 +486,25 @@ public class JohtoEncounterEditor
             {
                 area[row][0]= waterRateArr[idx] + "";
     //            System.out.print(area[row][0] + ", ");
-                area[row][1]= "=Evolutions!B" + (encounterData.getSurfs()[idx]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getSurfs()[idx]+2);
     //            System.out.print(area[row][1] + ", ");
                 area[row][2]= "" + encounterData.getSurfMins()[idx];
     //            System.out.print(area[row][2] + ", ");
                 area[row][3]= "" + encounterData.getSurfMaxs()[idx];
     //            System.out.print(area[row][3] + ", ");
-                area[row][4]= "=Evolutions!B" + (encounterData.getOlds()[idx]+2);
+                area[row][4]= "=Evolutions!$B$" + (encounterData.getOlds()[idx]+2);
     //            System.out.print(area[row][4] + ", ");
                 area[row][5]= "" + encounterData.getOldMins()[idx];
     //            System.out.print(area[row][5] + ", ");
                 area[row][6]= "" + encounterData.getOldMaxs()[idx];
     //            System.out.print(area[row][6] + ", ");
-                area[row][7]= "=Evolutions!B" + (encounterData.getGoods()[idx]+2);
+                area[row][7]= "=Evolutions!$B$" + (encounterData.getGoods()[idx]+2);
     //            System.out.print(area[row][7] + ", ");
                 area[row][8]= "" + encounterData.getGoodMins()[idx];
     //            System.out.print(area[row][8] + ", ");
                 area[row][9]= "" + encounterData.getGoodMaxs()[idx];
     //            System.out.print(area[row][9] + ", ");
-                area[row][10]= "=Evolutions!B" + (encounterData.getSupers()[idx]+2);
+                area[row][10]= "=Evolutions!$B$" + (encounterData.getSupers()[idx]+2);
     //            System.out.print(area[row][10] + ", ");
                 area[row][11]= "" + encounterData.getSuperMins()[idx];
     //            System.out.print(area[row][11] + ", ");
@@ -530,7 +530,7 @@ public class JohtoEncounterEditor
             {
                 area[row][0]= smashRateArr[idx] + "";
     //            System.out.print(area[row][0] + ", ");
-                area[row][1]= "=Evolutions!B" + (encounterData.getSmashes()[idx]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getSmashes()[idx]+2);
     //            System.out.print(area[row][1] + ", ");
                 area[row][2]= "" + encounterData.getSmashMins()[idx];
     //            System.out.print(area[row][2] + ", ");
@@ -547,10 +547,10 @@ public class JohtoEncounterEditor
             String[] area= new String[4];
             Arrays.fill(area,"");
 
-            area[0]= "=Evolutions!B" + (encounterData.getFieldSwarm()+2);
-            area[1]= "=Evolutions!B" + (encounterData.getSurfSwarm()+2);
-            area[2]= "=Evolutions!B" + (encounterData.getGoodSwarm()+2);
-            area[3]= "=Evolutions!B" + (encounterData.getSuperSwarm()+2);
+            area[0]= "=Evolutions!$B$" + (encounterData.getFieldSwarm()+2);
+            area[1]= "=Evolutions!$B$" + (encounterData.getSurfSwarm()+2);
+            area[2]= "=Evolutions!$B$" + (encounterData.getGoodSwarm()+2);
+            area[3]= "=Evolutions!$B$" + (encounterData.getSuperSwarm()+2);
             massOutbreakEncounterTable.add(area);
         }
 
@@ -567,8 +567,8 @@ public class JohtoEncounterEditor
             int idx= 0;
             for(int row= 0; row < area.length; row++)
             {
-                area[row][0]= "=Evolutions!B" + (encounterData.getHoenn()[idx]+2);
-                area[row][1]= "=Evolutions!B" + (encounterData.getSinnoh()[idx++]+2);
+                area[row][0]= "=Evolutions!$B$" + (encounterData.getHoenn()[idx]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getSinnoh()[idx++]+2);
             }
             soundTable.add(area);
         }
@@ -740,11 +740,10 @@ public class JohtoEncounterEditor
 
     public void sheetsToEncounters(Object[][] fieldData, Object[][] waterData, Object[][] smashData, Object[][] outbreakData, Object[][] soundData, String outputDir) throws IOException
     {
-        String outputPath= dataPath + File.separator + outputDir;
 
-        if(!new File(outputPath).exists())
+        if(!new File(outputDir).exists())
         {
-            if(!new File(outputPath).mkdir())
+            if(!new File(outputDir).mkdir())
             {
                 throw new RuntimeException("Could not create output directory. Check write permissions");
             }
@@ -959,7 +958,7 @@ public class JohtoEncounterEditor
 
         for(int i= 0; i < rateList.size(); i++)
         {
-            BinaryWriter writer= new BinaryWriter(new File(outputPath + separator + i + ".bin"));
+            BinaryWriter writer= new BinaryWriter(new File(outputDir + separator + i + ".bin"));
             int[] rates= rateList.get(i);
             int[] fieldLevels= fieldLevelList.get(i);
             int[] fieldMorning= fieldMorningList.get(i);

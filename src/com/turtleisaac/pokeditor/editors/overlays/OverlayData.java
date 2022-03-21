@@ -12,5 +12,4 @@ public interface OverlayData
     long getStaticInitEnd();
     long getFileId();
     int getReserved();
-
 }

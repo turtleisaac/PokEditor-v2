@@ -55,7 +55,7 @@ public class BLZCoder {
 
     private boolean arm9;
 
-    public BLZCoder(String... args) {
+    public BLZCoder(String[] args) {
 
         int cmd, mode = 0, arg;
 
@@ -79,12 +79,12 @@ public class BLZCoder {
             cmd = CMD_ENCODE;
             mode = BLZ_BEST;
         } else {
-            EXIT("Command not supported\n");
+            EXIT("BLZCoder: Command not supported\n");
             return;
         }
 
         if (args.length < 2) {
-            EXIT("Filename not specified\n");
+            EXIT("BLZCoder: Filename not specified\n");
         }
 
         switch (cmd) {
@@ -99,7 +99,7 @@ public class BLZCoder {
                 break;
         }
 
-        System.out.print("\nDone\n");
+        System.out.print("\nBLZCoder: Done\n");
     }
 
     private void Usage() {
@@ -122,7 +122,7 @@ public class BLZCoder {
 
     private void EXIT(String text) {
         System.out.print(text);
-        System.exit(0);
+//        System.exit(0);
     }
 
     private void Save(String filename, int[] buffer, int length) {
@@ -135,7 +135,7 @@ public class BLZCoder {
             fos.write(write);
             fos.close();
         } catch (IOException e) {
-            EXIT("\nFile write error\n");
+            EXIT("\nBLZCoder: File write error\n");
         }
 
     }
@@ -190,24 +190,24 @@ public class BLZCoder {
 
         inc_len = readUnsigned(pak_buffer, pak_len - 4);
         if (inc_len < 1) {
-            System.out.println("WARNING: not coded file!");
-            throw new RuntimeException("File not compressed");
+            System.out.println("BLZCoder: WARNING: not coded file!");
+            throw new RuntimeException("BLZCoder: File not compressed");
 //            enc_len = 0;
 //            dec_len = pak_len;
 //            pak_len = 0;
 //            raw_len = dec_len;
         } else {
             if (pak_len < 8) {
-                EXIT("\nFile has a bad header\n");
+                EXIT("\nBLZCoder: File has a bad header\n");
                 return null;
             }
             hdr_len = pak_buffer[pak_len - 5];
             if (hdr_len < 8 || hdr_len > 0xB) {
-                EXIT("\nBad header length\n");
+                EXIT("\nBLZCoder: Bad header length\n");
                 return null;
             }
             if (pak_len <= hdr_len) {
-                EXIT("\nBad length\n");
+                EXIT("\nBLZCoder: Bad length\n");
                 return null;
             }
             enc_len = readUnsigned(pak_buffer, pak_len - 8) & 0x00FFFFFF;
@@ -215,7 +215,7 @@ public class BLZCoder {
             pak_len = enc_len - hdr_len;
             raw_len = dec_len + enc_len + inc_len;
             if (raw_len > RAW_MAXIM) {
-                EXIT("\nBad decoded length\n");
+                EXIT("\nBLZCoder: Bad decoded length\n");
                 return null;
             }
         }
@@ -286,7 +286,7 @@ public class BLZCoder {
         ByteBuffer buf = ByteBuffer.wrap(data);
         buf.order(ByteOrder.LITTLE_ENDIAN);
         if (buf.get(0) != 0x11) {
-            System.err.println("Not a valid LZSS compressed file");
+            System.err.println("BLZCoder: Not a valid LZSS compressed file");
             return null;
         }
         int decSize = buf.getInt() >>> 8;
@@ -300,7 +300,7 @@ public class BLZCoder {
         while (outBuf.position() < decSize) {
             if (mask == 1) {
                 if (buf.position() >= data.length) {
-                    System.err.println("Not enough data");
+                    System.err.println("BLZCoder: Not enough data");
                     return null;
                 }
                 flags = buf.get();
@@ -311,7 +311,7 @@ public class BLZCoder {
 
             if ((flags & mask) > 0) {
                 if (buf.position() >= data.length) {
-                    System.err.println("Not enough data");
+                    System.err.println("BLZCoder: Not enough data");
                     return null;
                 }
                 byte byte1 = buf.get();
@@ -319,7 +319,7 @@ public class BLZCoder {
                 int disp;
                 if (length == 0) {
                     if (buf.position() + 1 >= data.length) {
-                        System.err.println("Not enough data");
+                        System.err.println("BLZCoder: Not enough data");
                         return null;
                     }
                     byte byte2 = buf.get();
@@ -328,7 +328,7 @@ public class BLZCoder {
                     disp = (((byte2 & 0x0F) << 8) | (byte3 & 0xFF)) + 0x1;
                 } else if (length == 1) {
                     if (buf.position() + 2 >= data.length) {
-                        System.err.println("Not enough data");
+                        System.err.println("BLZCoder: Not enough data");
                         return null;
                     }
 
@@ -340,7 +340,7 @@ public class BLZCoder {
                     disp = (((byte3 & 0x0F) << 8) | (byte4 & 0xFF)) + 0x1;
                 } else {
                     if (buf.position() > data.length) {
-                        System.err.println("Not enough data");
+                        System.err.println("BLZCoder: Not enough data");
                         return null;
                     }
                     byte byte2 = buf.get();
@@ -350,7 +350,7 @@ public class BLZCoder {
                 }
 
                 if (disp > outBuf.position()) {
-                    System.err.println("oops");
+                    System.err.println("BLZCoder: oops");
                     return null;
                 }
                 int bufIndex = outBuf.position() - disp;
@@ -361,7 +361,7 @@ public class BLZCoder {
                 }
             } else {
                 if (buf.position() > data.length) {
-                    System.err.println("Not enough data");
+                    System.err.println("BLZCoder: Not enough data");
                     return null;
                 }
                 byte next = buf.get();
@@ -370,7 +370,7 @@ public class BLZCoder {
             }
         }
         if ((buf.position() ^ (buf.position() & 0x3)) + 4 < data.length) {
-            System.err.println("Too much input");
+            System.err.println("BLZCoder: Too much input");
             return null;
         }
         outBuf.flip();
@@ -612,7 +612,7 @@ public class BLZCoder {
 
     private byte[] LZSS_Encode(byte[] data) {
         if (data.length > 0xFFFFFF) {
-            System.err.println("Encoding: Too much data");
+            System.err.println("BLZCoder: Encoding: Too much data");
             return null;
         }
 

@@ -97,7 +97,7 @@ public class FormatGenerator
         targets[11]= "One opponent (fails if target faints)";
 
 
-        generateReferenceList("Items",0);
+        generateModifiedReferenceList("Items",0,113,22,"???");
         setColumn(evolutionMethodArr,1);
         setColumn(abilityData,2);
         setColumn(effects,3);
@@ -105,17 +105,38 @@ public class FormatGenerator
         setColumn(targets,5);
         setColumn(typeArr,6);
         setColumn(growthTableIdArr,7);
-        generateReferenceList("Moves",8);
+        generateNormalReferenceList("Moves",8);
 
         return sheet;
     }
 
-    private static void generateReferenceList(String sheetName, int colNum)
+    private static void generateNormalReferenceList(String sheetName, int colNum)
     {
         ArrayList<String> list= new ArrayList<>();
         for(int i= 0; i < 1000; i++)
         {
-            list.add("=" + sheetName + "!B" + (i+2));
+            list.add("=" + sheetName + "!$B$" + (i+2));
+        }
+
+        setColumn(list.toArray(new String[0]), colNum);
+    }
+
+    private static void generateModifiedReferenceList(String sheetName, int colNum, int breakPoint, int breakSize, String breakContents)
+    {
+        ArrayList<String> list= new ArrayList<>();
+        for(int i= 0; i < breakPoint; i++)
+        {
+            list.add("=" + sheetName + "!$B$" + (i+2));
+        }
+
+        for(int i= 0; i < breakSize; i++)
+        {
+            list.add(breakContents);
+        }
+
+        for(int i= breakPoint+breakSize; i < 1000; i++)
+        {
+            list.add("=" + sheetName + "!$B$" + (i-breakSize+2));
         }
 
         setColumn(list.toArray(new String[0]), colNum);

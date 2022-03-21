@@ -3,7 +3,7 @@ package com.turtleisaac.pokeditor.editors;
 import com.turtleisaac.pokeditor.framework.BLZCoder;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
-import sun.misc.BASE64Encoder;
+import java.util.Base64;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -814,7 +814,8 @@ public class DsFileFinder
         MessageDigest digest= MessageDigest.getInstance("SHA-256");
         digest.update(contents);
 
-        return new BASE64Encoder().encode(digest.digest());
+
+        return Base64.getEncoder().encodeToString(digest.digest());
     }
 
 

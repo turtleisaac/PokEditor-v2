@@ -42,7 +42,7 @@ public class TableLocator
      * @param entryLength (if applicable) the length of each entry
      * @return a temp File containing the table
      */
-    public File obtainTable(TablePointer pointerLocation, int numEntries, int entryLength) throws IOException
+    public File obtainTable(TablePointers.TablePointer pointerLocation, int numEntries, int entryLength) throws IOException
     {
         byte[] arr= obtainTableArr(pointerLocation,numEntries,entryLength);
 
@@ -60,18 +60,54 @@ public class TableLocator
      * @param entryLength (if applicable) the length of each entry
      * @return a byte[] containing the table
      */
-    public byte[] obtainTableArr(TablePointer pointerLocation, int numEntries, int entryLength)
+    public byte[] obtainTableArr(TablePointers.TablePointer pointerLocation, int numEntries, int entryLength)
     {
+        //TODO add more specialized support for arm9/ overlay decompression
+
         String pointerFilePath= romDataPath + pointerLocation.file;
 
-        if(Project.isHGSS(project))
+        boolean compressed_pointer_source= false;
+
+        if(pointerFilePath.contains("overlay_"))
         {
-            BLZCoder coder= new BLZCoder();
+            String pointerFileIdString= pointerFilePath.substring(pointerFilePath.indexOf("overlay_"));
+            pointerFileIdString= pointerFileIdString.substring(0,pointerFileIdString.indexOf(".bin"));
+
+            int pointerFileId= Integer.parseInt(pointerFileIdString);
+
+            compressed_pointer_source= overlayEntries.get(pointerFileId).getReserved() == 0;
+        }
+        else if (pointerFilePath.contains("arm9"))
+        {
+            Buffer arm9Buffer = new Buffer(pointerFilePath);
+            switch (Project.parseBaseRom(project.getBaseRomGameCode()))
+            {
+                case Platinum:
+                case HeartGold:
+                case SoulSilver:
+                    arm9Buffer.skipTo(0xbb4);
+                    compressed_pointer_source = arm9Buffer.readInt() != 0;
+                    break;
+
+                case Diamond:
+                case Pearl:
+                    arm9Buffer.skipTo(0xb7c);
+                    compressed_pointer_source = arm9Buffer.readInt() != 0;
+                    break;
+            }
+        }
+
+
+        if(compressed_pointer_source) //decompresses the file where the pointer is located
+        {
+            BLZCoder coder= new BLZCoder(null);
             byte[] decoded= coder.BLZ_DecodePub(Buffer.readFile(pointerFilePath),"file");
 
             try
             {
-                File tempFile= File.createTempFile("pokeditor_file_",".bin");
+                File tempDir = new File(project.getProjectPath().getAbsolutePath() + File.separator + "temp");
+                tempDir.mkdir();
+                File tempFile= File.createTempFile("pokeditor_file_",".bin", tempDir);
                 tempFile.deleteOnExit();
                 BinaryWriter.writeFile(tempFile,decoded);
                 pointerFilePath= tempFile.getAbsolutePath();
@@ -118,18 +154,53 @@ public class TableLocator
 
         String tableFilePath= tableLocation.getFile();
 
-        if(Project.isHGSS(project))
+
+
+        boolean compressed_table_source= false;
+
+        if(tableFilePath.contains("overlay_"))
         {
-            BLZCoder coder= new BLZCoder();
+            String tableFileIdString= tableFilePath.substring(tableFilePath.indexOf("overlay_"));
+            tableFileIdString= tableFileIdString.substring(0,tableFileIdString.indexOf(".bin"));
+
+            int pointerFileId= Integer.parseInt(tableFileIdString);
+
+            compressed_table_source= overlayEntries.get(pointerFileId).getReserved() == 0;
+        }
+        else if (tableFilePath.contains("arm9"))
+        {
+            Buffer arm9Buffer = new Buffer(tableFilePath);
+            switch (Project.parseBaseRom(project.getBaseRomGameCode()))
+            {
+                case Platinum:
+                case HeartGold:
+                case SoulSilver:
+                    arm9Buffer.skipTo(0xbb4);
+                    compressed_table_source = arm9Buffer.readInt() != 0;
+                    break;
+
+                case Diamond:
+                case Pearl:
+                    arm9Buffer.skipTo(0xb7c);
+                    compressed_table_source = arm9Buffer.readInt() != 0;
+                    break;
+            }
+        }
+
+
+        if(compressed_table_source) //decompresses the file where the table is located
+        {
+            BLZCoder coder= new BLZCoder(null);
             byte[] decoded= coder.BLZ_DecodePub(Buffer.readFile(tableFilePath),"file");
 
             try
             {
-                File tempFile= File.createTempFile("pokeditor_table_",".bin");
+                File tempDir = new File(project.getProjectPath().getAbsolutePath() + File.separator + "temp");
+                tempDir.mkdir();
+                File tempFile= File.createTempFile("pokeditor_file_",".bin", tempDir);
                 tempFile.deleteOnExit();
                 BinaryWriter.writeFile(tempFile,decoded);
                 tableFilePath= tempFile.getAbsolutePath();
-
             }
             catch (IOException exception)
             {
@@ -140,7 +211,6 @@ public class TableLocator
         buffer= new Buffer(tableFilePath);
         buffer.skipTo(tableLocation.getOffset());
         byte[] ret= buffer.readBytes(bytesToRead);
-
 
         return ret;
     }
@@ -176,6 +246,7 @@ public class TableLocator
 //            System.out.println("Static Initializer Start Address: " + staticInitStart);
 //            System.out.println("Static Initializer End Address: " + staticInitStart);
 //            System.out.println("File ID: " + fileId + "\n");
+//            System.out.println("Reserved: " + Integer.toHexString(reserved));
 
             overlayEntries.add(new OverlayData()
             {

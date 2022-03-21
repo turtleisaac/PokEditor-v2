@@ -13,7 +13,7 @@ public class TrainerPersonalityCalculator
         int level= 50;
         int difficultyValue= 2500;
 
-        int pid= generatePid(trainerIdx,classIdx,male,speciesIdx,level,difficultyValue);
+        int pid= generatePid(trainerIdx,classIdx,male,speciesIdx,level,difficultyValue, 0, false);
 
         paraSet(difficultyValue*31.0/255, pid);
 
@@ -24,7 +24,7 @@ public class TrainerPersonalityCalculator
     {
         for(int i= 0; i < 65535; i++)
         {
-            if(generatePid(trainerIdx,trainerClassIdx,trainerClassMale,speciesIdx,level,i) == targetPid)
+            if(generatePid(trainerIdx,trainerClassIdx,trainerClassMale,speciesIdx,level,i, 0, false) == targetPid)
             {
                 return i;
             }
@@ -33,7 +33,7 @@ public class TrainerPersonalityCalculator
     }
 
 
-    public static int generatePid(int trainerIdx, int trainerClassIdx, boolean trainerClassMale, int speciesIdx, int level, int difficultyValue)
+    public static int generatePid(int trainerIdx, int trainerClassIdx, boolean trainerClassMale, int speciesIdx, int level, int difficultyValue, int abilityValue, boolean abilityFunctional)
     {
         long rnd= trainerIdx+speciesIdx+level+difficultyValue;
         setRandom(rnd);
@@ -45,9 +45,16 @@ public class TrainerPersonalityCalculator
         rnd*= 256;
         rnd+= trainerClassMale ? 136 : 120;
 
+        if(abilityFunctional)
+        {
+            rnd+= abilityValue;
+        }
+
+        //TODO look at how the ability value stuff functions
+
         String result= Long.toHexString((int)rnd);
-        System.out.println("PID: 0x00" + (result.length() == 6 ? result : "0" + result));
-        System.out.println("Nature: " + natures[(int)(rnd%100)%25] + "\n");
+//        System.out.println("PID: 0x00" + (result.length() == 6 ? result : "0" + result));
+//        System.out.println("Nature: " + natures[(int)(rnd%100)%25] + "\n");
 
         return (int)rnd;
     }

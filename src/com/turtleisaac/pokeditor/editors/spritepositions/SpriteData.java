@@ -4,7 +4,9 @@ public interface SpriteData
 {
     int getUnknownByte();
     int getMovement();
-    byte[] getUnknownSection();
+    byte[] getUnknownSection1();
+    int getBackMovement();
+    byte[] getUnknownSection2();
     byte getSpriteYOffset();
     byte getShadowXOffset();
     SpriteDataProcessor.ShadowType getShadowType();

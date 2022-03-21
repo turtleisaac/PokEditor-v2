@@ -14,6 +14,8 @@ public class ComboBoxItem
         str= "" + num;
     }
 
+    public void setName(String str) {this.str= str;}
+
     @Override
     public String toString()
     {

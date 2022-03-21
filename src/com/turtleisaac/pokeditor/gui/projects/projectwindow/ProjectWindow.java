@@ -22,6 +22,7 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.jackhack96.dspre.nitro.rom.ROMUtils;
 import com.jackhack96.jNdstool.main.JNdstool;
@@ -43,10 +44,13 @@ import com.turtleisaac.pokeditor.gui.editors.trainers.TrainerPanel;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.RomApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetApplier;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets.SheetsSetup;
+import com.turtleisaac.pokeditor.gui.tutorial.TutorialFrame;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.RandomizerUtils;
 import net.miginfocom.swing.*;
+import org.apache.commons.io.FileDeleteStrategy;
+import org.apache.commons.io.FileUtils;
 import sun.swing.DefaultLookup;
 import turtleisaac.GoogleSheetsAPI;
 
@@ -68,13 +72,35 @@ public class ProjectWindow extends JFrame
     private List<List<Color>> colorData;
 
     private ConsoleWindow console;
+    private TutorialFrame tutorial;
 
     public ProjectWindow(String xmlPath, JFrame mainMenu, ConsoleWindow console) throws IOException
     {
         initComponents();
 
+        //TODO RE-ENABLE THESE FEATURES ONCE THEY ARE PROGRAMMED
+        tabbedPane1.remove(starterPanel);
+        tabbedPane1.remove(openingPanel);
+        tabbedPane1.remove(trainerSpritePanel);
+        tabbedPane1.remove(overworldSpritePanel);
+
+        //TODO RE-ENABLE THESE FEATURES AFTER DEV BUILD DISTRIBUTION
+//        tabbedPane1.remove(johtoEncounterPanel);
+//        tabbedPane1.remove(sinnohEncounterPanel);
+//        tabbedPane1.remove(mainPanel);
+//        tabbedPane1.remove(trainerPanel1);
+
+//        menuBar.remove(sheetsMenu);
+//        menuBar.remove(toolsMenu);
+//        menuBar.remove(debugMenu);
+//        menuBar.remove(helpMenu);
+
         this.mainMenu= mainMenu;
         this.console= console;
+        this.tutorial = new TutorialFrame();
+        tutorial.setSize(800, 800);
+        tutorial.setLocationRelativeTo(this);
+        tutorial.setVisible(false);
 
         project= Project.readFromXml(xmlPath);
         projectPath= project.getProjectPath().toString();
@@ -83,22 +109,39 @@ public class ProjectWindow extends JFrame
         menuBar.setVisible(true);
         openProjectButton.setIcon(new ImageIcon(ProjectWindow.class.getResource("/icons/open_file.png")));
         exportRomButton.setIcon(new ImageIcon(ProjectWindow.class.getResource("/icons/save_rom.png")));
+        projectInfoButton.setIcon(new ImageIcon(ProjectWindow.class.getResource("/icons/give_pokedex.png")));
 
-        if(new File(project.getProjectPath().toString() + "/api.ser").exists())
+        if(new File(project.getProjectPath().toString() + File.separator + "api.ser").exists())
         {
             try
             {
                 ObjectInputStream in= new ObjectInputStream(new FileInputStream(projectPath + "/api.ser"));
                 String link= (String) in.readObject();
-                api= new GoogleSheetsAPI(link, projectPath);
-                linkTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                linkTextField.setEnabled(true);
-                linkTextField.setText(link);
-                linkTextField.setForeground(new Color(27, 148, 255, 255));
+
+                if(new File(project.getProjectPath().toString() + File.separator + "tokens").exists())
+                    api= new GoogleSheetsAPI(link, projectPath, false);
+                else
+                    api= new GoogleSheetsAPI(link, projectPath, true);
+
+                if(!api.isLocal())
+                {
+                    linkTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    linkTextField.setEnabled(true);
+                    linkTextField.setText(link);
+                    linkTextField.setForeground(new Color(27, 148, 255, 255));
+                    sheetPreviewTable.setEnabled(false);
+                }
+                else
+                {
+                    linkTextField.setText("You are using local sheet storage.");
+                    linkTextField.setForeground(new Color(255, 171, 27, 255));
+                    sheetPreviewTable.setEnabled(true);
+                }
+
+
                 sheetChooserComboBox.setEnabled(true);
                 applyToRomButton.setEnabled(true);
                 applyToSheetButton.setEnabled(true);
-                sheetPreviewTable.setEnabled(true);
                 sheetRefreshChangesButton.setEnabled(true);
                 sheetUploadChangesButton.setEnabled(true);
                 setSheetChooserComboBox(api.getSheetNames());
@@ -231,25 +274,58 @@ public class ProjectWindow extends JFrame
 
             case HeartGold:
             case SoulSilver:
+                tabbedPane1.remove(johtoEncounterPanel); // TODO get rid of this line once editor is done
                 tabbedPane1.remove(sinnohEncounterPanel);
                 break;
         }
-
-        tabbedPane1.remove(starterPanel);
-        tabbedPane1.remove(openingPanel);
-        tabbedPane1.remove(trainerSpritePanel);
-        tabbedPane1.remove(overworldSpritePanel);
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
     {
-        switch(JOptionPane.showConfirmDialog(this,"PokEditor is an open source tool developed by Turtleisaac. By continuing, I authorize PokEditor to gain full viewing and editing access to any Google Sheet document that I provide it the link for. Continue?","Confirmation",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE))
+        switch(JOptionPane.showConfirmDialog(this,"PokEditor is an open source tool developed by Turtleisaac. By choosing yes, I authorize PokEditor to gain full viewing and editing access to any Google Sheet document that I provide it the link for. By choosing no, I opt to instead use local sheet editing and storage, and accept that I may encounter issues using PokEditor, as it was written with Google Sheets integration in-mind.","Confirmation",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE))
         {
-            case 1: //no
-                JOptionPane.showMessageDialog(this,"Unfortunately, PokEditor is no longer supporting its original csv file-based configuration. If security is such a big concern to you, it is recommended that you make a new Google account just for this or other throwaway purposes. Thank you.","PokEditor",JOptionPane.INFORMATION_MESSAGE);
+            case 1: //no - local
+                try
+                {
+                    GoogleSheetsAPI api = new GoogleSheetsAPI(null, projectPath, true);
+                    setApi(api);
+
+                    RomApplier editApplier = new RomApplier(project, projectPath, api, this, false);
+                    editApplier.getCheckboxTree().checkRoot();
+                    editApplier.applyButtonActionPerformed(null);
+                    editApplier.dispose();
+
+
+                    trainerPanel1.setApi(this.api);
+                    if(Project.isPlatinum(project))
+                    {
+                        sinnohEncounterPanel.setApi(this.api);
+                    }
+
+                    String[] sheetNames= new String[0];
+
+                    try
+                    {
+                        sheetNames= api.getSheetNames();
+                        setSheetChooserComboBox(sheetNames);
+                    }
+                    catch (IOException ignored)
+                    {
+                    }
+
+
+                    sheetChooserComboBox.setSelectedIndex(indexOf("Personal",sheetNames));
+                }
+                catch(GeneralSecurityException generalSecurityException) {
+                    generalSecurityException.printStackTrace();
+                }
+                catch(IOException exception) {
+                    exception.printStackTrace();
+                }
+
                 break;
 
-            case 0: //yes
+            case 0: //yes - online
                 SheetsSetup setup= new SheetsSetup(project.getBaseRom(), this);
                 try
                 {
@@ -399,7 +475,7 @@ public class ProjectWindow extends JFrame
     private void applyToSheetButtonActionPerformed(ActionEvent e) {
         if(JOptionPane.showConfirmDialog(this,"Any changes that you have made to the sheet that do not exist in the ROM will be lost. Continue?","Alert",JOptionPane.YES_NO_OPTION) == 0)
         {
-            RomApplier editApplier= new RomApplier(project, projectPath, api, this);
+            RomApplier editApplier= new RomApplier(project, projectPath, api, this, true);
             editApplier.setLocationRelativeTo(this);
             setEnabled(false);
             try
@@ -436,82 +512,85 @@ public class ProjectWindow extends JFrame
 
     public void sheetChooserComboBoxActionPerformed(ActionEvent e)
     {
-        sheetName= (String) sheetChooserComboBox.getSelectedItem();
-        List<List<Object>> values;
-
-        try
+        if(!api.isLocal() || new File(projectPath + File.separator + "local").exists())
         {
-            values= api.getSpecifiedSheet(sheetName);
-        }
-        catch(IOException exception)
-        {
-            JOptionPane.showMessageDialog(this,"Download failed","Error",JOptionPane.ERROR_MESSAGE);
-            values= null;
-        }
+            sheetName= (String) sheetChooserComboBox.getSelectedItem();
+            List<List<Object>> values;
 
-        try
-        {
-            sheetType= api.getPokeditorSheetType(sheetChooserComboBox.getSelectedIndex());
-        }
-        catch (IOException exception)
-        {
-            exception.printStackTrace();
-        }
-        catch (NullPointerException exception)
-        {
-            sheetType= null;
-        }
+            try
+            {
+                values= api.getSpecifiedSheet(sheetName);
+            }
+            catch(IOException exception)
+            {
+                JOptionPane.showMessageDialog(this,"Download failed","Error",JOptionPane.ERROR_MESSAGE);
+                values= null;
+            }
 
-        sheetData= values;
+            try
+            {
+                sheetType= api.getPokeditorSheetType(sheetChooserComboBox.getSelectedIndex());
+            }
+            catch (IOException exception)
+            {
+                exception.printStackTrace();
+            }
+            catch (NullPointerException exception)
+            {
+                sheetType= null;
+            }
 
-
-        Object[] header;
-
-        if(sheetType != null || contains(baseRom.sheetList,sheetName))
-        {
-            header= values.remove(0).toArray(new Object[0]);
-        }
-        else
-        {
-            header= new Object[values.get(0).size()];
-        }
+            sheetData= values;
 
 
-        Object[][] table= new Object[values.size()][];
+            Object[] header;
+
+            if(sheetType != null || contains(baseRom.sheetList,sheetName))
+            {
+                header= values.remove(0).toArray(new Object[0]);
+            }
+            else
+            {
+                header= new Object[values.get(0).size()];
+            }
 
 
-        for(int i= 0; i < values.size(); i++)
-        {
-            table[i]= values.get(i).toArray(new Object[0]);
-        }
-        int numColumns= table[1].length;
+            Object[][] table= new Object[values.size()][];
 
-        DefaultTableModel model= new DefaultTableModel(table,header);
-        sheetPreviewTable.setModel(model);
-        sheetPreviewTable.setGridColor(Color.black);
-        sheetPreviewTable.setShowVerticalLines(true);
-        sheetPreviewTable.setShowHorizontalLines(true);
-        sheetPreviewTable.getTableHeader().setReorderingAllowed(false);
 
-        if(numColumns >= 9)
-            sheetPreviewTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        else
-            sheetPreviewTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+            for(int i= 0; i < values.size(); i++)
+            {
+                table[i]= values.get(i).toArray(new Object[0]);
+            }
+            int numColumns= table[1].length;
 
-        try
-        {
-            colorData= api.getSpecifiedSheetColors(sheetChooserComboBox.getSelectedIndex());
-        }
-        catch (IOException exception)
-        {
-            colorData= null;
-            exception.printStackTrace();
+            DefaultTableModel model= new DefaultTableModel(table,header);
+            sheetPreviewTable.setModel(model);
+            sheetPreviewTable.setGridColor(Color.black);
+            sheetPreviewTable.setShowVerticalLines(true);
+            sheetPreviewTable.setShowHorizontalLines(true);
+            sheetPreviewTable.getTableHeader().setReorderingAllowed(false);
+
+            if(numColumns >= 9)
+                sheetPreviewTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            else
+                sheetPreviewTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+//        try
+//        {
+//            colorData= api.getSpecifiedSheetColors(sheetChooserComboBox.getSelectedIndex());
+//        }
+//        catch (IOException exception)
+//        {
+//            colorData= null;
+//            exception.printStackTrace();
+//        }
         }
     }
 
     private void sheetRefreshChangesButtonActionPerformed(ActionEvent e)
     {
-        switch(JOptionPane.showConfirmDialog(this,"Any changes you have made to this sheet locally will be lost when pulling the current online version. Continue?","Warning",JOptionPane.YES_NO_OPTION))
+        switch(JOptionPane.showConfirmDialog(this,"Any changes you have made to this sheet will be lost when refreshing from the stored version. Continue?","Warning",JOptionPane.YES_NO_OPTION))
         {
             case 0: //yes
                 sheetChooserComboBoxActionPerformed(e);
@@ -524,22 +603,29 @@ public class ProjectWindow extends JFrame
 
     private void sheetUploadChangesButtonActionPerformed(ActionEvent e)
     {
-        switch(JOptionPane.showConfirmDialog(this,"Any changes you have made to this sheet online will be lost when uploading the current local version. Continue?","Warning",JOptionPane.YES_NO_OPTION))
+        if(!api.isLocal())
         {
-            case 0: //yes
-                try
-                {
-                    api.updateSheet((String) sheetChooserComboBox.getSelectedItem(),getTableData());
-                }
-                catch (IOException exception)
-                {
-                    JOptionPane.showMessageDialog(this,"Upload failed","Error",JOptionPane.ERROR_MESSAGE);
-                }
+            switch(JOptionPane.showConfirmDialog(this,"Any changes you have made to this sheet online will be lost when uploading the current local version. Continue?","Warning",JOptionPane.YES_NO_OPTION))
+            {
+                case 0: //yes
+                    try
+                    {
+                        api.updateSheet((String) sheetChooserComboBox.getSelectedItem(),getTableData());
+                    }
+                    catch (IOException exception)
+                    {
+                        JOptionPane.showMessageDialog(this,"Upload failed","Error",JOptionPane.ERROR_MESSAGE);
+                    }
 
-                break;
+                    break;
 
-            case 1: //no
-                break;
+                case 1: //no
+                    break;
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Changes have been saved.", "PokEditor", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -579,19 +665,22 @@ public class ProjectWindow extends JFrame
 
     private void linkTextFieldMouseClicked(MouseEvent e)
     {
-        try
+        if(!api.isLocal())
         {
-            Desktop.getDesktop().browse(new URI(linkTextField.getText()));
-        } catch (URISyntaxException | IOException exception)
-        {
-            exception.printStackTrace();
+            try
+            {
+                Desktop.getDesktop().browse(new URI(linkTextField.getText()));
+            } catch (URISyntaxException | IOException exception)
+            {
+                exception.printStackTrace();
+            }
         }
     }
 
     private void exportRomButtonActionPerformed(ActionEvent e)
     {
-        if(e.getSource() == exportRomButton)
-            JOptionPane.showMessageDialog(this,"Make sure that you have applied the data that you want applied to your ROM with the \"Apply to ROM\" button.","Warning",JOptionPane.WARNING_MESSAGE);
+//        if(e.getSource() == exportRomButton)
+//            JOptionPane.showMessageDialog(this,"Make sure that you have applied the data that you want applied to your ROM with the \"Apply to ROM\" button.","Warning",JOptionPane.WARNING_MESSAGE);
 
         JFileChooser fc= new JFileChooser(project.getProjectPath());
         fc.addChoosableFileFilter(new MyFilter("Nintendo DS ROM",".nds"));
@@ -660,14 +749,27 @@ public class ProjectWindow extends JFrame
 
     private void baseRomButtonActionPerformed(ActionEvent e)
     {
-        // TODO add your code here
-        JOptionPane.showMessageDialog(this,"Not implemented yet.","Error",JOptionPane.ERROR_MESSAGE);
+        long arm9Size = new File(new File(project.getDataPath()).getParentFile().getAbsolutePath() + File.separator + "arm9.bin").length();
+        String message = "Game Code: " + project.getBaseRomGameCode() + "\n" +
+                "Game Title: " + Project.parseBaseRom(project.getBaseRomGameCode()) + "\n" +
+                "Language: " + project.getLanguage() + "\n" +
+                "Arm9 Size: " + arm9Size + " (0x" + Long.toHexString(arm9Size) + ") bytes\n" +
+                "Support Level: Full\n" +
+                "Generation: 4\n" +
+                "Filesystem Type: " + (Project.isHGSS(project) ? "Numerical" : "Lexicographical");
+        JOptionPane.showMessageDialog(this,message,"Base ROM Info",JOptionPane.INFORMATION_MESSAGE, baseRomButton.getIcon());
     }
 
     private void projectInfoButtonActionPerformed(ActionEvent e)
     {
-        // TODO add your code here
-        JOptionPane.showMessageDialog(this,"Not implemented yet.","Error",JOptionPane.ERROR_MESSAGE);
+        String message = "Project Name: " + project.getName() + "\n" +
+                "Project Path: " + project.getProjectPath() + "\n" +
+                "Data Path: " + project.getDataPath() + "\n" +
+                "Origin Program: " + project.getProgram() + "\n" +
+                "Primary Sprite Mode: " + (Project.isPrimary(project) ? "Enabled" : "Disabled") + "\n" +
+                "ROM Mode: " + Project.parseBaseRom(project.getBaseRomGameCode());
+        Icon icon = new ImageIcon(ProjectWindow.class.getResource("/icons/give_pokedex.png"));
+        JOptionPane.showMessageDialog(this,message,"Project Info",JOptionPane.INFORMATION_MESSAGE, icon);
     }
 
     private void exportRomItemActionPerformed(ActionEvent e) {
@@ -682,6 +784,11 @@ public class ProjectWindow extends JFrame
     {
         // TODO add your code here
         JOptionPane.showMessageDialog(this,"Not implemented yet.","Error",JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void tutorialItemActionPerformed(ActionEvent e) {
+        // TODO add your code here
+        tutorial.setVisible(true);
     }
 
     private void randomizerItemActionPerformed(ActionEvent e)
@@ -897,14 +1004,54 @@ public class ProjectWindow extends JFrame
         // TODO: add custom component creation code here
     }
 
+    private void integrationSetupItemActionPerformed(ActionEvent e)
+    {
+        sheetsSetupButtonActionPerformed(e);
+    }
+
+    private void migrationItemActionPerformed(ActionEvent e)
+    {
+        // TODO add your code here
+        int choice= JOptionPane.showConfirmDialog(this,"This utility will transfer all of your existing data stored on Google Sheets to a new set of sheets. Your existing set of sheets will remain, and PokEditor v2 will automatically link itself with the new sheets. Continue?","Sheet Migration Utility",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+
+        if(choice == 0)
+        {
+            
+        }
+    }
+
+    private void applyToSheetItemActionPerformed(ActionEvent e) {
+        applyToSheetButtonActionPerformed(e);
+    }
+
+    private void applyToRomItemActionPerformed(ActionEvent e) {
+        applyToRomButtonActionPerformed(e);
+    }
+
+    private void sheetRefreshChangesItemActionPerformed(ActionEvent e) {
+        sheetRefreshChangesButtonActionPerformed(e);
+    }
+
+    private void sheetUploadChangesItemActionPerformed(ActionEvent e) {
+        sheetUploadChangesButtonActionPerformed(e);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        // Generated using JFormDesigner non-commercial license
         menuBar = new JMenuBar();
         fileMenu = new JMenu();
         openProjectItem = new JMenuItem();
         openRecentItem = new JMenuItem();
         importRomItem = new JMenuItem();
         exportRomItem = new JMenuItem();
+        sheetsMenu = new JMenu();
+        integrationSetupItem = new JMenuItem();
+        migrationItem = new JMenuItem();
+        applyToSheetItem = new JMenuItem();
+        applyToRomItem = new JMenuItem();
+        sheetRefreshChangesItem = new JMenuItem();
+        sheetUploadChangesItem = new JMenuItem();
         toolsMenu = new JMenu();
         randomizerItem = new JMenuItem();
         narctowlItem = new JMenuItem();
@@ -914,6 +1061,7 @@ public class ProjectWindow extends JFrame
         consoleItem = new JMenuItem();
         helpMenu = new JMenu();
         aboutItem = new JMenuItem();
+        tutorialItem = new JMenuItem();
         separator2 = new JSeparator();
         tabbedPane1 = new JTabbedPane();
         mainPanel = new JPanel();
@@ -927,7 +1075,7 @@ public class ProjectWindow extends JFrame
         sheetRefreshChangesButton = new JButton();
         sheetUploadChangesButton = new JButton();
         warningLabel = new JLabel();
-        trainerPanel1 = new TrainerPanel();
+        trainerPanel1 = new TrainerPanel(this);
         sinnohEncounterPanel = new SinnohEncounterPanel();
         johtoEncounterPanel = new JohtoEncounterPanel();
         pokemonSpritePanel = new PokemonSpritePanel();
@@ -953,7 +1101,7 @@ public class ProjectWindow extends JFrame
                 thisWindowClosing(e);
             }
         });
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             "hidemode 3",
             // columns
@@ -991,6 +1139,42 @@ public class ProjectWindow extends JFrame
                 fileMenu.add(exportRomItem);
             }
             menuBar.add(fileMenu);
+
+            //======== sheetsMenu ========
+            {
+                sheetsMenu.setText("Sheets");
+
+                //---- integrationSetupItem ----
+                integrationSetupItem.setText("Integration Setup");
+                integrationSetupItem.addActionListener(e -> integrationSetupItemActionPerformed(e));
+                sheetsMenu.add(integrationSetupItem);
+
+                //---- migrationItem ----
+                migrationItem.setText("Migration Utility");
+                migrationItem.addActionListener(e -> migrationItemActionPerformed(e));
+                sheetsMenu.add(migrationItem);
+
+                //---- applyToSheetItem ----
+                applyToSheetItem.setText("Apply ROM to Sheets");
+                applyToSheetItem.addActionListener(e -> applyToSheetItemActionPerformed(e));
+                sheetsMenu.add(applyToSheetItem);
+
+                //---- applyToRomItem ----
+                applyToRomItem.setText("Apply Sheets to ROM");
+                applyToRomItem.addActionListener(e -> applyToRomItemActionPerformed(e));
+                sheetsMenu.add(applyToRomItem);
+
+                //---- sheetRefreshChangesItem ----
+                sheetRefreshChangesItem.setText("Refresh Sheet from Google Sheets");
+                sheetRefreshChangesItem.addActionListener(e -> sheetRefreshChangesItemActionPerformed(e));
+                sheetsMenu.add(sheetRefreshChangesItem);
+
+                //---- sheetUploadChangesItem ----
+                sheetUploadChangesItem.setText("Upload Changes to Google Sheets");
+                sheetUploadChangesItem.addActionListener(e -> sheetUploadChangesItemActionPerformed(e));
+                sheetsMenu.add(sheetUploadChangesItem);
+            }
+            menuBar.add(sheetsMenu);
 
             //======== toolsMenu ========
             {
@@ -1037,6 +1221,11 @@ public class ProjectWindow extends JFrame
                 aboutItem.setText("About");
                 aboutItem.addActionListener(e -> aboutItemActionPerformed(e));
                 helpMenu.add(aboutItem);
+
+                //---- tutorialItem ----
+                tutorialItem.setText("Tutorial");
+                tutorialItem.addActionListener(e -> tutorialItemActionPerformed(e));
+                helpMenu.add(tutorialItem);
             }
             menuBar.add(helpMenu);
         }
@@ -1057,17 +1246,17 @@ public class ProjectWindow extends JFrame
                     "[grow,fill]" +
                     "[grow,fill]",
                     // rows
-                    "[54]" +
-                    "[]" +
-                    "[]" +
-                    "[]" +
+                    "[54,fill]" +
+                    "[fill]" +
+                    "[fill]" +
+                    "[fill]" +
                     "[grow,fill]" +
-                    "[]" +
+                    "[fill]" +
                     "[bottom]"));
 
                 //---- sheetsSetupButton ----
-                sheetsSetupButton.setText("Google Sheets Integration Setup");
-                sheetsSetupButton.setToolTipText("This is how you configure a link between Google Sheets and PokEditor.");
+                sheetsSetupButton.setText("Sheets Setup");
+                sheetsSetupButton.setToolTipText("Click this to configure a link with the Google Sheets API or a local sheet repository.");
                 sheetsSetupButton.addActionListener(e -> sheetsSetupButtonActionPerformed(e));
                 mainPanel.add(sheetsSetupButton, "cell 0 0 2 1,grow");
 
@@ -1089,14 +1278,14 @@ public class ProjectWindow extends JFrame
                 //---- applyToSheetButton ----
                 applyToSheetButton.setText("Apply ROM to Sheets");
                 applyToSheetButton.setEnabled(false);
-                applyToSheetButton.setToolTipText("Data from ROM is copied into Google Sheets.");
+                applyToSheetButton.setToolTipText("Data from game files is copied into sheets.");
                 applyToSheetButton.addActionListener(e -> applyToSheetButtonActionPerformed(e));
                 mainPanel.add(applyToSheetButton, "cell 0 3");
 
                 //---- applyToRomButton ----
                 applyToRomButton.setText("Apply Sheets to ROM");
                 applyToRomButton.setEnabled(false);
-                applyToRomButton.setToolTipText("Data from Google Sheets is applied to ROM.");
+                applyToRomButton.setToolTipText("Data from sheets is applied to game files.");
                 applyToRomButton.addActionListener(e -> applyToRomButtonActionPerformed(e));
                 mainPanel.add(applyToRomButton, "cell 1 3");
 
@@ -1111,27 +1300,27 @@ public class ProjectWindow extends JFrame
                     sheetPreviewTable.setMaximumSize(new Dimension(2147483647, 2147483647));
                     sheetPreviewTable.setRowSelectionAllowed(false);
                     sheetPreviewTable.setCellSelectionEnabled(true);
-                    sheetPreviewTable.setDefaultRenderer(Object.class, new PaintTableCellRenderer());
+                    //sheetPreviewTable.setDefaultRenderer(Object.class, new PaintTableCellRenderer());
                     sheetPreviewTable.setIntercellSpacing(new Dimension(0,0));
                     sheetPreviewTable.setRowMargin(0);
                     sheetPreviewTable.getTableHeader().setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
                     sheetPreviewScrollPane.setViewportView(sheetPreviewTable);
                 }
-                mainPanel.add(sheetPreviewScrollPane, "cell 0 4 2 1,growx");
+                mainPanel.add(sheetPreviewScrollPane, "cell 0 4 2 1,grow");
 
                 //---- sheetRefreshChangesButton ----
-                sheetRefreshChangesButton.setText("Refresh Sheet from Google Sheets");
+                sheetRefreshChangesButton.setText("Reload Sheets");
                 sheetRefreshChangesButton.setEnabled(false);
-                sheetRefreshChangesButton.setToolTipText("Online changes made since last download are reloaded.");
+                sheetRefreshChangesButton.setToolTipText("Reloads sheets with the last saved data.");
                 sheetRefreshChangesButton.addActionListener(e -> sheetRefreshChangesButtonActionPerformed(e));
-                mainPanel.add(sheetRefreshChangesButton, "cell 0 5");
+                mainPanel.add(sheetRefreshChangesButton, "cell 0 5,growx");
 
                 //---- sheetUploadChangesButton ----
-                sheetUploadChangesButton.setText("Upload Changes to Google Sheets");
+                sheetUploadChangesButton.setText("Save Sheet Changes");
                 sheetUploadChangesButton.setEnabled(false);
-                sheetUploadChangesButton.setToolTipText("Applies local changes to Google Sheets.");
+                sheetUploadChangesButton.setToolTipText("Saves local changes made in the preview window");
                 sheetUploadChangesButton.addActionListener(e -> sheetUploadChangesButtonActionPerformed(e));
-                mainPanel.add(sheetUploadChangesButton, "cell 1 5");
+                mainPanel.add(sheetUploadChangesButton, "cell 1 5,growx");
 
                 //---- warningLabel ----
                 warningLabel.setText("No warnings to display");
@@ -1255,12 +1444,20 @@ public class ProjectWindow extends JFrame
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenuItem openProjectItem;
     private JMenuItem openRecentItem;
     private JMenuItem importRomItem;
     private JMenuItem exportRomItem;
+    private JMenu sheetsMenu;
+    private JMenuItem integrationSetupItem;
+    private JMenuItem migrationItem;
+    private JMenuItem applyToSheetItem;
+    private JMenuItem applyToRomItem;
+    private JMenuItem sheetRefreshChangesItem;
+    private JMenuItem sheetUploadChangesItem;
     private JMenu toolsMenu;
     private JMenuItem randomizerItem;
     private JMenuItem narctowlItem;
@@ -1270,6 +1467,7 @@ public class ProjectWindow extends JFrame
     private JMenuItem consoleItem;
     private JMenu helpMenu;
     private JMenuItem aboutItem;
+    private JMenuItem tutorialItem;
     private JSeparator separator2;
     private JTabbedPane tabbedPane1;
     private JPanel mainPanel;
@@ -1340,6 +1538,11 @@ public class ProjectWindow extends JFrame
         return gameCode.startsWith("IPG");
     }
 
+    public TutorialFrame getTutorial()
+    {
+        return tutorial;
+    }
+
 
 
     public Project getProject()
@@ -1351,15 +1554,23 @@ public class ProjectWindow extends JFrame
     {
         this.api= api;
         sheetChooserComboBox.setEnabled(true);
-        linkTextField.setEnabled(true);
-        linkTextField.setText(api.getSPREADSHEET_LINK());
-        linkTextField.setForeground(new Color(27, 148, 255, 255));
+        if(!api.isLocal())
+        {
+            linkTextField.setEnabled(true);
+            linkTextField.setText(api.getSPREADSHEET_LINK());
+            linkTextField.setForeground(new Color(27, 148, 255, 255));
+            sheetPreviewTable.setEnabled(false);
+            linkTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
+        else
+        {
+            linkTextField.setText("You are using local sheet storage.");
+            linkTextField.setForeground(new Color(255, 171, 27, 255));
+        }
         applyToRomButton.setEnabled(true);
         applyToSheetButton.setEnabled(true);
-        sheetPreviewTable.setEnabled(true);
         sheetRefreshChangesButton.setEnabled(true);
         sheetUploadChangesButton.setEnabled(true);
-        linkTextField.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         toFront();
         setEnabled(true);
@@ -1386,13 +1597,14 @@ public class ProjectWindow extends JFrame
 //        {
 //        }
 
-
-        if (JOptionPane.showConfirmDialog(this, "Would you like to update the sheets using data from your ROM? (This will overwrite existing data in the sheets, and you can choose which data you want to apply specifically)", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0)
+        if(!api.isLocal())
         {
-            RomApplier editApplier = new RomApplier(project, projectPath, api, this);
-            editApplier.setLocationRelativeTo(this);
+            if (JOptionPane.showConfirmDialog(this, "Would you like to update the sheets using data from your ROM? (This will overwrite existing data in the sheets, and you can choose which data you want to apply specifically)", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0)
+            {
+                RomApplier editApplier = new RomApplier(project, projectPath, api, this, true);
+                editApplier.setLocationRelativeTo(this);
+            }
         }
-
 
         String[] sheetNames= new String[0];
 
@@ -1407,7 +1619,6 @@ public class ProjectWindow extends JFrame
 
 
         sheetChooserComboBox.setSelectedIndex(indexOf("Personal",sheetNames));
-
     }
 
     private void initialLinkDataUpdate() throws IOException
@@ -1539,6 +1750,7 @@ public class ProjectWindow extends JFrame
         clearAllDirs(trainerPanel1.toDelete);
         clearAllDirs(SpriteDataProcessor.toDelete);
         clearAllDirs(sinnohEncounterPanel.toDelete);
+//        clearAllDirs(johtoEncounterPanel.toDelete);
 
         TextEditor.cleanup(project);
 
@@ -1546,6 +1758,9 @@ public class ProjectWindow extends JFrame
         trainerPanel1.toDelete= new ArrayList<>();
         SpriteDataProcessor.toDelete= new ArrayList<>();
         sinnohEncounterPanel.toDelete= new ArrayList<>();
+        //TODO fix johto clear and implement trainer text clear (a057)
+//        johtoEncounterPanel.toDelete= new ArrayList<>();
+
     }
     
     public static void clearAllDirs(List<File> folders)
@@ -1558,22 +1773,22 @@ public class ProjectWindow extends JFrame
             }
         }
     }
-    
-    public static void clearDirs(File folder)
+
+    private static void clearDirs(File folder)
     {
-        if(folder != null)
+        try
         {
-            if(folder.exists())
-            {
-                for(File f : Objects.requireNonNull(folder.listFiles()))
-                {
-                    if(f.isDirectory())
-                        clearDirs(f);
-                    else
-                        f.delete();
-                }
-                folder.delete();
-            }
+            FileUtils.deleteDirectory(folder);
+        }
+        catch(IOException e)
+        {
+            System.err.println("\tFailed to delete folder: " + folder.getAbsolutePath());
+            e.printStackTrace();
+        }
+
+        if(folder.exists())
+        {
+            System.err.println("\tFolder wasn't deleted?");
         }
     }
 
@@ -1581,16 +1796,43 @@ public class ProjectWindow extends JFrame
     {
         if(folder != null)
         {
-            if(folder.exists())
+            File[] subFiles= folder.listFiles();
+            if(subFiles != null)
             {
-                for(File f : Objects.requireNonNull(folder.listFiles()))
+                if(folder.exists())
                 {
-                    if(f.isDirectory())
-                        cleanupDirs(f);
-                    else if(f.isHidden())
-                        f.delete();
+                    for(File f : Objects.requireNonNull(folder.listFiles()))
+                    {
+                        if(f.isDirectory())
+                            cleanupDirs(f);
+                        else if(f.isHidden())
+                        {
+                            if(!f.delete())
+                            {
+                                System.err.println("File \"" + f.getAbsolutePath() + "\" could not be deleted.");
+                                if(System.getProperty("os.name").toLowerCase().contains("win"))
+                                {
+                                    System.err.println("\tAttempting to forcefully delete");
+                                    try
+                                    {
+                                        FileDeleteStrategy.FORCE.delete(f);
+                                    }
+                                    catch(IOException e)
+                                    {
+                                        System.err.println("\tForceful deletion failed");
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+//                    if(!folder.delete())
+//                    {
+//                        System.err.println("File \"" + folder.getAbsolutePath() + "\" could not be deleted.");
+//                    }
+
+                    folder.delete();
                 }
-                folder.delete();
             }
         }
     }

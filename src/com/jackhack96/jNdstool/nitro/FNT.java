@@ -72,14 +72,16 @@ class FNT {
      * @throws IOException
      */
     private static void writeFNT(NitroDirectory currentDir, ByteBuffer fntMainTable, ByteBuffer fntSubTable) throws IOException {
+        for (NitroFile f : currentDir.getFileList()) {
+            fntSubTable.put((byte) f.getName().length());
+            System.out.println(f.getId() + ": " +  f.getName() + " (" + f.getName().length() + ")");
+            fntSubTable.put(f.getName().getBytes());
+        }
         for (NitroDirectory d : currentDir.getDirectoryList()) {
             fntSubTable.put((byte) (128 + d.getName().length()));
             fntSubTable.put(d.getName().getBytes());
+//            System.out.println(d.getId() + ": " +  d.getName().length());
             fntSubTable.putShort((short) d.getId());
-        }
-        for (NitroFile f : currentDir.getFileList()) {
-            fntSubTable.put((byte) f.getName().length());
-            fntSubTable.put(f.getName().getBytes());
         }
         fntSubTable.put((byte) 0);
         for (NitroDirectory d : currentDir.getDirectoryList()) {

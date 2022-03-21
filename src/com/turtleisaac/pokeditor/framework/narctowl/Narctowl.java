@@ -175,31 +175,40 @@ public class Narctowl
         int numFiles = buffer.readInt(); //obtains number of files to be made
 
         ArrayList<NarcSubFile> subFiles = new ArrayList<>(); //creates an ArrayList of narcs.NarcSubFile objects that contain the starting offset, ending offset, and name of each subfile
-        int lastEnd = 0;
+        long lastEnd = 0;
         int count = 0;
         for (int i = 0; i < numFiles; i++) //runs numFiles times, assigns starting offset, ending offset, and name data representing one file to each index
         {
-            int startingOffset = buffer.readInt(); //the next four bytes, which contain the starting offset
-            int endingOffset = buffer.readInt(); //the next four bytes, which contain the ending offset
+            long startingOffset = buffer.readInt() & 0xffffffffL; //the next four bytes, which contain the starting offset
+            long endingOffset = buffer.readInt() & 0xffffffffL; //the next four bytes, which contain the ending offset
             if (startingOffset != lastEnd) {
                 count++;
             }
-            int startEndOffset = startingOffset - lastEnd;
-            lastEnd = endingOffset;
+
+//            if ((startingOffset & 0xffffffffL) == 0xffff950cL)
+//            {
+//                System.err.println("error: " + i + ": " + startingOffset + ", " + endingOffset);
+//            }
+
+            long startEndOffset = startingOffset - lastEnd;
+            if ((startingOffset & 0xffffffffL) != 0xffff950cL)
+            {
+                lastEnd = endingOffset;
+            }
             int id = i; //creates a final int variable that can be used in calling the interface narcs.NarcSubFile, as the int "i" is not immutable and constantly changing
             subFiles.add(new NarcSubFile() { //adds a new narcs.NarcSubFile object to the ArrayList
                 @Override
-                public int getStartingOffset() {
+                public long getStartingOffset() {
                     return startingOffset; //stores the starting offset in the object
                 }
 
                 @Override
-                public int getEndingOffset() {
+                public long getEndingOffset() {
                     return endingOffset; //stores the ending offset in the object
                 }
 
                 @Override
-                public int getTrashBytes() {
+                public long getTrashBytes() {
                     return startEndOffset;
                 } //stores the number of trash bytes to remove later on
 
@@ -232,17 +241,21 @@ public class Narctowl
 
         for(int i= 0; i < numFiles; i++) //goes through each file in ArrayList of NarcSubFile objects
         {
-            int trashBytes= subFiles.get(i).getTrashBytes(); //sets int "trashBytes" to the number of trash bytes between previous and current file
-            while(trashBytes != 0) //while there are still trash bytes
+            if ((subFiles.get(i).getStartingOffset() & 0xffffffffL) != 0xffff950cL)
             {
-                int throwAway= buffer.readByte(); //reads one byte and "throws it away"
-                trashBytes--; //lowers the amount of trash bytes left by one
+                long trashBytes= subFiles.get(i).getTrashBytes(); //sets int "trashBytes" to the number of trash bytes between previous and current file
+//                System.out.println(i + ": Number of trash bytes: " + trashBytes);
+                while(trashBytes != 0) //while there are still trash bytes
+                {
+                    int throwAway= buffer.readByte(); //reads one byte and "throws it away"
+                    trashBytes--; //lowers the amount of trash bytes left by one
+                }
             }
 
             byte[] bytes; //creates a new byte[] to be defined later in for-loop
             String extension = ""; //creates a new String to contain the file extension of the current file being made
             String trueExtension = "";
-            bytes = buffer.readBytes(subFiles.get(i).getEndingOffset() - subFiles.get(i).getStartingOffset()); //reads the amount of bytes equal to the length of the current file
+            bytes = buffer.readBytes((int) (subFiles.get(i).getEndingOffset() - subFiles.get(i).getStartingOffset())); //reads the amount of bytes equal to the length of the current file
 
             byte[] identifier = new byte[4]; //creates a new byte[] of size 4 to contain the first four bytes of a file so file extension can be appended properly
             if(bytes.length >= 4)

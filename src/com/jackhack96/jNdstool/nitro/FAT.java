@@ -37,12 +37,12 @@ public class FAT {
      * @throws IOException
      */
     private static void writeFAT(jBinaryWriter rom, NitroDirectory root) throws IOException {
-        for (NitroDirectory d : root.getDirectoryList())
-            writeFAT(rom, d);
         for (NitroFile f : root.getFileList()) {
             rom.writeInt(f.getOffset());
             rom.writeInt(f.getOffset() + f.getSize());
         }
+        for (NitroDirectory d : root.getDirectoryList())
+            writeFAT(rom, d);
     }
 
     /**

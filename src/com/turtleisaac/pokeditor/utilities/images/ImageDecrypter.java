@@ -263,6 +263,7 @@ public class ImageDecrypter
             buffer.close();
         } catch (IOException exception)
         {
+            System.err.println("Buffer close error in image decrypter");
             exception.printStackTrace();
         }
 
@@ -280,5 +281,17 @@ public class ImageDecrypter
             }
         }
         return false;
+    }
+
+    public static boolean spriteExists(String path, int species)
+    {
+        path+= File.separator;
+
+        boolean exists= false;
+
+        if(new File(path + species + ".ncgr").exists() || new File(path + (species + 1) + ".ncgr").exists())
+            exists= true;
+
+        return exists;
     }
 }

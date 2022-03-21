@@ -25,7 +25,7 @@ new FormModel {
 						name: "projectsSubPanel"
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "titleLabel"
-							"text": "PokEditor v2.0"
+							"text": "PokEditor v2.0 - DEV BUILD"
 							"font": new java.awt.Font( ".SF NS Text", 0, 18 )
 						}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 							"value": "cell 0 1,alignx center,growx 0"

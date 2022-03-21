@@ -65,6 +65,8 @@ public class JCheckboxTree extends JTree {
     HashMap<TreePath, CheckedNode> nodesCheckingState;
     HashSet<TreePath> checkedPaths = new HashSet<TreePath>();
 
+    private DefaultMutableTreeNode root;
+
     // Defining a new event type for the checking mechanism and preparing event-handling mechanism
     protected EventListenerList listenerList = new EventListenerList();
 
@@ -168,6 +170,8 @@ public class JCheckboxTree extends JTree {
     public JCheckboxTree(DefaultMutableTreeNode root)
     {
         super(root);
+        this.root = root;
+
         // Disabling toggling by double-click
         this.setToggleClickCount(0);
         // Overriding cell renderer by new one defined above
@@ -297,7 +301,7 @@ public class JCheckboxTree extends JTree {
     }
 
     // Recursively checks/unchecks a subtree
-    protected void checkSubTree(TreePath tp, boolean check) {
+    public void checkSubTree(TreePath tp, boolean check) {
         CheckedNode cn = nodesCheckingState.get(tp);
         cn.isSelected = check;
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tp.getLastPathComponent();
@@ -310,6 +314,11 @@ public class JCheckboxTree extends JTree {
         } else {
             checkedPaths.remove(tp);
         }
+    }
+
+    public void checkRoot()
+    {
+        checkSubTree(new TreePath(root.getPath()), true);
     }
 
 }

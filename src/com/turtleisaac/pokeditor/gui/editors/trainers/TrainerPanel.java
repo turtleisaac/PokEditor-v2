@@ -14,17 +14,20 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 
-import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import com.turtleisaac.pokeditor.framework.BitStream;
+import com.turtleisaac.pokeditor.gui.EditorComboBox;
 import com.turtleisaac.pokeditor.gui.ComboBoxItem;
+import com.turtleisaac.pokeditor.gui.editors.trainers.text.TrainerTextFrame;
+import com.turtleisaac.pokeditor.gui.projects.projectwindow.ProjectWindow;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.TableLocator;
+import com.turtleisaac.pokeditor.utilities.TablePointers;
 import com.turtleisaac.pokeditor.utilities.images.ImageBase;
 import net.miginfocom.swing.*;
 import turtleisaac.GoogleSheetsAPI;
@@ -59,21 +62,15 @@ public class TrainerPanel extends JPanel
     private final Animator animator;
     public ArrayList<File> toDelete= new ArrayList<>();
 
-    public TrainerPanel()
+    private final ProjectWindow parent;
+
+    public TrainerPanel(ProjectWindow parent)
     {
         initComponents();
-
+        this.parent = parent;
 
         numberPokemonLastSelected= 0;
         trainerFileLastSelected= 0;
-
-        ComboBoxSearchable itemComboBoxSearchable1= new ComboBoxSearchable(itemComboBox1);
-        ComboBoxSearchable itemComboBoxSearchable2= new ComboBoxSearchable(itemComboBox2);
-        ComboBoxSearchable itemComboBoxSearchable3= new ComboBoxSearchable(itemComboBox3);
-        ComboBoxSearchable itemComboBoxSearchable4= new ComboBoxSearchable(itemComboBox4);
-
-        ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
-        ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
 
         trainerSelectionComboBox.setMaximumRowCount(10);
 
@@ -82,35 +79,27 @@ public class TrainerPanel extends JPanel
         animator= new Animator(trainerClassImageButton);
     }
 
-    public TrainerPanel(GoogleSheetsAPI api, Project project)
-    {
-        initComponents();
-
-        numberPokemonLastSelected= 0;
-        trainerFileLastSelected= 0;
-
-        ComboBoxSearchable itemComboBoxSearchable1= new ComboBoxSearchable(itemComboBox1);
-        ComboBoxSearchable itemComboBoxSearchable2= new ComboBoxSearchable(itemComboBox2);
-        ComboBoxSearchable itemComboBoxSearchable3= new ComboBoxSearchable(itemComboBox3);
-        ComboBoxSearchable itemComboBoxSearchable4= new ComboBoxSearchable(itemComboBox4);
-
-        ComboBoxSearchable trainerClassComboBoxSearchable= new ComboBoxSearchable(trainerClassSelectorComboBox);
-        ComboBoxSearchable trainerSelectionComboBoxSearchable= new ComboBoxSearchable(trainerSelectionComboBox);
-
-        tableLocator= null;
-
-        try
-        {
-            setProject(project);
-            setApi(api);
-        }
-        catch (IOException exception)
-        {
-            exception.printStackTrace();
-        }
-
-        animator= new Animator(trainerClassImageButton);
-    }
+//    public TrainerPanel(GoogleSheetsAPI api, Project project)
+//    {
+//        initComponents();
+//
+//        numberPokemonLastSelected= 0;
+//        trainerFileLastSelected= 0;
+//
+//        tableLocator= null;
+//
+//        try
+//        {
+//            setProject(project);
+//            setApi(api);
+//        }
+//        catch (IOException exception)
+//        {
+//            exception.printStackTrace();
+//        }
+//
+//        animator= new Animator(trainerClassImageButton);
+//    }
 
     public void setTrainer(TrainerDataGen4 trainer)
     {
@@ -132,7 +121,7 @@ public class TrainerPanel extends JPanel
         {
             try
             {
-                trainerEditor= new TrainerEditorGen4(project,projectPath,Game.Platinum);
+                trainerEditor= new TrainerEditorGen4(project,projectPath,project.getBaseRom());
             }
             catch (IOException exception)
             {
@@ -171,6 +160,7 @@ public class TrainerPanel extends JPanel
     private void newTrainerButtonActionPerformed(ActionEvent e)
     {
         // TODO add your code here
+        JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
     }
 
     private void trainerClassSelectorComboBoxActionPerformed(ActionEvent e)
@@ -178,18 +168,19 @@ public class TrainerPanel extends JPanel
         saved= false;
         int baseOffset= trainerClassSelectorComboBox.getSelectedIndex()*5;
         String dataPath= project.getProjectPath().getAbsolutePath() + File.separator + project.getName() + File.separator + "data";
+        String unpackedFolderPath = project.getProjectPath().toString() + File.separator + "temp" + File.separator;
         try
         {
             String narcPath= Project.isDPPT(project) ? File.separator + "poketool" + File.separator + "trgra" + File.separator + "trfgra.narc" : File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "8";
-            String folderPath= Project.isDPPT(project) ? File.separator + "poketool" + File.separator + "trgra" + File.separator + "trfgra" : File.separator + "a" + File.separator + "0" + File.separator + "5" + File.separator + "8_";
-            new File(dataPath + folderPath).deleteOnExit();
-            toDelete.add(new File(dataPath + folderPath));
+            String folderPath= unpackedFolderPath + "trfgra";
+            new File(folderPath).deleteOnExit();
+            toDelete.add(new File(folderPath));
 
 
-            if(!new File(dataPath + folderPath).exists())
+            if(!new File(folderPath).exists())
             {
                 Narctowl narctowl= new Narctowl(true);
-                narctowl.unpack(dataPath + narcPath,dataPath + folderPath);
+                narctowl.unpack(dataPath + narcPath,folderPath);
             }
 
             ImageBase imageBase= new ImageBase(project,folderPath + File.separator + baseOffset + ".ncgr", folderPath + File.separator + (baseOffset + 1) + ".nclr", folderPath + File.separator + (baseOffset + 2) + ".ncer");
@@ -201,7 +192,7 @@ public class TrainerPanel extends JPanel
             exception.printStackTrace();
         }
 
-        System.out.println(trainerClassSelectorComboBox.getSelectedItem());
+//        System.out.println(trainerClassSelectorComboBox.getSelectedItem());
         try
         {
             getSelectedClassGender();
@@ -226,6 +217,77 @@ public class TrainerPanel extends JPanel
             while(trainerPokemonTabbedPane.getTabCount() != numberPokemonSlider.getValue())
             {
                 trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
+                if(pokemonList != null)
+                {
+                    pokemonList.add(new TrainerPokemonData()
+                    {
+                        @Override
+                        public short getIvs()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public short getAbility()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getLevel()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getPokemon()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getAltForm()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getItem()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getMove1()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getMove2()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getMove3()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public int getMove4()
+                        {
+                            return 0;
+                        }
+
+                        @Override
+                        public short getBallCapsule()
+                        {
+                            return 0;
+                        }
+                    });
+                }
             }
         }
         else
@@ -233,6 +295,7 @@ public class TrainerPanel extends JPanel
             while(trainerPokemonTabbedPane.getTabCount() != numberPokemonSlider.getValue() && trainerPokemonTabbedPane.getTabCount() > 0)
             {
                 trainerPokemonTabbedPane.removeTabAt(trainerPokemonTabbedPane.getTabCount()-1);
+                pokemonList.remove(trainerPokemonTabbedPane.getTabCount()-1);
             }
         }
 
@@ -260,7 +323,7 @@ public class TrainerPanel extends JPanel
     private void toggleHeldItemsCheckboxItemStateChanged(ItemEvent e)
     {
         saved= false;
-        System.out.println("Tab count: " + trainerPokemonTabbedPane.getTabCount());
+//        System.out.println("Tab count: " + trainerPokemonTabbedPane.getTabCount());
         for(int i= 0; i < trainerPokemonTabbedPane.getTabCount(); i++)
         {
             TrainerPokemonPanel panel= (TrainerPokemonPanel) trainerPokemonTabbedPane.getComponentAt(i);
@@ -400,10 +463,14 @@ public class TrainerPanel extends JPanel
 
         System.arraycopy(trainerEditor.createTrainerTeamRow(pokemonList),0,team,2,66);
 
+        trainerDataTable[trainerSelectionComboBox.getSelectedIndex()+1] = trainerDataArr;
+        trainerPokemonTable[trainerSelectionComboBox.getSelectedIndex()+1] = team;
+
         try
         {
-            api.updateSheet("Trainer Data!" + (trainerSelectionComboBox.getSelectedIndex()+2) + ":" + (trainerSelectionComboBox.getSelectedIndex()+2),trainerDataArr);
-            api.updateSheet("Trainer Pokemon!" + (trainerSelectionComboBox.getSelectedIndex()+2) + ":" + (trainerSelectionComboBox.getSelectedIndex()+2),team);
+//            int offset = api.isLocal() ? 1 : 2;
+            api.updateSheet("Trainer Data", trainerDataTable);
+            api.updateSheet("Trainer Pokemon", trainerPokemonTable);
         }
         catch (IOException exception)
         {
@@ -411,6 +478,21 @@ public class TrainerPanel extends JPanel
         }
 
         saved= true;
+
+
+        ComboBoxItem selectedItem= (ComboBoxItem) trainerSelectionComboBox.getSelectedItem();
+        selectedItem.setName(trainerNameTextField.getText() + " (" + trainerSelectionComboBox.getSelectedIndex() + ")");
+
+        try
+        {
+            trainerDataTable= api.getSpecifiedSheetArr("Trainer Data");
+            trainerPokemonTable= api.getSpecifiedSheetArr("Trainer Pokemon");
+        } catch (IOException exception)
+        {
+            exception.printStackTrace();
+        }
+
+//        if(parent.shee)
     }
 
     private void exportSmogonButtonActionPerformed(ActionEvent e)
@@ -430,6 +512,7 @@ public class TrainerPanel extends JPanel
 
     public void importSmogonButtonActionPerformed(String[] arr)
     {
+        // TODO finish import code
         ArrayList<String[]> smogonList= new ArrayList<>();
         int start= 0;
         for(int i= 1; i < arr.length; i++)
@@ -441,10 +524,10 @@ public class TrainerPanel extends JPanel
             }
         }
 
-        for(String[] pokemon : smogonList)
-        {
-            System.out.println(Arrays.toString(pokemon));
-        }
+//        for(String[] pokemon : smogonList)
+//        {
+//            System.out.println(Arrays.toString(pokemon));
+//        }
     }
 
     private void refreshButtonActionPerformed(ActionEvent e)
@@ -466,11 +549,30 @@ public class TrainerPanel extends JPanel
     private void trainerTextButtonActionPerformed(ActionEvent e)
     {
         // TODO add your code here
+        try
+        {
+            if(Project.isHGSS(project))
+            {
+                TrainerTextFrame trainerTextFrame= new TrainerTextFrame(project, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
+                trainerTextFrame.setLocationRelativeTo(this);
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        catch(IOException exception)
+        {
+            exception.printStackTrace();
+        }
+
+
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        trainerSelectionComboBox = new JComboBox();
+        // Generated using JFormDesigner non-commercial license
+        trainerSelectionComboBox = new EditorComboBox();
         newTrainerButton = new JButton();
         saveTrainerButton = new JButton();
         refreshButton = new JButton();
@@ -483,16 +585,16 @@ public class TrainerPanel extends JPanel
         trainerDataSubPanel = new JPanel();
         trainerNameLabel = new JLabel();
         itemPanel = new JPanel();
-        itemComboBox1 = new JComboBox();
-        itemComboBox2 = new JComboBox();
-        itemComboBox3 = new JComboBox();
-        itemComboBox4 = new JComboBox();
+        itemComboBox1 = new EditorComboBox();
+        itemComboBox2 = new EditorComboBox();
+        itemComboBox3 = new EditorComboBox();
+        itemComboBox4 = new EditorComboBox();
         trainerNameTextField = new JTextField();
         numberPokemonLabel = new JLabel();
         numberPokemonSlider = new JSlider();
         trainerClassPanel = new JPanel();
         trainerClassImageButton = new JButton();
-        trainerClassSelectorComboBox = new JComboBox();
+        trainerClassSelectorComboBox = new EditorComboBox();
         trainerAiPanel = new JPanel();
         effectivenessPriorityCheckbox = new JCheckBox();
         attackEvaluationCheckbox = new JCheckBox();
@@ -744,7 +846,8 @@ public class TrainerPanel extends JPanel
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private JComboBox trainerSelectionComboBox;
+    // Generated using JFormDesigner non-commercial license
+    private EditorComboBox trainerSelectionComboBox;
     private JButton newTrainerButton;
     private JButton saveTrainerButton;
     private JButton refreshButton;
@@ -757,16 +860,16 @@ public class TrainerPanel extends JPanel
     private JPanel trainerDataSubPanel;
     private JLabel trainerNameLabel;
     private JPanel itemPanel;
-    private JComboBox itemComboBox1;
-    private JComboBox itemComboBox2;
-    private JComboBox itemComboBox3;
-    private JComboBox itemComboBox4;
+    private EditorComboBox itemComboBox1;
+    private EditorComboBox itemComboBox2;
+    private EditorComboBox itemComboBox3;
+    private EditorComboBox itemComboBox4;
     private JTextField trainerNameTextField;
     private JLabel numberPokemonLabel;
     private JSlider numberPokemonSlider;
     private JPanel trainerClassPanel;
     private JButton trainerClassImageButton;
-    private JComboBox trainerClassSelectorComboBox;
+    private EditorComboBox trainerClassSelectorComboBox;
     private JPanel trainerAiPanel;
     private JCheckBox effectivenessPriorityCheckbox;
     private JCheckBox attackEvaluationCheckbox;
@@ -798,7 +901,7 @@ public class TrainerPanel extends JPanel
     public boolean getSelectedClassGender()
     {
         int val= trainerClassGenderTable[trainerClassSelectorComboBox.getSelectedIndex()];
-        System.out.println("Trainer Class Gender Value: " + val);
+//        System.out.println("Trainer Class Gender Value: " + val);
         return val == 0 || val == 2;
     }
 
@@ -821,7 +924,7 @@ public class TrainerPanel extends JPanel
 
     public void setProject(Project project) throws IOException
     {
-        System.out.println(projectPath);
+//        System.out.println(projectPath);
         this.project= project;
         this.projectPath= project.getProjectPath().getAbsolutePath();
         tableLocator= new TableLocator(project);
@@ -854,27 +957,6 @@ public class TrainerPanel extends JPanel
                 break;
         }
 
-        try
-        {
-            BufferedReader reader;
-            String line;
-
-            reader = new BufferedReader(new FileReader(resourcePath + "FormDataPt.txt"));
-            ArrayList<Integer> formNumberList = new ArrayList<>();
-
-            while ((line = reader.readLine()) != null) {
-                formNumberList.add(Integer.parseInt(line.split(" ")[line.split(" ").length-1]));
-            }
-            formNumberData= new int[formNumberList.size()];
-            for(int i= 0; i < formNumberList.size(); i++)
-                formNumberData[i]= formNumberList.get(i);
-            reader.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
         for(String item : itemData)
         {
             itemComboBox1.addItem(new ComboBoxItem(item));
@@ -889,28 +971,28 @@ public class TrainerPanel extends JPanel
         }
 
         TrainerPokemonPanel newPanel= new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected());
-//        newPanel.enableParentData();
+        newPanel.enableParentData();
 
-        //TODO add HGSS compatibility for reading trainer class gender data
-//        TablePointer classGenderPointer;
-//        switch (project.getBaseRom())
-//        {
-//            case Platinum:
-//                classGenderPointer= TablePointer.ClassGender_CPUE;
-//                break;
-////
-////            case HeartGold:
-////                classGenderPointer= TablePointer.
-////                break;
-//            default:
-//                throw new IllegalStateException("Unexpected value: " + project.getBaseRom());
-//        }
-//
-//        trainerClassGenderTable= tableLocator.obtainTableArr(classGenderPointer,trainerClassData.length,1);
-//        System.out.println(Arrays.toString(trainerClassGenderTable));
 
-        trainerClassGenderTable= new byte[trainerClassData.length];
-        Arrays.fill(trainerClassGenderTable,(byte)0);
+        TablePointers.TablePointer classGenderPointer;
+        boolean success= true;
+        try
+        {
+            classGenderPointer= TablePointers.getPointers().get(project.getBaseRomGameCode()).get("classGender");
+        }
+        catch (Exception e)
+        {
+            success= false;
+            classGenderPointer= null;
+
+            e.printStackTrace();
+        }
+
+        if(success)
+        {
+            trainerClassGenderTable= tableLocator.obtainTableArr(classGenderPointer,trainerClassData.length,1);
+        }
+
 
         trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), newPanel);
     }
@@ -918,6 +1000,11 @@ public class TrainerPanel extends JPanel
     public String getProjectPath()
     {
         return projectPath;
+    }
+
+    public boolean isAbilityFunctional()
+    {
+        return Project.isHGSS(project);
     }
 
     public void setApi(GoogleSheetsAPI api) throws IOException
@@ -949,6 +1036,8 @@ public class TrainerPanel extends JPanel
             {
                 exception.printStackTrace();
             }
+
+            trainerClassSelectorComboBox.setSelectedIndex(1);
         }
     }
 
