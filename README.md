@@ -1,10 +1,12 @@
-# PokEditor
+# PokEditor v2
 
-Author: Turtleisaac
+**Author: Turtleisaac**
 
-Multifunctional in-depth editor for Pokémon Gen IV game data
+Multifunctional in-depth editor for Pokémon Gen IV (4) game data.
 
-Written entirely in Java and is completely OS-agnostic. Java 8 or greater is required.
+Written entirely in Java and is completely OS-agnostic. Java 11 is required. 12 or higher may work, but if older classes have been deprecated or removed in those versions, then it may not work for those higher versions of Java.
+
+This tool is still in active development and will receive periodic updates as improvements are made and bugs are found, time permitting.
 
 **Note:** Works best on UNIX-based systems such as macOS or Linux
 
@@ -21,9 +23,9 @@ Special thanks to [JackHack96](https://github.com/JackHack96), [Jay-San](https:/
 
 # Usage
 
-Double click on the JAR file to launch the program
+Open a Terminal (macOS/Linux) or Command Prompt (Windows) window, navigate to the same folder that your downloaded PokEditor v2 JAR file is in, and run:```java -Dfile.encoding=UTF-8 -jar PokEditor-v2.jar```
 
-**Note:** If you run into issues after opening a project, then run through CMD with the following arguments: *java -Dfile.encoding=UTF-8 -jar PokEditor-v2.jar*
+**Note:** If you are on macOS or Linux, you can just double-click the JAR instead, but it is recommended to run from Terminal so you can monitor the cmd output and report errors more easily.
 
 # List of Spreadsheet-Based Editors/ Tools
 
@@ -33,7 +35,7 @@ Double click on the JAR file to launch the program
 
 * Level-Up Learnset Editor
 
-* Encounter Editor
+* Encounter Editor (also has a GUI-based editor) (currently incomplete)
 
 * Evolutions Editor
 
@@ -45,7 +47,7 @@ Double click on the JAR file to launch the program
 
 * Baby Form Editor (what hatches from an egg)
 
-* Trainer Editor
+* Trainer Editor (also has a GUI-based editor)
 
 # Other Editors/ Tools
 
@@ -55,8 +57,14 @@ Double click on the JAR file to launch the program
 
 * File Compressor/ Decompressor
 
-* Randomizer
+* Randomizer (not guaranteed to work on most recent versions, has not been tested for a while)
 
 # Notes
 
-PokEditor v2 includes an auto-backup system. Upon exiting a PokEditor project, your current changes will be used to build a ROM. Up to ten backups will be stored before PokEditor asks if you would like to delete the oldest one, and you can easily rebase your project on an older version of your changes by going to "File" -> "Import ROM."
+* PokEditor v2 includes an auto-backup system. Upon exiting a PokEditor project, your current changes will be used to build a ROM. Up to ten backups will be stored before PokEditor asks if you would like to delete the oldest one, and you can easily rebase your project on an older version of your changes by going to "File" -> "Import ROM."
+* ROMs that are exported from PokEditor v2 do not like to play nice with tools which use ndstool for ROM unpacking and repacking purposes. You can circumvent these issues by transplanting the edited NARC files from a PokEditor v2 project folder to an unpacked ROM folder from DSPRE, or in a tool such as Tinke. The tools with which errors may be encountered include but are not limited to:
+  * SDSME (You shouldn't be using this regardless, use DSPRE instead)
+  * [DSPRE](https://github.com/AdAstra-LD/DS-Pokemon-Rom-Editor)
+  * Fly Editor
+  * CrystalTile 2
+  * Of course, [ndstool](https://github.com/devkitPro/ndstool) itself
