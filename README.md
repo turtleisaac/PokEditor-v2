@@ -12,6 +12,8 @@ This tool is still in active development and will receive periodic updates as im
 
 Special thanks to [JackHack96](https://github.com/JackHack96), [Jay-San](https://www.youtube.com/channel/UCGs237E1PfrfIGsZ9eqF-lw), [Drayano](https://twitter.com/Drayano60), [Vendor](https://twitter.com/VendorPC), FrankieD, [Mikelan98](https://twitter.com/mikelan98?lang=en), and [HelloOO7](https://github.com/HelloOO7)
 
+Please join [this Discord server](https://discord.gg/zAtqJDW2jC) for help with using PokEditor v2 or for help with any questions relating to Pokémon Gen 4 and 5 hacking.
+
 **Note:** Code from the [Universal Pokemon Randomizer ZX](https://github.com/Ajarmar/universal-pokemon-randomizer-zx) is adapted for LZ decompression purposes under the rights provided by the GNU General Public License v3.0. If there are any complaints related to this, please create a new Issue in the Issues tab here on GitHub.
 
 ![PokEditor Personal Editor](https://i.imgur.com/YyBOyCY.png)
