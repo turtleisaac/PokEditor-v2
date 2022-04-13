@@ -4,7 +4,9 @@
 
 Multifunctional in-depth editor for Pokémon Gen IV (4) game data.
 
-Written entirely in Java and is completely OS-agnostic. Java 11 is required. 12 or higher may work, but if older classes have been deprecated or removed in those versions, then it may not work for those higher versions of Java.
+Written entirely in Java and is completely OS-agnostic. 
+
+**Java 11 is required.** 12 or higher may work, but if older classes have been deprecated or removed in those versions, then it may not work for those higher versions of Java.
 
 This tool is still in active development and will receive periodic updates as improvements are made and bugs are found, time permitting.
 
@@ -13,6 +15,8 @@ This tool is still in active development and will receive periodic updates as im
 Special thanks to [JackHack96](https://github.com/JackHack96), [Jay-San](https://www.youtube.com/channel/UCGs237E1PfrfIGsZ9eqF-lw), [Drayano](https://twitter.com/Drayano60), [Vendor](https://twitter.com/VendorPC), FrankieD, [Mikelan98](https://twitter.com/mikelan98?lang=en), and [HelloOO7](https://github.com/HelloOO7)
 
 Please join [this Discord server](https://discord.gg/zAtqJDW2jC) for help with using PokEditor v2 or for help with any questions relating to Pokémon Gen 4 and 5 hacking.
+
+The template sheets can be found [here](https://drive.google.com/drive/folders/1hlKiP7V31Ddj4WmKnjK7lfhT88yPjB55?usp=sharing).
 
 **Note:** Code from the [Universal Pokemon Randomizer ZX](https://github.com/Ajarmar/universal-pokemon-randomizer-zx) is adapted for LZ decompression purposes under the rights provided by the GNU General Public License v3.0. If there are any complaints related to this, please create a new Issue in the Issues tab here on GitHub.
 

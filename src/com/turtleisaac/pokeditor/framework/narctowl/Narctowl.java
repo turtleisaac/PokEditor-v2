@@ -103,7 +103,7 @@ public class Narctowl
 
     public void unpack(String narc, String targetDirectory) throws IOException
     {
-        System.out.println("Unpacking: " + targetDirectory);
+        System.out.println("Unpacking: " + narc);
 
         if(manualAccess)
         {
