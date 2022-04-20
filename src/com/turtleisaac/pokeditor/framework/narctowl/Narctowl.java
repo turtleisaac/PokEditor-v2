@@ -313,7 +313,7 @@ public class Narctowl
             }
 
             //writes data to output files
-            String outName= extractPath + subFiles.get(i).getName() + "." + extension;
+            String outName= extractPath + subFiles.get(i).getName() + ".bin";
             writer = new BinaryWriter(outName); //creates new BinaryWriter object using specified name/ numbering from subFiles ArrayList of NarcSubFiles
             writer.write(bytes); //writes the bytes read from the narc located in byte[] bytes to the output file
 //            if(bytes[0] == 0)

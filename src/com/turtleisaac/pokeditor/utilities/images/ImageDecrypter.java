@@ -19,8 +19,8 @@ public class ImageDecrypter
         Color[] shinyPalette= null;
         try
         {
-            palette= NclrReader.readFile(path + (species + 4) + ".nclr").getPalette().getPalettes()[0];
-            shinyPalette= NclrReader.readFile(path + (species + 5) + ".nclr").getPalette().getPalettes()[0];
+            palette= NclrReader.readFile(path + (species + 4) + ".bin").getPalette().getPalettes()[0];
+            shinyPalette= NclrReader.readFile(path + (species + 5) + ".bin").getPalette().getPalettes()[0];
         }
         catch (IOException exception)
         {
@@ -43,17 +43,17 @@ public class ImageDecrypter
             }
         }
 
-        SpriteImage[] femaleBack= primary ? decryptPrimary(path + species + ".ncgr",palette) : decryptSecondary(path + species + ".ncgr",palette);
-        SpriteImage[] shinyFemaleBack= primary ? decryptPrimary(path + species + ".ncgr",shinyPalette) : decryptSecondary(path + species + ".ncgr",shinyPalette);
+        SpriteImage[] femaleBack= primary ? decryptPrimary(path + species + ".bin",palette) : decryptSecondary(path + species + ".bin",palette);
+        SpriteImage[] shinyFemaleBack= primary ? decryptPrimary(path + species + ".bin",shinyPalette) : decryptSecondary(path + species + ".bin",shinyPalette);
 
-        SpriteImage[] maleBack= primary ? decryptPrimary(path + (species + 1) + ".ncgr",palette) : decryptSecondary(path + (species + 1) + ".ncgr",palette);
-        SpriteImage[] shinyMaleBack= primary ? decryptPrimary(path + (species + 1) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 1) + ".ncgr",shinyPalette);
+        SpriteImage[] maleBack= primary ? decryptPrimary(path + (species + 1) + ".bin",palette) : decryptSecondary(path + (species + 1) + ".bin",palette);
+        SpriteImage[] shinyMaleBack= primary ? decryptPrimary(path + (species + 1) + ".bin",shinyPalette) : decryptSecondary(path + (species + 1) + ".bin",shinyPalette);
 
-        SpriteImage[] femaleFront= primary ? decryptPrimary(path + (species + 2) + ".ncgr",palette) : decryptSecondary(path + (species + 2) + ".ncgr",palette);
-        SpriteImage[] shinyFemaleFront= primary ? decryptPrimary(path + (species + 2) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 2) + ".ncgr",shinyPalette);
+        SpriteImage[] femaleFront= primary ? decryptPrimary(path + (species + 2) + ".bin",palette) : decryptSecondary(path + (species + 2) + ".bin",palette);
+        SpriteImage[] shinyFemaleFront= primary ? decryptPrimary(path + (species + 2) + ".bin",shinyPalette) : decryptSecondary(path + (species + 2) + ".bin",shinyPalette);
 
-        SpriteImage[] maleFront= primary ? decryptPrimary(path + (species + 3) + ".ncgr",palette) : decryptSecondary(path + (species + 3) + ".ncgr",palette);
-        SpriteImage[] shinyMaleFront= primary ? decryptPrimary(path + (species + 3) + ".ncgr",shinyPalette) : decryptSecondary(path + (species + 3) + ".ncgr",shinyPalette);
+        SpriteImage[] maleFront= primary ? decryptPrimary(path + (species + 3) + ".bin",palette) : decryptSecondary(path + (species + 3) + ".bin",palette);
+        SpriteImage[] shinyMaleFront= primary ? decryptPrimary(path + (species + 3) + ".bin",shinyPalette) : decryptSecondary(path + (species + 3) + ".bin",shinyPalette);
 
 
         Color[] finalPalette = palette;
@@ -251,6 +251,10 @@ public class ImageDecrypter
             return null;
 
         Buffer buffer= new Buffer(file);
+
+        if(buffer.getLength() == 0)
+            return null;
+
         buffer.skipTo(48);
         int[] data= new int[width*height/4];
         for(int i= 0; i < data.length; i++)
@@ -289,7 +293,7 @@ public class ImageDecrypter
 
         boolean exists= false;
 
-        if(new File(path + species + ".ncgr").exists() || new File(path + (species + 1) + ".ncgr").exists())
+        if(new File(path + species + ".bin").exists() || new File(path + (species + 1) + ".bin").exists())
             exists= true;
 
         return exists;

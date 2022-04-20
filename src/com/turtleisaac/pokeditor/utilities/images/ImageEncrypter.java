@@ -27,12 +27,12 @@ public class ImageEncrypter
 
 
 
-        BinaryWriter.writeFile(path + speciesOffset + ".ncgr", femaleBackNcgr);
-        BinaryWriter.writeFile(path + (speciesOffset + 1) + ".ncgr", maleBackNcgr);
-        BinaryWriter.writeFile(path + (speciesOffset + 2) + ".ncgr", femaleFrontNcgr);
-        BinaryWriter.writeFile(path + (speciesOffset + 3) + ".ncgr", maleFrontNcgr);
-        BinaryWriter.writeFile(path + (speciesOffset + 4) + ".nclr", paletteNclr);
-        BinaryWriter.writeFile(path + (speciesOffset + 5) + ".nclr", shinyPaletteNclr);
+        BinaryWriter.writeFile(path + speciesOffset + ".bin", femaleBackNcgr);
+        BinaryWriter.writeFile(path + (speciesOffset + 1) + ".bin", maleBackNcgr);
+        BinaryWriter.writeFile(path + (speciesOffset + 2) + ".bin", femaleFrontNcgr);
+        BinaryWriter.writeFile(path + (speciesOffset + 3) + ".bin", maleFrontNcgr);
+        BinaryWriter.writeFile(path + (speciesOffset + 4) + ".bin", paletteNclr);
+        BinaryWriter.writeFile(path + (speciesOffset + 5) + ".bin", shinyPaletteNclr);
     }
 
 

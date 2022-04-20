@@ -388,7 +388,7 @@ public class PersonalEditor
         }
 
         ArrayProcessor processor= new ArrayProcessor();
-        processor.append("ID Number,Name,HP,Attack,Defense,Speed,Sp. Atk,Sp. Def,Type 1,Type 2,Catch Rate,Exp Drop,HP EV Yield,Spe EV Yield,Attack EV Yield,Defense EV Yield,Sp. Atk EV Yield,Sp. Def EV Yield,Uncommon Held Item,Rare Held Item,Gender Ratio,Hatch Multiplier,Base Happiness,Growth Rate,Egg Group 1,Egg Group 2,Ability 1,Ability 2,Run Chance (Safari Zone only),DO NOT TOUCH");
+        processor.append("ID Number,Name,HP,Attack,Defense,Speed,Sp. Atk,Sp. Def,Type 1,Type 2,Catch Rate,Exp Drop,HP EV Drop,Attack EV Drop,Defense EV Drop,Speed EV Drop,Sp. Atk EV Drop,Sp. Def EV Drop,Uncommon Held Item,Rare Held Item,Gender Ratio,Hatch Multiplier,Base Happiness,Growth Rate,Egg Group 1,Egg Group 2,Ability 1,Ability 2,Run Chance (Safari Zone only),DO NOT TOUCH");
         processor.newLine();
         for(int row= 0; row < dataList.size(); row++)
         {

@@ -183,7 +183,7 @@ public class TrainerPanel extends JPanel
                 narctowl.unpack(dataPath + narcPath,folderPath);
             }
 
-            ImageBase imageBase= new ImageBase(project,folderPath + File.separator + baseOffset + ".ncgr", folderPath + File.separator + (baseOffset + 1) + ".nclr", folderPath + File.separator + (baseOffset + 2) + ".ncer");
+            ImageBase imageBase= new ImageBase(project,folderPath + File.separator + baseOffset + ".bin", folderPath + File.separator + (baseOffset + 1) + ".bin", folderPath + File.separator + (baseOffset + 2) + ".bin");
 
             animator.reset(imageBase.getImages(trainerClassImageButton.getBackground()));
 
