@@ -58,8 +58,6 @@ public class PokEditor extends JDialog
         }
 
         System.out.println("Startup File Encoding: " + System.getProperty("file.encoding"));
-        System.setProperty("file.encoding", "UTF-8");
-        System.out.println("New File Encoding: " + System.getProperty("file.encoding"));
 
         /**
          * First startup config
@@ -93,12 +91,12 @@ public class PokEditor extends JDialog
         switch(config.getTheme())
         {
             case Light:
-                FlatLightLaf.install();
+                FlatLightLaf.setup();
                 break;
 
             case Darcula:
             default:
-                FlatDarculaLaf.install();
+                FlatDarculaLaf.setup();
                 break;
         }
 
@@ -129,7 +127,7 @@ public class PokEditor extends JDialog
 
             if(config.getTheme() == Theme.Light)
             {
-                FlatLightLaf.install();
+                FlatLightLaf.setup();
             }
         }
 
@@ -366,7 +364,8 @@ public class PokEditor extends JDialog
                 int returnVal = fc.showOpenDialog(this);
 
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    narctowl.unpack(selectNarcTextField.getText(), fc.getSelectedFile().getAbsolutePath());
+                    boolean makeFolder = !fc.getSelectedFile().getAbsolutePath().equals(directory.getAbsolutePath());
+                    narctowl.unpack(selectNarcTextField.getText(), fc.getSelectedFile().getAbsolutePath(), makeFolder);
                     JOptionPane.showMessageDialog(this,"Success!","Narctowl",JOptionPane.INFORMATION_MESSAGE);
                 }
 

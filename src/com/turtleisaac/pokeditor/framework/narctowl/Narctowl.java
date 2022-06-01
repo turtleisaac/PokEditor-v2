@@ -4,6 +4,8 @@ import com.turtleisaac.pokeditor.framework.BLZCoder;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.framework.MemBuf;
+
+import javax.swing.*;
 import java.io.*;
 import java.util.*;
 /**
@@ -101,6 +103,45 @@ public class Narctowl
         return (int) buffer.readUInt32();
     }
 
+    public void unpack(String narc, String targetDirectory, boolean makeFolder) throws IOException
+    {
+        File file = new File(narc);
+        String fileName = file.getName();
+        String noExtension = fileName.substring(0, fileName.lastIndexOf("."));
+
+        if (makeFolder)
+        {
+            if (new File(targetDirectory + File.separator + noExtension).exists())
+            {
+                int result = JOptionPane.showConfirmDialog(null, "There already is a folder with a name matching what unpacking this narc would create.\nContinuing will clear the contents of the folder you have selected.\nWould you like to continue?", "Narc Unpacker", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (result == JOptionPane.YES_OPTION)
+                {
+                    unpack(narc, targetDirectory + File.separator + noExtension);
+                }
+            }
+            else
+            {
+                unpack(narc, targetDirectory + File.separator + noExtension);
+            }
+        }
+        else
+        {
+            if (new File(targetDirectory).exists() && new File(targetDirectory).listFiles().length != 0)
+            {
+                int result = JOptionPane.showConfirmDialog(null, "There already is a folder with a name matching what unpacking this narc would create.\nContinuing will clear the contents of the folder you have selected.\nWould you like to continue?", "Narc Unpacker", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (result == JOptionPane.YES_OPTION)
+                {
+                    unpack(narc, targetDirectory);
+                }
+            }
+            else
+            {
+                unpack(narc, targetDirectory);
+            }
+        }
+
+    }
+
     public void unpack(String narc, String targetDirectory) throws IOException
     {
         System.out.println("Unpacking: " + narc);
@@ -111,14 +152,11 @@ public class Narctowl
         }
 
         boolean decompress= false;
-        Scanner scanner = new Scanner(System.in); //creates Scanner object
+//        Scanner scanner = new Scanner(System.in); //creates Scanner object
 
         File file = new File(narc);
         String fileName = file.getName();
         String noExtension= targetDirectory.substring(targetDirectory.lastIndexOf(File.separator) + 1);
-
-//        System.out.println("No Extension: " + noExtension);
-
 
         if (!new File(extractPath).exists()) //checks if "extracted" directory in user.dir does not exist
         {
