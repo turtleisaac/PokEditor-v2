@@ -91,12 +91,12 @@ public class PokEditor extends JDialog
         switch(config.getTheme())
         {
             case Light:
-                FlatLightLaf.setup();
+                FlatLightLaf.install();
                 break;
 
             case Darcula:
             default:
-                FlatDarculaLaf.setup();
+                FlatDarculaLaf.install();
                 break;
         }
 
@@ -127,7 +127,7 @@ public class PokEditor extends JDialog
 
             if(config.getTheme() == Theme.Light)
             {
-                FlatLightLaf.setup();
+                FlatLightLaf.install();
             }
         }
 
@@ -675,7 +675,7 @@ public class PokEditor extends JDialog
                     packNarcButton.addActionListener(e -> packNarcButtonActionPerformed(e));
                     narctowlPanel.add(packNarcButton, "cell 1 9,alignx right,growx 0");
                 }
-                tabbedPane1.addTab("Narctowl", narctowlPanel);
+                tabbedPane1.addTab("Narc Pack/Unpack", narctowlPanel);
 
                 //======== compressionPanel ========
                 {
