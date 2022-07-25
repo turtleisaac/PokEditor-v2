@@ -375,328 +375,7 @@ public class SinnohEncounterEditor
             });
         }
 
-
-        ArrayList<String[][]> fieldEncounterTable= new ArrayList<>();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            SinnohEncounterData encounterData= dataList.get(i);
-            String[][] area= new String[12][3];
-            for(int x= 0; x < area.length; x++)
-            {
-                Arrays.fill(area[x],"");
-            }
-
-            for(int row= 0; row < area.length; row++)
-            {
-                area[row][0]= fieldRateArr[row] + "%";
-                area[row][1]= "=Evolutions!$B$" + (encounterData.getFieldEncounters()[row]+2);
-                area[row][2]= "" + encounterData.getFieldLevels()[row];
-            }
-            fieldEncounterTable.add(area);
-        }
-
-        ArrayList<String[][]> swarmDayNightTable= new ArrayList<>();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            SinnohEncounterData encounterData= dataList.get(i);
-            String[][] area= new String[2][3];
-            for(int x= 0; x < area.length; x++)
-            {
-                Arrays.fill(area[x],"");
-            }
-
-            for(int row= 0; row < area.length; row++)
-            {
-                area[row][0]= "=Evolutions!$B$" + (encounterData.getSwarmEncounters()[row]+2);
-                area[row][1]= "=Evolutions!$B$" + (encounterData.getDayEncounters()[row]+2);
-                area[row][2]= "=Evolutions!$B$" + (encounterData.getNightEncounters()[row]+2);
-            }
-            swarmDayNightTable.add(area);
-        }
-
-        ArrayList<String[][]> dualSlotTable= new ArrayList<>();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            SinnohEncounterData encounterData= dataList.get(i);
-            String[][] area= new String[2][6];
-            for(int x= 0; x < area.length; x++)
-            {
-                Arrays.fill(area[x],"");
-            }
-
-            for(int row= 0; row < area.length; row++)
-            {
-                area[row][0]= "4%";
-                area[row][1]= "=Evolutions!$B$" + (encounterData.getRuby()[row]+2);
-                area[row][2]= "=Evolutions!$B$" + (encounterData.getSapphire()[row]+2);
-                area[row][3]= "=Evolutions!$B$" + (encounterData.getEmerald()[row]+2);
-                area[row][4]= "=Evolutions!$B$" + (encounterData.getFireRed()[row]+2);
-                area[row][5]= "=Evolutions!$B$" + (encounterData.getLeafGreen()[row]+2);
-            }
-            dualSlotTable.add(area);
-        }
-
-        ArrayList<String[]> radarTable= new ArrayList<>();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            SinnohEncounterData encounterData= dataList.get(i);
-            String[] area= new String[5];
-            Arrays.fill(area,"");
-
-            area[0]= "10%";
-            area[1]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[0]+2);
-            area[2]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[1]+2);
-            area[3]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[2]+2);
-            area[4]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[3]+2);
-
-            radarTable.add(area);
-        }
-
-        ArrayList<String[][]> waterTable= new ArrayList<>();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            SinnohEncounterData encounterData= dataList.get(i);
-            String[][] area= new String[5][13];
-            for(int x= 0; x < area.length; x++)
-            {
-                Arrays.fill(area[x],"");
-            }
-
-            for(int row= 0; row < area.length; row++)
-            {
-                area[row][0]= waterRateArr[row] + "%";
-                area[row][1]= "=Evolutions!$B$" + (encounterData.getSurfEncounters()[row]+2);
-                area[row][2]= "" + encounterData.getSurfMins()[row];
-                area[row][3]= "" + encounterData.getSurfMaxs()[row];
-                area[row][4]= "=Evolutions!$B$" + (encounterData.getOldEncounters()[row]+2);
-                area[row][5]= "" + encounterData.getOldMins()[row];
-                area[row][6]= "" + encounterData.getOldMaxs()[row];
-                area[row][7]= "=Evolutions!$B$" + (encounterData.getGoodEncounters()[row]+2);
-                area[row][8]= "" + encounterData.getGoodMins()[row];
-                area[row][9]= "" + encounterData.getGoodMaxs()[row];
-                area[row][10]= "=Evolutions!$B$" + (encounterData.getSuperEncounters()[row]+2);
-                area[row][11]= "" + encounterData.getSuperMins()[row];
-                area[row][12]= "" + encounterData.getSuperMaxs()[row];
-            }
-            waterTable.add(area);
-        }
-
-        ArrayList<String[][]> formProbabilityTable= new ArrayList<>();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            byte[][] formTable= dataList.get(i).getFormProbabilities();
-            String[][] area= new String[formTable.length][5];
-            for(int x= 0; x < area.length; x++)
-            {
-                Arrays.fill(area[x],"");
-            }
-
-            for(int row= 0; row < area.length; row++)
-            {
-                if(row < 5)
-                {
-                    area[row][0]= "Slot " + (row+1);
-                }
-                else
-                {
-                    area[row][0]= "Unown Form Group";
-                }
-
-                int idx= 0;
-                area[row][1]= "" + formTable[row][idx++];
-                area[row][2]= "" + formTable[row][idx++];
-                area[row][3]= "" + formTable[row][idx++];
-                area[row][4]= "" + formTable[row][idx];
-            }
-            formProbabilityTable.add(area);
-        }
-
-        /**
-         * Output
-         */
-
-        ArrayProcessor processor= new ArrayProcessor();
-        processor.append("ID Number,Area,Rate,Pokemon,Level");
-        processor.newLine();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            String[][] area= fieldEncounterTable.get(i);
-            processor.append(i + "," + areaData[i] + ",,Encounter Rate:," + dataList.get(i).getFieldRate());
-            processor.newLine();
-            processor.append(",,");
-            for(int row= 0; row < area.length; row++)
-            {
-                for(int col= 0; col < area[row].length; col++)
-                {
-                    processor.append(area[row][col] + ',');
-                }
-                if(row != area.length-1)
-                {
-                    processor.newLine();
-                    processor.append(",,");
-                }
-            }
-            processor.newLine();
-        }
-        Object[][] field= processor.getTable();
-
-        processor= new ArrayProcessor();
-        processor.append("ID Number,Area,Rate,Surf Encounter,Min Level,Max Level,Old Rod Encounter,Min Level,Max Level,Good Rod Encounter,Min Level,Max Level,Super Rod Encounter,Min Level,Max Level");
-        processor.newLine();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            String[][] area= waterTable.get(i);
-            processor.append(i + "," + areaData[i] + ",,Surf Encounter Rate:," + dataList.get(i).getSurfRate() + ",Old Rod Encounter Rate:," + dataList.get(i).getOldRate() + ",Good Rod Encounter Rate:," + dataList.get(i).getGoodRate() + ",Super Rod Encounter Rate:," + dataList.get(i).getSuperRate());
-            processor.newLine();
-            processor.append(",,");
-            for(int row= 0; row < area.length; row++)
-            {
-                for(int col= 0; col < area[row].length; col++)
-                {
-                    processor.append(area[row][col] + ',');
-                }
-                if (row != area.length-1)
-                {
-                    processor.newLine();
-                    processor.append(",,");
-                }
-            }
-            processor.newLine();
-        }
-        Object[][] water= processor.getTable();
-
-        processor= new ArrayProcessor();
-        processor.append("ID Number,Area,Rate,Slot 1,Slot 2,Slot 3,Slot 4");
-        processor.newLine();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            processor.append(i + "," + areaData[i]);
-            processor.newLine();
-            processor.append(",,");
-            String[] area= radarTable.get(i);
-            for(int x= 0; x < area.length; x++)
-            {
-                processor.append(area[x] + ",");
-            }
-            processor.newLine();
-        }
-        Object[][] radar= processor.getTable();
-
-        processor= new ArrayProcessor();
-        processor.append("ID Number,Area,Rate,Ruby,Sapphire,Emerald,FireRed,LeafGreen");
-        processor.newLine();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            String[][] area= dualSlotTable.get(i);
-            processor.append(i + "," + areaData[i]);
-            processor.newLine();
-            processor.append(",,");
-            for(int row= 0; row < area.length; row++)
-            {
-                for(int col= 0; col < area[row].length; col++)
-                {
-                    processor.append(area[row][col] + ',');
-                }
-                if (row != area.length-1)
-                {
-                    processor.newLine();
-                    processor.append(",,");
-                }
-            }
-            processor.newLine();
-        }
-        Object[][] dualSlot= processor.getTable();
-
-
-        processor= new ArrayProcessor();
-        processor.append("ID Number,Area,Swarm (20%),10am - 8pm (10%),8pm - 4am (10%)");
-        processor.newLine();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            String[][] area= swarmDayNightTable.get(i);
-            processor.append(i + "," + areaData[i]);
-            processor.newLine();
-            processor.append(",,");
-            for(int row= 0; row < area.length; row++)
-            {
-                for(int col= 0; col < area[row].length; col++)
-                {
-                    processor.append(area[row][col] + ',');
-                }
-                if (row != area.length-1)
-                {
-                    processor.newLine();
-                    processor.append(",,");
-                }
-            }
-            processor.newLine();
-        }
-        Object[][] swarm= processor.getTable();
-
-        processor= new ArrayProcessor();
-        processor.append("ID Number,Area,Table Slots,Entry 1 Alt Chance,Entry 2 Alt Chance,??? 1,??? 2");
-        processor.newLine();
-        for(int i= 0; i < dataList.size(); i++)
-        {
-            String[][] area= formProbabilityTable.get(i);
-            processor.append(i + "," + areaData[i]);
-            processor.newLine();
-            processor.append(",,");
-            for(int row= 0; row < area.length; row++)
-            {
-                for(int col= 0; col < area[row].length; col++)
-                {
-                    processor.append(area[row][col] + ',');
-                }
-                if (row != area.length-1)
-                {
-                    processor.newLine();
-                    processor.append(",,");
-                }
-            }
-            processor.newLine();
-        }
-        Object[][] formProbabilities= processor.getTable();
-
-
-        return new SinnohEncounterReturn()
-        {
-            @Override
-            public Object[][] getField()
-            {
-                return field;
-            }
-
-            @Override
-            public Object[][] getWater()
-            {
-                return water;
-            }
-
-            @Override
-            public Object[][] getSwarm()
-            {
-                return swarm;
-            }
-
-            @Override
-            public Object[][] getRadar()
-            {
-                return radar;
-            }
-
-            @Override
-            public Object[][] getDualSlot()
-            {
-                return dualSlot;
-            }
-
-            @Override
-            public Object[][] getFormProbabilityTable()
-            {
-                return formProbabilities;
-            }
-        };
+        return produceSheets(dataList);
     }
 
 
@@ -1851,6 +1530,330 @@ public class SinnohEncounterEditor
         }
 
         return dataList;
+    }
+
+    public SinnohEncounterReturn produceSheets(ArrayList<SinnohEncounterData> dataList)
+    {
+        ArrayList<String[][]> fieldEncounterTable= new ArrayList<>();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            SinnohEncounterData encounterData= dataList.get(i);
+            String[][] area= new String[12][3];
+            for(int x= 0; x < area.length; x++)
+            {
+                Arrays.fill(area[x],"");
+            }
+
+            for(int row= 0; row < area.length; row++)
+            {
+                area[row][0]= fieldRateArr[row] + "%";
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getFieldEncounters()[row]+2);
+                area[row][2]= "" + encounterData.getFieldLevels()[row];
+            }
+            fieldEncounterTable.add(area);
+        }
+
+        ArrayList<String[][]> swarmDayNightTable= new ArrayList<>();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            SinnohEncounterData encounterData= dataList.get(i);
+            String[][] area= new String[2][3];
+            for(int x= 0; x < area.length; x++)
+            {
+                Arrays.fill(area[x],"");
+            }
+
+            for(int row= 0; row < area.length; row++)
+            {
+                area[row][0]= "=Evolutions!$B$" + (encounterData.getSwarmEncounters()[row]+2);
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getDayEncounters()[row]+2);
+                area[row][2]= "=Evolutions!$B$" + (encounterData.getNightEncounters()[row]+2);
+            }
+            swarmDayNightTable.add(area);
+        }
+
+        ArrayList<String[][]> dualSlotTable= new ArrayList<>();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            SinnohEncounterData encounterData= dataList.get(i);
+            String[][] area= new String[2][6];
+            for(int x= 0; x < area.length; x++)
+            {
+                Arrays.fill(area[x],"");
+            }
+
+            for(int row= 0; row < area.length; row++)
+            {
+                area[row][0]= "4%";
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getRuby()[row]+2);
+                area[row][2]= "=Evolutions!$B$" + (encounterData.getSapphire()[row]+2);
+                area[row][3]= "=Evolutions!$B$" + (encounterData.getEmerald()[row]+2);
+                area[row][4]= "=Evolutions!$B$" + (encounterData.getFireRed()[row]+2);
+                area[row][5]= "=Evolutions!$B$" + (encounterData.getLeafGreen()[row]+2);
+            }
+            dualSlotTable.add(area);
+        }
+
+        ArrayList<String[]> radarTable= new ArrayList<>();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            SinnohEncounterData encounterData= dataList.get(i);
+            String[] area= new String[5];
+            Arrays.fill(area,"");
+
+            area[0]= "10%";
+            area[1]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[0]+2);
+            area[2]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[1]+2);
+            area[3]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[2]+2);
+            area[4]= "=Evolutions!$B$" + (encounterData.getRadarEncounters()[3]+2);
+
+            radarTable.add(area);
+        }
+
+        ArrayList<String[][]> waterTable= new ArrayList<>();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            SinnohEncounterData encounterData= dataList.get(i);
+            String[][] area= new String[5][13];
+            for(int x= 0; x < area.length; x++)
+            {
+                Arrays.fill(area[x],"");
+            }
+
+            for(int row= 0; row < area.length; row++)
+            {
+                area[row][0]= waterRateArr[row] + "%";
+                area[row][1]= "=Evolutions!$B$" + (encounterData.getSurfEncounters()[row]+2);
+                area[row][2]= "" + encounterData.getSurfMins()[row];
+                area[row][3]= "" + encounterData.getSurfMaxs()[row];
+                area[row][4]= "=Evolutions!$B$" + (encounterData.getOldEncounters()[row]+2);
+                area[row][5]= "" + encounterData.getOldMins()[row];
+                area[row][6]= "" + encounterData.getOldMaxs()[row];
+                area[row][7]= "=Evolutions!$B$" + (encounterData.getGoodEncounters()[row]+2);
+                area[row][8]= "" + encounterData.getGoodMins()[row];
+                area[row][9]= "" + encounterData.getGoodMaxs()[row];
+                area[row][10]= "=Evolutions!$B$" + (encounterData.getSuperEncounters()[row]+2);
+                area[row][11]= "" + encounterData.getSuperMins()[row];
+                area[row][12]= "" + encounterData.getSuperMaxs()[row];
+            }
+            waterTable.add(area);
+        }
+
+        ArrayList<String[][]> formProbabilityTable= new ArrayList<>();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            byte[][] formTable= dataList.get(i).getFormProbabilities();
+            String[][] area= new String[formTable.length][5];
+            for(int x= 0; x < area.length; x++)
+            {
+                Arrays.fill(area[x],"");
+            }
+
+            for(int row= 0; row < area.length; row++)
+            {
+                if(row < 5)
+                {
+                    area[row][0]= "Slot " + (row+1);
+                }
+                else
+                {
+                    area[row][0]= "Unown Form Group";
+                }
+
+                int idx= 0;
+                area[row][1]= "" + formTable[row][idx++];
+                area[row][2]= "" + formTable[row][idx++];
+                area[row][3]= "" + formTable[row][idx++];
+                area[row][4]= "" + formTable[row][idx];
+            }
+            formProbabilityTable.add(area);
+        }
+
+        /**
+         * Output
+         */
+
+        ArrayProcessor processor= new ArrayProcessor();
+        processor.append("ID Number,Area,Rate,Pokemon,Level");
+        processor.newLine();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            String[][] area= fieldEncounterTable.get(i);
+            processor.append(i + "," + areaData[i] + ",,Encounter Rate:," + dataList.get(i).getFieldRate());
+            processor.newLine();
+            processor.append(",,");
+            for(int row= 0; row < area.length; row++)
+            {
+                for(int col= 0; col < area[row].length; col++)
+                {
+                    processor.append(area[row][col] + ',');
+                }
+                if(row != area.length-1)
+                {
+                    processor.newLine();
+                    processor.append(",,");
+                }
+            }
+            processor.newLine();
+        }
+        Object[][] field= processor.getTable();
+
+        processor= new ArrayProcessor();
+        processor.append("ID Number,Area,Rate,Surf Encounter,Min Level,Max Level,Old Rod Encounter,Min Level,Max Level,Good Rod Encounter,Min Level,Max Level,Super Rod Encounter,Min Level,Max Level");
+        processor.newLine();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            String[][] area= waterTable.get(i);
+            processor.append(i + "," + areaData[i] + ",,Surf Encounter Rate:," + dataList.get(i).getSurfRate() + ",Old Rod Encounter Rate:," + dataList.get(i).getOldRate() + ",Good Rod Encounter Rate:," + dataList.get(i).getGoodRate() + ",Super Rod Encounter Rate:," + dataList.get(i).getSuperRate());
+            processor.newLine();
+            processor.append(",,");
+            for(int row= 0; row < area.length; row++)
+            {
+                for(int col= 0; col < area[row].length; col++)
+                {
+                    processor.append(area[row][col] + ',');
+                }
+                if (row != area.length-1)
+                {
+                    processor.newLine();
+                    processor.append(",,");
+                }
+            }
+            processor.newLine();
+        }
+        Object[][] water= processor.getTable();
+
+        processor= new ArrayProcessor();
+        processor.append("ID Number,Area,Rate,Slot 1,Slot 2,Slot 3,Slot 4");
+        processor.newLine();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            processor.append(i + "," + areaData[i]);
+            processor.newLine();
+            processor.append(",,");
+            String[] area= radarTable.get(i);
+            for(int x= 0; x < area.length; x++)
+            {
+                processor.append(area[x] + ",");
+            }
+            processor.newLine();
+        }
+        Object[][] radar= processor.getTable();
+
+        processor= new ArrayProcessor();
+        processor.append("ID Number,Area,Rate,Ruby,Sapphire,Emerald,FireRed,LeafGreen");
+        processor.newLine();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            String[][] area= dualSlotTable.get(i);
+            processor.append(i + "," + areaData[i]);
+            processor.newLine();
+            processor.append(",,");
+            for(int row= 0; row < area.length; row++)
+            {
+                for(int col= 0; col < area[row].length; col++)
+                {
+                    processor.append(area[row][col] + ',');
+                }
+                if (row != area.length-1)
+                {
+                    processor.newLine();
+                    processor.append(",,");
+                }
+            }
+            processor.newLine();
+        }
+        Object[][] dualSlot= processor.getTable();
+
+
+        processor= new ArrayProcessor();
+        processor.append("ID Number,Area,Swarm (20%),10am - 8pm (10%),8pm - 4am (10%)");
+        processor.newLine();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            String[][] area= swarmDayNightTable.get(i);
+            processor.append(i + "," + areaData[i]);
+            processor.newLine();
+            processor.append(",,");
+            for(int row= 0; row < area.length; row++)
+            {
+                for(int col= 0; col < area[row].length; col++)
+                {
+                    processor.append(area[row][col] + ',');
+                }
+                if (row != area.length-1)
+                {
+                    processor.newLine();
+                    processor.append(",,");
+                }
+            }
+            processor.newLine();
+        }
+        Object[][] swarm= processor.getTable();
+
+        processor= new ArrayProcessor();
+        processor.append("ID Number,Area,Table Slots,Entry 1 Alt Chance,Entry 2 Alt Chance,??? 1,??? 2");
+        processor.newLine();
+        for(int i= 0; i < dataList.size(); i++)
+        {
+            String[][] area= formProbabilityTable.get(i);
+            processor.append(i + "," + areaData[i]);
+            processor.newLine();
+            processor.append(",,");
+            for(int row= 0; row < area.length; row++)
+            {
+                for(int col= 0; col < area[row].length; col++)
+                {
+                    processor.append(area[row][col] + ',');
+                }
+                if (row != area.length-1)
+                {
+                    processor.newLine();
+                    processor.append(",,");
+                }
+            }
+            processor.newLine();
+        }
+        Object[][] formProbabilities= processor.getTable();
+
+        return new SinnohEncounterReturn()
+        {
+            @Override
+            public Object[][] getField()
+            {
+                return field;
+            }
+
+            @Override
+            public Object[][] getWater()
+            {
+                return water;
+            }
+
+            @Override
+            public Object[][] getSwarm()
+            {
+                return swarm;
+            }
+
+            @Override
+            public Object[][] getRadar()
+            {
+                return radar;
+            }
+
+            @Override
+            public Object[][] getDualSlot()
+            {
+                return dualSlot;
+            }
+
+            @Override
+            public Object[][] getFormProbabilityTable()
+            {
+                return formProbabilities;
+            }
+        };
     }
 
 

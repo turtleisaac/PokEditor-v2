@@ -91,12 +91,12 @@ public class PokEditor extends JDialog
         switch(config.getTheme())
         {
             case Light:
-                FlatLightLaf.install();
+                FlatLightLaf.install(); // If the IDE says this method is deprecated and you should use .setup(), ignore it.
                 break;
 
             case Darcula:
             default:
-                FlatDarculaLaf.install();
+                FlatDarculaLaf.install(); // If the IDE says this method is deprecated and you should use .setup(), ignore it.
                 break;
         }
 
@@ -127,7 +127,7 @@ public class PokEditor extends JDialog
 
             if(config.getTheme() == Theme.Light)
             {
-                FlatLightLaf.install();
+                FlatLightLaf.install(); // If the IDE says this method is deprecated and you should use .setup(), ignore it.
             }
         }
 

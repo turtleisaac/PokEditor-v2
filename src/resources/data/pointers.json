@@ -34,7 +34,7 @@
           "file": "arm9.bin",
           "pointerOffset": "0x03a0ec",
           "countOffset": "0x00",
-          "countPointerLength": "0",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -73,7 +73,7 @@
           "file": "arm9.bin",
           "pointerOffset": "0x03a048",
           "countOffset": "0x00",
-          "countPointerLength": "0",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -112,7 +112,7 @@
           "file": "arm9.bin",
           "pointerOffset": "0x03a0ec",
           "countOffset": "0x00",
-          "countPointerLength": "0",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -151,7 +151,7 @@
           "file": "arm9.bin",
           "pointerOffset": "0x03a0ec",
           "countOffset": "0x00",
-          "countPointerLength": "0",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -190,7 +190,7 @@
           "file": "arm9.bin",
           "pointerOffset": "0x0560f5",
           "countOffset": "0x00",
-          "countPointerLength": "0",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -229,7 +229,7 @@
           "file": "arm9.bin",
           "pointerOffset": "0x056d21",
           "countOffset": "0x00",
-          "countPointerLength": "0",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -268,7 +268,7 @@
           "file": "arm9.bin",
           "pointerOffset": "0x03a048",
           "countOffset": "0x00",
-          "countPointerLength": "0",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -307,7 +307,7 @@
           "file": "arm9.bin",
           "pointerOffset": "0x03a0ec",
           "countOffset": "0x00",
-          "countPointerLength": "0",
+          "countPointerLength": "0"
         }
       ]
     },

@@ -147,9 +147,9 @@ public class TableLocator
             bytesToRead= numEntries*entryLength;
 
         TableLocation tableLocation= locateContainerFile(offset);
-        System.out.println("File: " + tableLocation.getFile());
-        System.out.println("Table Offset: 0x" + Long.toHexString(tableLocation.getOffset()));
-        System.out.println("Bytes/ Entries to read: " + bytesToRead);
+//        System.out.println("File: " + tableLocation.getFile());
+//        System.out.println("Table Offset: 0x" + Long.toHexString(tableLocation.getOffset()));
+//        System.out.println("Bytes/ Entries to read: " + bytesToRead);
 
 
         String tableFilePath= tableLocation.getFile();

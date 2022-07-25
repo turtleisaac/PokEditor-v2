@@ -19,6 +19,7 @@ import javax.swing.table.*;
 import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterData;
 import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterEditor;
+import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterReturn;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.gui.ComboBoxItem;
@@ -77,6 +78,8 @@ public class SinnohEncounterPanel extends JPanel
     private final JSpinner[] superRodMinLevels;
     private final JSpinner[] superRodMaxLevels;
 
+    private static byte[][] probabilityTable;
+
     private static final String[] columnNames= new String[] {"20%", "20%", "10%", "10%", "10%", "10%", "5%", "5%", "4%", "4%", "1%", "1%"};
     private Object[][] tableData;
 
@@ -85,6 +88,7 @@ public class SinnohEncounterPanel extends JPanel
     private static String[] nameData;
 
     private static byte[] paletteGuideTable;
+//    private static
 
     public SinnohEncounterPanel()
     {
@@ -431,6 +435,8 @@ public class SinnohEncounterPanel extends JPanel
                 superRodMinLevels[i].setValue(encounterData.getSuperMins()[i]);
                 superRodMaxLevels[i].setValue(encounterData.getSuperMaxs()[i]);
             }
+
+            probabilityTable = encounterData.getFormProbabilities();
         }
 
         displayEncounterPreviewAction(e);
@@ -438,6 +444,7 @@ public class SinnohEncounterPanel extends JPanel
 
     private void saveButtonActionPerformed(ActionEvent e) // TODO finish
     {
+        System.out.println("Saving encounters");
         int fieldRate= (int) encounterRateSpinner.getValue();
         int surfRate= (int) surfEncounterRateSpinner.getValue();
         int oldRodRate= (int) oldRodEncounterRateSpinner.getValue();
@@ -522,8 +529,9 @@ public class SinnohEncounterPanel extends JPanel
             superRodMaxNew[i]= (int) superRodMaxLevels[i].getValue();
         }
 
-
-        SinnohEncounterData encounterData= new SinnohEncounterData()
+        //TODO replace with data from editor table
+        byte[][] probabilityTableNew = probabilityTable;
+        SinnohEncounterData thisEncounterFileData= new SinnohEncounterData()
         {
             @Override
             public int getFieldRate()
@@ -570,7 +578,7 @@ public class SinnohEncounterPanel extends JPanel
             @Override
             public byte[][] getFormProbabilities()
             {
-                return new byte[0][];
+                return probabilityTableNew;
             }
             // TODO replace with data from editor table
 
@@ -701,7 +709,27 @@ public class SinnohEncounterPanel extends JPanel
             }
         };
 
+        encounterData.set(encounterFileComboBox.getSelectedIndex(), thisEncounterFileData);
+
         // TODO write code for actually saving to google sheets
+        try
+        {
+            SinnohEncounterEditor encounterEditor = new SinnohEncounterEditor(project,project.getDataPath());
+            SinnohEncounterReturn sheets = encounterEditor.produceSheets(encounterData);
+
+            api.updateSheet("Field Encounters", sheets.getField());
+            api.updateSheet("Water Encounters", sheets.getWater());
+            api.updateSheet("Swarm/ Day/ Night Encounters", sheets.getSwarm());
+            api.updateSheet("Poke Radar Encounters", sheets.getRadar());
+            api.updateSheet("Dual-Slot Mode Encounters", sheets.getDualSlot());
+            api.updateSheet("Alt Form Encounters", sheets.getFormProbabilityTable());
+        }
+        catch(IOException exception)
+        {
+            System.err.println("Encounter saving failed");
+            exception.printStackTrace();
+        }
+
     }
 
     private void speciesSearchButtonActionPerformed(ActionEvent e)
@@ -2350,7 +2378,7 @@ public class SinnohEncounterPanel extends JPanel
         boolean success= true;
         try
         {
-            pokemonIconPalettePointer= TablePointers.getPointers().get(project.getBaseRomGameCode()).get("pokemonIconPalette");
+            pokemonIconPalettePointer = TablePointers.getPointers().get(project.getBaseRomGameCode()).get("pokemonIconPalette");
         }
         catch (Exception e)
         {
@@ -2360,9 +2388,28 @@ public class SinnohEncounterPanel extends JPanel
             e.printStackTrace();
         }
 
-        if(success)
+        if (success)
         {
             paletteGuideTable= tableLocator.obtainTableArr(pokemonIconPalettePointer,nameData.length, 1);
+        }
+
+        TablePointers.TablePointer mapHeadersPointer;
+        success = true;
+        try
+        {
+            mapHeadersPointer = TablePointers.getPointers().get(project.getBaseRomGameCode()).get("mapHeaders");
+        }
+        catch (Exception e)
+        {
+            System.err.println("Error loading map headers table");
+            success= false;
+            mapHeadersPointer= null;
+            e.printStackTrace();
+        }
+
+        if (success)
+        {
+
         }
 
         fillComboBoxes(fieldSlots,nameData);

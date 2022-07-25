@@ -34,12 +34,12 @@ public class TablePointers
             TablePointers.pointers.put(game.getString("code"),gameMap);
         }
 
-        System.out.println("\n");
-        TablePointers.pointers.forEach((k, v) -> {
-            System.out.format("\n%s initialized\n",k);
-            v.forEach((x,y) -> System.out.format("\t%s initialized (pointerOffset 0x%s in file %s)\n",x,Long.toHexString(y.pointerOffset),y.file));
-        });
-        System.out.println("\n");
+//        System.out.println("\n");
+//        TablePointers.pointers.forEach((k, v) -> {
+//            System.out.format("\n%s initialized\n",k);
+//            v.forEach((x,y) -> System.out.format("\t%s initialized (pointerOffset 0x%s in file %s)\n",x,Long.toHexString(y.pointerOffset),y.file));
+//        });
+//        System.out.println("\n");
     }
 
     public static Map<String, Map<String,TablePointer>> getPointers()
