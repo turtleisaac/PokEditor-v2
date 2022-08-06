@@ -30,7 +30,9 @@ public class ItemEditorGen4
 
     private Game baseRom;
 
-    public ItemEditorGen4(String dataPath, Project project) throws IOException
+    private static ArrayList<ItemTableEntry> itemTableData;
+
+    public ItemEditorGen4(String dataPath, Project project, ArrayList<ItemTableEntry> itemTableData) throws IOException
     {
         this.project= project;
         this.baseRom= project.getBaseRom();
@@ -38,6 +40,7 @@ public class ItemEditorGen4
         this.dataPath = dataPath;
         resourcePath= dataPath.substring(0,dataPath.lastIndexOf(File.separator));
         resourcePath= resourcePath.substring(0,resourcePath.lastIndexOf(File.separator)) + File.separator + "Program Files" + File.separator;
+        ItemEditorGen4.itemTableData = itemTableData;
 
         switch(project.getBaseRom())
         {
@@ -62,9 +65,9 @@ public class ItemEditorGen4
                 break;
         }
 
-        ArrayList<String> itemList= new ArrayList<>(Arrays.asList(itemData));
-        itemList.removeIf(s -> s.equals("???"));
-        itemData= itemList.toArray(new String[0]);
+//        ArrayList<String> itemList= new ArrayList<>(Arrays.asList(itemData));
+//        itemList.removeIf(s -> s.equals("???"));
+//        itemData= itemList.toArray(new String[0]);
 
         String fieldFunctionsPath= resourcePath;
 
@@ -687,7 +690,7 @@ public class ItemEditorGen4
         String line;
         for(int row= 0; row < dataList.size(); row++)
         {
-            line= row + "," + itemData[row] + ",";
+            line= row + "," + getItemName(row) + ",";
             for(int col= 0; col < itemTable[0].length; col++)
             {
                 line+= itemTable[row][col] + ",";
@@ -698,6 +701,33 @@ public class ItemEditorGen4
         }
 
         return processor.getTable();
+    }
+
+    private String getItemName(int fileIdx)
+    {
+        ItemTableEntry itemTableEntry;
+        for (int i = 0; i < itemTableData.size(); i++)
+        {
+            itemTableEntry = itemTableData.get(i);
+            if (itemTableEntry.getDataArchive() == fileIdx)
+            {
+                return itemData[i];
+            }
+        }
+        return "INVALID_NAME";
+    }
+
+    private void setItemName(int fileIdx, String name)
+    {
+        ItemTableEntry itemTableEntry;
+        for (int i = 0; i < itemTableData.size(); i++)
+        {
+            itemTableEntry = itemTableData.get(i);
+            if (itemTableEntry.getDataArchive() == fileIdx)
+            {
+                itemData[i] = name;
+            }
+        }
     }
 
 
@@ -717,7 +747,7 @@ public class ItemEditorGen4
         BinaryWriter writer;
         for(int i= 0; i < itemSheet.length; i++)
         {
-            System.out.println(itemData[i]);
+            System.out.println(getItemName(i));
             Object[] thisLine= itemSheet[i];
             initializeIndex(thisLine);
 
@@ -825,10 +855,30 @@ public class ItemEditorGen4
                 throw new RuntimeException("Invalid base rom: " + baseRom);
         }
 
-        ArrayList<Object> itemNames= new ArrayList<>(Arrays.asList(nameColumn));
-        itemNames.removeAll(Collections.singleton("???"));
 
-        nameColumn= itemNames.toArray(itemNames.toArray(new Object[0]));
+        ArrayList<String> newItemNames = new ArrayList<>();
+        for(int i = 0; i < nameColumn.length; i++)
+        {
+            if(i < itemData.length)
+            {
+                if(!nameColumn[i].equals(getItemName(i)))
+                {
+                    setItemName(i, (String) nameColumn[i]);
+                }
+            }
+            else
+            {
+                newItemNames.add((String) nameColumn[i]);
+            }
+        }
+
+        if(newItemNames.size() != 0)
+        {
+            ArrayList<String> itemNames= new ArrayList<>(Arrays.asList(itemData));
+            itemNames.addAll(newItemNames);
+            itemData = itemNames.toArray(itemNames.toArray(new String[0]));
+        }
+
 
 
         boolean canTrim= true;

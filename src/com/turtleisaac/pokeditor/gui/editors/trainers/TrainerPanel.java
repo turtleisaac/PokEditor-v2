@@ -14,11 +14,9 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 
+import com.turtleisaac.pokeditor.editors.trainers.gen4.*;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
-import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerDataGen4;
-import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
-import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerPokemonData;
 import com.turtleisaac.pokeditor.framework.BitStream;
 import com.turtleisaac.pokeditor.gui.EditorComboBox;
 import com.turtleisaac.pokeditor.gui.ComboBoxItem;
@@ -61,6 +59,9 @@ public class TrainerPanel extends JPanel
 
     private final Animator animator;
     public ArrayList<File> toDelete= new ArrayList<>();
+
+    private ArrayList<TrainerText> trainerTexts;
+    private TrainerTextEditor textEditor;
 
     private final ProjectWindow parent;
 
@@ -658,7 +659,7 @@ public class TrainerPanel extends JPanel
                 "[]0"));
 
             //---- exportSmogonButton ----
-            exportSmogonButton.setText("Import/ Export Pok\u00e9mon");
+            exportSmogonButton.setText("Export Pok\u00e9mon");
             exportSmogonButton.setToolTipText("Export or import team in Smogon format");
             exportSmogonButton.addActionListener(e -> exportSmogonButtonActionPerformed(e));
             trainerDataPanel.add(exportSmogonButton, "cell 0 0");
@@ -1038,6 +1039,27 @@ public class TrainerPanel extends JPanel
             }
 
             trainerClassSelectorComboBox.setSelectedIndex(1);
+
+            boolean success = true;
+            try
+            {
+                textEditor = new TrainerTextEditor(project);
+            }
+            catch(IOException e)
+            {
+                success = false;
+                e.printStackTrace();
+            }
+
+            if (success)
+            {
+                trainerTexts = textEditor.getTrainerTexts();
+            }
+            else
+            {
+                trainerTexts = null;
+                trainerTextButton.setEnabled(false);
+            }
         }
     }
 

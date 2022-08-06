@@ -10,15 +10,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerText;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerTextUtils;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
-import com.turtleisaac.pokeditor.gui.*;
 import com.turtleisaac.pokeditor.project.Project;
 import net.miginfocom.swing.*;
 import org.apache.commons.io.FileUtils;
@@ -125,15 +125,6 @@ public class TrainerTextFrame extends JFrame {
     }
 
     private void thisWindowClosed(WindowEvent e) {
-        if(Project.isHGSS(project))
-        {
-            clearDirs(new File(trainerTextAssignmentFile + "_"));
-        }
-        else
-        {
-            clearDirs(new File(trainerTextAssignmentFile.substring(0, trainerTextAssignmentFile.length()-5)));
-        }
-
         dispose();
     }
 
@@ -163,13 +154,14 @@ public class TrainerTextFrame extends JFrame {
         addRemovePanel = new JPanel();
         addButton = new JButton();
         removeButton = new JButton();
+        saveButton = new JButton();
+        reloadButton = new JButton();
         editPanel = new JPanel();
         activationLabel = new JLabel();
         activationComboBox = new JComboBox<>();
         textLabel = new JLabel();
         scrollPane2 = new JScrollPane();
         trainerTextArea = new JTextArea();
-        saveButton = new JButton();
 
         //======== this ========
         setMinimumSize(new Dimension(800, 352));
@@ -219,7 +211,9 @@ public class TrainerTextFrame extends JFrame {
                 "[fill]",
                 // rows
                 "[grow]" +
-                "[grow]"));
+                "[grow]" +
+                "[]" +
+                "[]"));
 
             //---- addButton ----
             addButton.setText("Add");
@@ -228,8 +222,16 @@ public class TrainerTextFrame extends JFrame {
             //---- removeButton ----
             removeButton.setText("Remove");
             addRemovePanel.add(removeButton, "cell 0 1,grow");
+
+            //---- saveButton ----
+            saveButton.setText("Save");
+            addRemovePanel.add(saveButton, "cell 0 2,grow");
+
+            //---- reloadButton ----
+            reloadButton.setText("Reload");
+            addRemovePanel.add(reloadButton, "cell 0 3,grow");
         }
-        contentPane.add(addRemovePanel, "cell 2 0,grow");
+        contentPane.add(addRemovePanel, "cell 2 0,growy");
 
         //======== editPanel ========
         {
@@ -279,11 +281,7 @@ public class TrainerTextFrame extends JFrame {
                 trainerTextArea.setWrapStyleWord(true);
                 scrollPane2.setViewportView(trainerTextArea);
             }
-            editPanel.add(scrollPane2, "cell 0 2 2 1,grow");
-
-            //---- saveButton ----
-            saveButton.setText("Save");
-            editPanel.add(saveButton, "cell 2 2,growy");
+            editPanel.add(scrollPane2, "cell 0 2 3 1,grow");
         }
         contentPane.add(editPanel, "cell 0 1 3 1,grow");
         pack();
@@ -298,12 +296,13 @@ public class TrainerTextFrame extends JFrame {
     private JPanel addRemovePanel;
     private JButton addButton;
     private JButton removeButton;
+    private JButton saveButton;
+    private JButton reloadButton;
     private JPanel editPanel;
     private JLabel activationLabel;
     private JComboBox<String> activationComboBox;
     private JLabel textLabel;
     private JScrollPane scrollPane2;
     private JTextArea trainerTextArea;
-    private JButton saveButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -20,6 +20,7 @@ import com.turtleisaac.pokeditor.editors.encounters.johto.JohtoEncounterEditor;
 import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterEditor;
 import com.turtleisaac.pokeditor.editors.evolutions.gen4.EvolutionEditor;
 import com.turtleisaac.pokeditor.editors.items.ItemEditorGen4;
+import com.turtleisaac.pokeditor.editors.items.ItemTableEntry;
 import com.turtleisaac.pokeditor.editors.learnsets.LearnsetEditor;
 import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerReturnGen4;
@@ -48,8 +49,9 @@ public class SheetApplier extends JFrame
 
     private GoogleSheetsAPI api;
     private JFrame parent;
+    ArrayList<ItemTableEntry> itemTableData;
 
-    public SheetApplier(Project project, String projectPath, GoogleSheetsAPI api, JFrame parent)
+    public SheetApplier(Project project, String projectPath, GoogleSheetsAPI api, JFrame parent, ArrayList<ItemTableEntry> itemTableData)
     {
         initComponents();
         DefaultMutableTreeNode root= new DefaultMutableTreeNode("All Editors");
@@ -61,6 +63,7 @@ public class SheetApplier extends JFrame
         this.projectPath = projectPath;
         this.api= api;
         this.parent= parent;
+        this.itemTableData = itemTableData;
 
         for(String str : editors)
         {
@@ -193,7 +196,7 @@ public class SheetApplier extends JFrame
                         String outputDir= unpackedFolderPath + "pl_item_data";
                         String outputNarc= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data.narc";
 
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
                         editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir,outputNarc);
 
                         pack(outputDir, dataPath + outputNarc);
@@ -317,7 +320,7 @@ public class SheetApplier extends JFrame
                         String outputDir= unpackedFolderPath + "item_data";
                         String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7";
 
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
                         editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir,outputNarc);
 
                         pack(outputDir, dataPath + outputNarc);

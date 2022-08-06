@@ -22,11 +22,13 @@ import javax.swing.border.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import com.jackhack96.dspre.nitro.rom.ROMUtils;
 import com.jackhack96.jNdstool.main.JNdstool;
 import com.jidesoft.swing.ComboBoxSearchable;
+import com.turtleisaac.pokeditor.editors.items.ItemTableEntry;
+import com.turtleisaac.pokeditor.editors.items.ItemTableParser;
+import com.turtleisaac.pokeditor.editors.text.TextBank;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalReturnGen4;
@@ -48,6 +50,8 @@ import com.turtleisaac.pokeditor.gui.tutorial.TutorialFrame;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.RandomizerUtils;
+import com.turtleisaac.pokeditor.utilities.TableLocator;
+import com.turtleisaac.pokeditor.utilities.TablePointers;
 import net.miginfocom.swing.*;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
@@ -73,6 +77,9 @@ public class ProjectWindow extends JFrame
 
     private ConsoleWindow console;
     private TutorialFrame tutorial;
+
+    private static String[] itemNames;
+    private static ArrayList<ItemTableEntry> itemTableData;
 
     public ProjectWindow(String xmlPath, JFrame mainMenu, ConsoleWindow console) throws IOException
     {
@@ -263,6 +270,8 @@ public class ProjectWindow extends JFrame
 //        Application.getApplication().setDefaultMenuBar(menuBar);
         pokemonSpritePanel.setProject(project);
 
+        initializeItemsTable();
+
         switch (baseRom)
         {
             case Diamond:
@@ -290,7 +299,7 @@ public class ProjectWindow extends JFrame
                     GoogleSheetsAPI api = new GoogleSheetsAPI(null, projectPath, true);
                     setApi(api);
 
-                    RomApplier editApplier = new RomApplier(project, projectPath, api, this, false);
+                    RomApplier editApplier = new RomApplier(project, projectPath, api, this, false, itemTableData);
                     editApplier.getCheckboxTree().checkRoot();
                     editApplier.applyButtonActionPerformed(null);
                     editApplier.dispose();
@@ -475,7 +484,7 @@ public class ProjectWindow extends JFrame
     private void applyToSheetButtonActionPerformed(ActionEvent e) {
         if(JOptionPane.showConfirmDialog(this,"Any changes that you have made to the sheet that do not exist in the ROM will be lost. Continue?","Alert",JOptionPane.YES_NO_OPTION) == 0)
         {
-            RomApplier editApplier= new RomApplier(project, projectPath, api, this, true);
+            RomApplier editApplier= new RomApplier(project, projectPath, api, this, true, itemTableData);
             editApplier.setLocationRelativeTo(this);
             setEnabled(false);
             try
@@ -495,7 +504,7 @@ public class ProjectWindow extends JFrame
     {
         if(JOptionPane.showConfirmDialog(this,"Any changes that you have made to the ROM that do not exist in the sheets you apply will be lost. Continue?","Alert",JOptionPane.YES_NO_OPTION) == 0)
         {
-            SheetApplier editApplier= new SheetApplier(project, projectPath, api, this);
+            SheetApplier editApplier= new SheetApplier(project, projectPath, api, this, itemTableData);
             editApplier.setLocationRelativeTo(this);
             setEnabled(false);
             editApplier.toFront();
@@ -1601,7 +1610,7 @@ public class ProjectWindow extends JFrame
         {
             if (JOptionPane.showConfirmDialog(this, "Would you like to update the sheets using data from your ROM? (This will overwrite existing data in the sheets, and you can choose which data you want to apply specifically)", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0)
             {
-                RomApplier editApplier = new RomApplier(project, projectPath, api, this, true);
+                RomApplier editApplier = new RomApplier(project, projectPath, api, this, true, itemTableData);
                 editApplier.setLocationRelativeTo(this);
             }
         }
@@ -1672,6 +1681,60 @@ public class ProjectWindow extends JFrame
 
                 break;
         }
+    }
+
+    private void initializeItemsTable()
+    {
+        //TODO finish
+        TableLocator tableLocator= new TableLocator(project);
+        TablePointers.TablePointer itemTablePointer;
+        boolean success= true;
+        try
+        {
+            itemTablePointer = TablePointers.getPointers().get(project.getBaseRomGameCode()).get("items");
+        }
+        catch (Exception e)
+        {
+            System.err.println("Error loading items table");
+            JOptionPane.showMessageDialog(this, "Error loading items table", "Error", JOptionPane.ERROR_MESSAGE);
+            success= false;
+            itemTablePointer= null;
+            e.printStackTrace();
+        }
+
+        try
+        {
+            switch(project.getBaseRom())
+            {
+                case Platinum:
+                    itemNames = TextEditor.getBank(project, TextBank.PLAT_ITEM_NAMES);
+                    break;
+
+                case HeartGold:
+                case SoulSilver:
+                    itemNames = TextEditor.getBank(project, TextBank.HGSS_ITEM_NAMES);
+                    break;
+            }
+        }
+        catch(IOException e)
+        {
+            System.err.println("Error loading item name text bank");
+            JOptionPane.showMessageDialog(this, "Error loading item name text bank", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            success= false;
+        }
+
+        byte[] itemTable;
+        if (success)
+        {
+            itemTable= tableLocator.obtainTableArr(itemTablePointer, itemNames.length, 8);
+            itemTableData = ItemTableParser.parseTable(itemTable, itemNames.length);
+        }
+    }
+
+    public static ArrayList<ItemTableEntry> getItemTableData()
+    {
+        return itemTableData;
     }
 
     private List<List<Object>> getTableData()

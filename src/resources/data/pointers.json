@@ -35,6 +35,14 @@
           "pointerOffset": "0x03a0ec",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x07cf94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -72,6 +80,14 @@
           "description": "Map Header Table",
           "file": "arm9.bin",
           "pointerOffset": "0x03a048",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x07cef4",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -113,6 +129,14 @@
           "pointerOffset": "0x03a0ec",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x07cf94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -150,6 +174,14 @@
           "description": "Map Header Table",
           "file": "arm9.bin",
           "pointerOffset": "0x03a0ec",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x07cf94",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -191,6 +223,14 @@
           "pointerOffset": "0x0560f5",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x07c7c4",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -228,6 +268,14 @@
           "description": "Map Header Table",
           "file": "arm9.bin",
           "pointerOffset": "0x056d21",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x07d3e0",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -269,6 +317,14 @@
           "pointerOffset": "0x03a048",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x07cef4",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -308,6 +364,14 @@
           "pointerOffset": "0x03a0ec",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x07cf94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -336,6 +400,14 @@
           "pointerOffset": "0x074408",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -357,6 +429,14 @@
           "description": "Pokemon Party Icon Palette Index Table",
           "file": "arm9.bin",
           "pointerOffset": "0x074408",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -382,6 +462,14 @@
           "pointerOffset": "0x074408",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -403,6 +491,14 @@
           "description": "Pokemon Party Icon Palette Index Table",
           "file": "arm9.bin",
           "pointerOffset": "0x074408",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -428,6 +524,14 @@
           "pointerOffset": "0x073ea0",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077724",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -449,6 +553,14 @@
           "description": "Pokemon Party Icon Palette Index Table",
           "file": "arm9.bin",
           "pointerOffset": "0x074508",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077d94",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -474,6 +586,14 @@
           "pointerOffset": "0x074408",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -495,6 +615,14 @@
           "description": "Pokemon Party Icon Palette Index Table",
           "file": "arm9.bin",
           "pointerOffset": "0x074400",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c8c",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -525,6 +653,14 @@
           "pointerOffset": "0x074408",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -546,6 +682,14 @@
           "description": "Pokemon Party Icon Palette Index Table",
           "file": "arm9.bin",
           "pointerOffset": "0x074408",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -571,6 +715,14 @@
           "pointerOffset": "0x074408",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -592,6 +744,14 @@
           "description": "Pokemon Party Icon Palette Index Table",
           "file": "arm9.bin",
           "pointerOffset": "0x074408",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -617,6 +777,14 @@
           "pointerOffset": "0x073ea0",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077724",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -638,6 +806,14 @@
           "description": "Pokemon Party Icon Palette Index Table",
           "file": "arm9.bin",
           "pointerOffset": "0x074500",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077d8c",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }
@@ -663,6 +839,14 @@
           "pointerOffset": "0x074408",
           "countOffset": "0x00",
           "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
         }
       ]
     },
@@ -684,6 +868,14 @@
           "description": "Pokemon Party Icon Palette Index Table",
           "file": "arm9.bin",
           "pointerOffset": "0x074408",
+          "countOffset": "0x00",
+          "countPointerLength": "0"
+        },
+        {
+          "name": "items",
+          "description": "item assignment table",
+          "file": "arm9.bin",
+          "pointerOffset": "0x077c94",
           "countOffset": "0x00",
           "countPointerLength": "0"
         }

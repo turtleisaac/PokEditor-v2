@@ -18,6 +18,11 @@ public class TextEditor
 {
     private static String unpackedFolderPath;
 
+    public static String[] getBank(Project project, TextBank bank) throws IOException
+    {
+        return getBank(project, bank.value);
+    }
+
     public static String[] getBank(Project project, int bank) throws IOException
     {
         String textNarcPath;

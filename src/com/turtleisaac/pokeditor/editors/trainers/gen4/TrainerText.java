@@ -1,4 +1,4 @@
-package com.turtleisaac.pokeditor.gui.editors.trainers.text;
+package com.turtleisaac.pokeditor.editors.trainers.gen4;
 
 public interface TrainerText
 {

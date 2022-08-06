@@ -12,6 +12,7 @@ import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterEditor
 import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterReturn;
 import com.turtleisaac.pokeditor.editors.evolutions.gen4.EvolutionEditor;
 import com.turtleisaac.pokeditor.editors.items.ItemEditorGen4;
+import com.turtleisaac.pokeditor.editors.items.ItemTableEntry;
 import com.turtleisaac.pokeditor.editors.learnsets.LearnsetEditor;
 import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
@@ -50,8 +51,9 @@ public class RomApplier extends JFrame
 
     private GoogleSheetsAPI api;
     private JFrame parent;
+    private ArrayList<ItemTableEntry> itemTableData;
 
-    public RomApplier(Project project, String projectPath, GoogleSheetsAPI api, JFrame parent, boolean visible)
+    public RomApplier(Project project, String projectPath, GoogleSheetsAPI api, JFrame parent, boolean visible, ArrayList<ItemTableEntry> itemTableData)
     {
         initComponents();
         DefaultMutableTreeNode root= new DefaultMutableTreeNode("Sheets");
@@ -61,6 +63,7 @@ public class RomApplier extends JFrame
         this.projectPath = projectPath;
         this.api= api;
         this.parent= parent;
+        this.itemTableData = itemTableData;
 
         for(String str : baseRom.sheetList)
         {
@@ -170,7 +173,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Items"))
                     {
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
                         narctowl.unpack(dataPath + File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data.narc",unpackedFolderPath + "pl_item_data");
                         toDelete.add(new File(unpackedFolderPath + "pl_item_data"));
                         api.updateSheet("Items",editor.itemsToSheet(unpackedFolderPath + "pl_item_data"));
@@ -260,7 +263,7 @@ public class RomApplier extends JFrame
 
                     if(contains(selected,"Items"))
                     {
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project);
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
                         narctowl.unpack(dataPath + File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7",unpackedFolderPath + "item_data");
                         toDelete.add(new File(unpackedFolderPath + "item_data"));
                         api.updateSheet("Items",editor.itemsToSheet(unpackedFolderPath + "item_data"));

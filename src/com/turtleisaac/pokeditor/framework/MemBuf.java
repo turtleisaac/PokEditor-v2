@@ -57,7 +57,7 @@ public class MemBuf {
 
         public int readByte() {
             require(1);
-            return buf[readPos++];
+            return buf[readPos++] & 0xff;
         }
 
         public int readInt() {
@@ -73,6 +73,10 @@ public class MemBuf {
             require(2);
             int ret = readByte() | (readByte() << 8);
             return (short)ret;
+        }
+
+        public int readUnsignedShort() {
+            return (int)readShort() & 0xffff;
         }
 
         public String readString(int size) {

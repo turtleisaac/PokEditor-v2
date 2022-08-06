@@ -717,7 +717,7 @@ public class TrainerEditorGen4
                 thisTrainer[idx++]= "" + pokemon.getIvs();
                 thisTrainer[idx++]= "" + pokemon.getAbility();
                 thisTrainer[idx++]= "" + pokemon.getLevel();
-                thisTrainer[idx++]= "=Evolutions!B" + (pokemon.getPokemon()+2);
+                thisTrainer[idx++]= "=Evolutions!$B$" + (pokemon.getPokemon()+2);
                 thisTrainer[idx++]= "" + pokemon.getAltForm();
                 thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$A$" + (pokemon.getItem()+1);
                 thisTrainer[idx++]= "='Formatting (DO NOT TOUCH)'!$I$" + (pokemon.getMove1()+1);

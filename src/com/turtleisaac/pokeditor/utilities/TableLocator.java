@@ -144,7 +144,7 @@ public class TableLocator
         }
 
         if(bytesToRead == 0)
-            bytesToRead= numEntries*entryLength;
+            bytesToRead = numEntries*entryLength;
 
         TableLocation tableLocation= locateContainerFile(offset);
 //        System.out.println("File: " + tableLocation.getFile());
