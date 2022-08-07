@@ -554,7 +554,7 @@ public class TrainerPanel extends JPanel
         {
             if(Project.isHGSS(project))
             {
-                TrainerTextFrame trainerTextFrame= new TrainerTextFrame(project, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
+                TrainerTextFrame trainerTextFrame= new TrainerTextFrame(project, trainerTexts, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
                 trainerTextFrame.setLocationRelativeTo(this);
             }
             else
