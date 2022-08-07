@@ -1045,6 +1045,10 @@ public class ProjectWindow extends JFrame
         sheetUploadChangesButtonActionPerformed(e);
     }
 
+    private void dspreCompatibilityItem(ActionEvent e) {
+        JOptionPane.showMessageDialog(this, "In order to use a PokEditor project in DSPRE, go into your project directory and into the folder within it that has a name matching the project. In this folder is the unpacked ROM data:\n1. Rename \"arm9ovltable.bin\" to \"y9.bin\".\n2. Rename \"arm7ovltable.bin\" to \"y7.bin\".\n3. Add a new directory called \"unpacked\".\nNow you can open the unpacked ROM folder within the PokEditor project in DSPRE.\nFor changing back to PokEditor, just do the inverse.", "PokEditor", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -1071,6 +1075,7 @@ public class ProjectWindow extends JFrame
         helpMenu = new JMenu();
         aboutItem = new JMenuItem();
         tutorialItem = new JMenuItem();
+        dspreCompatibilityItem = new JMenuItem();
         separator2 = new JSeparator();
         tabbedPane1 = new JTabbedPane();
         mainPanel = new JPanel();
@@ -1235,6 +1240,12 @@ public class ProjectWindow extends JFrame
                 tutorialItem.setText("Tutorial");
                 tutorialItem.addActionListener(e -> tutorialItemActionPerformed(e));
                 helpMenu.add(tutorialItem);
+                helpMenu.addSeparator();
+
+                //---- dspreCompatibilityItem ----
+                dspreCompatibilityItem.setText("DSPRE Compatibility");
+                dspreCompatibilityItem.addActionListener(e -> dspreCompatibilityItem(e));
+                helpMenu.add(dspreCompatibilityItem);
             }
             menuBar.add(helpMenu);
         }
@@ -1477,6 +1488,7 @@ public class ProjectWindow extends JFrame
     private JMenu helpMenu;
     private JMenuItem aboutItem;
     private JMenuItem tutorialItem;
+    private JMenuItem dspreCompatibilityItem;
     private JSeparator separator2;
     private JTabbedPane tabbedPane1;
     private JPanel mainPanel;
