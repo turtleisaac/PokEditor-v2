@@ -27,17 +27,9 @@ import org.apache.commons.io.FileUtils;
  * @author turtleisaac
  */
 public class TrainerTextFrame extends JFrame {
-    TrainerTextUtils trainerTextRetriever;
-    private ArrayList<TrainerText> trainerTexts;
-    private String trainerTextAssignmentFile;
-    private int trainerTextBankId;
-    private ArrayList<File> toDelete;
     private String[] messages;
 
-    private ArrayList<TrainerText> thisTrainerTexts;
-
-    private final Project project;
-
+    private HashMap<Integer, TrainerText> thisTrainerTexts;
 
     private static final ArrayList<Integer> activationConditionToId = new ArrayList<>(Arrays.asList(0, 1, 2, 0x0F, 0x10, 0x14, 3, 4, 5, 6, 7, 8, 9, 0xA));
 
@@ -58,19 +50,14 @@ public class TrainerTextFrame extends JFrame {
             "(DOUBLE) Trainer#2 Player One Party Member Overworld"
     ));
 
-    public TrainerTextFrame(Project project, int trainerId, String trainerName) throws IOException
+    public TrainerTextFrame(Project project, ArrayList<TrainerText> trainerTexts, int trainerId, String trainerName) throws IOException
     {
         initComponents();
-        toDelete = new ArrayList<>();
         setVisible(true);
 
         setTitle("Trainer Text Editor - " + trainerName);
 
-        this.project= project;
-        trainerTextRetriever = new TrainerTextUtils(project, project.getProjectPath().getAbsolutePath(), project.getBaseRom());
-        trainerTextAssignmentFile = project.getDataPath() + File.separator;
-
-        switch(project.getBaseRom())
+        switch (project.getBaseRom())
         {
             case Platinum:
 //                trainerTextBankId = 728;
@@ -80,33 +67,26 @@ public class TrainerTextFrame extends JFrame {
             case SoulSilver:
                 messages = TextEditor.getBank(project, 728);
 //                trainerTextBankId = 728;
-                trainerTextAssignmentFile += "a" + File.separator + "0" + File.separator + "5" + File.separator + "7";
                 break;
         }
 
-        if(!new File(trainerTextAssignmentFile + "_").exists())
+        thisTrainerTexts = new HashMap<>();
+        TrainerText trainerText;
+        for (int i = 0; i < trainerTexts.size(); i++)
         {
-            Narctowl narctowl = new Narctowl(true);
-            narctowl.unpack(trainerTextAssignmentFile,trainerTextAssignmentFile + "_");
-        }
-        trainerTexts = trainerTextRetriever.getTrainerText(trainerTextAssignmentFile + "_" + File.separator + "0.bin");
-        toDelete.add(new File(trainerTextAssignmentFile + "_"));
-
-        thisTrainerTexts = new ArrayList<>();
-        for(TrainerText trainerText : trainerTexts)
-        {
-            if(trainerText.getTrainerId() == trainerId)
+            trainerText = trainerTexts.get(i);
+            if (trainerId == trainerText.getTrainerId())
             {
-                thisTrainerTexts.add(trainerText);
+                thisTrainerTexts.put(i, trainerText);
             }
         }
 
         DefaultListModel<String> listModel= new DefaultListModel<>();
 
 
-        for(TrainerText trainerText : thisTrainerTexts)
+        for(TrainerText trainerText1 : thisTrainerTexts.values())
         {
-            listModel.addElement("" + activationConditions.get(activationConditionToId.indexOf(trainerText.getCondition())));
+            listModel.addElement("" + activationConditions.get(activationConditionToId.indexOf(trainerText1.getCondition())));
         }
 
         textList.setModel(listModel);
