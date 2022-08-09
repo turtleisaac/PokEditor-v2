@@ -1028,7 +1028,7 @@ public class JohtoEncounterEditor
                 writer.writeByte((byte)superMaxs[x]);
                 writer.writeShort((short)superArr[x]);
             }
-            writer.writeShorts(reverseBytes(intToShort(outbreaks)));
+            writer.writeShorts(intToShort(outbreaks));
             writer.close();
         }
     }
