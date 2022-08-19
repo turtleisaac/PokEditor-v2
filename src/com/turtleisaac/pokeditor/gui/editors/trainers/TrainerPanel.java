@@ -549,23 +549,24 @@ public class TrainerPanel extends JPanel
 
     private void trainerTextButtonActionPerformed(ActionEvent e)
     {
-        // TODO add your code here
-        try
-        {
-            if(Project.isHGSS(project))
-            {
-                TrainerTextFrame trainerTextFrame= new TrainerTextFrame(project, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
-                trainerTextFrame.setLocationRelativeTo(this);
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        catch(IOException exception)
-        {
-            exception.printStackTrace();
-        }
+        // TODO uncomment code and restore functionality
+        JOptionPane.showMessageDialog(this, "Not implemented yet", "Trainer Text Editor", JOptionPane.ERROR_MESSAGE);
+//        try
+//        {
+//            if(Project.isHGSS(project))
+//            {
+//                TrainerTextFrame trainerTextFrame= new TrainerTextFrame(project, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
+//                trainerTextFrame.setLocationRelativeTo(this);
+//            }
+//            else
+//            {
+//                JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
+//            }
+//        }
+//        catch(IOException exception)
+//        {
+//            exception.printStackTrace();
+//        }
 
 
     }

@@ -22,8 +22,9 @@ public class SmogonFrame extends JFrame
 
     private void applyButtonActionPerformed(ActionEvent e)
     {
-        String[] arr= teamTextArea.getText().split("\n");
-        parent.importSmogonButtonActionPerformed(arr);
+        JOptionPane.showMessageDialog(this, "Not implemented yet", "Smogon Import", JOptionPane.ERROR_MESSAGE);
+//        String[] arr= teamTextArea.getText().split("\n");
+//        parent.importSmogonButtonActionPerformed(arr);
     }
 
     private void initComponents() {
@@ -35,7 +36,7 @@ public class SmogonFrame extends JFrame
 
         //======== this ========
         setTitle("Smogon Import/ Export");
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout(
             "hidemode 3",
             // columns
