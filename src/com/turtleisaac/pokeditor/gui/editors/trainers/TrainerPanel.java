@@ -1041,26 +1041,27 @@ public class TrainerPanel extends JPanel
 
             trainerClassSelectorComboBox.setSelectedIndex(1);
 
-            boolean success = true;
-            try
-            {
-                textEditor = new TrainerTextEditor(project);
-            }
-            catch(IOException e)
-            {
-                success = false;
-                e.printStackTrace();
-            }
-
-            if (success)
-            {
-                trainerTexts = textEditor.getTrainerTexts();
-            }
-            else
-            {
-                trainerTexts = null;
-                trainerTextButton.setEnabled(false);
-            }
+            //TODO restore this functionality upon merge with trainer_text
+//            boolean success = true;
+//            try
+//            {
+//                textEditor = new TrainerTextEditor(project);
+//            }
+//            catch(IOException e)
+//            {
+//                success = false;
+//                e.printStackTrace();
+//            }
+//
+//            if (success)
+//            {
+//                trainerTexts = textEditor.getTrainerTexts();
+//            }
+//            else
+//            {
+//                trainerTexts = null;
+//                trainerTextButton.setEnabled(false);
+//            }
         }
     }
 
