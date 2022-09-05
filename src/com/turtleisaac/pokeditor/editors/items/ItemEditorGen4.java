@@ -747,7 +747,7 @@ public class ItemEditorGen4
         BinaryWriter writer;
         for(int i = 0; i < itemSheet.length; i++)
         {
-            System.out.println(getItemName(i));
+//            System.out.println(getItemName(i));
             Object[] thisLine= itemSheet[i];
             initializeIndex(thisLine);
 

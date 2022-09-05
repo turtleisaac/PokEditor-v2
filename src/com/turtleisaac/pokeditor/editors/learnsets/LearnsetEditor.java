@@ -239,7 +239,7 @@ public class LearnsetEditor
         learnsetCsv= ArrayModifier.trim(learnsetCsv,1,2);
         for(int i= 0; i < learnsetCsv.length; i++)
         {
-            System.out.println(nameData[i]);
+//            System.out.println(nameData[i]);
             Object[] thisLine= learnsetCsv[i];
             int numMoves= indexOfEnd(thisLine)/2;
             int numBytes= 0;
@@ -262,7 +262,7 @@ public class LearnsetEditor
                 if(thisLine[m].equals(""))
                     break;
 
-                System.out.println("    " + thisLine[m]);
+//                System.out.println("    " + thisLine[m]);
                 int moveID= getMove((String) thisLine[m]);
                 int level= Integer.parseInt((String) thisLine[m+1]);
                 levelLearnset.add(new MoveLearnsetData() {

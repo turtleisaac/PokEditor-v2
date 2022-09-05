@@ -1,6 +1,7 @@
 package com.turtleisaac.pokeditor.gui.projects.projectwindow.sheets;
 
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
+import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.BufferedReader;
@@ -97,7 +98,10 @@ public class FormatGenerator
         targets[11]= "One opponent (fails if target faints)";
 
 
-        generateModifiedReferenceList("Items",0,113,22,"???");
+        if (project.getBaseRom() == Game.Platinum)
+            generateModifiedReferenceList("Items",0,113,22,"???");
+        else
+            generateModifiedReferenceList2("Items",0,113,22,"???",428,1);
         setColumn(evolutionMethodArr,1);
         setColumn(abilityData,2);
         setColumn(effects,3);
@@ -137,6 +141,37 @@ public class FormatGenerator
         for(int i= breakPoint+breakSize; i < 1000; i++)
         {
             list.add("=" + sheetName + "!$B$" + (i-breakSize+2));
+        }
+
+        setColumn(list.toArray(new String[0]), colNum);
+    }
+
+    private static void generateModifiedReferenceList2(String sheetName, int colNum, int breakPoint, int breakSize, String breakContents, int breakPoint2, int breakSize2)
+    {
+        ArrayList<String> list= new ArrayList<>();
+        for(int i= 0; i < breakPoint; i++)
+        {
+            list.add("=" + sheetName + "!$B$" + (i+2));
+        }
+
+        for(int i= 0; i < breakSize; i++)
+        {
+            list.add(breakContents);
+        }
+
+        for(int i= breakPoint+breakSize; i < breakPoint2; i++)
+        {
+            list.add("=" + sheetName + "!$B$" + (i-breakSize+2));
+        }
+
+        for(int i= 0; i < breakSize2; i++)
+        {
+            list.add(breakContents);
+        }
+
+        for(int i= breakPoint2+breakSize2; i < 1000; i++)
+        {
+            list.add("=" + sheetName + "!$B$" + (i-breakSize-breakSize2+2));
         }
 
         setColumn(list.toArray(new String[0]), colNum);

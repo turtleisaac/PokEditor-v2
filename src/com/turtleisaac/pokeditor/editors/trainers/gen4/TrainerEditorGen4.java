@@ -311,7 +311,7 @@ public class TrainerEditorGen4
                     }
                     catch (Exception e)
                     {
-                        System.out.println("PROBLEM");
+                        System.err.println("Error with trainer editor");
                     }
 
                 }
@@ -421,7 +421,7 @@ public class TrainerEditorGen4
                     }
                     catch (Exception e)
                     {
-                        System.out.println("PROBLEM");
+                        System.err.println("Error with trainer editor");
                     }
 
                 }
@@ -529,7 +529,7 @@ public class TrainerEditorGen4
                     }
                     catch (Exception e)
                     {
-                        System.out.println("PROBLEM");
+                        System.err.println("Error with trainer editor");
                     }
                 }
             }
@@ -640,7 +640,7 @@ public class TrainerEditorGen4
                     }
                     catch (Exception e)
                     {
-                        System.out.println("PROBLEM");
+                        System.err.println("Error with trainer editor");
                     }
 
                 }
@@ -787,7 +787,7 @@ public class TrainerEditorGen4
         BinaryWriter writer;
         for(int i= 0; i < trainerData.size(); i++)
         {
-            System.out.println("Writing " + i);
+//            System.out.println("Writing " + i);
             TrainerDataGen4 trainer= trainerData.get(i);
             ArrayList<TrainerPokemonData> team= teamData.get(i);
 
@@ -877,7 +877,7 @@ public class TrainerEditorGen4
         if(arr.length < num*11) // making sure the predicted length matches the array length
         {
             num = num/11;
-            System.out.print("There was a mismatch between the defined number of pokemon on this team and the amount provided");
+            System.err.print("There was a mismatch between the defined number of pokemon on this team and the amount provided");
         }
 
         for(int i= 0; i < num; i++)

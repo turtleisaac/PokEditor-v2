@@ -605,10 +605,10 @@ public class GameTest extends TestCase
         String[] controlText = TextEditor.getBank(controlProject, textBank);
         String[] testText = TextEditor.getBank(testProject, textBank);
 
-//        assertEquals(controlText.length, testText.length);
+        assertEquals(controlText.length, testText.length);
         for (int i = 0; i < controlText.length; i++)
         {
-            System.out.printf("%s vs. %s\n", controlText[i], testText[i]);
+            System.out.printf("%d: %s vs. %s\n", i, controlText[i], testText[i]);
             assertEquals(controlText[i], testText[i]);
         }
     }
