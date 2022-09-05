@@ -29,7 +29,6 @@
     <orderEntry type="library" exported="" name="MigLayout" level="project" />
     <orderEntry type="module" module-name="GoogleSheetsAPI.main" exported="" />
     <orderEntry type="library" exported="" name="Gradle: com.jidesoft:jide-oss:3.6.18" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.json:json:20201115" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -50,7 +49,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" exported="" name="Gradle: com.google.api-client:google-api-client:1.33.2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.google.apis:google-api-services-sheets:v4-rev20220620-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.google.api-client:google-api-client:2.0.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: io.opencensus:opencensus-api:0.31.1" level="project" />
@@ -66,5 +64,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Gradle: org.json:json:20220320" level="project" />
   </component>
 </module>

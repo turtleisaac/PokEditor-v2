@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class SheetsInterceptor
 {
     private static final String subDir = "local";
+    private static boolean nullInsertionOccurred = false;
 
     public static void interceptWrite(Object[][] data, String projectPath, String output) throws IOException
     {
@@ -40,7 +41,12 @@ public class SheetsInterceptor
     {
         String[][] data = load(projectPath, input);
 
-        if(input.equals("Trainer Data"))
+        if (input.equals("Trainer Data"))
+        {
+            System.currentTimeMillis();
+        }
+
+        if (input.equals("Formatting (DO NOT TOUCH)"))
         {
             System.currentTimeMillis();
         }
@@ -50,7 +56,7 @@ public class SheetsInterceptor
         {
             for(int col= 0; col < data[row].length; col++)
             {
-                if(data[row][col].contains("!"))
+                if(data[row][col].startsWith("=") && data[row][col].contains("!"))
                 {
                     data[row][col] = obtainResourceCell(data[row][col], projectPath, resources);
                 }
@@ -83,7 +89,7 @@ public class SheetsInterceptor
         if(cell.equals("=Evolutions!B444"))
             System.currentTimeMillis();
 
-        if(cell.contains("!"))
+        if (cell.startsWith("=") && cell.contains("!"))
         {
             String resourcePath = cell.substring(0, cell.indexOf('!'));
             resourcePath = resourcePath.replace("=", "").replace("'", "");
@@ -105,13 +111,19 @@ public class SheetsInterceptor
                 refColNum+= Math.pow(26, i) * (refCol.charAt(i)-'A');
             }
 
-            if(refRowNum >= resources.get(resourcePath).length)
+            if(refRowNum-1 >= resources.get(resourcePath).length)
             {
-                System.out.println("error");
+                if(!nullInsertionOccurred)
+                    System.out.println("Sheet Intercept Null Insertion");
+                nullInsertionOccurred = true;
+                return "";
             }
-            else if(refColNum >= resources.get(resourcePath)[refRowNum].length)
+            else if(refColNum >= resources.get(resourcePath)[refRowNum-1].length)
             {
-                System.out.println("error");
+                if(!nullInsertionOccurred)
+                    System.out.println("Sheet Intercept Null Insertion");
+                nullInsertionOccurred = true;
+                return "";
             }
 
             cell = resources.get(resourcePath)[refRowNum-1][refColNum];

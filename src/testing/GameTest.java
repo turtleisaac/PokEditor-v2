@@ -70,6 +70,8 @@ public class GameTest extends TestCase
     protected String trainerTeamsFilePath;
     protected String trainerTeamsDirName;
 
+    protected TextBank itemNamesBank;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -304,44 +306,6 @@ public class GameTest extends TestCase
         assertEquals(controlProject.getBaseRomGameCode(), testProject.getBaseRomGameCode());
     }
 
-    public void testPersonalBase() throws IOException
-    {
-        Narctowl narctowl = new Narctowl(true);
-
-        //generate control sheets
-
-        PersonalEditor editor= new PersonalEditor(controlDataPath, controlProject);
-        narctowl.unpack(controlDataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal.narc",controlUnpackedPath + "pl_personal");
-        PersonalReturnGen4 controlReturn= editor.personalToSheet(controlUnpackedPath + "pl_personal");
-
-        //generate test sheets
-
-        editor= new PersonalEditor(testDataPath, testProject);
-        narctowl.unpack(testDataPath + File.separator + "poketool" + File.separator + "personal" + File.separator + "pl_personal.narc",testUnpackedPath + "pl_personal");
-        PersonalReturnGen4 testReturn= editor.personalToSheet(testUnpackedPath + "pl_personal");
-
-
-        //tests
-
-        assertEquals(controlReturn.getPersonalData().length, testReturn.getPersonalData().length);
-        for (int row = 0; row < controlReturn.getPersonalData().length; row++)
-        {
-            for (int col = 0; col < controlReturn.getPersonalData()[row].length; col++)
-            {
-                assertEquals(controlReturn.getPersonalData()[row][col], testReturn.getPersonalData()[row][col]);
-            }
-        }
-
-        assertEquals(controlReturn.getTMData().length, testReturn.getTMData().length);
-        for (int row = 0; row < controlReturn.getTMData().length; row++)
-        {
-            for (int col = 0; col < controlReturn.getTMData()[row].length; col++)
-            {
-                assertEquals(controlReturn.getTMData()[row][col], testReturn.getTMData()[row][col]);
-            }
-        }
-    }
-
     public void testPersonalEditor() throws IOException
     {
         System.out.println("Testing personal editor");
@@ -511,7 +475,7 @@ public class GameTest extends TestCase
         //test sheets to files
 
         clearDirs(new File(testUnpackedPath + itemsDirName));
-        editor.sheetToItems(testAPI.getSpecifiedSheetArr("Items"), testUnpackedPath + itemsDirName, testDataPath + File.separator + itemsFilePath);
+        editor.sheetToItems(testAPI.getSpecifiedSheetArr("Items"),testAPI.getSpecifiedSheetArr("Formatting (DO NOT TOUCH)"), testUnpackedPath + itemsDirName, testDataPath + File.separator + itemsFilePath);
 
         //unpack control narc
 
@@ -628,8 +592,25 @@ public class GameTest extends TestCase
                 }
             }
         }
+    }
 
-        assertEquals(0,1);
+    public void testItemNames() throws IOException
+    {
+        testItemsEditor();
+        textTester(itemNamesBank);
+    }
+
+    protected void textTester(TextBank textBank) throws IOException
+    {
+        String[] controlText = TextEditor.getBank(controlProject, textBank);
+        String[] testText = TextEditor.getBank(testProject, textBank);
+
+//        assertEquals(controlText.length, testText.length);
+        for (int i = 0; i < controlText.length; i++)
+        {
+            System.out.printf("%s vs. %s\n", controlText[i], testText[i]);
+            assertEquals(controlText[i], testText[i]);
+        }
     }
 
 

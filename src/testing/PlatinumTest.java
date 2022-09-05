@@ -1,3 +1,4 @@
+import com.turtleisaac.pokeditor.editors.text.TextBank;
 import com.turtleisaac.pokeditor.project.Project;
 
 import java.io.File;
@@ -27,6 +28,8 @@ public class PlatinumTest extends GameTest
         trainersDirName = "trdata";
         trainerTeamsFilePath = "poketool" + File.separator + "trainer" + File.separator + "trpoke.narc";
         trainerTeamsDirName = "trpoke";
+
+        itemNamesBank = TextBank.PLAT_ITEM_NAMES;
 
         super.setUp();
     }

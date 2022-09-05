@@ -101,14 +101,14 @@ public class SheetApplier extends JFrame
 
         try
         {
-            try
-            {
-                api.updateSheet("Formatting (DO NOT TOUCH)",FormatGenerator.updateFormatSheet(project));
-            }
-            catch(IOException exception)
-            {
-                System.err.println("Failure to perform automatic formatting sheet update and verification. Do you own this sheet?");
-            }
+//            try
+//            {
+//                api.updateSheet("Formatting (DO NOT TOUCH)",FormatGenerator.updateFormatSheet(project));
+//            }
+//            catch(IOException exception)
+//            {
+//                System.err.println("Failure to perform automatic formatting sheet update and verification. Do you own this sheet?");
+//            }
 
             Narctowl narctowl= new Narctowl(true);
             String dataPath= project.getDataPath();
@@ -197,7 +197,7 @@ public class SheetApplier extends JFrame
                         String outputNarc= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data.narc";
 
                         ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
-                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir,outputNarc);
+                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),api.getSpecifiedSheetArr("Formatting (DO NOT TOUCH)"),outputDir,outputNarc);
 
                         pack(outputDir, dataPath + outputNarc);
                     }
@@ -321,7 +321,7 @@ public class SheetApplier extends JFrame
                         String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7";
 
                         ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
-                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),outputDir,outputNarc);
+                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),api.getSpecifiedSheetArr("Formatting (DO NOT TOUCH)"),outputDir,outputNarc);
 
                         pack(outputDir, dataPath + outputNarc);
                     }

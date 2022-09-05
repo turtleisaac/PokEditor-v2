@@ -297,8 +297,8 @@ public class MoveEditorGen4
             initializeIndex(arr);
             writer= new BinaryWriter(outputPath + i + ".bin");
 
-            if(i == 298)
-                System.out.println("moo");
+//            if(i == 298)
+//                System.out.println("moo");
 
 //            System.out.println("Move: " + i + ", " + Arrays.toString(arr));
             String effect= next();

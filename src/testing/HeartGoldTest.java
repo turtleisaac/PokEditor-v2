@@ -1,3 +1,5 @@
+import com.turtleisaac.pokeditor.editors.text.TextBank;
+
 import java.io.File;
 
 public class HeartGoldTest extends GameTest
@@ -24,6 +26,8 @@ public class HeartGoldTest extends GameTest
         trainersDirName = "trdata";
         trainerTeamsFilePath = "a" + File.separator + "0" + File.separator + "5" + File.separator + "6";
         trainerTeamsDirName = "trpoke";
+
+        itemNamesBank = TextBank.HGSS_ITEM_NAMES;
 
         super.setUp();
     }

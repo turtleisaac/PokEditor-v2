@@ -731,7 +731,7 @@ public class ItemEditorGen4
     }
 
 
-    public void sheetToItems(Object[][] itemSheet, String outputDir, String predictedOutputNarc) throws IOException
+    public void sheetToItems(Object[][] itemSheet, Object[][] formattingSheet, String outputDir, String predictedOutputNarc) throws IOException
     {
         String outputPath= outputDir;
 
@@ -741,11 +741,11 @@ public class ItemEditorGen4
         }
         outputPath+= File.separator;
 
-        Object[] nameColumn= Arrays.copyOfRange(ArrayModifier.getColumn(itemSheet,1),1,itemSheet.length);
-        itemSheet= ArrayModifier.trim(itemSheet,1,2);
+        Object[] nameColumn = Arrays.copyOfRange(ArrayModifier.getColumn(formattingSheet,0),0,itemSheet.length + 22);
+        itemSheet = ArrayModifier.trim(itemSheet,1,2);
 
         BinaryWriter writer;
-        for(int i= 0; i < itemSheet.length; i++)
+        for(int i = 0; i < itemSheet.length; i++)
         {
             System.out.println(getItemName(i));
             Object[] thisLine= itemSheet[i];
