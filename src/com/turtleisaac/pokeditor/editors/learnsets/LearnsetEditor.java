@@ -136,15 +136,15 @@ public class LearnsetEditor
             }
 
             learnsetBuffer= new Buffer((file.toString()));
-            System.out.println(nameData[i] + " numMoves: " + numMoves);
+//            System.out.println(nameData[i] + " numMoves: " + numMoves);
             ArrayList<MoveLearnsetData> moveList= new ArrayList<>();
             for(int m= 0; m < numMoves; m++)
             {
                 if(!gen5)
                 {
                     short move= learnsetBuffer.readShort();
-                    System.out.print("  " + moveData[getMoveId(move)]);
-                    System.out.println(": " + getLevelLearned(move));
+//                    System.out.print("  " + moveData[getMoveId(move)]);
+//                    System.out.println(": " + getLevelLearned(move));
                     moveList.add(new MoveLearnsetData() {
                         @Override
                         public int getID() {
@@ -161,8 +161,8 @@ public class LearnsetEditor
                 {
                     int move= learnsetBuffer.readUInt16();
                     int level= learnsetBuffer.readUInt16();
-                    System.out.print("  " + moveData[move]);
-                    System.out.println(": " + level);
+//                    System.out.print("  " + moveData[move]);
+//                    System.out.println(": " + level);
                     moveList.add(new MoveLearnsetData() {
                         @Override
                         public int getID() {

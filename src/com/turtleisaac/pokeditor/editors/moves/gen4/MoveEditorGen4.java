@@ -201,7 +201,7 @@ public class MoveEditorGen4
         String[][] moveTable= new String[dataList.size()][30];
         for(int i= 0; i < dataList.size(); i++)
         {
-            System.out.println(moveData[i] + ": " + i);
+//            System.out.println(moveData[i] + ": " + i);
             MoveDataGen4 move= dataList.get(i);
             String[] line= new String[30];
             Arrays.fill(line,"");
@@ -210,19 +210,19 @@ public class MoveEditorGen4
             line[idx++]= "" + effects[move.getEffect()];
             line[idx++]= categories[move.getCategory()];
             line[idx++]= "" + move.getPower();
-            System.out.println("Additional Effect: " + effects[move.getEffect()]);
-            System.out.println("Category: " + categories[move.getCategory()]);
-            System.out.println("Power: " + move.getPower());
+//            System.out.println("Additional Effect: " + effects[move.getEffect()]);
+//            System.out.println("Category: " + categories[move.getCategory()]);
+//            System.out.println("Power: " + move.getPower());
 
             line[idx++]= typeArr[move.getType()];
             line[idx++]= "" + move.getAccuracy();
 //            System.out.println("Type: " + typeArr[move.getType()]);
-            System.out.println("Accuracy: " + move.getAccuracy());
+//            System.out.println("Accuracy: " + move.getAccuracy());
 
             line[idx++]= "" + move.getPp();
             line[idx++]= "" + move.getAdditionalEffect();
 //            System.out.println("PP: " + move.getPp());
-            System.out.println("Additional Effect Chance: " + move.getAdditionalEffect());
+//            System.out.println("Additional Effect Chance: " + move.getAdditionalEffect());
 
             line[idx++]= targets[move.getRange()];
 //            short target= (short) move.getRange();
@@ -240,8 +240,8 @@ public class MoveEditorGen4
             {
                 line[idx++]= Boolean.toString(((flag >> x) & 0x1) == 1);
             }
-            System.out.println("Target(s): " + move.getRange());
-            System.out.println("Target(s): " + targets[move.getRange()]);
+//            System.out.println("Target(s): " + move.getRange());
+//            System.out.println("Target(s): " + targets[move.getRange()]);
 //            System.out.println("Priority: " + move.getPriority());
 //            System.out.println("Flag: " + move.getFlag());
 
@@ -251,7 +251,7 @@ public class MoveEditorGen4
 //            System.out.println("Contest Type: " + move.getContestType());
 
             moveTable[i]= line;
-            System.out.println();
+//            System.out.println();
         }
 
         ArrayProcessor processor= new ArrayProcessor();
@@ -297,7 +297,10 @@ public class MoveEditorGen4
             initializeIndex(arr);
             writer= new BinaryWriter(outputPath + i + ".bin");
 
-            System.out.println("Move: " + i + ", " + Arrays.toString(arr));
+            if(i == 298)
+                System.out.println("moo");
+
+//            System.out.println("Move: " + i + ", " + Arrays.toString(arr));
             String effect= next();
             String category= next();
             writer.writeShort(getEffect(effect)); //additional effect

@@ -299,7 +299,7 @@ public class ProjectWindow extends JFrame
                     GoogleSheetsAPI api = new GoogleSheetsAPI(null, projectPath, true);
                     setApi(api);
 
-                    RomApplier editApplier = new RomApplier(project, projectPath, api, this, false, itemTableData);
+                    RomApplier editApplier = new RomApplier(project, projectPath, api, this, false, itemTableData, true);
                     editApplier.getCheckboxTree().checkRoot();
                     editApplier.applyButtonActionPerformed(null);
                     editApplier.dispose();
@@ -484,7 +484,7 @@ public class ProjectWindow extends JFrame
     private void applyToSheetButtonActionPerformed(ActionEvent e) {
         if(JOptionPane.showConfirmDialog(this,"Any changes that you have made to the sheet that do not exist in the ROM will be lost. Continue?","Alert",JOptionPane.YES_NO_OPTION) == 0)
         {
-            RomApplier editApplier= new RomApplier(project, projectPath, api, this, true, itemTableData);
+            RomApplier editApplier= new RomApplier(project, projectPath, api, this, true, itemTableData, true);
             editApplier.setLocationRelativeTo(this);
             setEnabled(false);
             try
@@ -1622,7 +1622,7 @@ public class ProjectWindow extends JFrame
         {
             if (JOptionPane.showConfirmDialog(this, "Would you like to update the sheets using data from your ROM? (This will overwrite existing data in the sheets, and you can choose which data you want to apply specifically)", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0)
             {
-                RomApplier editApplier = new RomApplier(project, projectPath, api, this, true, itemTableData);
+                RomApplier editApplier = new RomApplier(project, projectPath, api, this, true, itemTableData, true);
                 editApplier.setLocationRelativeTo(this);
             }
         }

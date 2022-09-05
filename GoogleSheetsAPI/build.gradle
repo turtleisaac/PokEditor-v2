@@ -25,12 +25,12 @@ dependencies
 
 
             // JSON library
-            compile 'org.json:json:20201115'
+            compile 'org.json:json:20220320'
 
             //GUI related
-            compile 'com.formdev:flatlaf:2.0.2'
+            compile 'com.formdev:flatlaf:2.4'
             compile 'com.miglayout:miglayout:3.7.4'
-            compile 'org.junit.jupiter:junit-jupiter:5.4.2'
+
 
             //Miscellaneous IO
             compile 'commons-io:commons-io:+'

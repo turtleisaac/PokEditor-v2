@@ -52,8 +52,9 @@ public class RomApplier extends JFrame
     private GoogleSheetsAPI api;
     private JFrame parent;
     private ArrayList<ItemTableEntry> itemTableData;
+    private boolean displayEndMessage;
 
-    public RomApplier(Project project, String projectPath, GoogleSheetsAPI api, JFrame parent, boolean visible, ArrayList<ItemTableEntry> itemTableData)
+    public RomApplier(Project project, String projectPath, GoogleSheetsAPI api, JFrame parent, boolean visible, ArrayList<ItemTableEntry> itemTableData, boolean display)
     {
         initComponents();
         DefaultMutableTreeNode root= new DefaultMutableTreeNode("Sheets");
@@ -64,6 +65,7 @@ public class RomApplier extends JFrame
         this.api= api;
         this.parent= parent;
         this.itemTableData = itemTableData;
+        this.displayEndMessage = display;
 
         for(String str : baseRom.sheetList)
         {
@@ -337,15 +339,21 @@ public class RomApplier extends JFrame
             clearDirs(file);
         }
 
-        if(editorTree.getCheckedPaths().length == 0)
+        if (editorTree.getCheckedPaths().length == 0)
             JOptionPane.showMessageDialog(this,"You haven't selected anything to apply!","Error",JOptionPane.ERROR_MESSAGE);
-        else if(!contains(selected,"Tutor Move"))
+        else if (!contains(selected,"Tutor Move"))
         {
-            JOptionPane.showMessageDialog(this,"ROM applied to sheets!","Success",JOptionPane.INFORMATION_MESSAGE);
+            if(displayEndMessage)
+            {
+                JOptionPane.showMessageDialog(this,"ROM applied to sheets!","Success",JOptionPane.INFORMATION_MESSAGE);
+            }
             System.out.println("ROM applied to sheets");
             dispose();
-            parent.toFront();
-            parent.setEnabled(true);
+            if (parent != null)
+            {
+                parent.toFront();
+                parent.setEnabled(true);
+            }
         }
     }
 

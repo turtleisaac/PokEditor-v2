@@ -147,7 +147,7 @@ public class PersonalEditor
         for(int i= 0; i < files.length; i++)
         {
             int localCount= count;
-            System.out.println(nameData[i]);
+//            System.out.println(nameData[i]);
             file= files[i];
             personalBuffer= new Buffer(file.toString());
 
@@ -704,7 +704,7 @@ public class PersonalEditor
             writer.writeShort((short)data.getRareItem());
             writer.writeBytes(data.getGenderRatio(),data.getHatchMultiplier(),data.getBaseHappiness(),data.getExpRate(),data.getEggGroup1(),data.getEggGroup2(),data.getAbility1(),data.getAbility2(),data.getRunChance(),data.getDexColor());
             writer.writeBytes(0x00,0x00);
-            System.out.println(i + ":   " + tmLearnsetData[i]);
+//            System.out.println(i + ":   " + tmLearnsetData[i]);
             writer.write(tmLearnsetData[i].toBytes());
         }
 

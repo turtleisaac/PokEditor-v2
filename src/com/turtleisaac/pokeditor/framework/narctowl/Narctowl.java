@@ -144,7 +144,7 @@ public class Narctowl
 
     public void unpack(String narc, String targetDirectory) throws IOException
     {
-        System.out.println("Unpacking: " + narc);
+//        System.out.println("Unpacking: " + narc);
 
         if(manualAccess)
         {
@@ -266,7 +266,7 @@ public class Narctowl
 
         if(fntbSize > 16) //if the fntb is more than just the header
         {
-            System.out.println("Skipping to end of FNTB");
+//            System.out.println("Skipping to end of FNTB");
             buffer.skipBytes(fntbSize-16); //jump to end of fntb
         }
 
@@ -384,7 +384,7 @@ public class Narctowl
             }
         }
         buffer.close(); //closes Buffer object buffer's internal BufferedInputStream and flushes data
-        System.out.println("Narc unpacking completed. Output directory can be found at: " + extractPath);
+//        System.out.println("Narc unpacking completed. Output directory can be found at: " + extractPath);
     }
 
 
@@ -447,7 +447,7 @@ public class Narctowl
 
             if(contents.length % 4 != 0)
             {
-                System.out.println("File " + i + " padding added: " + contents.length % 4);
+//                System.out.println("File " + i + " padding added: " + contents.length % 4);
                 fixedContents= new byte[contents.length + (contents.length % 4)];
                 Arrays.fill(fixedContents,(byte) 0xff);
                 System.arraycopy(contents,0,fixedContents,0,contents.length);
@@ -521,7 +521,7 @@ public class Narctowl
         narcWriter.write(fimgBuf.reader().getBuffer()); //writes the entire fimg buffer
         narcWriter.close(); //closes writer and flushes data
 
-        System.out.println("Narc packing completed. Output file can be found at: " + outputNarcPath + name);
+//        System.out.println("Narc packing completed. Output file can be found at: " + outputNarcPath + name);
 
     }
 
