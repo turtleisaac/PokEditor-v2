@@ -309,6 +309,25 @@ new FormModel {
 					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "editorMenu"
+					"text": "Editor Pop"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "popTrainersMenuItem"
+						"text": "Pop Trainer Editor"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "popTrainersMenuItem", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "popEncountersMenuItem"
+						"text": "Pop Encounter Editor"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "popEncountersMenuItem", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "popPokemonSpritesMenuItem"
+						"text": "Pop Pokémon Sprite Editor"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "popPokemonSpritesMenuItem", true ) )
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 					name: "toolsMenu"
 					"text": "Tools"
 					add( new FormComponent( "javax.swing.JMenuItem" ) {

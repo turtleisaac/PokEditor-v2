@@ -33,8 +33,8 @@ public class SpriteImage
      */
     public SpriteImage(byte[][] indexGuide, Color[] palette)
     {
-        this.indexGuide = indexGuide;
-        this.palette= palette;
+        this.indexGuide = Arrays.copyOf(indexGuide, indexGuide.length);
+        this.palette= Arrays.copyOf(palette, palette.length);
 
         update= true;
     }
@@ -258,6 +258,16 @@ public class SpriteImage
     public SpriteImage createCopyWithPalette(SpriteImage image)
     {
         return new SpriteImage(image.getIndexGuide(),palette);
+    }
+
+    /**
+     * Creates a copy of the provided image using the palette of the SpriteImage object this method is executed from
+     * @param image a SpriteImage to apply a palette to
+     * @return a SpriteImage identical to the provided one except with a different palette
+     */
+    public SpriteImage copyOfSelf()
+    {
+        return new SpriteImage(indexGuide, palette);
     }
 
     /**

@@ -1054,7 +1054,7 @@ public class SinnohEncounterPanel extends JPanel
             "[]" +
             "[]" +
             "[]" +
-            "[grow]"));
+            "[]"));
 
         //---- encounterFileLabel ----
         encounterFileLabel.setText("Encounter FIle");
@@ -1570,6 +1570,9 @@ public class SinnohEncounterPanel extends JPanel
 
                     //======== scrollPane1 ========
                     {
+                        scrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+                        scrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                        scrollPane1.setEnabled(false);
 
                         //---- encounterSlotTable ----
                         encounterSlotTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);

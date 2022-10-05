@@ -53,8 +53,8 @@
     <orderEntry type="library" exported="" name="Gradle: com.google.api-client:google-api-client:2.0.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: io.opencensus:opencensus-api:0.31.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.formdev:flatlaf:2.4" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="Gradle: junit:junit:4.13.2" level="project" />
-    <orderEntry type="module-library">
+    <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.13.2" level="project" />
+    <orderEntry type="module-library" scope="TEST">
       <library name="JUnit3">
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.13.2/junit-4.13.2.jar!/" />

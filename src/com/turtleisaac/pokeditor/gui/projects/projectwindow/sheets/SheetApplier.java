@@ -101,14 +101,14 @@ public class SheetApplier extends JFrame
 
         try
         {
-//            try
-//            {
-//                api.updateSheet("Formatting (DO NOT TOUCH)",FormatGenerator.updateFormatSheet(project));
-//            }
-//            catch(IOException exception)
-//            {
-//                System.err.println("Failure to perform automatic formatting sheet update and verification. Do you own this sheet?");
-//            }
+            try
+            {
+                api.updateSheet("Formatting (DO NOT TOUCH)",FormatGenerator.updateFormatSheet(project));
+            }
+            catch(IOException exception)
+            {
+                System.err.println("Failure to perform automatic formatting sheet update and verification. Do you own this sheet?");
+            }
 
             Narctowl narctowl= new Narctowl(true);
             String dataPath= project.getDataPath();

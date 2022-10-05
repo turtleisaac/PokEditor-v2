@@ -2135,10 +2135,10 @@ public class PokemonSpritePanel extends JPanel
         public PreviewPanel(JColorChooser chooser, SpriteImage maleFront, SpriteImage maleBack, SpriteImage femaleFront, SpriteImage femaleBack)
         {
             currentColor= chooser.getColor();
-            this.maleFront= maleFront;
-            this.maleBack= maleBack;
-            this.femaleFront = femaleFront;
-            this.femaleBack= femaleBack;
+            this.maleFront= maleFront.copyOfSelf();
+            this.maleBack= maleBack.copyOfSelf();
+            this.femaleFront = femaleFront.copyOfSelf();
+            this.femaleBack= femaleBack.copyOfSelf();
             setPreferredSize(new Dimension(700,200));
         }
 

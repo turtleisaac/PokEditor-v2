@@ -78,6 +78,8 @@ public class ProjectWindow extends JFrame
     private ConsoleWindow console;
     private TutorialFrame tutorial;
 
+    private HashMap<JPanel, JFrame> poppedEditors;
+
     private static String[] itemNames;
     private static ArrayList<ItemTableEntry> itemTableData;
 
@@ -263,6 +265,8 @@ public class ProjectWindow extends JFrame
             zipIn.close();
         }
 
+        clearDirs(new File(project.getProjectPath() + File.separator + "temp"));
+
         ComboBoxSearchable sheetComboBoxSearchable= new ComboBoxSearchable(sheetChooserComboBox);
         trainerPanel1.setProject(project);
         trainerPanel1.setApi(api);
@@ -287,6 +291,8 @@ public class ProjectWindow extends JFrame
                 tabbedPane1.remove(sinnohEncounterPanel);
                 break;
         }
+
+        poppedEditors = new HashMap<>();
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
@@ -1049,6 +1055,103 @@ public class ProjectWindow extends JFrame
         JOptionPane.showMessageDialog(this, "In order to use a PokEditor project in DSPRE, go into your project directory and into the folder within it that has a name matching the project. In this folder is the unpacked ROM data:\n1. Rename \"arm9ovltable.bin\" to \"y9.bin\".\n2. Rename \"arm7ovltable.bin\" to \"y7.bin\".\n3. Add a new directory called \"unpacked\".\nNow you can open the unpacked ROM folder within the PokEditor project in DSPRE.\nFor changing back to PokEditor, just do the inverse.", "PokEditor", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private void popEditors(EditorTypes editorType)
+    {
+//        System.out.println("Popping");
+        PoppedEditorFrame newFrame = new PoppedEditorFrame(this, editorType);
+        String title;
+        switch(editorType)
+        {
+            case TRAINER:
+                tabbedPane1.remove(trainerPanel1);
+                newFrame.setContentPane(trainerPanel1);
+                editorMenu.remove(popTrainersMenuItem);
+                title = "Trainer Editor";
+                break;
+            case ENCOUNTER:
+                if (Project.isPlatinum(project))
+                {
+                    tabbedPane1.remove(sinnohEncounterPanel);
+                    newFrame.setContentPane(sinnohEncounterPanel);
+                    newFrame.setPreferredSize(new Dimension(884,920));
+                }
+                else if (Project.isHGSS(project))
+                {
+                    //TODO uncomment this once the HGSS encounter editor is done
+                    tabbedPane1.remove(johtoEncounterPanel);
+                    newFrame.setContentPane(johtoEncounterPanel);
+                }
+                editorMenu.remove(popEncountersMenuItem);
+                title = "Encounter Editor";
+                break;
+            case POKEMON_SPRITE:
+                tabbedPane1.remove(pokemonSpritePanel);
+                newFrame.setContentPane(pokemonSpritePanel);
+                editorMenu.remove(popPokemonSpritesMenuItem);
+                title = "Pokémon Sprite Editor";
+                break;
+
+            default:
+                title = "";
+        }
+        newFrame.setTitle(project.getName() + " (PokEditor) - " + title);
+        newFrame.pack();
+        newFrame.setVisible(true);
+        System.out.println(newFrame.getWidth() + ", " + newFrame.getHeight());
+    }
+
+    public void unpopEditors(EditorTypes editorType)
+    {
+//        System.out.println("Unpopping");
+        String title;
+        switch(editorType)
+        {
+            case TRAINER:
+                title = "Trainer Editor";
+                tabbedPane1.addTab(title, trainerPanel1);
+                editorMenu.add(popTrainersMenuItem);
+                break;
+            case ENCOUNTER:
+                title = "Encounter Editor";
+                if (Project.isPlatinum(project))
+                {
+                    tabbedPane1.addTab(title, sinnohEncounterPanel);
+                }
+                else if (Project.isHGSS(project))
+                {
+                    //TODO uncomment this once the HGSS encounter editor is done
+                    tabbedPane1.addTab(title, johtoEncounterPanel);
+                }
+                editorMenu.add(popEncountersMenuItem);
+                break;
+            case POKEMON_SPRITE:
+                title = "Pokémon Sprite Editor";
+                tabbedPane1.addTab(title, pokemonSpritePanel);
+                editorMenu.add(popPokemonSpritesMenuItem);
+                break;
+
+            default:
+        }
+    }
+
+    private void popTrainersMenuItem(ActionEvent e) {
+        popEditors(EditorTypes.TRAINER);
+    }
+
+    private void popEncountersMenuItem(ActionEvent e) {
+        popEditors(EditorTypes.ENCOUNTER);
+    }
+
+    private void popPokemonSpritesMenuItem(ActionEvent e) {
+        popEditors(EditorTypes.POKEMON_SPRITE);
+    }
+
+    enum EditorTypes {
+        TRAINER,
+        ENCOUNTER,
+        POKEMON_SPRITE
+    }
+
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -1065,6 +1168,10 @@ public class ProjectWindow extends JFrame
         applyToRomItem = new JMenuItem();
         sheetRefreshChangesItem = new JMenuItem();
         sheetUploadChangesItem = new JMenuItem();
+        editorMenu = new JMenu();
+        popTrainersMenuItem = new JMenuItem();
+        popEncountersMenuItem = new JMenuItem();
+        popPokemonSpritesMenuItem = new JMenuItem();
         toolsMenu = new JMenu();
         randomizerItem = new JMenuItem();
         narctowlItem = new JMenuItem();
@@ -1189,6 +1296,27 @@ public class ProjectWindow extends JFrame
                 sheetsMenu.add(sheetUploadChangesItem);
             }
             menuBar.add(sheetsMenu);
+
+            //======== editorMenu ========
+            {
+                editorMenu.setText("Editor Pop");
+
+                //---- popTrainersMenuItem ----
+                popTrainersMenuItem.setText("Pop Trainer Editor");
+                popTrainersMenuItem.addActionListener(e -> popTrainersMenuItem(e));
+                editorMenu.add(popTrainersMenuItem);
+
+                //---- popEncountersMenuItem ----
+                popEncountersMenuItem.setText("Pop Encounter Editor");
+                popEncountersMenuItem.addActionListener(e -> popEncountersMenuItem(e));
+                editorMenu.add(popEncountersMenuItem);
+
+                //---- popPokemonSpritesMenuItem ----
+                popPokemonSpritesMenuItem.setText("Pop Pok\u00e9mon Sprite Editor");
+                popPokemonSpritesMenuItem.addActionListener(e -> popPokemonSpritesMenuItem(e));
+                editorMenu.add(popPokemonSpritesMenuItem);
+            }
+            menuBar.add(editorMenu);
 
             //======== toolsMenu ========
             {
@@ -1478,6 +1606,10 @@ public class ProjectWindow extends JFrame
     private JMenuItem applyToRomItem;
     private JMenuItem sheetRefreshChangesItem;
     private JMenuItem sheetUploadChangesItem;
+    private JMenu editorMenu;
+    private JMenuItem popTrainersMenuItem;
+    private JMenuItem popEncountersMenuItem;
+    private JMenuItem popPokemonSpritesMenuItem;
     private JMenu toolsMenu;
     private JMenuItem randomizerItem;
     private JMenuItem narctowlItem;

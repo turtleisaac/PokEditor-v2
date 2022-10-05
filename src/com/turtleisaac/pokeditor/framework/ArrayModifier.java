@@ -21,8 +21,12 @@ public class ArrayModifier
     public static Object[] getColumn(Object[][] arr, int col)
     {
         Object[] ret= new Object[arr.length];
+        Arrays.fill(ret, "");
         for(int i= 0; i < arr.length; i++)
         {
+            if (col >= arr[i].length)
+                break;
+
             ret[i]= arr[i][col];
         }
 
