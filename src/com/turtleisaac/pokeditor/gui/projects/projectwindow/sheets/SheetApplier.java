@@ -277,16 +277,16 @@ public class SheetApplier extends JFrame
                         Object[][] outbreak= api.getSpecifiedSheetArr("Mass-Outbreak Encounters");
                         Object[][] sound= api.getSpecifiedSheetArr("Sound Encounters");
 
-                        String outputDir= unpackedFolderPath + "enc_data";
+                        String outputDir = unpackedFolderPath + "enc_data";
                         String outputNarc;
 
 
-                        if(baseRom == Game.HeartGold) //HG
+                        if (baseRom == Game.HeartGold) //HG
                         {
-                            outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "7";
+                            outputNarc = File.separator + "a" + File.separator + "0" + File.separator + "3" + File.separator + "7";
 
                             editor.sheetsToEncounters(field,water,smash,outbreak,sound,outputDir);
-                            narctowl.pack(outputDir,"",outputNarc);
+                            narctowl.pack(outputDir,"",dataPath + outputNarc);
                         }
                         else //SS
                         {

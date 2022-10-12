@@ -452,17 +452,17 @@ public class EvolutionEditor
                 }
                 if(method == 6 || method == 7 || (method >= 16 && method <= 19))
                 {
-                    writer.writeShort((short)getItem(require));
+                    writer.writeShort((short)getItem(require, thisLine));
                 }
                 if(method == 20)
                 {
-                    writer.writeShort((short)getMove(require));
+                    writer.writeShort((short)getMove(require, thisLine));
                 }
                 if(method == 21)
                 {
-                    writer.writeShort((short)getPokemon(require));
+                    writer.writeShort((short)getPokemon(require, thisLine));
                 }
-                writer.writeShort((short)getPokemon((String) thisLine[e+2]));
+                writer.writeShort((short)getPokemon((String) thisLine[e+2], thisLine));
             }
             writer.writeShort((short) 0x00);
             writer.close();
@@ -531,7 +531,7 @@ public class EvolutionEditor
         throw new RuntimeException("Invalid type entered");
     }
 
-    private static int getMove(String move)
+    private static int getMove(String move, Object[] row)
     {
         for(int i= 0; i < moveData.length; i++)
         {
@@ -539,15 +539,23 @@ public class EvolutionEditor
             {
                 return i;
             }
+            else if (move.replaceAll("[`'‘]{1}","’").equals(moveData[i]))
+            {
+                return i;
+            }
         }
-        throw new RuntimeException("Invalid move entered: " + move);
+        throw new RuntimeException("Invalid move entered: \"" + move + "\" in row:\n" + Arrays.toString(row));
     }
 
-    private static int getPokemon(String pokemon)
+    private static int getPokemon(String pokemon, Object[] row)
     {
         for(int i= 0; i < nameData.length; i++)
         {
             if(pokemon.equals(nameData[i]))
+            {
+                return i;
+            }
+            else if (pokemon.replaceAll("[`'‘]{1}","’").equals(nameData[i]))
             {
                 return i;
             }
@@ -563,22 +571,26 @@ public class EvolutionEditor
         }
         catch (NumberFormatException ignored)
         {
-            throw new RuntimeException("Invalid pokemon entered: " + pokemon);
+            throw new RuntimeException("Invalid pokemon entered: \"" + pokemon + "\" in row:\n" + Arrays.toString(row));
         }
 
         return species;
     }
 
-    private static int getItem(String item)
+    private static int getItem(String item, Object[] row)
     {
         for(int i= 0; i < itemData.length; i++)
         {
             if(item.equals(itemData[i]))
             {
-                    return i;
+                return i;
+            }
+            else if (item.replaceAll("[`'‘]{1}","’").equals(itemData[i]))
+            {
+                return i;
             }
         }
-        throw new RuntimeException("Invalid item entered: " + item);
+        throw new RuntimeException("Invalid item entered: \"" + item + "\" in row:\n" + Arrays.toString(row));
     }
 
     private static short parseShort(String... evs)

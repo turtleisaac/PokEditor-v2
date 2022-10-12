@@ -505,8 +505,8 @@ public class PersonalEditor
             int spAtkEv= Integer.parseInt(next());
             int spDefEv= Integer.parseInt(next());
 
-            int item1= getItem(next());
-            int item2= getItem(next());
+            int item1= getItem(next(), personalCsv[row]);
+            int item2= getItem(next(), personalCsv[row]);
             int genderRatio= Integer.parseInt(next());
             int hatchMultiplier= Integer.parseInt(next());
             int baseHappiness= Integer.parseInt(next());
@@ -514,8 +514,8 @@ public class PersonalEditor
 
             int eggGroup1= getEggGroup(next());
             int eggGroup2= getEggGroup(next());
-            int ability1= getAbility(next());
-            int ability2= getAbility(next());
+            int ability1= getAbility(next(), personalCsv[row]);
+            int ability2= getAbility(next(), personalCsv[row]);
             int runChance= Integer.parseInt(next());
             int dexColor= Integer.parseInt(next());
 
@@ -833,7 +833,7 @@ public class PersonalEditor
         throw new RuntimeException("Invalid egg group entered: " + group);
     }
 
-    private static int getAbility(String ability)
+    private static int getAbility(String ability, Object[] row)
     {
         for(int i= 0; i < abilityData.length; i++)
         {
@@ -842,10 +842,10 @@ public class PersonalEditor
                 return i;
             }
         }
-        throw new RuntimeException("Invalid ability entered: " + ability);
+        throw new RuntimeException("Invalid ability entered: \"" + ability + "\" in row:\n" + Arrays.toString(row));
     }
 
-    private static int getItem(String item)
+    private static int getItem(String item, Object[] row)
     {
         for(int i= 0; i < itemData.length; i++)
         {
@@ -853,8 +853,12 @@ public class PersonalEditor
             {
                 return i;
             }
+            else if (item.replaceAll("[`'‘]{1}","’").equals(itemData[i]))
+            {
+                return i;
+            }
         }
-        throw new RuntimeException("Invalid item entered: " + item);
+        throw new RuntimeException("Invalid item entered: \"" + item + "\" in row:\n" + Arrays.toString(row));
     }
 
     private static int getGrowthRate(String growthRate)
