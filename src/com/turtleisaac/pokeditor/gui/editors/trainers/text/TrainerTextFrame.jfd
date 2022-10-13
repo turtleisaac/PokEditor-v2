@@ -6,7 +6,7 @@ new FormModel {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "hidemode 3"
 			"$columnConstraints": "[225,fill][grow,fill][fill]"
-			"$rowConstraints": "[172][grow]"
+			"$rowConstraints": "[172][grow,fill]"
 		} ) {
 			name: "this"
 			"minimumSize": new java.awt.Dimension( 800, 352 )
@@ -35,24 +35,28 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "addButton"
 					"text": "Add"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "addActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 0,grow"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "removeButton"
 					"text": "Remove"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "removeActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 1,grow"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "saveButton"
-					"text": "Save"
+					name: "saveTrainerButton"
+					"text": "Save Trainer"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 2,grow"
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "reloadButton"
 					"text": "Reload"
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "reloadActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 0 3,grow"
 				} )
@@ -90,6 +94,7 @@ new FormModel {
 						addElement( "(DOUBLE) Post-Battle Trainer#2 Defeat Overworld" )
 						addElement( "(DOUBLE) Trainer#2 Player One Party Member Overworld" )
 					}
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "activationConditionActionPerformed", true ) )
 				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 					"value": "cell 1 0 2 1"
 				} )
@@ -118,3 +123,4 @@ new FormModel {
 		} )
 	}
 }
+

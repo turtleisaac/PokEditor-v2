@@ -34,7 +34,7 @@ public class TrainerTextEditor
         switch(project.getBaseRom())
         {
             case Platinum:
-//                trainerTextBankId = 728;
+                trainerTextAssignmentFile += "poketool" + File.separator + "trmsg" + File.separator + "trtbl.narc";
                 break;
 
             case HeartGold:

@@ -552,15 +552,9 @@ public class TrainerPanel extends JPanel
         // TODO add your code here
         try
         {
-            if(Project.isHGSS(project))
-            {
-                TrainerTextFrame trainerTextFrame= new TrainerTextFrame(project, trainerTexts, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
-                trainerTextFrame.setLocationRelativeTo(this);
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
-            }
+            TrainerTextFrame trainerTextFrame= new TrainerTextFrame(this, project, trainerTexts, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
+            trainerTextFrame.setLocationRelativeTo(this);
+            setEnabled(false);
         }
         catch(IOException exception)
         {
@@ -568,6 +562,21 @@ public class TrainerPanel extends JPanel
         }
 
 
+    }
+
+    public ArrayList<TrainerText> getTrainerTexts()
+    {
+        return trainerTexts;
+    }
+
+    public void setTrainerTexts(ArrayList<TrainerText> newTrainerTexts)
+    {
+        trainerTexts = new ArrayList<>(newTrainerTexts);
+    }
+
+    public void addToTrainerTexts(TrainerText text, int idx)
+    {
+        trainerTexts.add(idx, text);
     }
 
     private void initComponents() {
