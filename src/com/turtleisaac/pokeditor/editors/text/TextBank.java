@@ -8,6 +8,8 @@ public enum TextBank
 //    PLAT__NAMES(),
 //    HGSS__NAMES()
 
+    NULL_ENTRY(0),
+
     DP_ITEM_NAMES(344),
     PLAT_ITEM_NAMES(392),
     HGSS_ITEM_NAMES(222),
@@ -30,7 +32,11 @@ public enum TextBank
 
     DP_TRAINER_CLASS_NAMES(560),
     PLAT_TRAINER_CLASS_NAMES(619),
-    HGSS_TRAINER_CLASS_NAMES(730)
+    HGSS_TRAINER_CLASS_NAMES(730),
+
+    DP_TRAINER_TEXT(0), //TODO change
+    PLAT_TRAINER_TEXT(617), //TODO change
+    HGSS_TRAINER_TEXT(728)
     ;
 
     public final int value;
@@ -40,7 +46,7 @@ public enum TextBank
         this.value = value;
     }
 
-    static TextBank getBankID(TextBankTypes textBankType, Game game)
+    public static TextBank getBankID(TextBankTypes textBankType, Game game)
     {
         switch(game)
         {
@@ -60,6 +66,8 @@ public enum TextBank
                         return DP_TRAINER_NAMES;
                     case TRAINER_CLASS_NAMES:
                         return DP_TRAINER_CLASS_NAMES;
+                    case TRAINER_TEXT:
+                        return DP_TRAINER_TEXT;
                 }
             case Platinum:
                 switch(textBankType)
@@ -76,6 +84,8 @@ public enum TextBank
                         return PLAT_TRAINER_NAMES;
                     case TRAINER_CLASS_NAMES:
                         return PLAT_TRAINER_CLASS_NAMES;
+                    case TRAINER_TEXT:
+                        return PLAT_TRAINER_TEXT;
                 }
             case HeartGold:
             case SoulSilver:
@@ -93,9 +103,11 @@ public enum TextBank
                         return HGSS_TRAINER_NAMES;
                     case TRAINER_CLASS_NAMES:
                         return HGSS_TRAINER_CLASS_NAMES;
+                    case TRAINER_TEXT:
+                        return HGSS_TRAINER_TEXT;
                 }
             default:
-                return null;
+                return NULL_ENTRY;
         }
     }
 
@@ -106,6 +118,7 @@ public enum TextBank
         ABILITY_NAMES,
         MOVE_NAMES,
         TRAINER_NAMES,
-        TRAINER_CLASS_NAMES
+        TRAINER_CLASS_NAMES,
+        TRAINER_TEXT
     }
 }

@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
@@ -130,7 +132,7 @@ public class TrainerPanel extends JPanel
             }
         }
 
-        if(trainerSelectionComboBox.hasFocus())
+        if (trainerSelectionComboBox.hasFocus() || newTrainerButton.hasFocus())
         {
 //            if(!saved)
 //            {
@@ -143,14 +145,14 @@ public class TrainerPanel extends JPanel
             int trainerFile= trainerSelectionComboBox.getSelectedIndex();
             try
             {
-                trainer= trainerEditor.parseTrainerData(trainerDataTable[trainerFile+1]);
+                trainer = trainerEditor.parseTrainerData(trainerDataTable[trainerFile+1]);
                 loadTrainerData();
             }
             catch(NullPointerException exception)
             {
                 exception.printStackTrace();
             }
-            trainerFileLastSelected= trainerSelectionComboBox.getSelectedIndex();
+            trainerFileLastSelected = trainerSelectionComboBox.getSelectedIndex();
         }
         else
         {
@@ -160,8 +162,24 @@ public class TrainerPanel extends JPanel
 
     private void newTrainerButtonActionPerformed(ActionEvent e)
     {
-        // TODO add your code here
-        JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
+        Object[][] newTrainerDataTable = new Object[trainerDataTable.length + 1][];
+        Object[][] newTrainerPokemonTable = new Object[trainerPokemonTable.length + 1][];
+        for (int i = 0; i < trainerDataTable.length; i++)
+        {
+            newTrainerDataTable[i] = Arrays.copyOf(trainerDataTable[i], trainerDataTable[i].length);
+            newTrainerPokemonTable[i] = Arrays.copyOf(trainerPokemonTable[i], trainerPokemonTable[i].length);
+        }
+
+        newTrainerDataTable[trainerDataTable.length] = Arrays.copyOf(trainerDataTable[2], trainerDataTable[2].length);
+        newTrainerPokemonTable[trainerPokemonTable.length] = Arrays.copyOf(trainerPokemonTable[2], trainerPokemonTable[2].length);
+
+        trainerDataTable = newTrainerDataTable;
+        trainerPokemonTable = newTrainerPokemonTable;
+
+        trainerSelectionComboBox.addItem(new ComboBoxItem(trainerDataTable[trainerDataTable.length - 1][1] + " (" + (trainerDataTable.length - 2) + ")"));
+        trainerSelectionComboBox.setSelectedIndex(trainerDataTable.length - 2);
+
+//        JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
     }
 
     private void trainerClassSelectorComboBoxActionPerformed(ActionEvent e)
@@ -217,77 +235,78 @@ public class TrainerPanel extends JPanel
         {
             while(trainerPokemonTabbedPane.getTabCount() != numberPokemonSlider.getValue())
             {
-                trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
+                TrainerPokemonData newPokemon = new TrainerPokemonData()
+                {
+                    @Override
+                    public short getIvs()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public short getAbility()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getLevel()
+                    {
+                        return 5;
+                    }
+
+                    @Override
+                    public int getPokemon()
+                    {
+                        return 399;
+                    } //bidoof
+
+                    @Override
+                    public int getAltForm()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getItem()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getMove1()
+                    {
+                        return 33;
+                    } //tackle
+
+                    @Override
+                    public int getMove2()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getMove3()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getMove4()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public short getBallCapsule()
+                    {
+                        return 0;
+                    }
+                };
+                trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,newPokemon,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
                 if(pokemonList != null)
                 {
-                    pokemonList.add(new TrainerPokemonData()
-                    {
-                        @Override
-                        public short getIvs()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public short getAbility()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getLevel()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getPokemon()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getAltForm()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getItem()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getMove1()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getMove2()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getMove3()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getMove4()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public short getBallCapsule()
-                        {
-                            return 0;
-                        }
-                    });
+                    pokemonList.add(newPokemon);
                 }
             }
         }
@@ -543,32 +562,62 @@ public class TrainerPanel extends JPanel
             exception.printStackTrace();
         }
 
-        trainerSelectionComboBox.setSelectedIndex(current);
+        if (current < trainerSelectionComboBox.getItemCount()) {
+            trainerSelectionComboBox.setSelectedIndex(current);
+        }
         trainerSelectionComboBoxActionPerformed(null);
+
+        try {
+            trainerTexts = textEditor.getTrainerTexts();
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An error occurred while reading trainer texts from file. See the command-line for more info.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     private void trainerTextButtonActionPerformed(ActionEvent e)
     {
-        // TODO uncomment code and restore functionality
-        JOptionPane.showMessageDialog(this, "Not implemented yet", "Trainer Text Editor", JOptionPane.ERROR_MESSAGE);
-//        try
-//        {
-//            if(Project.isHGSS(project))
-//            {
-//                TrainerTextFrame trainerTextFrame= new TrainerTextFrame(project, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
-//                trainerTextFrame.setLocationRelativeTo(this);
-//            }
-//            else
-//            {
-//                JOptionPane.showMessageDialog(this,"Not implemented yet","Error",JOptionPane.ERROR_MESSAGE);
-//            }
-//        }
-//        catch(IOException exception)
-//        {
-//            exception.printStackTrace();
-//        }
+        // TODO add your code here
+        if (trainerSelectionComboBox.getSelectedIndex() > 0)
+        {
+            try
+            {
+                trainerTexts = textEditor.getTrainerTexts();
 
+                TrainerTextFrame trainerTextFrame= new TrainerTextFrame(this, project, trainerTexts, trainerSelectionComboBox.getSelectedIndex(), trainerSelectionComboBox.getSelectedItem().toString());
+                trainerTextFrame.setLocationRelativeTo(this);
+                setEnabled(false);
+            }
+            catch(IOException exception)
+            {
+                exception.printStackTrace();
+                JOptionPane.showMessageDialog(this, "An error in trainer text initialization occurred. Check command-line output for more information.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "Invalid trainer ID selected", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
+    public ArrayList<TrainerText> getTrainerTexts() throws IOException
+    {
+        return textEditor.getTrainerTexts();
+    }
+
+    public void setTrainerTexts(ArrayList<TrainerText> newTrainerTexts)
+    {
+        trainerTexts = new ArrayList<>(newTrainerTexts);
+
+        try {
+            textEditor.writeTrainerTexts(trainerTexts, trainerSelectionComboBox.getItemCount());
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An error occurred while attempting to write trainer text entries to file. Check command-line output for more information.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void initComponents() {
@@ -1041,27 +1090,26 @@ public class TrainerPanel extends JPanel
 
             trainerClassSelectorComboBox.setSelectedIndex(1);
 
-            //TODO restore this functionality upon merge with trainer_text
-//            boolean success = true;
-//            try
-//            {
-//                textEditor = new TrainerTextEditor(project);
-//            }
-//            catch(IOException e)
-//            {
-//                success = false;
-//                e.printStackTrace();
-//            }
-//
-//            if (success)
-//            {
-//                trainerTexts = textEditor.getTrainerTexts();
-//            }
-//            else
-//            {
-//                trainerTexts = null;
-//                trainerTextButton.setEnabled(false);
-//            }
+            boolean success = true;
+            try
+            {
+                textEditor = new TrainerTextEditor(project);
+            }
+            catch(IOException e)
+            {
+                success = false;
+                e.printStackTrace();
+            }
+
+            if (success)
+            {
+                trainerTexts = textEditor.getTrainerTexts();
+            }
+            else
+            {
+                trainerTexts = null;
+                trainerTextButton.setEnabled(false);
+            }
         }
     }
 

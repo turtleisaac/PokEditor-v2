@@ -261,7 +261,6 @@ public class ImageBase
 
     public BufferedImage[] getImages(Color background)
     {
-        System.out.println("-----------------------------");
         ArrayList<BufferedImage> images= new ArrayList<>();
         for (int i= 0; i < banks.length; i++)
         {

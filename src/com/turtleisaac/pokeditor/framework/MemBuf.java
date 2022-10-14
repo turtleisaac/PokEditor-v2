@@ -93,6 +93,10 @@ public class MemBuf {
             return ret;
         }
 
+        public void skip(int num) {
+            readPos += num;
+        }
+
     }
 
 

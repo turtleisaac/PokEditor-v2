@@ -1,7 +1,9 @@
 package com.turtleisaac.pokeditor.editors.trainers.gen4;
 
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
+import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.Buffer;
+import com.turtleisaac.pokeditor.framework.MemBuf;
 import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 
@@ -61,19 +63,19 @@ public class TrainerTextUtils
         Buffer buffer = new Buffer(trainerTextFile);
         ArrayList<TrainerText> textActivationList = new ArrayList<>();
 
-        for(int i= 0; i < buffer.getLength()/4; i++)
+        for (int i = 0; i < buffer.getLength()/4; i++)
         {
-            int trainerId= buffer.readShort();
-            int condition= buffer.readByte();
+            int trainerId = buffer.readShort();
+            int condition = buffer.readByte();
             buffer.skipBytes(1);
 
-            int finalI = i;
+            int textId = i;
             textActivationList.add(new TrainerText()
             {
                 @Override
                 public int getTextId()
                 {
-                    return finalI;
+                    return textId;
                 }
 
                 @Override
@@ -87,9 +89,68 @@ public class TrainerTextUtils
                 {
                     return condition;
                 }
+
+                @Override
+                public String getText()
+                {
+                    return null;
+                }
             });
         }
 
         return textActivationList;
+    }
+
+    public void writeTrainerText(ArrayList<TrainerText> trainerTexts, int numTrainers, String trainerTextDir, String trainerTextTableDir) throws IOException
+    {
+        MemBuf trainerTextBuf = MemBuf.create();
+        MemBuf.MemBufWriter trainerTextWriter = trainerTextBuf.writer();
+
+        MemBuf trainerTextOffsetBuf = MemBuf.create();
+        MemBuf.MemBufWriter trainerTextOffsetWriter = trainerTextOffsetBuf.writer();
+
+        for (TrainerText text : trainerTexts)
+        {
+            trainerTextWriter.writeShort((short) text.getTrainerId());
+            trainerTextWriter.writeByte((byte) text.getCondition());
+            trainerTextWriter.writeByte((byte) 0);
+        }
+
+        int lengthOfBuffer = trainerTextBuf.reader().getBuffer().length;
+
+        ArrayList<Integer> alreadyWrittenTrainers = new ArrayList<>();
+        MemBuf.MemBufReader trainerTextReader = trainerTextBuf.reader();
+
+        for (int i = 0; i < numTrainers; i++)
+        {
+            trainerTextReader.setPosition(0);
+            for (int j = 0; j < lengthOfBuffer / 4; j++)
+            {
+                int trainerId = trainerTextReader.readShort();
+                trainerTextReader.skip(2);
+
+                if (trainerId == i && !alreadyWrittenTrainers.contains(trainerId))
+                {
+                    alreadyWrittenTrainers.add(trainerId);
+                    trainerTextOffsetWriter.writeShort((short) (trainerTextReader.getPosition() - 4));
+                }
+            }
+
+            if (!alreadyWrittenTrainers.contains(i))
+            {
+                trainerTextOffsetWriter.writeShort((short) 0);
+                alreadyWrittenTrainers.add(i);
+            }
+        }
+
+        trainerTextReader.setPosition(0);
+
+        BinaryWriter writer = new BinaryWriter(trainerTextDir + File.separator + "0.bin");
+        writer.write(trainerTextReader.getBuffer());
+        writer.close();
+
+        writer = new BinaryWriter(trainerTextTableDir + File.separator + "0.bin");
+        writer.write(trainerTextOffsetBuf.reader().getBuffer());
+        writer.close();
     }
 }

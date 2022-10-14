@@ -5,116 +5,51 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
 			"$layoutConstraints": "hidemode 3"
-			"$columnConstraints": "[225,fill][grow,fill][fill]"
-			"$rowConstraints": "[172][grow]"
+			"$columnConstraints": "[grow,center][grow,center][grow,center][grow,center]"
+			"$rowConstraints": "[][grow,fill]"
 		} ) {
 			name: "this"
-			"minimumSize": new java.awt.Dimension( 800, 352 )
+			"minimumSize": new java.awt.Dimension( 600, 250 )
 			"title": "Trainer Text Editor"
 			"defaultCloseOperation": 2
 			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosed", "thisWindowClosed", true ) )
-			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-				name: "scrollPane1"
-				add( new FormComponent( "javax.swing.JList" ) {
-					name: "textList"
-					"selectionMode": 0
-					"model": new javax.swing.DefaultListModel {
-						addElement( "Test" )
-					}
-					addEvent( new FormEvent( "javax.swing.event.ListSelectionListener", "valueChanged", "textListValueChanged", true ) )
-				} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "saveTrainerButton"
+				"text": "Save Trainer"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "saveActionPerformed", true ) )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 0 2 1"
+				"value": "cell 0 0,growx"
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-				"$layoutConstraints": "hidemode 3"
-				"$columnConstraints": "[fill]"
-				"$rowConstraints": "[grow][grow][][]"
-			} ) {
-				name: "addRemovePanel"
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "addButton"
-					"text": "Add"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 0,grow"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "removeButton"
-					"text": "Remove"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 1,grow"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "saveButton"
-					"text": "Save"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 2,grow"
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "reloadButton"
-					"text": "Reload"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 3,grow"
-				} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "addButton"
+				"text": "Add"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "addActionPerformed", true ) )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 2 0,growy"
+				"value": "cell 1 0,growx"
 			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class net.miginfocom.swing.MigLayout ) {
-				"$layoutConstraints": "hidemode 3"
-				"$columnConstraints": "[fill][427,grow,fill][fill]"
-				"$rowConstraints": "[][][grow]"
-			} ) {
-				name: "editPanel"
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "activationLabel"
-					"text": "Activation Condition:"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 0"
-				} )
-				add( new FormComponent( "javax.swing.JComboBox" ) {
-					name: "activationComboBox"
-					"model": new javax.swing.DefaultComboBoxModel {
-						selectedItem: "Pre-Battle Overworld"
-						addElement( "Pre-Battle Overworld" )
-						addElement( "In-Battle Trainer Defeat" )
-						addElement( "Post-Battle Trainer Defeat Overworld" )
-						addElement( "In-Battle Last Pokemon" )
-						addElement( "In-Battle Last Pokemon Critical HP" )
-						addElement( "In-Battle Player Lose" )
-						addElement( "(DOUBLE) Pre-Battle Trainer#1 Overworld" )
-						addElement( "(DOUBLE) In-Battle Trainer#1 Defeat" )
-						addElement( "(DOUBLE) Post-Battle Trainer#1 Defeat Overworld" )
-						addElement( "(DOUBLE) Trainer#1 Player One Party Member Overworld" )
-						addElement( "(DOUBLE) Pre-Battle Trainer#2 Overworld" )
-						addElement( "(DOUBLE) In-Battle Trainer#2 Defeat" )
-						addElement( "(DOUBLE) Post-Battle Trainer#2 Defeat Overworld" )
-						addElement( "(DOUBLE) Trainer#2 Player One Party Member Overworld" )
-					}
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 1 0 2 1"
-				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "textLabel"
-					"text": "Text:"
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 1"
-				} )
-				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-					name: "scrollPane2"
-					add( new FormComponent( "javax.swing.JTextArea" ) {
-						name: "trainerTextArea"
-						"lineWrap": true
-						"wrapStyleWord": true
-					} )
-				}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-					"value": "cell 0 2 3 1,grow"
-				} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "removeButton"
+				"text": "Remove"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "removeActionPerformed", true ) )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
-				"value": "cell 0 1 3 1,grow"
+				"value": "cell 2 0,growx"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "reloadButton"
+				"text": "Reload"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "reloadActionPerformed", true ) )
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 3 0,growx"
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "entryTabbedPane"
+				"tabLayoutPolicy": 1
+			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
+				"value": "cell 0 1 4 1,grow"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 795, 390 )
+			"size": new java.awt.Dimension( 600, 250 )
 		} )
 	}
 }
