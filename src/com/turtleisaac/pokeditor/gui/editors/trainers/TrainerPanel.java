@@ -617,14 +617,6 @@ public class TrainerPanel extends JPanel
             exception.printStackTrace();
             JOptionPane.showMessageDialog(this, "An error occurred while attempting to write trainer text entries to file. Check command-line output for more information.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-
-        try {
-            trainerTexts = textEditor.getTrainerTexts();
-        }
-        catch (IOException exception) {
-            exception.printStackTrace();
-            JOptionPane.showMessageDialog(this, "An error occurred while attempting to read trainer text entries from file. Check command-line output for more information.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     private void initComponents() {

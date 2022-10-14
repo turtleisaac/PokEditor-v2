@@ -170,7 +170,6 @@ public class TrainerTextFrame extends JFrame {
         {
             TrainerTextEntryPanel panel = new TrainerTextEntryPanel(this, trainerText1);
             trainerTextEntryPanels.put(trainerText1, panel);
-//            listModel.addElement(activationConditions.get(activationConditionToId.indexOf(trainerText1.getCondition())));
             entryTabbedPane.addTab("" + i++, panel);
             trainerTextsCopy.remove(trainerText1);
         }
@@ -350,44 +349,6 @@ public class TrainerTextFrame extends JFrame {
             }
         }).collect(Collectors.toCollection(ArrayList::new));
 
-        ArrayList<TrainerText> newTrainerTexts = new ArrayList<>();
-        for (int i = 0; i < trainerTextsCopy.size(); i++)
-        {
-            int textId = i;
-            int trainerId = trainerTextsCopy.get(i).getTrainerId();
-            int condition = trainerTextsCopy.get(i).getCondition();
-            String newText = trainerTextsCopy.get(i).getText();
-            TrainerText text = new TrainerText()
-            {
-                @Override
-                public int getTextId()
-                {
-                    return textId;
-                }
-
-                @Override
-                public int getTrainerId()
-                {
-                    return trainerId;
-                }
-
-                @Override
-                public int getCondition()
-                {
-                    return condition;
-                }
-
-                @Override
-                public String getText()
-                {
-                    return newText;
-                }
-            };
-            newTrainerTexts.add(text);
-        }
-
-        trainerTextsCopy = new ArrayList<>(newTrainerTexts);
-
         trainerPanel.setTrainerTexts(trainerTextsCopy);
 
         messages = new ArrayList<>();
@@ -423,35 +384,6 @@ public class TrainerTextFrame extends JFrame {
         }
 
     }
-
-//    private void activationConditionActionPerformed(ActionEvent e) {
-//        // TODO add your code here
-//        if (!changing)
-//        {
-//            TrainerText currentTrainerText = thisTrainerTexts.get(textList.getSelectedIndex());
-//            thisTrainerTexts.set(textList.getSelectedIndex(), new TrainerText()
-//            {
-//                @Override
-//                public int getTextId()
-//                {
-//                    return currentTrainerText.getTextId();
-//                }
-//
-//                @Override
-//                public int getTrainerId()
-//                {
-//                    return currentTrainerText.getTrainerId();
-//                }
-//
-//                @Override
-//                public int getCondition()
-//                {
-//                    return activationConditionToId.get(activationComboBox.getSelectedIndex());
-//                }
-//            });
-//            listModel.setElementAt((String) activationComboBox.getSelectedItem(), textList.getSelectedIndex());
-//        }
-//    }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents

@@ -20,7 +20,7 @@ public class TrainerTextEntryPanel extends JPanel {
         initComponents();
 
         activationComboBox.setSelectedIndex(TrainerTextFrame.activationConditionToId.indexOf(text.getCondition()));
-        trainerTextArea.setText(trainerTextFrame.getMessage(text.getTextId()));
+        trainerTextArea.setText(text.getText());
 
         ComboBoxSearchable searchable= new ComboBoxSearchable(activationComboBox);
     }

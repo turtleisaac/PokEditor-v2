@@ -113,46 +113,44 @@ public class TrainerTextUtils
         {
             trainerTextWriter.writeShort((short) text.getTrainerId());
             trainerTextWriter.writeByte((byte) text.getCondition());
-            trainerTextWriter.write((byte) 0);
+            trainerTextWriter.writeByte((byte) 0);
         }
+
+        int lengthOfBuffer = trainerTextBuf.reader().getBuffer().length;
 
         ArrayList<Integer> alreadyWrittenTrainers = new ArrayList<>();
         MemBuf.MemBufReader trainerTextReader = trainerTextBuf.reader();
-        int lastWrittenTrainer = 0;
 
-        trainerTextOffsetWriter.writeShort((short) 0);
-        for (int i = 0; i < trainerTextReader.getBuffer().length / 4; i++)
+        for (int i = 0; i < numTrainers; i++)
         {
-            int trainerId = trainerTextReader.readShort();
-            trainerTextReader.skip(2);
-
-            if (trainerId != lastWrittenTrainer + 1)
+            trainerTextReader.setPosition(0);
+            for (int j = 0; j < lengthOfBuffer / 4; j++)
             {
-                for (int j = 0; j < trainerId - lastWrittenTrainer - 1; j++)
+                int trainerId = trainerTextReader.readShort();
+                trainerTextReader.skip(2);
+
+                if (trainerId == i && !alreadyWrittenTrainers.contains(trainerId))
                 {
-                    trainerTextOffsetWriter.writeShort((short) 0);
+                    alreadyWrittenTrainers.add(trainerId);
+                    trainerTextOffsetWriter.writeShort((short) (trainerTextReader.getPosition() - 4));
                 }
             }
-            else if (!alreadyWrittenTrainers.contains(trainerId))
+
+            if (!alreadyWrittenTrainers.contains(i))
             {
-                alreadyWrittenTrainers.add(trainerId);
-                trainerTextOffsetWriter.writeShort((short) (trainerTextReader.getPosition() - 4));
+                trainerTextOffsetWriter.writeShort((short) 0);
+                alreadyWrittenTrainers.add(i);
             }
-
-            lastWrittenTrainer = trainerId;
-        }
-
-        for (int i = 0; i < numTrainers - lastWrittenTrainer - 2; i++)
-        {
-            trainerTextOffsetWriter.writeShort((short) 0);
         }
 
         trainerTextReader.setPosition(0);
 
         BinaryWriter writer = new BinaryWriter(trainerTextDir + File.separator + "0.bin");
         writer.write(trainerTextReader.getBuffer());
+        writer.close();
 
         writer = new BinaryWriter(trainerTextTableDir + File.separator + "0.bin");
         writer.write(trainerTextOffsetBuf.reader().getBuffer());
+        writer.close();
     }
 }
