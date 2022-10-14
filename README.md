@@ -33,7 +33,7 @@ Open a Terminal (macOS/Linux) or Command Prompt (Windows) window, navigate to th
 
 **Note:** If you are on macOS or Linux, you can just double-click the JAR instead, but it is recommended to run from Terminal so you can monitor the cmd output and report errors more easily.
 
-# List of Spreadsheet-Based Editors/ Tools
+# List of Spreadsheet-Based Editors
 
 * Personal Data Editor (stats, types, abilities, etc...)
 
@@ -55,9 +55,21 @@ Open a Terminal (macOS/Linux) or Command Prompt (Windows) window, navigate to th
 
 * Trainer Editor (also has a GUI-based editor)
 
-# Other Editors/ Tools
+# GUI-Based Editors
 
-* Pokémon Sprite Editor
+* Trainer Editor
+  * Trainer Text Editor
+  * Nature & IV Calculator
+  * Smogon Format Team Import/Export
+  
+* Pokémon Battle Sprite Editor
+  * Palette Editor
+  * Sprite XY-Coordinate Placement Editor
+  * Sprite Shadow Placement Editor
+  * Sprite Shadow Size Editor
+  * Send-out Movement/Animation Editor
+
+# Other Editors/Tools
 
 * Narc Packer/ Unpacker
 
@@ -74,3 +86,4 @@ Open a Terminal (macOS/Linux) or Command Prompt (Windows) window, navigate to th
   * Fly Editor
   * CrystalTile 2
   * Of course, [ndstool](https://github.com/devkitPro/ndstool) itself
+* Alternatively, a PokEditor project can be opened in DSPRE by following the instructions found within the Tutorial window in PokEditor v2.
