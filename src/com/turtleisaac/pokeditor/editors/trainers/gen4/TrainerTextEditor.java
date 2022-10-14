@@ -16,6 +16,8 @@ public class TrainerTextEditor
     private ArrayList<TrainerText> trainerTexts;
     private String trainerTextAssignmentFile;
     private String trainerTextAssignmentUnpacked;
+    private String trainerTextOffsetFile;
+    private String trainerTextOffsetUnpacked;
     private ArrayList<File> toDelete;
     private String[] messages;
 
@@ -29,31 +31,51 @@ public class TrainerTextEditor
         trainerTextRetriever = new TrainerTextUtils(project, project.getProjectPath().getAbsolutePath(), project.getBaseRom());
         trainerTextAssignmentFile = project.getDataPath() + File.separator;
         trainerTextAssignmentUnpacked = project.getProjectPath().getAbsolutePath() + File.separator + "temp" + File.separator + "trainer_msg";
+        trainerTextOffsetFile = project.getDataPath() + File.separator;
+        trainerTextOffsetUnpacked = project.getProjectPath().getAbsolutePath() + File.separator + "temp" + File.separator + "trainer_msg_tbl";
 
 
         switch(project.getBaseRom())
         {
             case Platinum:
                 trainerTextAssignmentFile += "poketool" + File.separator + "trmsg" + File.separator + "trtbl.narc";
+                trainerTextOffsetFile += "poketool" + File.separator + "trmsg" + File.separator + "trtblofs.narc";
                 break;
 
             case HeartGold:
             case SoulSilver:
                 trainerTextAssignmentFile += "a" + File.separator + "0" + File.separator + "5" + File.separator + "7";
+                trainerTextOffsetFile += "a" + File.separator + "1" + File.separator + "3" + File.separator + "1";
                 break;
         }
 
+        toDelete.add(new File(trainerTextAssignmentUnpacked));
+        toDelete.add(new File(trainerTextOffsetUnpacked));
+    }
+
+    public ArrayList<TrainerText> getTrainerTexts() throws IOException
+    {
         if(!new File(trainerTextAssignmentUnpacked).exists())
         {
             Narctowl narctowl = new Narctowl(true);
             narctowl.unpack(trainerTextAssignmentFile, trainerTextAssignmentUnpacked);
         }
         trainerTexts = trainerTextRetriever.getTrainerText(trainerTextAssignmentUnpacked + File.separator + "0.bin");
-        toDelete.add(new File(trainerTextAssignmentUnpacked));
+
+        return trainerTexts;
     }
 
-    public ArrayList<TrainerText> getTrainerTexts()
+    public void writeTrainerTexts(ArrayList<TrainerText> trainerTexts, int numTrainers) throws IOException
     {
-        return trainerTexts;
+        Narctowl narctowl = new Narctowl(true);
+        if(!new File(trainerTextOffsetUnpacked).exists())
+        {
+            narctowl.unpack(trainerTextOffsetFile, trainerTextOffsetUnpacked);
+        }
+
+        trainerTextRetriever.writeTrainerText(trainerTexts, numTrainers, trainerTextAssignmentUnpacked, trainerTextOffsetUnpacked);
+
+        narctowl.pack(trainerTextAssignmentUnpacked,"",trainerTextAssignmentFile);
+        narctowl.pack(trainerTextOffsetUnpacked,"",trainerTextOffsetFile);
     }
 }

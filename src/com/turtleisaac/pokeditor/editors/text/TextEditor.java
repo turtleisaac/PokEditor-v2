@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class TextEditor
 {
@@ -83,8 +85,24 @@ public class TextEditor
         writeBank(project,new ArrayList<>(Arrays.asList(arr)),bank,canTrim);
     }
 
+    public static void writeBank(Project project, String[] arr, TextBank bank, boolean canTrim) throws IOException
+    {
+        writeBank(project,new ArrayList<>(Arrays.asList(arr)),bank.value,canTrim);
+    }
+
+    public static void writeBank(Project project, ArrayList<String> stringList, TextBank bank, boolean canTrim) throws IOException
+    {
+        writeBank(project,stringList,bank.value,canTrim);
+    }
+
     public static void writeBank(Project project, ArrayList<String> stringList, int bank, boolean canTrim) throws IOException
     {
+        stringList = stringList.stream().map(s ->
+        {
+            s = s.replaceAll("[`'‘]{1}", "’");
+            return s;
+        }).collect(Collectors.toCollection(ArrayList::new));
+
         String textNarcPath;
         String textDirPath;
 

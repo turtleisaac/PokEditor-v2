@@ -6,18 +6,33 @@ package com.turtleisaac.pokeditor.gui.editors.trainers.text;
 
 import java.awt.event.*;
 import javax.swing.*;
+
+import com.jidesoft.swing.ComboBoxSearchable;
+import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerText;
 import net.miginfocom.swing.*;
 
 /**
  * @author Daniel Horn
  */
 public class TrainerTextEntryPanel extends JPanel {
-    public TrainerTextEntryPanel() {
+
+    public TrainerTextEntryPanel(TrainerTextFrame trainerTextFrame, TrainerText text) {
         initComponents();
+
+        activationComboBox.setSelectedIndex(TrainerTextFrame.activationConditionToId.indexOf(text.getCondition()));
+        trainerTextArea.setText(trainerTextFrame.getMessage(text.getTextId()));
+
+        ComboBoxSearchable searchable= new ComboBoxSearchable(activationComboBox);
     }
 
-    private void activationConditionActionPerformed(ActionEvent e) {
-        // TODO add your code here
+    public String getText()
+    {
+        return trainerTextArea.getText();
+    }
+
+    public int getActivationCondition()
+    {
+        return TrainerTextFrame.activationConditionToId.get(activationComboBox.getSelectedIndex());
     }
 
     private void initComponents() {
@@ -44,23 +59,7 @@ public class TrainerTextEntryPanel extends JPanel {
         add(activationLabel, "cell 0 0");
 
         //---- activationComboBox ----
-        activationComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
-            "Pre-Battle Overworld",
-            "In-Battle Trainer Defeat",
-            "Post-Battle Trainer Defeat Overworld",
-            "In-Battle Last Pokemon",
-            "In-Battle Last Pokemon Critical HP",
-            "In-Battle Player Lose",
-            "(DOUBLE) Pre-Battle Trainer#1 Overworld",
-            "(DOUBLE) In-Battle Trainer#1 Defeat",
-            "(DOUBLE) Post-Battle Trainer#1 Defeat Overworld",
-            "(DOUBLE) Trainer#1 Player One Party Member Overworld",
-            "(DOUBLE) Pre-Battle Trainer#2 Overworld",
-            "(DOUBLE) In-Battle Trainer#2 Defeat",
-            "(DOUBLE) Post-Battle Trainer#2 Defeat Overworld",
-            "(DOUBLE) Trainer#2 Player One Party Member Overworld"
-        }));
-        activationComboBox.addActionListener(e -> activationConditionActionPerformed(e));
+        activationComboBox.setModel(new DefaultComboBoxModel<>(TrainerTextFrame.activationConditions.toArray(new String[0])));
         add(activationComboBox, "cell 1 0,growx");
 
         //---- textLabel ----
@@ -77,7 +76,7 @@ public class TrainerTextEntryPanel extends JPanel {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JLabel activationLabel;
-    private JComboBox<String> activationComboBox;
+    private JComboBox activationComboBox;
     private JLabel textLabel;
     private JTextArea trainerTextArea;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
