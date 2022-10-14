@@ -17,24 +17,9 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JComboBox" ) {
 				name: "activationComboBox"
-				"model": new javax.swing.DefaultComboBoxModel {
-					selectedItem: "Pre-Battle Overworld"
-					addElement( "Pre-Battle Overworld" )
-					addElement( "In-Battle Trainer Defeat" )
-					addElement( "Post-Battle Trainer Defeat Overworld" )
-					addElement( "In-Battle Last Pokemon" )
-					addElement( "In-Battle Last Pokemon Critical HP" )
-					addElement( "In-Battle Player Lose" )
-					addElement( "(DOUBLE) Pre-Battle Trainer#1 Overworld" )
-					addElement( "(DOUBLE) In-Battle Trainer#1 Defeat" )
-					addElement( "(DOUBLE) Post-Battle Trainer#1 Defeat Overworld" )
-					addElement( "(DOUBLE) Trainer#1 Player One Party Member Overworld" )
-					addElement( "(DOUBLE) Pre-Battle Trainer#2 Overworld" )
-					addElement( "(DOUBLE) In-Battle Trainer#2 Defeat" )
-					addElement( "(DOUBLE) Post-Battle Trainer#2 Defeat Overworld" )
-					addElement( "(DOUBLE) Trainer#2 Player One Party Member Overworld" )
+				auxiliary() {
+					"JavaCodeGenerator.preInitCode": "activationComboBox.setModel(new DefaultComboBoxModel<>(TrainerTextFrame.activationConditions.toArray(new String[0])));"
 				}
-				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "activationConditionActionPerformed", true ) )
 			}, new FormLayoutConstraints( class net.miginfocom.layout.CC ) {
 				"value": "cell 1 0,growx"
 			} )

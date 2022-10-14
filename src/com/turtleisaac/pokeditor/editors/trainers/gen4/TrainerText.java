@@ -5,4 +5,6 @@ public interface TrainerText
     int getTextId();
     int getTrainerId();
     int getCondition();
+
+    String getText();
 }

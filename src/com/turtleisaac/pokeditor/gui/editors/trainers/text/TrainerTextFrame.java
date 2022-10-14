@@ -10,11 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.event.*;
 
 import com.jidesoft.swing.ComboBoxSearchable;
+import com.turtleisaac.pokeditor.editors.text.TextBank;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerText;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerTextUtils;
@@ -31,35 +34,45 @@ public class TrainerTextFrame extends JFrame {
     private TrainerPanel trainerPanel;
     private int trainerId;
 
-    private String[] messages;
+    private Project project;
+
+    private TextBank textBank;
+    private ArrayList<String> messages;
 
     private DefaultListModel<String> listModel;
 
     private ArrayList<TrainerText> trainerTextsCopy;
 
     private int firstTextIndex;
-
-    private boolean changing;
+    private int numOriginalEntries;
 
     private ArrayList<TrainerText> thisTrainerTexts;
+    private HashMap<TrainerText, TrainerTextEntryPanel> trainerTextEntryPanels;
 
-    private static final ArrayList<Integer> activationConditionToId = new ArrayList<>(Arrays.asList(0, 1, 2, 0x0F, 0x10, 0x14, 3, 4, 5, 6, 7, 8, 9, 0xA));
+    public static final ArrayList<Integer> activationConditionToId = new ArrayList<>(Arrays.asList(0, 0xD, 0xE, 1, 2, 0xB, 0xC, 0xF, 0x10, 0x14, 0x11, 3, 4, 5, 6, 0x12, 7, 8, 9, 0xA, 0x13));
 
-    private static final ArrayList<String> activationConditions = new ArrayList<>(Arrays.asList(
+    protected static final ArrayList<String> activationConditions = new ArrayList<>(Arrays.asList(
             "Pre-Battle Overworld",
+            "In-Battle Last Pokemon Damaged",
+            "In-Battle Last Pokemon Half HP",
             "In-Battle Trainer Defeat",
             "Post-Battle Trainer Defeat Overworld",
+            "Pre-Battle Overworld Jogger Night (Unused?)",
+            "Pre-Battle Overworld Policeman Day(Unused?)",
             "In-Battle Last Pokemon",
             "In-Battle Last Pokemon Critical HP",
             "In-Battle Player Lose",
+            "Pre-Battle Vs. Seeker Overworld",
             "(DOUBLE) Pre-Battle Trainer#1 Overworld",
             "(DOUBLE) In-Battle Trainer#1 Defeat",
             "(DOUBLE) Post-Battle Trainer#1 Defeat Overworld",
             "(DOUBLE) Trainer#1 Player One Party Member Overworld",
+            "(DOUBLE) Pre-Battle Trainer#1 Vs. Seeker Overworld",
             "(DOUBLE) Pre-Battle Trainer#2 Overworld",
             "(DOUBLE) In-Battle Trainer#2 Defeat",
             "(DOUBLE) Post-Battle Trainer#2 Defeat Overworld",
-            "(DOUBLE) Trainer#2 Player One Party Member Overworld"
+            "(DOUBLE) Trainer#2 Player One Party Member Overworld",
+            "(DOUBLE) Pre-Battle Trainer#2 Vs. Seeker Overworld"
     ));
 
     public TrainerTextFrame(TrainerPanel trainerPanel, Project project, ArrayList<TrainerText> trainerTexts, int trainerId, String trainerName) throws IOException
@@ -68,31 +81,64 @@ public class TrainerTextFrame extends JFrame {
         setVisible(true);
 
         this.trainerPanel = trainerPanel;
-        this.firstTextIndex = -1;
+        this.project = project;
         this.trainerId = trainerId;
 
-        trainerTextsCopy = new ArrayList<>(trainerPanel.getTrainerTexts());
-        changing = false;
-
         setTitle("Trainer Text Editor - " + trainerName);
+        entryTabbedPane.setMaximumSize(entryTabbedPane.getSize());
 
-        switch (project.getBaseRom())
+        textBank = TextBank.getBankID(TextBank.TextBankTypes.TRAINER_TEXT, project.getBaseRom());
+        loadData(trainerTexts);
+    }
+
+    private void loadData(ArrayList<TrainerText> trainerTexts) throws IOException
+    {
+        trainerTextsCopy = new ArrayList<>(trainerPanel.getTrainerTexts());
+        this.firstTextIndex = -1;
+
+        messages = new ArrayList<>(Arrays.asList(TextEditor.getBank(project, textBank)));
+
+        ArrayList<TrainerText> newTrainerTexts = new ArrayList<>();
+        for(int i = 0; i < trainerTextsCopy.size(); i++)
         {
-            case Platinum:
-//                trainerTextBankId = 728;
-                break;
+            TrainerText text = trainerTextsCopy.get(i);
+            int textId = text.getTextId();
+            int trainerId = text.getTrainerId();
+            int condition = text.getCondition();
+            String trainerMessage = messages.get(textId);
+            newTrainerTexts.add(new TrainerText()
+            {
+                @Override
+                public int getTextId()
+                {
+                    return textId;
+                }
 
-            case HeartGold:
-            case SoulSilver:
-                messages = TextEditor.getBank(project, 728);
-//                trainerTextBankId = 728;
-                break;
+                @Override
+                public int getTrainerId()
+                {
+                    return trainerId;
+                }
+
+                @Override
+                public int getCondition()
+                {
+                    return condition;
+                }
+
+                @Override
+                public String getText()
+                {
+                    return trainerMessage;
+                }
+            });
         }
+        trainerTextsCopy = new ArrayList<>(newTrainerTexts);
 
         thisTrainerTexts = new ArrayList<>();
-        for (int i = 0; i < trainerTexts.size(); i++)
+        for (int i = 0; i < trainerTextsCopy.size(); i++)
         {
-            TrainerText text = trainerTexts.get(i);
+            TrainerText text = trainerTextsCopy.get(i);
             if (trainerId == text.getTrainerId())
             {
                 if (firstTextIndex == -1) {
@@ -102,28 +148,42 @@ public class TrainerTextFrame extends JFrame {
             }
         }
 
-        listModel= new DefaultListModel<>();
+        numOriginalEntries = thisTrainerTexts.size();
 
+        trainerTextEntryPanels = new HashMap<>();
+
+        if (thisTrainerTexts.size() == 0)
+        {
+            if (JOptionPane.showConfirmDialog(this, "This trainer has no text entries. Do you want to initialize one?", "Trainer Text Editor", JOptionPane.YES_NO_OPTION) == 0) //yes
+            {
+                addActionPerformed(null);
+                firstTextIndex = trainerTextsCopy.size();
+            }
+            else //no
+            {
+                thisWindowClosed(null);
+            }
+            return;
+        }
+
+        int i = 0;
         for(TrainerText trainerText1 : thisTrainerTexts)
         {
-            listModel.addElement(activationConditions.get(activationConditionToId.indexOf(trainerText1.getCondition())));
+            TrainerTextEntryPanel panel = new TrainerTextEntryPanel(this, trainerText1);
+            trainerTextEntryPanels.put(trainerText1, panel);
+            entryTabbedPane.addTab("" + i++, panel);
             trainerTextsCopy.remove(trainerText1);
         }
-
-        textList.setModel(listModel);
-
-        ComboBoxSearchable searchable= new ComboBoxSearchable(activationComboBox);
     }
 
-    private void textListValueChanged(ListSelectionEvent e) {
-        // TODO add your code here
-        if (textList.getSelectedIndex() != -1)
-        {
-            changing = true;
-            activationComboBox.setSelectedIndex(activationConditionToId.indexOf(thisTrainerTexts.get(textList.getSelectedIndex()).getCondition()));
-            trainerTextArea.setText(messages[thisTrainerTexts.get(textList.getSelectedIndex()).getTextId()]);
-            changing = false;
-        }
+    public String getMessage(int idx)
+    {
+        return messages.get(idx);
+    }
+
+    public void setMessage(int idx, String message)
+    {
+        messages.set(idx, message);
     }
 
     private void createUIComponents() {
@@ -154,105 +214,198 @@ public class TrainerTextFrame extends JFrame {
     }
 
     private void addActionPerformed(ActionEvent e) {
-        // TODO add your code here
+        int lastEntry = messages.size();
+        TrainerText text = new TrainerText()
+        {
+            @Override
+            public int getTextId()
+            {
+                return lastEntry;
+            }
+
+            @Override
+            public int getTrainerId()
+            {
+                return trainerId;
+            }
+
+            @Override
+            public int getCondition()
+            {
+                return -1;
+            }
+
+            @Override
+            public String getText()
+            {
+                return "";
+            }
+        };
+
+        messages.add("");
+        thisTrainerTexts.add(text);
+        TrainerTextEntryPanel panel = new TrainerTextEntryPanel(this, text);
+        trainerTextEntryPanels.put(text, panel);
+        entryTabbedPane.addTab("" + entryTabbedPane.getTabCount(), panel);
     }
 
     private void removeActionPerformed(ActionEvent e) {
-        // TODO add your code here
+        if (entryTabbedPane.getSelectedIndex() != -1)
+        {
+            int selected = entryTabbedPane.getSelectedIndex();
+            TrainerText textToRemove = thisTrainerTexts.remove(selected);
+            trainerTextEntryPanels.remove(textToRemove);
+            entryTabbedPane.remove(selected);
+
+            for (int i = 0; i < entryTabbedPane.getTabCount(); i++)
+            {
+                entryTabbedPane.setTitleAt(i, "" + i);
+            }
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "You can't remove an entry that doesn't exist.", "Action Prohibited", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     private void saveActionPerformed(ActionEvent e) {
-        int num = 0;
-        for (TrainerText text : thisTrainerTexts)
+        StringBuilder conditionsErrorMessageBuilder = new StringBuilder("Error(s):\n");
+        boolean entryErrorOccurred = false;
+        for(int i = 0; i < thisTrainerTexts.size() - 1; i++)
         {
-            trainerTextsCopy.add(firstTextIndex + num++, text);
-        }
-        trainerPanel.setTrainerTexts(trainerTextsCopy);
-
-        for (TrainerText trainerText1 : thisTrainerTexts)
-        {
-            trainerTextsCopy.remove(trainerText1);
-        }
-    }
-
-    private void reloadActionPerformed(ActionEvent e) {
-        ArrayList<TrainerText> trainerTexts = trainerPanel.getTrainerTexts();
-        trainerTextsCopy = new ArrayList<>(trainerPanel.getTrainerTexts());
-
-        thisTrainerTexts = new ArrayList<>();
-        firstTextIndex = -1;
-        for (int i = 0; i < trainerTexts.size(); i++)
-        {
-            TrainerText text = trainerTexts.get(i);
-            if (trainerId == text.getTrainerId())
+            for(int j = i+1; j < thisTrainerTexts.size(); j++)
             {
-                if (firstTextIndex == 0) {
-                    firstTextIndex = i;
+                TrainerTextEntryPanel panel1 = trainerTextEntryPanels.get(thisTrainerTexts.get(i));
+                TrainerTextEntryPanel panel2 = trainerTextEntryPanels.get(thisTrainerTexts.get(j));
+                if (panel1.getActivationCondition() == panel2.getActivationCondition())
+                {
+                    entryErrorOccurred = true;
+                    conditionsErrorMessageBuilder.append("\"")
+                            .append(activationConditions.get(activationConditionToId.indexOf(panel1.getActivationCondition())))
+                            .append("\" (")
+                            .append(i)
+                            .append(") has same condition value as index ")
+                            .append(j)
+                            .append("\n");
                 }
-                thisTrainerTexts.add(text);
+                else if (panel1.getActivationCondition() == -1)
+                {
+                    entryErrorOccurred = true;
+                    conditionsErrorMessageBuilder.append("\"")
+                            .append(activationConditions.get(activationConditionToId.indexOf(panel1.getActivationCondition())))
+                            .append("\" (")
+                            .append(i)
+                            .append(") does not have a condition value set\n");
+                }
             }
         }
 
-        listModel.removeAllElements();
-
-        for (TrainerText trainerText1 : thisTrainerTexts)
+        if (entryErrorOccurred)
         {
-            listModel.addElement(activationConditions.get(activationConditionToId.indexOf(trainerText1.getCondition())));
-            trainerTextsCopy.remove(trainerText1);
+            JOptionPane.showMessageDialog(this, conditionsErrorMessageBuilder.toString(), "Trainer Text Activation Condition Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        textList.setModel(listModel);
-        textList.setSelectedIndex(0);
-    }
-
-    private void activationConditionActionPerformed(ActionEvent e) {
-        // TODO add your code here
-        if (!changing)
+        for (int i = 0; i < thisTrainerTexts.size(); i++)
         {
-            TrainerText currentTrainerText = thisTrainerTexts.get(textList.getSelectedIndex());
-            thisTrainerTexts.set(textList.getSelectedIndex(), new TrainerText()
+            TrainerText oldTextEntry = thisTrainerTexts.get(i);
+            TrainerTextEntryPanel panel = trainerTextEntryPanels.get(oldTextEntry);
+            int textId = oldTextEntry.getTextId();
+            int trainerId = oldTextEntry.getTrainerId();
+            int condition = panel.getActivationCondition();
+            String newText = panel.getText();
+            TrainerText text = new TrainerText()
             {
                 @Override
                 public int getTextId()
                 {
-                    return currentTrainerText.getTextId();
+                    return textId;
                 }
 
                 @Override
                 public int getTrainerId()
                 {
-                    return currentTrainerText.getTrainerId();
+                    return trainerId;
                 }
 
                 @Override
                 public int getCondition()
                 {
-                    return activationConditionToId.get(activationComboBox.getSelectedIndex());
+                    return condition;
                 }
-            });
-            listModel.setElementAt((String) activationComboBox.getSelectedItem(), textList.getSelectedIndex());
+
+                @Override
+                public String getText()
+                {
+                    return newText;
+                }
+            };
+            messages.set(textId, newText);
+            trainerTextsCopy.add(text);
         }
+
+        trainerTextsCopy = trainerTextsCopy.stream().sorted(new Comparator<TrainerText>()
+        {
+            @Override
+            public int compare(TrainerText o1, TrainerText o2)
+            {
+                int trainerDiff = o1.getTrainerId() - o2.getTrainerId();
+
+                if (trainerDiff != 0) {
+                    return trainerDiff;
+                }
+
+                return TrainerTextFrame.activationConditionToId.indexOf(o1.getCondition()) - TrainerTextFrame.activationConditionToId.indexOf(o2.getCondition());
+            }
+        }).collect(Collectors.toCollection(ArrayList::new));
+
+        trainerPanel.setTrainerTexts(trainerTextsCopy);
+
+        messages = new ArrayList<>();
+        for (TrainerText text : trainerTextsCopy) {
+            messages.add(text.getText());
+        }
+
+        try {
+            TextEditor.writeBank(project, messages, textBank, false);
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An error in text writing occurred. Check the command-line output for more information.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+
+        int selected = entryTabbedPane.getSelectedIndex();
+        if (selected != -1)
+        {
+            reloadActionPerformed(null);
+            entryTabbedPane.setSelectedIndex(selected);
+        }
+    }
+
+    private void reloadActionPerformed(ActionEvent e) {
+        entryTabbedPane.removeAll();
+        try {
+            loadData(trainerPanel.getTrainerTexts());
+        }
+        catch (IOException exception) {
+            exception.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An error in trainer text initialization occurred. Check the command-line output for more information.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        scrollPane1 = new JScrollPane();
-        textList = new JList<>();
-        addRemovePanel = new JPanel();
+        saveTrainerButton = new JButton();
         addButton = new JButton();
         removeButton = new JButton();
-        saveTrainerButton = new JButton();
         reloadButton = new JButton();
-        editPanel = new JPanel();
-        activationLabel = new JLabel();
-        activationComboBox = new JComboBox<>();
-        textLabel = new JLabel();
-        scrollPane2 = new JScrollPane();
-        trainerTextArea = new JTextArea();
+        entryTabbedPane = new JTabbedPane();
 
         //======== this ========
-        setMinimumSize(new Dimension(800, 352));
+        setMinimumSize(new Dimension(600, 250));
         setTitle("Trainer Text Editor");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -265,118 +418,39 @@ public class TrainerTextFrame extends JFrame {
         contentPane.setLayout(new MigLayout(
             "hidemode 3",
             // columns
-            "[225,fill]" +
-            "[grow,fill]" +
-            "[fill]",
+            "[grow,center]" +
+            "[grow,center]" +
+            "[grow,center]" +
+            "[grow,center]",
             // rows
-            "[172]" +
+            "[]" +
             "[grow,fill]"));
 
-        //======== scrollPane1 ========
+        //---- saveTrainerButton ----
+        saveTrainerButton.setText("Save Trainer");
+        saveTrainerButton.addActionListener(e -> saveActionPerformed(e));
+        contentPane.add(saveTrainerButton, "cell 0 0,growx");
+
+        //---- addButton ----
+        addButton.setText("Add");
+        addButton.addActionListener(e -> addActionPerformed(e));
+        contentPane.add(addButton, "cell 1 0,growx");
+
+        //---- removeButton ----
+        removeButton.setText("Remove");
+        removeButton.addActionListener(e -> removeActionPerformed(e));
+        contentPane.add(removeButton, "cell 2 0,growx");
+
+        //---- reloadButton ----
+        reloadButton.setText("Reload");
+        reloadButton.addActionListener(e -> reloadActionPerformed(e));
+        contentPane.add(reloadButton, "cell 3 0,growx");
+
+        //======== entryTabbedPane ========
         {
-
-            //---- textList ----
-            textList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            textList.setModel(new AbstractListModel<String>() {
-                String[] values = {
-                    "Test"
-                };
-                @Override
-                public int getSize() { return values.length; }
-                @Override
-                public String getElementAt(int i) { return values[i]; }
-            });
-            textList.addListSelectionListener(e -> textListValueChanged(e));
-            scrollPane1.setViewportView(textList);
+            entryTabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         }
-        contentPane.add(scrollPane1, "cell 0 0 2 1");
-
-        //======== addRemovePanel ========
-        {
-            addRemovePanel.setLayout(new MigLayout(
-                "hidemode 3",
-                // columns
-                "[fill]",
-                // rows
-                "[grow]" +
-                "[grow]" +
-                "[]" +
-                "[]"));
-
-            //---- addButton ----
-            addButton.setText("Add");
-            addButton.addActionListener(e -> addActionPerformed(e));
-            addRemovePanel.add(addButton, "cell 0 0,grow");
-
-            //---- removeButton ----
-            removeButton.setText("Remove");
-            removeButton.addActionListener(e -> removeActionPerformed(e));
-            addRemovePanel.add(removeButton, "cell 0 1,grow");
-
-            //---- saveTrainerButton ----
-            saveTrainerButton.setText("Save Trainer");
-            saveTrainerButton.addActionListener(e -> saveActionPerformed(e));
-            addRemovePanel.add(saveTrainerButton, "cell 0 2,grow");
-
-            //---- reloadButton ----
-            reloadButton.setText("Reload");
-            reloadButton.addActionListener(e -> reloadActionPerformed(e));
-            addRemovePanel.add(reloadButton, "cell 0 3,grow");
-        }
-        contentPane.add(addRemovePanel, "cell 2 0,growy");
-
-        //======== editPanel ========
-        {
-            editPanel.setLayout(new MigLayout(
-                "hidemode 3",
-                // columns
-                "[fill]" +
-                "[427,grow,fill]" +
-                "[fill]",
-                // rows
-                "[]" +
-                "[]" +
-                "[grow]"));
-
-            //---- activationLabel ----
-            activationLabel.setText("Activation Condition:");
-            editPanel.add(activationLabel, "cell 0 0");
-
-            //---- activationComboBox ----
-            activationComboBox.setModel(new DefaultComboBoxModel<>(new String[] {
-                "Pre-Battle Overworld",
-                "In-Battle Trainer Defeat",
-                "Post-Battle Trainer Defeat Overworld",
-                "In-Battle Last Pokemon",
-                "In-Battle Last Pokemon Critical HP",
-                "In-Battle Player Lose",
-                "(DOUBLE) Pre-Battle Trainer#1 Overworld",
-                "(DOUBLE) In-Battle Trainer#1 Defeat",
-                "(DOUBLE) Post-Battle Trainer#1 Defeat Overworld",
-                "(DOUBLE) Trainer#1 Player One Party Member Overworld",
-                "(DOUBLE) Pre-Battle Trainer#2 Overworld",
-                "(DOUBLE) In-Battle Trainer#2 Defeat",
-                "(DOUBLE) Post-Battle Trainer#2 Defeat Overworld",
-                "(DOUBLE) Trainer#2 Player One Party Member Overworld"
-            }));
-            activationComboBox.addActionListener(e -> activationConditionActionPerformed(e));
-            editPanel.add(activationComboBox, "cell 1 0 2 1");
-
-            //---- textLabel ----
-            textLabel.setText("Text:");
-            editPanel.add(textLabel, "cell 0 1");
-
-            //======== scrollPane2 ========
-            {
-
-                //---- trainerTextArea ----
-                trainerTextArea.setLineWrap(true);
-                trainerTextArea.setWrapStyleWord(true);
-                scrollPane2.setViewportView(trainerTextArea);
-            }
-            editPanel.add(scrollPane2, "cell 0 2 3 1,grow");
-        }
-        contentPane.add(editPanel, "cell 0 1 3 1,grow");
+        contentPane.add(entryTabbedPane, "cell 0 1 4 1,grow");
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
@@ -384,18 +458,10 @@ public class TrainerTextFrame extends JFrame {
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
-    private JScrollPane scrollPane1;
-    private JList<String> textList;
-    private JPanel addRemovePanel;
+    private JButton saveTrainerButton;
     private JButton addButton;
     private JButton removeButton;
-    private JButton saveTrainerButton;
     private JButton reloadButton;
-    private JPanel editPanel;
-    private JLabel activationLabel;
-    private JComboBox<String> activationComboBox;
-    private JLabel textLabel;
-    private JScrollPane scrollPane2;
-    private JTextArea trainerTextArea;
+    private JTabbedPane entryTabbedPane;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

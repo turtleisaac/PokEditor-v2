@@ -25,7 +25,10 @@ public class SheetsInterceptor
             for(int col= 0; col < row.length; col++)
             {
                 if(row[col] == null)
+                {
                     System.currentTimeMillis();
+                    row[col] = "";
+                }
                 writer.write((String) row[col]);
                 if (col < row.length - 1)
                 {
