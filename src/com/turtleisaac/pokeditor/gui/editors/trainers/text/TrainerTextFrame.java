@@ -105,6 +105,7 @@ public class TrainerTextFrame extends JFrame {
             int textId = text.getTextId();
             int trainerId = text.getTrainerId();
             int condition = text.getCondition();
+            String trainerMessage = messages.get(textId);
             newTrainerTexts.add(new TrainerText()
             {
                 @Override
@@ -128,7 +129,7 @@ public class TrainerTextFrame extends JFrame {
                 @Override
                 public String getText()
                 {
-                    return messages.get(textId);
+                    return trainerMessage;
                 }
             });
         }
@@ -231,7 +232,7 @@ public class TrainerTextFrame extends JFrame {
             @Override
             public int getCondition()
             {
-                return 0;
+                return -1;
             }
 
             @Override
@@ -268,8 +269,8 @@ public class TrainerTextFrame extends JFrame {
     }
 
     private void saveActionPerformed(ActionEvent e) {
-        StringBuilder dupeConditionsErrorMessageBuilder = new StringBuilder("Error:\n");
-        boolean dupeOccurred = false;
+        StringBuilder conditionsErrorMessageBuilder = new StringBuilder("Error(s):\n");
+        boolean entryErrorOccurred = false;
         for(int i = 0; i < thisTrainerTexts.size() - 1; i++)
         {
             for(int j = i+1; j < thisTrainerTexts.size(); j++)
@@ -278,8 +279,8 @@ public class TrainerTextFrame extends JFrame {
                 TrainerTextEntryPanel panel2 = trainerTextEntryPanels.get(thisTrainerTexts.get(j));
                 if (panel1.getActivationCondition() == panel2.getActivationCondition())
                 {
-                    dupeOccurred = true;
-                    dupeConditionsErrorMessageBuilder.append("\"")
+                    entryErrorOccurred = true;
+                    conditionsErrorMessageBuilder.append("\"")
                             .append(activationConditions.get(activationConditionToId.indexOf(panel1.getActivationCondition())))
                             .append("\" (")
                             .append(i)
@@ -287,12 +288,21 @@ public class TrainerTextFrame extends JFrame {
                             .append(j)
                             .append("\n");
                 }
+                else if (panel1.getActivationCondition() == -1)
+                {
+                    entryErrorOccurred = true;
+                    conditionsErrorMessageBuilder.append("\"")
+                            .append(activationConditions.get(activationConditionToId.indexOf(panel1.getActivationCondition())))
+                            .append("\" (")
+                            .append(i)
+                            .append(") does not have a condition value set\n");
+                }
             }
         }
 
-        if (dupeOccurred)
+        if (entryErrorOccurred)
         {
-            JOptionPane.showMessageDialog(this, dupeConditionsErrorMessageBuilder.toString(), "Duplicate Conditions Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, conditionsErrorMessageBuilder.toString(), "Trainer Text Activation Condition Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 

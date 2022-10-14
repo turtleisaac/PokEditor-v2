@@ -235,77 +235,78 @@ public class TrainerPanel extends JPanel
         {
             while(trainerPokemonTabbedPane.getTabCount() != numberPokemonSlider.getValue())
             {
-                trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,null,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
+                TrainerPokemonData newPokemon = new TrainerPokemonData()
+                {
+                    @Override
+                    public short getIvs()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public short getAbility()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getLevel()
+                    {
+                        return 5;
+                    }
+
+                    @Override
+                    public int getPokemon()
+                    {
+                        return 399;
+                    } //bidoof
+
+                    @Override
+                    public int getAltForm()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getItem()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getMove1()
+                    {
+                        return 33;
+                    } //tackle
+
+                    @Override
+                    public int getMove2()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getMove3()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public int getMove4()
+                    {
+                        return 0;
+                    }
+
+                    @Override
+                    public short getBallCapsule()
+                    {
+                        return 0;
+                    }
+                };
+                trainerPokemonTabbedPane.addTab("Pokémon " + (trainerPokemonTabbedPane.getTabCount()+1), new TrainerPokemonPanel(this,newPokemon,toggleMovesCheckbox.isSelected(),toggleHeldItemsCheckbox.isSelected()));
                 if(pokemonList != null)
                 {
-                    pokemonList.add(new TrainerPokemonData()
-                    {
-                        @Override
-                        public short getIvs()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public short getAbility()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getLevel()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getPokemon()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getAltForm()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getItem()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getMove1()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getMove2()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getMove3()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public int getMove4()
-                        {
-                            return 0;
-                        }
-
-                        @Override
-                        public short getBallCapsule()
-                        {
-                            return 0;
-                        }
-                    });
+                    pokemonList.add(newPokemon);
                 }
             }
         }
@@ -601,9 +602,9 @@ public class TrainerPanel extends JPanel
         }
     }
 
-    public ArrayList<TrainerText> getTrainerTexts()
+    public ArrayList<TrainerText> getTrainerTexts() throws IOException
     {
-        return trainerTexts;
+        return textEditor.getTrainerTexts();
     }
 
     public void setTrainerTexts(ArrayList<TrainerText> newTrainerTexts)

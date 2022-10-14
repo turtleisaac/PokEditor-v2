@@ -4,6 +4,7 @@ import com.jidesoft.swing.ComboBoxSearchable;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.project.Project;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import java.io.File;
@@ -55,6 +56,8 @@ public class TrainerTextEditor
 
     public ArrayList<TrainerText> getTrainerTexts() throws IOException
     {
+        clearDirs(new File(trainerTextAssignmentUnpacked));
+
         if(!new File(trainerTextAssignmentUnpacked).exists())
         {
             Narctowl narctowl = new Narctowl(true);
@@ -77,5 +80,23 @@ public class TrainerTextEditor
 
         narctowl.pack(trainerTextAssignmentUnpacked,"",trainerTextAssignmentFile);
         narctowl.pack(trainerTextOffsetUnpacked,"",trainerTextOffsetFile);
+    }
+
+    private static void clearDirs(File folder)
+    {
+        try
+        {
+            FileUtils.deleteDirectory(folder);
+        }
+        catch(IOException e)
+        {
+            System.err.println("\tFailed to delete folder: " + folder.getAbsolutePath());
+            e.printStackTrace();
+        }
+
+        if(folder.exists())
+        {
+            System.err.println("\tFolder wasn't deleted?");
+        }
     }
 }
