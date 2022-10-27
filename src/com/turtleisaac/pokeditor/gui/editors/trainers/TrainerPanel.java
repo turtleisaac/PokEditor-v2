@@ -258,8 +258,8 @@ public class TrainerPanel extends JPanel
                     @Override
                     public int getPokemon()
                     {
-                        return 399;
-                    } //bidoof
+                        return 1;
+                    } //bulbasaur
 
                     @Override
                     public int getAltForm()
