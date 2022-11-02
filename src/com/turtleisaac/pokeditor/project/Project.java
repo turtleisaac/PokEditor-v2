@@ -17,6 +17,7 @@ public class Project implements Serializable
     private String baseRomGameCode;
     private String language;
     private String program;
+    private boolean backups;
 
 
     public Project(String name, String path, String program)
@@ -96,6 +97,16 @@ public class Project implements Serializable
         this.program = program;
     }
 
+    public boolean isBackups()
+    {
+        return backups;
+    }
+
+    public void setBackups(boolean backups)
+    {
+        this.backups = backups;
+    }
+
     public String getDataPath()
     {
         return new File(getProjectPath().getAbsolutePath() + File.separator + getName() + File.separator + "data").getAbsolutePath();
@@ -103,13 +114,14 @@ public class Project implements Serializable
 
     public String getXml()
     {
-        String ret= "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
-        ret+= "<" + program.toLowerCase() + ">\n";
-        ret+= "  <name>" + name + "<\\name>\n";
-        ret+= "  <baseromname>" + baseRom + "<\\baseromname>\n";
-        ret+= "  <baseromgamecode>" + baseRomGameCode + "<\\baseromgamecode>\n";
-        ret+= "  <language>" + language.toUpperCase() + "<\\language>\n";
-        ret+= "<\\" + program.toLowerCase() + ">";
+        String ret = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
+        ret += "<" + program.toLowerCase() + ">\n";
+        ret += "  <name>" + name + "<\\name>\n";
+        ret += "  <baseromname>" + baseRom + "<\\baseromname>\n";
+        ret += "  <baseromgamecode>" + baseRomGameCode + "<\\baseromgamecode>\n";
+        ret += "  <language>" + language.toUpperCase() + "<\\language>\n";
+        ret += "  <backups>" + backups + "<\\backups>\n";
+        ret += "<\\" + program.toLowerCase() + ">";
 
         return ret;
     }
@@ -162,6 +174,15 @@ public class Project implements Serializable
         project.setBaseRomGameCode(data.get("baseromgamecode"));
         project.setLanguage(data.get("language"));
         project.setProgram(data.get("program"));
+        if (data.containsKey("backups"))
+        {
+            project.setBackups(Boolean.parseBoolean(data.get("backups")));
+        }
+        else
+        {
+            project.setBackups(false);
+        }
+
 
         return project;
     }

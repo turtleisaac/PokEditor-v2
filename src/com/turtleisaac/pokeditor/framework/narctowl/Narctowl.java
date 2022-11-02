@@ -1,9 +1,6 @@
 package com.turtleisaac.pokeditor.framework.narctowl;
 
-import com.turtleisaac.pokeditor.framework.BLZCoder;
-import com.turtleisaac.pokeditor.framework.BinaryWriter;
-import com.turtleisaac.pokeditor.framework.Buffer;
-import com.turtleisaac.pokeditor.framework.MemBuf;
+import com.turtleisaac.pokeditor.framework.*;
 
 import javax.swing.*;
 import java.io.*;
@@ -234,6 +231,7 @@ public class Narctowl
                 lastEnd = endingOffset;
             }
             int id = i; //creates a final int variable that can be used in calling the interface narcs.NarcSubFile, as the int "i" is not immutable and constantly changing
+            String name = StringWork.appendLeadingZeros(id, ("" + numFiles).length());
             subFiles.add(new NarcSubFile() { //adds a new narcs.NarcSubFile object to the ArrayList
                 @Override
                 public long getStartingOffset() {
@@ -252,7 +250,7 @@ public class Narctowl
 
                 @Override
                 public String getName() {
-                    return "" + id; //stores the "name" (number in this scenario) in the object
+                    return name; //stores the "name" (number in this scenario) in the object
                 }
             });
         }

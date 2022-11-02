@@ -21,6 +21,7 @@ import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterData;
 import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterEditor;
 import com.turtleisaac.pokeditor.editors.encounters.sinnoh.SinnohEncounterReturn;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
+import com.turtleisaac.pokeditor.framework.StringWork;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.gui.ComboBoxItem;
 import com.turtleisaac.pokeditor.gui.editors.encounters.SearchResultsFrame;
@@ -309,12 +310,17 @@ public class SinnohEncounterPanel extends JPanel
                 Narctowl narctowl= new Narctowl(true);
                 narctowl.unpack(dataPath + narcPath, folderPath);
             }
+            int numFiles = ("" + new File(folderPath).listFiles().length).length();
 
             ImageBase imageBase;
+            String ncgrFile;
+            String nclrFile;
             for(int i= 0; i < selectedSpecies.length; i++)
             {
-                int species= selectedSpecies[i];
-                imageBase= new ImageBase(project,folderPath + File.separator + (7 + species) + ".bin", folderPath + File.separator  + "0.bin");
+                int species = selectedSpecies[i];
+                ncgrFile = StringWork.appendLeadingZeros(species + 7, numFiles);
+                nclrFile = StringWork.appendLeadingZeros(0, numFiles);
+                imageBase = new ImageBase(project,folderPath + File.separator + ncgrFile + ".bin", folderPath + File.separator + nclrFile + ".bin");
                 BufferedImage base= imageBase.getImageTransparent(encounterSlotTable.getBackground(),32,32,paletteGuideTable[selectedSpecies[i]]);
 
                 BufferedImage image= new BufferedImage(32,24,BufferedImage.TYPE_INT_ARGB);
@@ -2572,12 +2578,17 @@ public class SinnohEncounterPanel extends JPanel
                     Narctowl narctowl= new Narctowl(true);
                     narctowl.unpack(dataPath + narcPath,folderPath);
                 }
+                int numFiles = ("" + new File(folderPath).listFiles().length).length();
 
+                String ncgrFile;
+                String nclrFile;
                 ImageBase imageBase;
                 for(int i= 0; i < surfSlots.length; i++)
                 {
                     int species= surfSlots[i].getSelectedIndex();
-                    imageBase= new ImageBase(project,folderPath + File.separator + (7 + species) + ".bin", folderPath + File.separator  + "0.bin");
+                    ncgrFile = StringWork.appendLeadingZeros(species + 7, numFiles);
+                    nclrFile = StringWork.appendLeadingZeros(0, numFiles);
+                    imageBase= new ImageBase(project,folderPath + File.separator + ncgrFile + ".bin", folderPath + File.separator + nclrFile + ".bin");
                     BufferedImage base= imageBase.getImageTransparent(imageBase.getPaletteArr()[paletteGuideTable[species]][0],32,32,paletteGuideTable[species]);
 
                     BufferedImage image= new BufferedImage(32,24,BufferedImage.TYPE_INT_ARGB);
@@ -2589,7 +2600,9 @@ public class SinnohEncounterPanel extends JPanel
                 for(int i= 0; i < oldRodSlots.length; i++)
                 {
                     int species= oldRodSlots[i].getSelectedIndex();
-                    imageBase= new ImageBase(project,folderPath + File.separator + (7 + species) + ".bin", folderPath + File.separator  + "0.bin");
+                    ncgrFile = StringWork.appendLeadingZeros(species + 7, numFiles);
+                    nclrFile = StringWork.appendLeadingZeros(0, numFiles);
+                    imageBase= new ImageBase(project,folderPath + File.separator + ncgrFile + ".bin", folderPath + File.separator + nclrFile + ".bin");
                     BufferedImage base= imageBase.getImageTransparent(imageBase.getPaletteArr()[paletteGuideTable[species]][0],32,32,paletteGuideTable[species]);
 
                     BufferedImage image= new BufferedImage(32,24,BufferedImage.TYPE_INT_ARGB);
@@ -2601,7 +2614,9 @@ public class SinnohEncounterPanel extends JPanel
                 for(int i= 0; i < goodRodSlots.length; i++)
                 {
                     int species= goodRodSlots[i].getSelectedIndex();
-                    imageBase= new ImageBase(project,folderPath + File.separator + (7 + species) + ".bin", folderPath + File.separator  + "0.bin");
+                    ncgrFile = StringWork.appendLeadingZeros(species + 7, numFiles);
+                    nclrFile = StringWork.appendLeadingZeros(0, numFiles);
+                    imageBase= new ImageBase(project,folderPath + File.separator + ncgrFile + ".bin", folderPath + File.separator + nclrFile + ".bin");
                     BufferedImage base= imageBase.getImageTransparent(imageBase.getPaletteArr()[paletteGuideTable[species]][0],32,32,paletteGuideTable[species]);
 
                     BufferedImage image= new BufferedImage(32,24,BufferedImage.TYPE_INT_ARGB);
@@ -2613,7 +2628,9 @@ public class SinnohEncounterPanel extends JPanel
                 for(int i= 0; i < superRodSlots.length; i++)
                 {
                     int species= superRodSlots[i].getSelectedIndex();
-                    imageBase= new ImageBase(project,folderPath + File.separator + (7 + species) + ".bin", folderPath + File.separator  + "0.bin");
+                    ncgrFile = StringWork.appendLeadingZeros(species + 7, numFiles);
+                    nclrFile = StringWork.appendLeadingZeros(0, numFiles);
+                    imageBase= new ImageBase(project,folderPath + File.separator + ncgrFile + ".bin", folderPath + File.separator + nclrFile + ".bin");
                     BufferedImage base= imageBase.getImageTransparent(imageBase.getPaletteArr()[paletteGuideTable[species]][0],32,32,paletteGuideTable[species]);
 
                     BufferedImage image= new BufferedImage(32,24,BufferedImage.TYPE_INT_ARGB);

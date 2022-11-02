@@ -1,6 +1,7 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
 import com.turtleisaac.pokeditor.framework.Buffer;
+import com.turtleisaac.pokeditor.framework.StringWork;
 import com.turtleisaac.pokeditor.utilities.images.formats.nclr.NclrReader;
 
 import java.awt.*;
@@ -293,8 +294,12 @@ public class ImageDecrypter
 
         boolean exists= false;
 
-        if(new File(path + species + ".bin").exists() || new File(path + (species + 1) + ".bin").exists())
-            exists= true;
+        int numFilesLen = ("" + new File(path).listFiles().length).length();
+        String image1 = StringWork.appendLeadingZeros(species, numFilesLen);
+        String image2 = StringWork.appendLeadingZeros(species + 1, numFilesLen);
+
+        if(new File(path + image1 + ".bin").exists() || new File(path + image2 + ".bin").exists())
+            exists = true;
 
         return exists;
     }

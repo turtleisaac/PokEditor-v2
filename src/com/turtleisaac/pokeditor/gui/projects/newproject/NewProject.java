@@ -347,10 +347,14 @@ public class NewProject extends JPanel {
             }
         }
 
+        //0 for yes, 1 for no
+        int backupsOn = JOptionPane.showConfirmDialog(this, "Do you want to turn on the auto-backup system? This will create a backup of your data every time you close a project. After 10 backups have been made, PokEditor will prompt you if you wish to make another backup. These backups can be found in the \"backups\" directory within your project folder.", "PokEditor", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
         Project project= new Project(projectNameTextField.getText().trim(),projectLocationTextField.getText(),"pokeditor");
         project.setLanguage("ENG");
         project.setBaseRom(Project.parseBaseRom(baseRomConfirmLabel.getText().split(", ")[1]));
         project.setBaseRomGameCode(baseRomConfirmLabel.getText().split(", ")[1]);
+        project.setBackups(backupsOn == 0);
 
         String backupPath= projectLocationTextField.getText().trim() + File.separator + "backups";
         File backupDir= new File(backupPath);

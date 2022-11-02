@@ -1,6 +1,7 @@
 package com.turtleisaac.pokeditor.editors.spritepositions;
 
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
+import com.turtleisaac.pokeditor.framework.StringWork;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
@@ -236,11 +237,13 @@ public class SpriteDataProcessor
             {
                 e.printStackTrace();
             }
-
         }
         toDelete.add(positionDirPath);
 
-        Buffer buffer= new Buffer(positionDirPath.getAbsolutePath() + File.separator + (selected + spriteType.value) + ".bin");
+        int numFilesLen = ("" + new File(positionDirPath.getAbsolutePath()).listFiles().length).length();
+        String selectedName = StringWork.appendLeadingZeros(selected + spriteType.value, numFilesLen);
+
+        Buffer buffer= new Buffer(positionDirPath.getAbsolutePath() + File.separator + selectedName + ".bin");
 
 
         int ret;
