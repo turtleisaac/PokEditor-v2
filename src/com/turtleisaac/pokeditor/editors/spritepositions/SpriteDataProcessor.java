@@ -1,7 +1,7 @@
 package com.turtleisaac.pokeditor.editors.spritepositions;
 
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
-import com.turtleisaac.pokeditor.framework.StringWork;
+import com.turtleisaac.pokeditor.framework.narctowl.NarcWork;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
@@ -50,7 +50,7 @@ public class SpriteDataProcessor
 
         toDelete.add(positionDirPath);
 
-        Buffer buffer= new Buffer(positionDirPath.getAbsolutePath() + File.separator + "0.bin");
+        Buffer buffer= new Buffer(NarcWork.getSubfilePath(0, positionDirPath));
         ArrayList<SpriteData> dataList= new ArrayList<>();
 
         //the length of the data structure for each species entry is 89 bytes (offsets 0-88)
@@ -164,7 +164,7 @@ public class SpriteDataProcessor
                 throw new RuntimeException("Invalid game: " + project.getBaseRom());
         }
 
-        BinaryWriter writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + "0.bin");
+        BinaryWriter writer= new BinaryWriter(NarcWork.getSubfilePath(0, positionDirPath));
 
         for (SpriteData spriteData : spritePositionData)
         {
@@ -240,11 +240,7 @@ public class SpriteDataProcessor
         }
         toDelete.add(positionDirPath);
 
-        int numFilesLen = ("" + new File(positionDirPath.getAbsolutePath()).listFiles().length).length();
-        String selectedName = StringWork.appendLeadingZeros(selected + spriteType.value, numFilesLen);
-
-        Buffer buffer= new Buffer(positionDirPath.getAbsolutePath() + File.separator + selectedName + ".bin");
-
+        Buffer buffer= new Buffer(NarcWork.getSubfilePath(selected + spriteType.value, positionDirPath));
 
         int ret;
 
@@ -289,25 +285,25 @@ public class SpriteDataProcessor
         }
 
 
-        BinaryWriter writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + selected + ".bin");
+        BinaryWriter writer= new BinaryWriter(NarcWork.getSubfilePath(selected, positionDirPath));
         if(femaleBack != 0)
         {
             writer.writeByte(Math.abs(femaleBack));
         }
 
-        writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 1) + ".bin");
+        writer= new BinaryWriter(NarcWork.getSubfilePath(selected + 1, positionDirPath));
         if(maleBack != 0)
         {
             writer.writeByte(Math.abs(maleBack));
         }
 
-        writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 2) + ".bin");
+        writer= new BinaryWriter(NarcWork.getSubfilePath(selected + 2, positionDirPath));
         if(femaleFront != 0)
         {
             writer.writeByte(Math.abs(femaleFront));
         }
 
-        writer= new BinaryWriter(positionDirPath.getAbsolutePath() + File.separator + (selected + 3) + ".bin");
+        writer= new BinaryWriter(NarcWork.getSubfilePath(selected + 3, positionDirPath));
         if(maleFront != 0)
         {
             writer.writeByte(Math.abs(maleFront));

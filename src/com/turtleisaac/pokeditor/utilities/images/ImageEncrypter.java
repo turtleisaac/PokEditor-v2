@@ -2,6 +2,7 @@ package com.turtleisaac.pokeditor.utilities.images;
 
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
 import com.turtleisaac.pokeditor.framework.MemBuf;
+import com.turtleisaac.pokeditor.framework.narctowl.NarcWork;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -27,12 +28,12 @@ public class ImageEncrypter
 
 
 
-        BinaryWriter.writeFile(path + speciesOffset + ".bin", femaleBackNcgr);
-        BinaryWriter.writeFile(path + (speciesOffset + 1) + ".bin", maleBackNcgr);
-        BinaryWriter.writeFile(path + (speciesOffset + 2) + ".bin", femaleFrontNcgr);
-        BinaryWriter.writeFile(path + (speciesOffset + 3) + ".bin", maleFrontNcgr);
-        BinaryWriter.writeFile(path + (speciesOffset + 4) + ".bin", paletteNclr);
-        BinaryWriter.writeFile(path + (speciesOffset + 5) + ".bin", shinyPaletteNclr);
+        BinaryWriter.writeFile(NarcWork.getSubfilePath(speciesOffset, path), femaleBackNcgr);
+        BinaryWriter.writeFile(NarcWork.getSubfilePath(speciesOffset + 1, path), maleBackNcgr);
+        BinaryWriter.writeFile(NarcWork.getSubfilePath(speciesOffset + 2, path), femaleFrontNcgr);
+        BinaryWriter.writeFile(NarcWork.getSubfilePath(speciesOffset + 3, path), maleFrontNcgr);
+        BinaryWriter.writeFile(NarcWork.getSubfilePath(speciesOffset + 4, path), paletteNclr);
+        BinaryWriter.writeFile(NarcWork.getSubfilePath(speciesOffset + 5, path), shinyPaletteNclr);
     }
 
 

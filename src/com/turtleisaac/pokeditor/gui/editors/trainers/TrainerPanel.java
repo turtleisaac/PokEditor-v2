@@ -10,14 +10,12 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
 
 import com.turtleisaac.pokeditor.editors.trainers.gen4.*;
-import com.turtleisaac.pokeditor.framework.StringWork;
+import com.turtleisaac.pokeditor.framework.narctowl.NarcWork;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.text.TextEditor;
 import com.turtleisaac.pokeditor.framework.BitStream;
@@ -25,7 +23,6 @@ import com.turtleisaac.pokeditor.gui.EditorComboBox;
 import com.turtleisaac.pokeditor.gui.ComboBoxItem;
 import com.turtleisaac.pokeditor.gui.editors.trainers.text.TrainerTextFrame;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.ProjectWindow;
-import com.turtleisaac.pokeditor.project.Game;
 import com.turtleisaac.pokeditor.project.Project;
 import com.turtleisaac.pokeditor.utilities.TableLocator;
 import com.turtleisaac.pokeditor.utilities.TablePointers;
@@ -203,12 +200,7 @@ public class TrainerPanel extends JPanel
                 narctowl.unpack(dataPath + narcPath,folderPath);
             }
 
-            int numFiles = ("" + new File(folderPath).listFiles().length).length();
-            String ncgrFile = StringWork.appendLeadingZeros(baseOffset, numFiles);
-            String nclrFile = StringWork.appendLeadingZeros(baseOffset + 1, numFiles);
-            String ncerFile = StringWork.appendLeadingZeros(baseOffset + 2, numFiles);
-
-            ImageBase imageBase= new ImageBase(project,folderPath + File.separator + ncgrFile + ".bin", folderPath + File.separator + nclrFile + ".bin", folderPath + File.separator + ncerFile + ".bin");
+            ImageBase imageBase= new ImageBase(project, NarcWork.getSubfilePath(baseOffset, folderPath), NarcWork.getSubfilePath(baseOffset + 1, folderPath), NarcWork.getSubfilePath(baseOffset + 2, folderPath));
 
             animator.reset(imageBase.getImages(trainerClassImageButton.getBackground()));
 

@@ -1,7 +1,7 @@
 package com.turtleisaac.pokeditor.utilities.images;
 
 import com.turtleisaac.pokeditor.framework.Buffer;
-import com.turtleisaac.pokeditor.framework.StringWork;
+import com.turtleisaac.pokeditor.framework.narctowl.NarcWork;
 import com.turtleisaac.pokeditor.utilities.images.formats.nclr.NclrReader;
 
 import java.awt.*;
@@ -20,8 +20,8 @@ public class ImageDecrypter
         Color[] shinyPalette= null;
         try
         {
-            palette= NclrReader.readFile(path + (species + 4) + ".bin").getPalette().getPalettes()[0];
-            shinyPalette= NclrReader.readFile(path + (species + 5) + ".bin").getPalette().getPalettes()[0];
+            palette= NclrReader.readFile(NarcWork.getSubfilePath(species + 4, path)).getPalette().getPalettes()[0];
+            shinyPalette= NclrReader.readFile(NarcWork.getSubfilePath(species + 5, path)).getPalette().getPalettes()[0];
         }
         catch (IOException exception)
         {
@@ -44,17 +44,22 @@ public class ImageDecrypter
             }
         }
 
-        SpriteImage[] femaleBack= primary ? decryptPrimary(path + species + ".bin",palette) : decryptSecondary(path + species + ".bin",palette);
-        SpriteImage[] shinyFemaleBack= primary ? decryptPrimary(path + species + ".bin",shinyPalette) : decryptSecondary(path + species + ".bin",shinyPalette);
+        String femaleBackPath = NarcWork.getSubfilePath(species, path);
+        String maleBackPath = NarcWork.getSubfilePath(species + 1, path);
+        String femaleFrontPath = NarcWork.getSubfilePath(species + 2, path);
+        String maleFrontPath = NarcWork.getSubfilePath(species + 3, path);
 
-        SpriteImage[] maleBack= primary ? decryptPrimary(path + (species + 1) + ".bin",palette) : decryptSecondary(path + (species + 1) + ".bin",palette);
-        SpriteImage[] shinyMaleBack= primary ? decryptPrimary(path + (species + 1) + ".bin",shinyPalette) : decryptSecondary(path + (species + 1) + ".bin",shinyPalette);
+        SpriteImage[] femaleBack= primary ? decryptPrimary(femaleBackPath,palette) : decryptSecondary(femaleBackPath,palette);
+        SpriteImage[] shinyFemaleBack= primary ? decryptPrimary(femaleBackPath,shinyPalette) : decryptSecondary(femaleBackPath,shinyPalette);
 
-        SpriteImage[] femaleFront= primary ? decryptPrimary(path + (species + 2) + ".bin",palette) : decryptSecondary(path + (species + 2) + ".bin",palette);
-        SpriteImage[] shinyFemaleFront= primary ? decryptPrimary(path + (species + 2) + ".bin",shinyPalette) : decryptSecondary(path + (species + 2) + ".bin",shinyPalette);
+        SpriteImage[] maleBack= primary ? decryptPrimary(maleBackPath,palette) : decryptSecondary(maleBackPath,palette);
+        SpriteImage[] shinyMaleBack= primary ? decryptPrimary(maleBackPath,shinyPalette) : decryptSecondary(maleBackPath,shinyPalette);
 
-        SpriteImage[] maleFront= primary ? decryptPrimary(path + (species + 3) + ".bin",palette) : decryptSecondary(path + (species + 3) + ".bin",palette);
-        SpriteImage[] shinyMaleFront= primary ? decryptPrimary(path + (species + 3) + ".bin",shinyPalette) : decryptSecondary(path + (species + 3) + ".bin",shinyPalette);
+        SpriteImage[] femaleFront= primary ? decryptPrimary(femaleFrontPath,palette) : decryptSecondary(femaleFrontPath,palette);
+        SpriteImage[] shinyFemaleFront= primary ? decryptPrimary(femaleFrontPath,shinyPalette) : decryptSecondary(femaleFrontPath,shinyPalette);
+
+        SpriteImage[] maleFront= primary ? decryptPrimary(maleFrontPath,palette) : decryptSecondary(maleFrontPath,palette);
+        SpriteImage[] shinyMaleFront= primary ? decryptPrimary(maleFrontPath,shinyPalette) : decryptSecondary(maleFrontPath,shinyPalette);
 
 
         Color[] finalPalette = palette;
@@ -292,15 +297,6 @@ public class ImageDecrypter
     {
         path+= File.separator;
 
-        boolean exists= false;
-
-        int numFilesLen = ("" + new File(path).listFiles().length).length();
-        String image1 = StringWork.appendLeadingZeros(species, numFilesLen);
-        String image2 = StringWork.appendLeadingZeros(species + 1, numFilesLen);
-
-        if(new File(path + image1 + ".bin").exists() || new File(path + image2 + ".bin").exists())
-            exists = true;
-
-        return exists;
+        return new File(NarcWork.getSubfilePath(species, path)).exists() || new File(NarcWork.getSubfilePath(species + 1, path)).exists();
     }
 }

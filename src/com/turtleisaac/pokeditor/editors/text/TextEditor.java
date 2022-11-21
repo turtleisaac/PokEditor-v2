@@ -3,7 +3,7 @@ package com.turtleisaac.pokeditor.editors.text;
 import com.jackhack96.dspre.handlers.gen4.text.MessageFile;
 import com.jackhack96.jNdstool.io.jBinaryStream;
 import com.turtleisaac.pokeditor.framework.BinaryWriter;
-import com.turtleisaac.pokeditor.framework.StringWork;
+import com.turtleisaac.pokeditor.framework.narctowl.NarcWork;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.framework.Buffer;
 import com.turtleisaac.pokeditor.project.Project;
@@ -13,8 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class TextEditor
@@ -61,9 +59,8 @@ public class TextEditor
             Narctowl narctowl= new Narctowl(true);
             narctowl.unpack(textNarcPath,textDirPath);
         }
-        String bankFile = StringWork.appendLeadingZeros(bank, ("" + new File(textDirPath).listFiles().length).length());
 
-        Buffer buffer= new Buffer(textDirPath + File.separator + bankFile + ".bin");
+        Buffer buffer= new Buffer(NarcWork.getSubfilePath(bank, textDirPath));
         jBinaryStream binaryStream= new jBinaryStream(buffer.readRemainder());
 
         MessageFile.decodeText(binaryStream);
@@ -139,9 +136,7 @@ public class TextEditor
             narctowl.unpack(textNarcPath,textDirPath);
         }
 
-        String bankFile = StringWork.appendLeadingZeros(bank, ("" + new File(textDirPath).listFiles().length).length());
-
-        Buffer buffer= new Buffer(textDirPath + File.separator + bankFile + ".bin");
+        Buffer buffer= new Buffer(NarcWork.getSubfilePath(bank, textDirPath));
         jBinaryStream binaryStream;
 
         if(canTrim)
