@@ -119,6 +119,7 @@ public class ProjectWindow extends JFrame
             int unpackChoice = JOptionPane.showConfirmDialog(this, "If you have made any changes to the Program Files folder in your project directory, please make a backup of them now. After pressing \"Ok\", this folder will be deleted and replaced with a new version.", project.getName() + " (PokEditor)", JOptionPane.OK_CANCEL_OPTION);
             if (unpackChoice == JOptionPane.OK_OPTION)
             {
+                cleanupDirs(resourceDir);
                 unpackProgramFilesDir(resourceDir);
             }
             else

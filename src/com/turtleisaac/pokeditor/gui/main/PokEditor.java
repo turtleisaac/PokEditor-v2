@@ -258,6 +258,7 @@ public class PokEditor extends JDialog
 
     public PokEditor() {
         initComponents();
+        titleLabel.setText("PokEditor " + versionNumber);
         console= new ConsoleWindow();
     }
 
