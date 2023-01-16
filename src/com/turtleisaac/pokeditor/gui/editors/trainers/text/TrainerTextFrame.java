@@ -52,27 +52,27 @@ public class TrainerTextFrame extends JFrame {
     public static final ArrayList<Integer> activationConditionToId = new ArrayList<>(Arrays.asList(0, 0xD, 0xE, 1, 2, 0xB, 0xC, 0xF, 0x10, 0x14, 0x11, 3, 4, 5, 6, 0x12, 7, 8, 9, 0xA, 0x13));
 
     protected static final ArrayList<String> activationConditions = new ArrayList<>(Arrays.asList(
-            "Pre-Battle Overworld",
-            "In-Battle Any Pokemon Damaged & Still Alive",
-            "In-Battle Any Pokemon Half HP & Still Alive",
-            "In-Battle Trainer Defeat",
-            "Post-Battle Trainer Defeat Overworld",
-            "Pre-Battle Overworld Jogger Night (Unused?)",
-            "Pre-Battle Overworld Policeman Day (Unused?)",
-            "In-Battle Last Pokemon",
-            "In-Battle Last Pokemon Critical HP & Still Alive",
-            "In-Battle Player Lose",
-            "Pre-Battle Vs. Seeker Overworld",
-            "(DOUBLE) Pre-Battle Trainer#1 Overworld",
-            "(DOUBLE) In-Battle Trainer#1 Defeat",
-            "(DOUBLE) Post-Battle Trainer#1 Defeat Overworld",
-            "(DOUBLE) Trainer#1 Player One Party Member Overworld",
-            "(DOUBLE) Pre-Battle Trainer#1 Vs. Seeker Overworld",
-            "(DOUBLE) Pre-Battle Trainer#2 Overworld",
-            "(DOUBLE) In-Battle Trainer#2 Defeat",
-            "(DOUBLE) Post-Battle Trainer#2 Defeat Overworld",
-            "(DOUBLE) Trainer#2 Player One Party Member Overworld",
-            "(DOUBLE) Pre-Battle Trainer#2 Vs. Seeker Overworld"
+            "0. Pre-Battle Overworld",
+            "1. In-Battle Any Pokemon Damaged & Still Alive",
+            "2. In-Battle Any Pokemon Half HP & Still Alive",
+            "3. In-Battle Player Win",
+            "4. Post-Battle Trainer Defeat Overworld",
+            "5. Pre-Battle Overworld Jogger Night (Unused?)",
+            "6. Pre-Battle Overworld Policeman Day (Unused?)",
+            "7. In-Battle Last Pokemon",
+            "8. In-Battle Last Pokemon Critical HP & Still Alive",
+            "9. In-Battle Player Lose",
+            "10. Pre-Battle Vs. Seeker Overworld",
+            "11. (DOUBLE) Pre-Battle Trainer#1 Overworld",
+            "12. (DOUBLE) In-Battle Trainer#1 Defeat",
+            "13. (DOUBLE) Post-Battle Trainer#1 Defeat Overworld",
+            "14. (DOUBLE) Trainer#1 Player One Party Member Overworld",
+            "15. (DOUBLE) Pre-Battle Trainer#1 Vs. Seeker Overworld",
+            "16. (DOUBLE) Pre-Battle Trainer#2 Overworld",
+            "17. (DOUBLE) In-Battle Trainer#2 Defeat",
+            "18. (DOUBLE) Post-Battle Trainer#2 Defeat Overworld",
+            "19. (DOUBLE) Trainer#2 Player One Party Member Overworld",
+            "20. (DOUBLE) Pre-Battle Trainer#2 Vs. Seeker Overworld"
     ));
 
     public TrainerTextFrame(TrainerPanel trainerPanel, Project project, ArrayList<TrainerText> trainerTexts, int trainerId, String trainerName) throws IOException
