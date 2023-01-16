@@ -86,7 +86,10 @@ public class TrainerTextEditor
     {
         try
         {
-            FileUtils.deleteDirectory(folder);
+            if (folder.exists())
+            {
+                FileUtils.deleteDirectory(folder);
+            }
         }
         catch(IOException e)
         {

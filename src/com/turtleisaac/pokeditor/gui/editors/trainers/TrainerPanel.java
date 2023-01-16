@@ -1137,7 +1137,7 @@ public class TrainerPanel extends JPanel
         expertModeCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
         statusPriorityCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
         riskyAttackCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
-        healingPriorityCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
+        damagePriorityCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
         partnerTrainerCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
         doubleBattleCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
         healingPriorityCheckbox.setSelected(((trainer.getAI() >> idx++) & 1) == 1);
