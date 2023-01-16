@@ -53,14 +53,14 @@ public class TrainerTextFrame extends JFrame {
 
     protected static final ArrayList<String> activationConditions = new ArrayList<>(Arrays.asList(
             "Pre-Battle Overworld",
-            "In-Battle Last Pokemon Damaged",
-            "In-Battle Last Pokemon Half HP",
+            "In-Battle Any Pokemon Damaged & Still Alive",
+            "In-Battle Any Pokemon Half HP & Still Alive",
             "In-Battle Trainer Defeat",
             "Post-Battle Trainer Defeat Overworld",
             "Pre-Battle Overworld Jogger Night (Unused?)",
-            "Pre-Battle Overworld Policeman Day(Unused?)",
+            "Pre-Battle Overworld Policeman Day (Unused?)",
             "In-Battle Last Pokemon",
-            "In-Battle Last Pokemon Critical HP",
+            "In-Battle Last Pokemon Critical HP & Still Alive",
             "In-Battle Player Lose",
             "Pre-Battle Vs. Seeker Overworld",
             "(DOUBLE) Pre-Battle Trainer#1 Overworld",

@@ -85,6 +85,48 @@ public class ProjectWindow extends JFrame
 
     public ProjectWindow(String xmlPath, JFrame mainMenu, ConsoleWindow console) throws IOException
     {
+        project= Project.readFromXml(xmlPath);
+        projectPath= project.getProjectPath().toString();
+        boolean projectUpdate = false;
+
+        if (!PokEditor.versionNumber.equals(project.getProgramVersion()))
+        {
+            int continueChoice;
+            if (project.getProgramVersion() != null)
+            {
+                continueChoice = JOptionPane.showConfirmDialog(this, "This PokEditor project was last opened using PokEditor " + project.getProgramVersion() + ". You are using PokEditor " + PokEditor.versionNumber + ". Do you wish to continue?", project.getName() + " (PokEditor)", JOptionPane.YES_NO_OPTION);
+            }
+            else
+            {
+                continueChoice = JOptionPane.showConfirmDialog(this, "This PokEditor project was last opened using a version of PokEditor older than your current program version, which is PokEditor " + PokEditor.versionNumber + ". Do you wish to continue?", project.getName() + " (PokEditor)", JOptionPane.YES_NO_OPTION);
+            }
+
+            if (continueChoice != JOptionPane.YES_OPTION) {
+                System.exit(1);
+            } else {
+                project.setProgramVersion(PokEditor.versionNumber);
+                projectUpdate = true;
+            }
+        }
+
+        File resourceDir = new File(projectPath + File.separator + "Program Files");
+        if(!resourceDir.exists())
+        {
+            unpackProgramFilesDir(resourceDir);
+        }
+        else if (projectUpdate && PokEditor.programFilesModifiedThisVersion)
+        {
+            int unpackChoice = JOptionPane.showConfirmDialog(this, "If you have made any changes to the Program Files folder in your project directory, please make a backup of them now. After pressing \"Ok\", this folder will be deleted and replaced with a new version.", project.getName() + " (PokEditor)", JOptionPane.OK_CANCEL_OPTION);
+            if (unpackChoice == JOptionPane.OK_OPTION)
+            {
+                unpackProgramFilesDir(resourceDir);
+            }
+            else
+            {
+                System.exit(1);
+            }
+        }
+
         initComponents();
 
         //TODO RE-ENABLE THESE FEATURES ONCE THEY ARE PROGRAMMED
@@ -111,8 +153,6 @@ public class ProjectWindow extends JFrame
         tutorial.setLocationRelativeTo(this);
         tutorial.setVisible(false);
 
-        project= Project.readFromXml(xmlPath);
-        projectPath= project.getProjectPath().toString();
         baseRom= project.getBaseRom();
         setTitle(project.getName() + " (PokEditor)");
         menuBar.setVisible(true);
@@ -215,56 +255,6 @@ public class ProjectWindow extends JFrame
         toFront();
         setVisible(true);
 
-        File resourceDir= new File(projectPath + File.separator + "Program Files");
-        if(!resourceDir.exists())
-        {
-            InputStream in= ProjectWindow.class.getResourceAsStream("/Program Files.zip");
-            byte[] buffer= new byte[1024];
-            ZipInputStream zipIn= new ZipInputStream(in);
-            ZipEntry zipEntry= zipIn.getNextEntry();
-
-            while(zipEntry != null)
-            {
-                if(!zipEntry.getName().contains("__"))
-                {
-                    File outputFile= newFile(resourceDir.getParentFile(),zipEntry);
-                    if(zipEntry.isDirectory())
-                    {
-                        if(!outputFile.isDirectory() && !outputFile.mkdirs())
-                        {
-                            throw new IOException("Failed to create directory " + outputFile);
-                        }
-                    }
-                    else
-                    {
-                        // fix for Windows-created archives
-                        File parent = outputFile.getParentFile();
-                        if(!parent.isDirectory() && !parent.mkdirs())
-                        {
-                            throw new IOException("Failed to create directory " + parent);
-                        }
-
-                        // write file content
-                        if(!outputFile.getName().contains("._"))
-                        {
-                            System.out.println("Entry: " + zipEntry.getName());
-                            System.out.println("    " + outputFile.getName());
-                            FileOutputStream outputStream= new FileOutputStream(outputFile);
-                            int len;
-                            while ((len = zipIn.read(buffer)) > 0)
-                            {
-                                outputStream.write(buffer, 0, len);
-                            }
-                            outputStream.close();
-                        }
-                    }
-                }
-                zipEntry= zipIn.getNextEntry();
-            }
-            zipIn.closeEntry();
-            zipIn.close();
-        }
-
         clearDirs(new File(project.getProjectPath() + File.separator + "temp"));
 
         ComboBoxSearchable sheetComboBoxSearchable= new ComboBoxSearchable(sheetChooserComboBox);
@@ -292,7 +282,61 @@ public class ProjectWindow extends JFrame
                 break;
         }
 
+        if (projectUpdate) {
+            Project.saveProject(project, xmlPath);
+            JOptionPane.showMessageDialog(this, "Project update complete!", project.getName() + " (PokEditor)", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         poppedEditors = new HashMap<>();
+    }
+
+    private void unpackProgramFilesDir(File resourceDir) throws IOException
+    {
+        InputStream in= ProjectWindow.class.getResourceAsStream("/Program Files.zip");
+        byte[] buffer= new byte[1024];
+        ZipInputStream zipIn= new ZipInputStream(in);
+        ZipEntry zipEntry= zipIn.getNextEntry();
+
+        while(zipEntry != null)
+        {
+            if(!zipEntry.getName().contains("__"))
+            {
+                File outputFile= newFile(resourceDir.getParentFile(),zipEntry);
+                if(zipEntry.isDirectory())
+                {
+                    if(!outputFile.isDirectory() && !outputFile.mkdirs())
+                    {
+                        throw new IOException("Failed to create directory " + outputFile);
+                    }
+                }
+                else
+                {
+                    // fix for Windows-created archives
+                    File parent = outputFile.getParentFile();
+                    if(!parent.isDirectory() && !parent.mkdirs())
+                    {
+                        throw new IOException("Failed to create directory " + parent);
+                    }
+
+                    // write file content
+                    if(!outputFile.getName().contains("._"))
+                    {
+                        System.out.println("Entry: " + zipEntry.getName());
+                        System.out.println("    " + outputFile.getName());
+                        FileOutputStream outputStream= new FileOutputStream(outputFile);
+                        int len;
+                        while ((len = zipIn.read(buffer)) > 0)
+                        {
+                            outputStream.write(buffer, 0, len);
+                        }
+                        outputStream.close();
+                    }
+                }
+            }
+            zipEntry= zipIn.getNextEntry();
+        }
+        zipIn.closeEntry();
+        zipIn.close();
     }
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)

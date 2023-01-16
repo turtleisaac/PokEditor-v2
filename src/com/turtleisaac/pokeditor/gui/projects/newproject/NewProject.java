@@ -15,6 +15,7 @@ import javax.swing.text.DefaultFormatterFactory;
 import com.jackhack96.dspre.nitro.rom.ROMUtils;
 import com.jackhack96.jNdstool.main.JNdstool;
 import com.turtleisaac.pokeditor.gui.MyFilter;
+import com.turtleisaac.pokeditor.gui.main.PokEditor;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.ProjectWindow;
 import com.turtleisaac.pokeditor.gui.projects.projectwindow.console.ConsoleWindow;
 import com.turtleisaac.pokeditor.project.Project;
@@ -351,6 +352,7 @@ public class NewProject extends JPanel {
         project.setLanguage("ENG");
         project.setBaseRom(Project.parseBaseRom(baseRomConfirmLabel.getText().split(", ")[1]));
         project.setBaseRomGameCode(baseRomConfirmLabel.getText().split(", ")[1]);
+        project.setProgramVersion(PokEditor.versionNumber);
 
         String backupPath= projectLocationTextField.getText().trim() + File.separator + "backups";
         File backupDir= new File(backupPath);

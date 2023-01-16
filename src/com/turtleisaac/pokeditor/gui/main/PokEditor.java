@@ -34,7 +34,8 @@ import java.util.zip.ZipInputStream;
  */
 public class PokEditor extends JDialog
 {
-    private static final String versionNumber = "2.0";
+    public static final String versionNumber = "v2dev011723";
+    public static final boolean programFilesModifiedThisVersion = true;
     private static ConsoleWindow console;
 
     private static final String path= System.getProperty("user.dir") + File.separator;
@@ -206,51 +207,51 @@ public class PokEditor extends JDialog
          * Update checker
          */
 
-        try
-        {
-            URL latestRelease= new URL("https://api.github.com/repos/turtleisaac/PokEditor-v2/releases/latest");
-            BufferedReader reader= new BufferedReader(new InputStreamReader(latestRelease.openStream()));
-            String line;
-
-            System.out.println("Checking for updates");
-            while((line= reader.readLine()) != null)
-            {
-                line= line.trim();
-                String original= line;
-                line= line.substring(line.indexOf("\"name\""),line.indexOf("\"draft\""));
-                if(line.contains("name"))
-                {
-                    String newVersion= line.substring(line.indexOf(":")+2,line.length()-2);
-                    String newVersionNumber= newVersion.split(" ")[1];
-
-                    if(checkNewer(versionNumber,newVersionNumber))
-                    {
-                        line= original;
-                        line= line.substring(line.indexOf("\"browser_download_url\""));
-                        line= line.substring(line.indexOf(":")+2,line.indexOf("}"));
-                        String downloadLink= line.substring(0,line.lastIndexOf("\""));
-
-                        line= original;
-                        String updateNotes= line.substring(line.indexOf("body")+7, line.lastIndexOf("\""));
-//                        updateNotes= updateNotes.replace("* ","");
-                        updateNotes= updateNotes.replace("\\n","\n");
-                        updateNotes= updateNotes.replace("\\r","\r");
-
-                        System.out.println("Download link: " + downloadLink);
-                        System.out.println("Update notes:\n" + updateNotes);
-
-
-                        if(JOptionPane.showConfirmDialog(null,newVersion + " is now available. Would you like to update?\n" + updateNotes,"PokEditor",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE) == 0)
-                        {
-                            updater(downloadLink);
-                        }
-                        break;
-                    }
-                }
-            }
-        } catch (IOException ignored)
-        {
-        }
+//        try
+//        {
+//            URL latestRelease= new URL("https://api.github.com/repos/turtleisaac/PokEditor-v2/releases/latest");
+//            BufferedReader reader= new BufferedReader(new InputStreamReader(latestRelease.openStream()));
+//            String line;
+//
+//            System.out.println("Checking for updates");
+//            while((line= reader.readLine()) != null)
+//            {
+//                line= line.trim();
+//                String original= line;
+//                line= line.substring(line.indexOf("\"name\""),line.indexOf("\"draft\""));
+//                if(line.contains("name"))
+//                {
+//                    String newVersion= line.substring(line.indexOf(":")+2,line.length()-2);
+//                    String newVersionNumber= newVersion.split(" ")[1];
+//
+//                    if(checkNewer(versionNumber,newVersionNumber))
+//                    {
+//                        line= original;
+//                        line= line.substring(line.indexOf("\"browser_download_url\""));
+//                        line= line.substring(line.indexOf(":")+2,line.indexOf("}"));
+//                        String downloadLink= line.substring(0,line.lastIndexOf("\""));
+//
+//                        line= original;
+//                        String updateNotes= line.substring(line.indexOf("body")+7, line.lastIndexOf("\""));
+////                        updateNotes= updateNotes.replace("* ","");
+//                        updateNotes= updateNotes.replace("\\n","\n");
+//                        updateNotes= updateNotes.replace("\\r","\r");
+//
+//                        System.out.println("Download link: " + downloadLink);
+//                        System.out.println("Update notes:\n" + updateNotes);
+//
+//
+//                        if(JOptionPane.showConfirmDialog(null,newVersion + " is now available. Would you like to update?\n" + updateNotes,"PokEditor",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE) == 0)
+//                        {
+//                            updater(downloadLink);
+//                        }
+//                        break;
+//                    }
+//                }
+//            }
+//        } catch (IOException ignored)
+//        {
+//        }
 
 //        pokeditor.changeThemeButton.addActionListener(e -> pokeditor.changeThemeButtonActionPerformed(e));
     }
@@ -302,7 +303,7 @@ public class PokEditor extends JDialog
         fc.setAcceptAllFileFilterUsed(false);
 
         fc.addChoosableFileFilter(new MyFilter("PokEditor Projects",".pokeditor"));
-        fc.addChoosableFileFilter(new MyFilter("DS Pokemon Rom Editor Projects",".dspre"));
+//        fc.addChoosableFileFilter(new MyFilter("DS Pokemon Rom Editor Projects",".dspre"));
 
         if (e.getSource() == openProjectButton) {
             int returnVal = fc.showOpenDialog(this);

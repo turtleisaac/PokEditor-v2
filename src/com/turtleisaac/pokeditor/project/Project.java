@@ -1,10 +1,10 @@
 package com.turtleisaac.pokeditor.project;
 
 import com.turtleisaac.pokeditor.framework.XmlReader;
+import com.turtleisaac.pokeditor.gui.main.PokEditor;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import javax.swing.*;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -17,6 +17,7 @@ public class Project implements Serializable
     private String baseRomGameCode;
     private String language;
     private String program;
+    private String programVersion;
 
 
     public Project(String name, String path, String program)
@@ -101,6 +102,16 @@ public class Project implements Serializable
         return new File(getProjectPath().getAbsolutePath() + File.separator + getName() + File.separator + "data").getAbsolutePath();
     }
 
+    public String getProgramVersion()
+    {
+        return programVersion;
+    }
+
+    public void setProgramVersion(String programVersion)
+    {
+        this.programVersion = programVersion;
+    }
+
     public String getXml()
     {
         String ret= "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
@@ -109,6 +120,7 @@ public class Project implements Serializable
         ret+= "  <baseromname>" + baseRom + "<\\baseromname>\n";
         ret+= "  <baseromgamecode>" + baseRomGameCode + "<\\baseromgamecode>\n";
         ret+= "  <language>" + language.toUpperCase() + "<\\language>\n";
+        ret+= "  <programversion>" + programVersion + "<\\programversion>\n";
         ret+= "<\\" + program.toLowerCase() + ">";
 
         return ret;
@@ -125,6 +137,7 @@ public class Project implements Serializable
                 ", baseRomGameCode='" + baseRomGameCode + '\'' +
                 ", language='" + language + '\'' +
                 ", program='" + program + '\'' +
+                ", programVersion='" + programVersion + '\'' +
                 '}';
     }
 
@@ -140,13 +153,14 @@ public class Project implements Serializable
                 Objects.equals(baseRom, project.baseRom) &&
                 Objects.equals(baseRomGameCode, project.baseRomGameCode) &&
                 Objects.equals(language, project.language) &&
-                Objects.equals(program, project.program);
+                Objects.equals(program, project.program) &&
+                Objects.equals(programVersion, project.programVersion);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(name, projectPath, generation, baseRom, baseRomGameCode, language, program);
+        return Objects.hash(name, projectPath, generation, baseRom, baseRomGameCode, language, program, programVersion);
     }
 
     public static Project readFromXml(String path) throws IOException
@@ -162,6 +176,11 @@ public class Project implements Serializable
         project.setBaseRomGameCode(data.get("baseromgamecode"));
         project.setLanguage(data.get("language"));
         project.setProgram(data.get("program"));
+
+        //new
+//        String programVersion = data.get("programversion");
+//        project.setProgramVersion(Objects.requireNonNullElse(programVersion, PokEditor.versionNumber));
+        project.setProgramVersion(data.get("programversion"));
 
         return project;
     }
@@ -293,8 +312,10 @@ public class Project implements Serializable
         return project.getBaseRom() == Game.Platinum;
     }
 
-    public static void saveProject(Project project, String path)
+    public static void saveProject(Project project, String path) throws IOException
     {
-
+        BufferedWriter writer= new BufferedWriter(new FileWriter(path));
+        writer.write(project.getXml());
+        writer.close();
     }
 }
