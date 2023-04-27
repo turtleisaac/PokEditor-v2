@@ -34,7 +34,7 @@ import java.util.zip.ZipInputStream;
  */
 public class PokEditor extends JDialog
 {
-    public static final String versionNumber = "v2dev011723";
+    public static final String versionNumber = "v2dev042723";
     public static final boolean programFilesModifiedThisVersion = true;
     private static ConsoleWindow console;
 
