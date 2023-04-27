@@ -690,7 +690,15 @@ public class ItemEditorGen4
         String line;
         for(int row= 0; row < dataList.size(); row++)
         {
-            line= row + "," + getItemName(row) + ",";
+            int itemNameAssociatedID = getItemNameID(row);
+            String itemNameReference;
+            if (itemNameAssociatedID != -1)
+                itemNameReference = "='Formatting (DO NOT TOUCH)'!$A$" + (getItemNameID(row) + 1);
+            else
+                itemNameReference = "???";
+
+//            line= row + "," + getItemName(row) + ",";
+            line = row + "," + itemNameReference + ",";
             for(int col= 0; col < itemTable[0].length; col++)
             {
                 line+= itemTable[row][col] + ",";
@@ -701,6 +709,20 @@ public class ItemEditorGen4
         }
 
         return processor.getTable();
+    }
+
+    private int getItemNameID(int fileIdx)
+    {
+        ItemTableEntry itemTableEntry;
+        for (int i = 0; i < itemTableData.size(); i++)
+        {
+            itemTableEntry = itemTableData.get(i);
+            if (itemTableEntry.getDataArchive() == fileIdx)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private String getItemName(int fileIdx)
@@ -834,65 +856,65 @@ public class ItemEditorGen4
             writer.close();
         }
 
-        int itemNameBank;
-        switch(project.getBaseRom())
-        {
-            case Diamond:
-            case Pearl:
-                itemNameBank= 344;
-                break;
-
-            case Platinum:
-                itemNameBank= 392;
-                break;
-
-            case HeartGold:
-            case SoulSilver:
-                itemNameBank= 222;
-                break;
-
-            default:
-                throw new RuntimeException("Invalid base rom: " + baseRom);
-        }
-
-
-        ArrayList<String> newItemNames = new ArrayList<>();
-        for(int i = 0; i < nameColumn.length; i++)
-        {
-            if(i < itemData.length)
-            {
-                if(!nameColumn[i].equals(getItemName(i)))
-                {
-                    setItemName(i, (String) nameColumn[i]);
-                }
-            }
-            else
-            {
-                newItemNames.add((String) nameColumn[i]);
-            }
-        }
-
-        if(newItemNames.size() != 0)
-        {
-            ArrayList<String> itemNames= new ArrayList<>(Arrays.asList(itemData));
-            itemNames.addAll(newItemNames);
-            itemData = itemNames.toArray(itemNames.toArray(new String[0]));
-        }
-
-
-
-        boolean canTrim= true;
-        if(new File(predictedOutputNarc).exists())
-        {
-            int numOriginalFiles= Narctowl.getNumFiles(predictedOutputNarc);
-
-            if(itemSheet.length > numOriginalFiles)
-            {
-                canTrim= false;
-            }
-        }
-
-        TextEditor.writeBank(project,nameColumn,itemNameBank,false); //TODO return here and change this
+//        int itemNameBank;
+//        switch(project.getBaseRom())
+//        {
+//            case Diamond:
+//            case Pearl:
+//                itemNameBank= 344;
+//                break;
+//
+//            case Platinum:
+//                itemNameBank= 392;
+//                break;
+//
+//            case HeartGold:
+//            case SoulSilver:
+//                itemNameBank= 222;
+//                break;
+//
+//            default:
+//                throw new RuntimeException("Invalid base rom: " + baseRom);
+//        }
+//
+//
+//        ArrayList<String> newItemNames = new ArrayList<>();
+//        for(int i = 0; i < nameColumn.length; i++)
+//        {
+//            if(i < itemData.length)
+//            {
+//                if(!nameColumn[i].equals(getItemName(i)))
+//                {
+//                    setItemName(i, (String) nameColumn[i]);
+//                }
+//            }
+//            else
+//            {
+//                newItemNames.add((String) nameColumn[i]);
+//            }
+//        }
+//
+//        if(newItemNames.size() != 0)
+//        {
+//            ArrayList<String> itemNames= new ArrayList<>(Arrays.asList(itemData));
+//            itemNames.addAll(newItemNames);
+//            itemData = itemNames.toArray(itemNames.toArray(new String[0]));
+//        }
+//
+//
+//
+//        boolean canTrim= true;
+//        if(new File(predictedOutputNarc).exists())
+//        {
+//            int numOriginalFiles= Narctowl.getNumFiles(predictedOutputNarc);
+//
+//            if(itemSheet.length > numOriginalFiles)
+//            {
+//                canTrim= false;
+//            }
+//        }
+//
+//        TextEditor.writeBank(project,nameColumn,itemNameBank,false); //TODO return here and change this
     }
 
 

@@ -98,10 +98,11 @@ public class FormatGenerator
         targets[11]= "One opponent (fails if target faints)";
 
 
-        if (project.getBaseRom() == Game.Platinum)
-            generateModifiedReferenceList("Items",0,113,22,"???");
-        else
-            generateModifiedReferenceList2("Items",0,113,22,"???",428,1);
+//        if (project.getBaseRom() == Game.Platinum)
+//            generateModifiedReferenceList("Items",0,113,22,"???");
+//        else
+//            generateModifiedReferenceList2("Items",0,113,22,"???",428,1);
+        setColumn(itemData, 0);
         setColumn(evolutionMethodArr,1);
         setColumn(abilityData,2);
         setColumn(effects,3);

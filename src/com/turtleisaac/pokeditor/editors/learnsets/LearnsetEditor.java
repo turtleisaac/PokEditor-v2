@@ -75,6 +75,9 @@ public class LearnsetEditor
             case Pearl:
             case Diamond:
             case Platinum:
+                maxMoves = 21;
+                break;
+
             case HeartGold:
             case SoulSilver:
                 maxMoves= 20;
@@ -187,7 +190,7 @@ public class LearnsetEditor
         }
         else
         {
-            learnsetTable= new String[dataList.size()][40];
+            learnsetTable= new String[dataList.size()][maxMoves*2];
         }
 
         for (String[] row : learnsetTable) {
@@ -207,7 +210,7 @@ public class LearnsetEditor
 
         ArrayProcessor processor= new ArrayProcessor((maxMoves*2)+2);
         processor.append("ID Number,Name,");
-        for(int i= 0; i < 20; i++)
+        for(int i= 0; i < maxMoves; i++)
         {
             processor.append("Move,Level,");
         }
@@ -236,22 +239,22 @@ public class LearnsetEditor
             throw new RuntimeException("Could not create output directory. Check write permissions");
         }
 
-        learnsetCsv= ArrayModifier.trim(learnsetCsv,1,2);
-        for(int i= 0; i < learnsetCsv.length; i++)
+        Object[][] learnsetModified = ArrayModifier.trim(learnsetCsv,1,2);
+        for(int i= 0; i < learnsetModified.length; i++)
         {
 //            System.out.println(nameData[i]);
-            Object[] thisLine= learnsetCsv[i];
+            Object[] thisLine= learnsetModified[i];
             int numMoves= indexOfEnd(thisLine)/2;
             int numBytes= 0;
 
-            if(!gen5 && numMoves > 20)
+            if(!gen5 && numMoves > maxMoves)
             {
-                JOptionPane.showMessageDialog(null,"You can't have more than 20 moves","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"You can't have more than " + maxMoves +  " moves","Error",JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            else if(gen5 && numMoves > 25)
+            else if(gen5 && numMoves > maxMoves)
             {
-                JOptionPane.showMessageDialog(null,"You can't have more than 25 moves","Error",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"You can't have more than " + maxMoves +  " moves","Error",JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -263,7 +266,16 @@ public class LearnsetEditor
                     break;
 
 //                System.out.println("    " + thisLine[m]);
-                int moveID= getMove((String) thisLine[m]);
+                int moveID;
+                try {
+                   moveID = getMove((String) thisLine[m]);
+                }
+                catch(InvalidStringException e) {
+                    throw SheetExceptionFactory.generateInvalidNameSheetException(LearnsetEditor.class, "move", (String) thisLine[m], "species", (String) learnsetCsv[i+1][1], i);
+                }
+
+                if (m+1 >= thisLine.length)
+                    throw SheetExceptionFactory.generateMissingValueSheetException(LearnsetEditor.class, "move", "level", (String) thisLine[m], "species", (String) learnsetCsv[i+1][1], i);
                 int level= Integer.parseInt((String) thisLine[m+1]);
                 levelLearnset.add(new MoveLearnsetData() {
                     @Override
@@ -364,7 +376,8 @@ public class LearnsetEditor
                 return i;
             }
         }
-        throw new RuntimeException("Invalid move entered: " + move);
+
+        throw new InvalidStringException("Invalid move entered: " + move);
     }
 
     private static short parseShort(String... evs)

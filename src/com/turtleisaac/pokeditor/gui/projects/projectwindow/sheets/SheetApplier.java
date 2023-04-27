@@ -24,6 +24,7 @@ import com.turtleisaac.pokeditor.editors.items.ItemTableEntry;
 import com.turtleisaac.pokeditor.editors.learnsets.LearnsetEditor;
 import com.turtleisaac.pokeditor.editors.moves.gen4.MoveEditorGen4;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerReturnGen4;
+import com.turtleisaac.pokeditor.framework.SheetException;
 import com.turtleisaac.pokeditor.framework.narctowl.Narctowl;
 import com.turtleisaac.pokeditor.editors.personal.gen4.PersonalEditor;
 import com.turtleisaac.pokeditor.editors.trainers.gen4.TrainerEditorGen4;
@@ -34,6 +35,7 @@ import com.turtleisaac.pokeditor.project.Project;
 import net.miginfocom.swing.*;
 import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOExceptionList;
 import turtleisaac.GoogleSheetsAPI;
 
 /**
@@ -98,6 +100,7 @@ public class SheetApplier extends JFrame
         selectedString= selectedString.substring(0, selectedString.length()-1);
 
         String[] selected= selectedString.split(", ");
+        boolean exceptionThrown = false;
 
         try
         {
@@ -118,6 +121,28 @@ public class SheetApplier extends JFrame
             switch (baseRom)
             {
                 case Platinum:
+                    if(contains(selected,"Moves"))
+                    {
+                        String outputDir= unpackedFolderPath + "pl_waza_tbl";
+                        String outputNarc= File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl.narc";
+
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
+                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),outputDir, outputNarc);
+
+                        pack(outputDir, dataPath + outputNarc);
+                    }
+
+                    if(contains(selected,"Items"))
+                    {
+                        String outputDir= unpackedFolderPath + "pl_item_data";
+                        String outputNarc= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data.narc";
+
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
+                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),api.getSpecifiedSheetArr("Formatting (DO NOT TOUCH)"),outputDir,outputNarc);
+
+                        pack(outputDir, dataPath + outputNarc);
+                    }
+
                     if(contains(selected, "Personal"))
                     {
                         String outputDir= unpackedFolderPath + "pl_personal";
@@ -180,28 +205,6 @@ public class SheetApplier extends JFrame
                         pack(trpokeDir, dataPath + trpokeNarc);
                     }
 
-                    if(contains(selected,"Moves"))
-                    {
-                        String outputDir= unpackedFolderPath + "pl_waza_tbl";
-                        String outputNarc= File.separator + "poketool" + File.separator + "waza" + File.separator + "pl_waza_tbl.narc";
-
-                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
-                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),outputDir, outputNarc);
-
-                        pack(outputDir, dataPath + outputNarc);
-                    }
-
-                    if(contains(selected,"Items"))
-                    {
-                        String outputDir= unpackedFolderPath + "pl_item_data";
-                        String outputNarc= File.separator + "itemtool" + File.separator + "itemdata" + File.separator + "pl_item_data.narc";
-
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
-                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),api.getSpecifiedSheetArr("Formatting (DO NOT TOUCH)"),outputDir,outputNarc);
-
-                        pack(outputDir, dataPath + outputNarc);
-                    }
-
                     if(contains(selected,"Encounters"))
                     {
                         SinnohEncounterEditor editor= new SinnohEncounterEditor(project,dataPath);
@@ -216,6 +219,28 @@ public class SheetApplier extends JFrame
 
                 case HeartGold:
                 case SoulSilver:
+                    if(contains(selected,"Moves"))
+                    {
+                        String outputDir= unpackedFolderPath + "item_data";
+                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1";
+
+                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
+                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),outputDir,outputNarc);
+
+                        pack(outputDir, dataPath + outputNarc);
+                    }
+
+                    if(contains(selected,"Items"))
+                    {
+                        String outputDir= unpackedFolderPath + "item_data";
+                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7";
+
+                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
+                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),api.getSpecifiedSheetArr("Formatting (DO NOT TOUCH)"),outputDir,outputNarc);
+
+                        pack(outputDir, dataPath + outputNarc);
+                    }
+
                     if(contains(selected, "Personal"))
                     {
                         String outputDir= unpackedFolderPath + "personal";
@@ -255,17 +280,6 @@ public class SheetApplier extends JFrame
                     {
                         BabyFormEditor editor= new BabyFormEditor(dataPath,project);
                         editor.sheetToBabyForms(api.getSpecifiedSheetArr("Baby Forms"),File.separator + "poketool" + File.separator + "personal" + File.separator + "pms.narc");
-                    }
-
-                    if(contains(selected,"Moves"))
-                    {
-                        String outputDir= unpackedFolderPath + "item_data";
-                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "1";
-
-                        MoveEditorGen4 editor= new MoveEditorGen4(project,dataPath);
-                        editor.sheetToMoves(api.getSpecifiedSheetArr("Moves"),outputDir,outputNarc);
-
-                        pack(outputDir, dataPath + outputNarc);
                     }
 
                     if(contains(selected,"Encounters"))
@@ -314,35 +328,38 @@ public class SheetApplier extends JFrame
                         pack(trdataDir, dataPath + trdataNarc);
                         pack(trpokeDir, dataPath + trpokeNarc);
                     }
-
-                    if(contains(selected,"Items"))
-                    {
-                        String outputDir= unpackedFolderPath + "item_data";
-                        String outputNarc= File.separator + "a" + File.separator + "0" + File.separator + "1" + File.separator + "7";
-
-                        ItemEditorGen4 editor= new ItemEditorGen4(dataPath,project,itemTableData);
-                        editor.sheetToItems(api.getSpecifiedSheetArr("Items"),api.getSpecifiedSheetArr("Formatting (DO NOT TOUCH)"),outputDir,outputNarc);
-
-                        pack(outputDir, dataPath + outputNarc);
-                    }
                     break;
             }
 
 
         }
-        catch (IOException exception)
+        catch (IOException | SheetException exception)
         {
             exception.printStackTrace();
-            JOptionPane.showMessageDialog(this,"An error has occurred. Please check the cmd window for further details.","Error",JOptionPane.ERROR_MESSAGE);
+            if (exception instanceof IOException)
+            {
+                JOptionPane.showMessageDialog(this,"An error has occurred. Please check the cmd window for further details.","Error",JOptionPane.ERROR_MESSAGE);
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
             dispose();
             parent.toFront();
             parent.setEnabled(true);
+            exceptionThrown = true;
         }
 
         for(File file : toDelete)
         {
             System.out.println("Deleting folder: " + file.toString());
             clearDirs(file);
+        }
+
+        if (exceptionThrown)
+        {
+            System.err.println("Aborting sheet application");
+            return;
         }
 
         if(editorTree.getCheckedPaths().length == 0)

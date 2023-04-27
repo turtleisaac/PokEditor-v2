@@ -528,7 +528,7 @@ public class EvolutionEditor
                 return i;
             }
         }
-        throw new RuntimeException("Invalid type entered");
+        throw new RuntimeException("Invalid type entered: " + type);
     }
 
     private static int getMove(String move, Object[] row)
