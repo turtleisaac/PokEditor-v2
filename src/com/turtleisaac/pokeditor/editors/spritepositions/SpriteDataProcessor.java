@@ -254,6 +254,16 @@ public class SpriteDataProcessor
             ret= 0;
         }
 
+        try
+        {
+            buffer.close();
+        }
+        catch(IOException e) {
+            System.err.println("Error closing height buffer.");
+            e.printStackTrace();
+        }
+
+
         return ret;
     }
 
