@@ -342,9 +342,9 @@ public class ProjectWindow extends JFrame
 
     private void sheetsSetupButtonActionPerformed(ActionEvent e)
     {
-        switch(JOptionPane.showConfirmDialog(this,"PokEditor is an open source tool developed by Turtleisaac. By choosing yes, I authorize PokEditor to gain full viewing and editing access to any Google Sheet document that I provide it the link for. By choosing no, I opt to instead use local sheet editing and storage, and accept that I may encounter issues using PokEditor, as it was written with Google Sheets integration in-mind.","Confirmation",JOptionPane.YES_NO_OPTION,JOptionPane.INFORMATION_MESSAGE))
+        switch(JOptionPane.showOptionDialog(this, "PokEditor is an open source tool developed by Turtleisaac. By choosing Online, I authorize PokEditor to gain full viewing and editing access to any Google Sheet document that I provide it the link for. By choosing Offline, I opt to instead use local sheet editing and storage, and accept that I may encounter issues using PokEditor, as it was written with Google Sheets integration in-mind. (Note: Online is currently broken, use offline).", "Confirmation", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Online", "Offline"}, "Offline"))
         {
-            case 1: //no - local
+            case 1: //no - offline - local
                 try
                 {
                     GoogleSheetsAPI api = new GoogleSheetsAPI(null, projectPath, true);
