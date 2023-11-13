@@ -2,7 +2,7 @@
 
 **Author: Turtleisaac**
 
-# Development of PokEditor v2 has ended and has been replaced with [PokEditor v3](https://github.com/turtleisaac/PokEditor).
+# Development of PokEditor v2 has ended and has been replaced with [PokEditor v3](https://github.com/turtleisaac/PokEditor). Please do not use v2 anymore.
 
 Multifunctional in-depth editor for Pokémon Gen IV (4) game data.
 
